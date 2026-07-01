@@ -1,0 +1,52 @@
+# Python caches
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Local environment / secrets
+.env
+.env.*
+*.pem
+*.key
+
+# Generated report outputs
+output/
+tmp/
+pdf_debug_pre/
+pdfs/
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+
+# OS/editor clutter
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Aider/Codex local artifacts
+.aider*
+.codex/
+.agents/
+
+# Project archive / historical material
+archive/
+
+# Swiss Ephemeris / local ephemeris data
+ephemeris/**/*.se1
+ephemeris/**/*.se2
+ephemeris/**/*.sem
+ephemeris/**/*.txt
+ephemeris/**/*.dat
+ephemeris/backend_payload_debug.json
+ephemeris/asteroid_files_inventory.txt
+
+# Local-only notes
+Entangled Oracle Observatory Team.txt

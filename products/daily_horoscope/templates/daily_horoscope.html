@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Horoscope · {{ querent_name }}</title>
+  <style>
+    :root {
+      /* Base */
+      --bg:        {{ palette.bg }};
+      --surface:   {{ palette.surface }};
+      --surface-2: {{ palette.surface_2 }};
+      --border:    {{ palette.border }};
+      --text:      {{ palette.text }};
+      --muted:     {{ palette.muted }};
+      --subtle:    {{ palette.subtle }};
+
+      /* Semantic color tokens */
+      --color-identity:      {{ palette.identity }};
+      --color-growth:        {{ palette.growth }};
+      --color-relationships: {{ palette.relationships }};
+      --color-creativity:    {{ palette.creativity }};
+      --color-vocation:      {{ palette.vocation }};
+      --color-home:          {{ palette.home }};
+      --color-spiritual:     {{ palette.spiritual }};
+
+      /* Legacy aliases for backward compatibility */
+      --accent:  {{ palette.accent }};
+      --purple:  {{ palette.purple }};
+      --gold:    {{ palette.gold }};
+      --rose:    {{ palette.rose }};
+      --ember:   {{ palette.ember }};
+      --blue:    {{ palette.blue }};
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Georgia', serif;
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 40px 24px 60px;
+      line-height: 1.75;
+    }
+    p,
+    li,
+    div,
+    span,
+    strong,
+    em,
+    h1,
+    h2,
+    h3,
+    h4 {
+      overflow-wrap: break-word;
+      word-break: normal;
+      hyphens: auto;
+    }
+    header { text-align: center; margin-bottom: 36px; }
+    header .name {
+      font-size: 1.6rem;
+      color: var(--accent);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+    header .meta {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 6px;
+      letter-spacing: 1px;
+    }
+    hr { border: none; border-top: 1px solid var(--border); margin: 28px 0; }
+    .section { margin-bottom: 28px; }
+    .section-label {
+      font-size: 0.68rem;
+      color: var(--muted);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .moon-line {
+      font-size: 1.1rem;
+      color: var(--purple);
+      margin-bottom: 10px;
+    }
+    .block { font-size: 0.95rem; color: var(--text); }
+    .activation-header {
+      font-size: 0.82rem;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+    .proprietary-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--purple);
+      border-radius: 6px;
+      padding: 16px 18px;
+      margin-top: 4px;
+    }
+    .proprietary-name {
+      font-size: 0.78rem;
+      color: var(--purple);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .soft-sell {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 10px;
+      font-style: italic;
+    }
+    .closing {
+      text-align: center;
+      font-style: italic;
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-top: 36px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+    }
+    footer {
+      text-align: center;
+      font-size: 0.68rem;
+      color: #444;
+      margin-top: 48px;
+      letter-spacing: 1px;
+    }
+
+    /* ── Print Mode ───────────────────────────────── */
+    @media print {
+      body {
+        background: #fff;
+        color: #111;
+        max-width: 100%;
+        padding: 20px 30px;
+        font-size: 10pt;
+      }
+      header .name { color: #000; }
+      header .meta { color: #666; }
+      .moon-line { color: #333; }
+      .activation-header { color: #555; }
+      .proprietary-card { background: #f9f9f9; border-color: #ccc; }
+      .proprietary-name { color: #444; }
+      .soft-sell { color: #888; }
+      .closing { color: #555; }
+      footer { color: #999; }
+      hr { border-color: #ddd; }
+    }
+  </style>
+</head>
+<body data-palette="{{ palette_name | default('vibrant') }}">
+
+  <header>
+    <div class="name">{{ querent_name }}</div>
+    <div class="meta">{{ display_date }}{% if generation_location %} · {{ generation_location }}{% endif %}</div>
+    <div class="meta" style="margin-top:4px;">Daily Horoscope · Entangled Oracle</div>
+  </header>
+
+  <!-- Today's Sky -->
+  <div class="section">
+    <div class="section-label">Today's Sky</div>
+    <div class="moon-line">{{ moon_phase_descriptor }} in {{ moon_sign }}</div>
+    <div class="block">{{ todays_sky_block }}</div>
+  </div>
+
+  <hr>
+
+  <!-- Your Activation (Full Mode only) -->
+  {% if not simple_mode %}
+  <div class="section">
+    <div class="section-label">Your Activation</div>
+    {% if activation_planet %}
+    <div class="activation-header">
+      {{ activation_planet }} moves through your {{ natal_house_name if natal_house_name else 'chart' }}
+    </div>
+    {% endif %}
+    <div class="block">{{ activation_block }}</div>
+    {% if secondary_activation_line %}
+    <div class="block" style="margin-top:10px; color: var(--muted); font-size:0.88rem;">
+      {{ secondary_activation_line }}
+    </div>
+    {% endif %}
+  </div>
+
+  <hr>
+  {% endif %}
+
+  <!-- The Day's Ruler -->
+  <div class="section">
+    <div class="section-label">The Day's Ruler</div>
+    <div class="activation-header">{{ day_ruler_name }}</div>
+    <div class="block">{{ day_ruler_block }}</div>
+  </div>
+
+  <hr>
+
+  <!-- Proprietary Reference (Full Mode only) -->
+  {% if not simple_mode and activated_index_name %}
+  <div class="proprietary-card">
+    <div class="proprietary-name">{{ activated_index_name }}</div>
+    <div class="block">{{ proprietary_block }}</div>
+    <div class="soft-sell">Activation detected. Full context in your Asteroid Portrait.</div>
+  </div>
+  <br>
+  {% endif %}
+
+  <!-- Closing Line -->
+  <div class="closing">{{ closing_block }}</div>
+
+  <footer>
+    Entangled Oracle · Ksisti-Puck LLC<br>
+    Generated {{ generation_date }}
+  </footer>
+
+</body>
+</html>

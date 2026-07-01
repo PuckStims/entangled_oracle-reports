@@ -1,0 +1,30 @@
+{
+  "_note": "Power Current. Key: archetype_key -> tier (dominant/present/subtle). Subtle is static.",
+  "subtle": "This sovereign current sits beneath the surface as an instinct for self-direction: a growing awareness of what is yours to choose, what requires a limit, and what no longer deserves access by default.",
+  "fallback": "Power Current describes how agency becomes visible in your life: through boundaries, desire, decisive action, recovery of choice, and the ways you meet intensity without abandoning yourself. This is not domination. It is the ability to name your terms, act from them, and remain in relationship with what matters.",
+  "the_sovereign_queen": {
+    "dominant": "The Sovereign Queen governs by clear terms. This role is attentive to consent, reciprocity, access, and the quiet places where an arrangement becomes vague enough to cost you your center. At its best, this is not a wall but a well-kept threshold: a grounded ability to say yes, no, later, or not under these conditions. The Sovereign Queen makes room for dignity in ordinary decisions—money, time, intimacy, work, care, and household life. Its refinement is learning that self-possession does not require exile; a gate can be strong and still open for those who meet it with respect.",
+    "present": "The Sovereign Queen is active when you need cleaner agreements, firmer limits, or a more honest account of what you can offer. This current favors boundaries that protect your dignity without pretending connection is a threat by default.",
+    "fallback": "The Sovereign Queen names self-possession: the right to define your terms, take your needs seriously, and choose forms of closeness that do not require self-erasure."
+  },
+  "the_alchemist": {
+    "dominant": "The Alchemist works with what has changed shape. This role can recognize when a habit, attachment, identity, or old strategy has given all it can give, then begin the slower work of finding what remains useful in the material. Its strength is neither destruction for spectacle nor endless self-reinvention. It is the capacity to meet an ending as raw matter: grief, information, skill, desire, residue, possibility. The Alchemist asks what this experience can become once it is handled with enough patience to reveal a new form.",
+    "present": "The Alchemist is present when an old arrangement no longer fits and honest revision becomes more useful than maintenance. You may be ready to rework a habit, meaning, role, or plan. Let the change be deliberate; not every discomfort requires a total burn-down.",
+    "fallback": "The Alchemist brings a practical relationship to transformation. This archetype turns change into material for clearer choices, stronger forms, and more usable life."
+  },
+  "the_enchantress": {
+    "dominant": "The Enchantress understands that atmosphere is not trivial. Beauty, sensory detail, ritual, style, pacing, and the conditions of welcome all shape what you can receive, offer, or become available for. This role creates magnetism through congruence: the outer field begins to resemble an honest inner preference, rather than a performance built to manage someone else’s response. The Enchantress becomes especially powerful when pleasure remains paired with consent and directness. Let the perfume, the room, the language, the texture, and the invitation serve your life—not replace the request you need to make.",
+    "present": "The Enchantress is active when sensory intelligence and personal style help you make life more inhabitable. Choose atmosphere that supports actual comfort, desire, and self-recognition. Beauty is strongest here when it belongs to you rather than functioning as a demand for approval.",
+    "fallback": "The Enchantress honors the power of atmosphere, preference, and embodied style. This role makes room for pleasure that is self-respecting, chosen, and real."
+  },
+  "the_warrior": {
+    "dominant": "The Warrior knows what is worth defending. This role gathers force around a clear line: a commitment, a person, a principle, a body of work, or a boundary that cannot be left indefinitely undefined. Its strength is not permanent combat. The Warrior is capable of deciding, acting, and staying present once a difficult conversation or necessary task has begun. The pressure point comes when every disagreement is treated as a battlefield. Choose the conflict that protects something real, conserve strength for the long campaign, and let strategy do some of the work that adrenaline cannot.",
+    "present": "The Warrior is present when a direct response, difficult decision, or protective boundary is needed. You may feel clearer about what you will no longer leave unaddressed. Aim that force toward a specific purpose rather than every available fight.",
+    "fallback": "The Warrior brings decisive protection. This archetype helps you identify what deserves action, then meet it with courage, strategy, and enough restraint to remain effective."
+  },
+  "the_crone_oracle": {
+    "dominant": "The Crone/Oracle reads life through seasons, thresholds, and consequence. This role is less interested in quick reassurance than in the deeper question: what has ripened, what has ended, what truth is asking to be faced before the next door opens? Its authority comes from perspective—the willingness to let experience teach without turning experience into a cage. The Crone/Oracle can name what others would rather rush past, yet it does not need to become remote or final. Wisdom becomes generous when it remains in contact with the living, unfinished person in front of it.",
+    "present": "The Crone/Oracle is present when perspective matters more than speed. You may be drawn to notice the larger pattern, the timing beneath a decision, or the truth that only becomes clear once a cycle has run its course. Let discernment guide the next step without demanding that the whole future be known.",
+    "fallback": "The Crone/Oracle carries seasoned discernment. This role helps you meet endings, timing, and difficult knowledge with enough perspective to choose the next threshold consciously."
+  }
+}

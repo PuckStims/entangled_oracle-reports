@@ -1,0 +1,644 @@
+{
+  "_note": "Personal Forecast synthesis library. This file does not replace event-level transit, ingress, eclipse, or station blocks; it assembles their selected signals into the client-facing 90-day report surface. Canonical keys: theme_key → aspect_character; timing/turning point: natal_house → aspect_character. Theme cards: 8×2=16. Timing micro-blocks: 12×2=24. Opening, guidance, and closing are composable synthesis blocks. All non-underscore values are client-facing unless explicitly marked as assembly metadata.",
+  "_version": "1.0",
+  "_assembly": {
+    "theme_key_resolution": "Use the canonical snake_case theme key supplied by the Personal Forecast selector. theme_metadata provides the display label, mapped life domain, and approved closing reframe.",
+    "opening_snapshot": "Concatenate dominant[theme_1_key][theme_1_character], dominant_development[theme_1_key][theme_1_character], secondary[theme_2_key][theme_2_character], and—only when theme_3 is present—relational[theme_3_key][theme_3_character]. Append closing_template.format(closing_reframe=closing_reframe). Separate fragments with one space.",
+    "theme_cards": "For each selected headline theme, return title, body, and action from theme_cards[theme_key][theme_character]. theme_label should come from theme_metadata[theme_key].label or the engine-supplied display label.",
+    "timing_windows": "Preserve engine-supplied date_label, chronological order, intensity, and featured flag. Use timing_windows[natal_house][aspect_character] for theme and best_use. Use timing_windows.fallback[aspect_character] if natal_house is unavailable.",
+    "featured_event": "Use featured_event.domain_core[natal_house].title, body_1, and action; use featured_event.character_adjustment[aspect_character] as body_2. Optionally append a short, non-duplicative existing event-level block as body_3; otherwise set body_3 to null. Peak date always comes from the engine.",
+    "guidance": "For each card, concatenate guidance.theme_focus[dominant_theme][card] with guidance.character_adjustment[dominant_character][card]. Use guidance.fallback[card] only when no canonical dominant theme is available.",
+    "closing_integration": "Concatenate closing_integration.theme_core[dominant_theme] with closing_integration.character_finish[dominant_character]. Use closing_integration.fallback when no canonical dominant theme is available."
+  },
+  "theme_metadata": {
+    "self_in_motion": {
+      "label": "Self in Motion",
+      "house": 1,
+      "domain": "personal identity, self-expression, and how others first meet you",
+      "closing_reframe": "trusting the direction even before the destination is clear"
+    },
+    "material_sovereignty": {
+      "label": "Material Sovereignty",
+      "house": 2,
+      "domain": "resources, money, self-worth, and what you choose to sustain",
+      "closing_reframe": "making practical moves from a grounded place"
+    },
+    "roots_and_sanctuary": {
+      "label": "Roots & Sanctuary",
+      "house": 4,
+      "domain": "home, private life, emotional foundation, and belonging",
+      "closing_reframe": "returning to what actually restores you"
+    },
+    "pleasure_current": {
+      "label": "The Pleasure Current",
+      "house": 5,
+      "domain": "creativity, play, romance, and what makes you feel alive",
+      "closing_reframe": "letting enjoyment be information, not indulgence"
+    },
+    "daily_craft": {
+      "label": "The Daily Craft",
+      "house": 6,
+      "domain": "daily work, health, routines, and capacity",
+      "closing_reframe": "building capacity quietly, one honest day at a time"
+    },
+    "bonds_and_boundaries": {
+      "label": "Bonds & Boundaries",
+      "house": 7,
+      "domain": "close relationships, agreements, and reciprocity",
+      "closing_reframe": "tending what's real without losing what's yours"
+    },
+    "public_emergence": {
+      "label": "Public Emergence",
+      "house": 10,
+      "domain": "vocation, public role, reputation, and long-term direction",
+      "closing_reframe": "letting the right things solidify on their own timeline"
+    },
+    "quiet_current": {
+      "label": "The Quiet Current",
+      "house": 12,
+      "domain": "inner life, rest, spiritual reflection, and what moves beneath the surface",
+      "closing_reframe": "letting meaning arrive without forcing clarity"
+    }
+  },
+  "domain_metadata": {
+    "1": {
+      "name": "Self & Presence",
+      "domain": "personal identity, self-expression, and how others first perceive you"
+    },
+    "2": {
+      "name": "Resources & Worth",
+      "domain": "money, resources, self-worth, and what you value"
+    },
+    "3": {
+      "name": "Communication & Local World",
+      "domain": "thinking, communication, learning, and immediate environment"
+    },
+    "4": {
+      "name": "Roots & Sanctuary",
+      "domain": "home, family, emotional foundation, and private life"
+    },
+    "5": {
+      "name": "Pleasure & Creation",
+      "domain": "creativity, play, romance, and what brings joy"
+    },
+    "6": {
+      "name": "The Daily Craft",
+      "domain": "daily work, health, routines, and service"
+    },
+    "7": {
+      "name": "Bonds & Boundaries",
+      "domain": "close partnerships, significant relationships, and agreements"
+    },
+    "8": {
+      "name": "Depth & Exchange",
+      "domain": "transformation, shared resources, intimacy, and release"
+    },
+    "9": {
+      "name": "Horizons & Meaning",
+      "domain": "beliefs, expansion, travel, and search for meaning"
+    },
+    "10": {
+      "name": "Public Emergence",
+      "domain": "vocation, public role, reputation, and long-term direction"
+    },
+    "11": {
+      "name": "Community & Future Vision",
+      "domain": "community, friendship, collective purpose, and future vision"
+    },
+    "12": {
+      "name": "The Quiet Current",
+      "domain": "inner world, spiritual life, rest, and what operates beneath the surface"
+    }
+  },
+  "opening_snapshot": {
+    "_note": "Composable opening portrait. Assemble in this order: dominant[theme_1_key][theme_1_character] + dominant_development[theme_1_key][theme_1_character] + secondary[theme_2_key][theme_2_character] + optional relational[theme_3_key][theme_3_character] + closing_template formatted with closing_reframe. Each selected fragment is client-facing; keys and assembly notes are internal.",
+    "fallback": {
+      "dominant": "This season asks for a slower kind of attention. What matters most may become clear through the choices that keep returning, rather than through a single decisive moment.",
+      "secondary": "A second current runs beneath the obvious activity, asking you to notice what supports your energy and what only adds pressure. Let the practical details tell you where adjustment is needed.",
+      "relational": "The people closest to you may feel these shifts too, especially where expectations have been left unstated.",
+      "closing_template": "The invitation of this season is {closing_reframe}."
+    },
+    "dominant": {
+      "public_emergence": {
+        "flowing": "This is a season of visible consolidation; something in your work, reputation, or long-term direction is becoming easier to present with confidence, not because every question is settled, but because the work itself has gained a clearer shape.",
+        "challenging": "This is a season of earned visibility; questions about work, reputation, or long-term direction may feel more exposed, asking you to separate a meaningful ambition from expectations that have become too diffuse or costly."
+      },
+      "self_in_motion": {
+        "flowing": "This is a season of self-directed movement; your choices, presentation, and sense of personal direction may begin aligning more closely, giving you room to act from who you are now instead of from a role you have outgrown.",
+        "challenging": "This is a season of self-revision; a familiar identity, expectation, or way of moving through the world may feel too narrow, creating useful pressure to decide what belongs to you and what no longer does."
+      },
+      "bonds_and_boundaries": {
+        "flowing": "This is a season of more spacious connection; the relationships and agreements closest to you may offer genuine support, especially where care becomes specific enough to be shared rather than merely assumed.",
+        "challenging": "This is a season of clearer relational terms; close connections may bring the balance between care, responsibility, autonomy, and reciprocity into sharper focus, particularly where important needs have remained implied."
+      },
+      "daily_craft": {
+        "flowing": "This is a season of practical support; daily work, health, routines, and ordinary responsibilities may begin cooperating more readily when you give the useful parts of your system enough attention to become reliable.",
+        "challenging": "This is a season of honest recalibration; the routines that carry ordinary life may show where they have been asking for more energy than they return, making a smaller and truer adjustment more valuable than a dramatic overhaul."
+      },
+      "roots_and_sanctuary": {
+        "flowing": "This is a season of steadier ground; home, private life, belonging, and the conditions that help you recover may become more available as a source of real support rather than an afterthought.",
+        "challenging": "This is a season of redefining safety; private patterns, home arrangements, or inherited expectations may need attention before the rest of life can feel as settled as it appears from the outside."
+      },
+      "pleasure_current": {
+        "flowing": "This is a season of returning vitality; creativity, enjoyment, romance, and the experiences that make you feel alive may carry more useful information than usual about where your energy wants to go.",
+        "challenging": "This is a season of reclaiming desire; the gap between what brings you alive and what you have been taught to justify may become harder to ignore, asking for a more honest relationship with pleasure and expression."
+      },
+      "material_sovereignty": {
+        "flowing": "This is a season of grounded expansion; resources, self-worth, time, and practical choices may begin moving in a more coherent direction when you let your values guide what receives your attention.",
+        "challenging": "This is a season of practical truth-telling; questions of money, time, energy, and self-worth may reveal where a familiar arrangement no longer reflects the life you are trying to sustain."
+      },
+      "quiet_current": {
+        "flowing": "This is a season of quieter orientation; reflection, rest, imagination, and the parts of life that happen away from constant visibility may offer a clearer sense of meaning than immediate answers can provide.",
+        "challenging": "This is a season of necessary quiet; mixed signals, fatigue, or emotional accumulation may make it important to reduce noise and let your inner life have enough room to separate what is real from what is merely urgent."
+      }
+    },
+    "secondary": {
+      "public_emergence": {
+        "flowing": "Alongside everything becoming more visible, a second layer asks you to receive support without losing the standards that make your contribution yours. Let momentum serve the direction you have chosen.",
+        "challenging": "Under the pressure to be seen or to deliver, notice where clearer boundaries around scope, timing, or responsibility would make the work more durable. Clarity can protect the work without reducing its ambition."
+      },
+      "self_in_motion": {
+        "flowing": "Beneath the outward movement, your sense of self may be becoming more internally coherent. A small choice made from self-recognition can carry farther than a dramatic attempt to reinvent everything.",
+        "challenging": "At the same time, an older role may keep asking for your loyalty. Pay attention to the difference between a true commitment and a version of yourself maintained mainly for other people’s comfort."
+      },
+      "bonds_and_boundaries": {
+        "flowing": "A gentler relational current runs alongside the season, making it easier to recognize where support is reciprocal and where a conversation can deepen trust. A small act of direct appreciation can reinforce the pattern.",
+        "challenging": "Relationships may also complicate the picture by revealing uneven expectations. Directness has more value than guessing what care or commitment is supposed to mean."
+      },
+      "daily_craft": {
+        "flowing": "The practical undercurrent is supportive: small systems, routines, or tools can create more room than a larger promise ever could. Keep the useful adjustment simple enough to repeat.",
+        "challenging": "The practical undercurrent asks for discernment around energy. A recurring task, obligation, or habit may need a different shape before it becomes another source of depletion."
+      },
+      "roots_and_sanctuary": {
+        "flowing": "A quieter need for belonging and restoration also runs through the season. The more supported your private life feels, the less every outward decision has to carry alone.",
+        "challenging": "Private life may need more care than usual, especially where an inherited pattern or environmental stressor keeps taking more from you than it returns. A modest change in access or routine can create relief."
+      },
+      "pleasure_current": {
+        "flowing": "There is also an invitation to follow what restores your spark. Enjoyment can be useful information when it leads toward a practice, connection, or creative choice with real staying power.",
+        "challenging": "Desire may arrive with friction, showing where guilt, fear of visibility, or overmanagement has kept something meaningful at a distance. Make room for curiosity before making it justify itself."
+      },
+      "material_sovereignty": {
+        "flowing": "A practical current supports clearer choices around what to keep, build, receive, and invest in. Security becomes more useful when it is designed around your actual priorities.",
+        "challenging": "Resource questions may add pressure by making the cost of old habits more visible. Let the numbers, energy, and terms of exchange tell the truth before you make a larger commitment."
+      },
+      "quiet_current": {
+        "flowing": "A quieter undercurrent asks you to preserve enough unstructured time for meaning to arrive. Not every useful insight announces itself loudly or asks for immediate action.",
+        "challenging": "The inner landscape may complicate matters through uncertainty or overload. Give impressions time to settle, and let clear information stand beside feeling before you decide what comes next."
+      }
+    },
+    "relational": {
+      "public_emergence": {
+        "flowing": "Your closest connections may respond well when you let them see the direction you are growing toward.",
+        "challenging": "The people close to you may need clearer communication about what your public commitments can and cannot hold."
+      },
+      "self_in_motion": {
+        "flowing": "Connections can feel more alive when you allow yourself to be met as you are now, not as an earlier version of yourself.",
+        "challenging": "A relationship may reveal where being understood has started to depend on keeping yourself smaller than you are."
+      },
+      "bonds_and_boundaries": {
+        "flowing": "Support becomes more reliable when care, contribution, and autonomy are named rather than assumed.",
+        "challenging": "A close exchange may ask for a direct conversation about what is mutual, what is missing, and what needs to change."
+      },
+      "daily_craft": {
+        "flowing": "Your relationships may benefit from the steadier energy that comes from building routines that do not consume every available resource.",
+        "challenging": "Stress around ordinary responsibilities can spill into connection unless expectations about time, energy, and support are made more visible."
+      },
+      "roots_and_sanctuary": {
+        "flowing": "The people closest to you may feel the benefit when your private world has enough steadiness to support real presence.",
+        "challenging": "A relational pattern may bring old ideas of safety, belonging, or obligation into view, inviting a kinder and clearer boundary."
+      },
+      "pleasure_current": {
+        "flowing": "Connection can deepen through shared enjoyment, play, and the permission to be more fully yourselves together.",
+        "challenging": "A bond may expose where desire, attention, or pleasure has become harder to ask for directly."
+      },
+      "material_sovereignty": {
+        "flowing": "Shared decisions can become easier when your values and practical limits are already clear to you.",
+        "challenging": "Relationships may bring the terms of giving, receiving, and responsibility into sharper focus."
+      },
+      "quiet_current": {
+        "flowing": "People close to you may benefit from the gentler pace and deeper listening that this quieter season makes possible.",
+        "challenging": "The need for privacy or recovery may ask others to understand that stepping back is not the same as withdrawing care."
+      }
+    },
+    "closing_template": "The central invitation of this season is {closing_reframe}, one practical choice at a time.",
+    "dominant_development": {
+      "public_emergence": {
+        "flowing": "The useful work is not self-promotion for its own sake. It is choosing visible commitments that give your actual skills, standards, and long-range purpose a clear place to land.",
+        "challenging": "This does not ask you to shrink. It asks you to identify which responsibilities belong to the direction you want, and which only consume the attention needed to build it."
+      },
+      "self_in_motion": {
+        "flowing": "The movement is less about becoming someone new than about reducing the distance between your inner knowing and your outward choices. Let the details of daily life confirm the shift.",
+        "challenging": "The discomfort is not a demand for instant reinvention. It is information about where your life needs more room for self-recognition, choice, and a more truthful pace."
+      },
+      "bonds_and_boundaries": {
+        "flowing": "The work is to let cooperation remain spacious rather than vague. Shared plans become more nourishing when each person can contribute without losing their own footing or voice.",
+        "challenging": "The work is not to win an argument or carry the whole relationship alone. It is to make the terms visible enough that care can be chosen rather than silently extracted."
+      },
+      "daily_craft": {
+        "flowing": "The change may appear modest at first, yet it can alter what your week asks of you. A system that respects your energy gives every larger goal more room to develop.",
+        "challenging": "The point is not flawless discipline. It is creating conditions where ordinary responsibilities stop using every spare reserve, leaving room for the parts of life that also need you."
+      },
+      "roots_and_sanctuary": {
+        "flowing": "The private base deserves practical attention because it changes how much pressure the rest of life has to carry. What restores you is part of your capacity, not separate from it.",
+        "challenging": "The work is not to make the past disappear. It is to notice which conditions still organize your sense of safety, then build more choice into the environment around you."
+      },
+      "pleasure_current": {
+        "flowing": "What delights you may also be showing you where your vitality, confidence, and creative intelligence are most available. Let the spark receive enough care to become a real thread in your life.",
+        "challenging": "The work is not to prove that every desire is practical. It is to notice where denying yourself aliveness has become an expensive way of maintaining control or approval."
+      },
+      "material_sovereignty": {
+        "flowing": "The larger opportunity is not simply having more. It is building a relationship with what you have that gives you greater room to choose, receive, and plan from steadiness.",
+        "challenging": "The work is not to judge yourself for the pressure. It is to let the pressure identify where a value, boundary, or practical agreement needs a more honest form."
+      },
+      "quiet_current": {
+        "flowing": "The quieter work may not look productive from the outside, yet it can clarify the choices that deserve your energy. Protecting reflection is part of moving with intention, not a detour from it.",
+        "challenging": "The work is not to force certainty from a crowded inner landscape. It is to make enough room for impressions to settle, information to clarify, and your own signal to return."
+      }
+    }
+  },
+  "theme_cards": {
+    "public_emergence": {
+      "flowing": {
+        "title": "Your Public Work Finds Its Form",
+        "body": "Something in your public direction is becoming easier to name and inhabit. Work, reputation, or the way others understand your contribution may receive a steadier kind of attention. You may notice that a clear offer, finished example, or visible commitment carries farther than pushing for recognition. The invitation is to let your standards show through the work itself, and to accept forms of responsibility that actually fit the future you are building, and give your strongest work enough structure to be understood without constant explanation.",
+        "action": "Share one concrete example of the work or contribution you are ready for others to recognize."
+      },
+      "challenging": {
+        "title": "Your Public Standards Ask for Clarity",
+        "body": "Pressure around public direction is asking you to distinguish meaningful ambition from performance for its own sake. Work, reputation, or long-range plans may feel more exposed, especially where expectations have been vague or too heavy to carry alone. In practice, this can look like needing clearer scope, better documentation, or a more honest answer about what you can sustain. The invitation is to define success in terms that protect your capacity as well as your credibility, while keeping the long-term shape of your work visible to yourself.",
+        "action": "Clarify one professional expectation in writing before it quietly becomes a commitment you cannot realistically carry alone."
+      }
+    },
+    "self_in_motion": {
+      "flowing": {
+        "title": "Your Direction Opens From Within",
+        "body": "A more self-directed version of you is asking for room to move. This shows up in your choices, presentation, and the way you decide what belongs to you before seeking permission or approval. You may feel drawn toward a different pace, style, boundary, or introduction that better matches who you are now. The invitation is to follow the change that makes your daily life feel more honest, not simply more visible, letting everyday consistency carry more truth than a dramatic declaration.",
+        "action": "Choose one outward change that makes your everyday life feel more like it belongs to you."
+      },
+      "challenging": {
+        "title": "Your Identity Needs More Room",
+        "body": "Friction around identity can make an old role feel unusually tight. This may show up through discomfort with how others expect you to present yourself, or through a growing awareness that a familiar strategy no longer protects your autonomy. In practice, you may need to revise an introduction, expectation, or obligation that has become too defining. The invitation is to make room for the version of yourself that has already begun arriving, without requiring a complete explanation before you honor the change.",
+        "action": "Name one expectation about who you are that no longer deserves to organize your choices."
+      }
+    },
+    "bonds_and_boundaries": {
+      "flowing": {
+        "title": "Your Agreements Make Room to Grow",
+        "body": "Supportive movement is available through the people and agreements closest to you. Relationships may feel more spacious when both sides can state what they need without turning every difference into a threat. In practice, this can look like a useful conversation about plans, time, support, or the shape of a shared commitment. The invitation is to make care more specific, so goodwill has a structure strong enough to hold it, so each person can recognize where care is becoming dependable in real terms.",
+        "action": "Invite one clear conversation about what mutual support could look like in practice for both of you."
+      },
+      "challenging": {
+        "title": "Your Closest Bonds Need Honest Terms",
+        "body": "Tension in close relationships can reveal where care and responsibility have become uneven. This does not require a dramatic rupture, but it may ask for a more direct look at expectations, limits, and the cost of leaving important needs implied. In practice, you may notice resentment, confusion, or fatigue where an agreement needs revision. The invitation is to say what reciprocity means to you before the pattern hardens further, and to choose a conversation that makes the next terms easier to live with.",
+        "action": "State one boundary or need plainly before resentment has to speak for you later in the relationship."
+      }
+    },
+    "daily_craft": {
+      "flowing": {
+        "title": "Your Systems Begin Supporting You",
+        "body": "A more workable rhythm is becoming available in the parts of life that require regular care. Daily work, health, routines, and practical responsibilities may feel easier to organize when you stop treating every task as equally urgent. In practice, a tool, schedule adjustment, or small act of support can free more energy than a dramatic overhaul. The invitation is to keep what helps repeat itself, so improvement becomes part of ordinary life, especially when the helpful change leaves more room for rest, focus, and meaningful work.",
+        "action": "Strengthen one routine that already gives you more energy than it costs to keep going."
+      },
+      "challenging": {
+        "title": "Your Routine Needs a Truer Shape",
+        "body": "Pressure in daily life can expose a routine that depends on more energy than you actually have. Work, care, health, or maintenance may demand a clearer look at what has become unsustainable, inefficient, or quietly draining. In practice, this may mean reducing friction around one recurring task instead of trying to fix everything at once. The invitation is to build a rhythm around reality, not around the version of you that never needs rest, and to let a smaller sustainable rhythm count as real progress.",
+        "action": "Replace one draining obligation with a version that better matches your actual capacity and energy today."
+      }
+    },
+    "roots_and_sanctuary": {
+      "flowing": {
+        "title": "Your Private World Becomes Supportive",
+        "body": "The conditions behind the scenes are becoming more available as a source of steadiness. Home, family, private life, or your emotional foundation may offer a clearer sense of what helps you settle and recover. In practice, this can look like improving a room, revisiting a family pattern, or protecting a ritual that makes ordinary life feel safer. The invitation is to treat support as infrastructure, not as something you earn after everything else is finished, because a supported private life can make every other decision less expensive to carry.",
+        "action": "Make one practical change that helps your private space support the life you are building."
+      },
+      "challenging": {
+        "title": "Your Foundation Wants a Reset",
+        "body": "A private pattern may be asking for attention before you can comfortably move ahead. Home, family, belonging, or emotional safety can feel more complicated when inherited expectations no longer fit your present needs. In practice, this may look like renegotiating access, privacy, responsibilities, or the conditions that help you recover. The invitation is to define security in terms that belong to you, rather than preserving an arrangement simply because it is familiar, so the ground beneath your life becomes more chosen, practical, and dependable.",
+        "action": "Change one part of your environment or schedule that keeps your nervous system on unnecessary alert."
+      }
+    },
+    "pleasure_current": {
+      "flowing": {
+        "title": "Your Joy Has Somewhere to Go",
+        "body": "Creative energy, attraction, and genuine enjoyment have more room to move through your life. This shows up in the work you make, the people you are drawn toward, and the small experiences that return you to yourself. In practice, an invitation, project, or playful impulse may carry more meaning when you give it consistent attention. The invitation is to take delight seriously enough to let it shape a real choice, and to let that choice strengthen your confidence outside the moment of enjoyment itself.",
+        "action": "Give one source of delight a protected place in your week without demanding that it justify itself."
+      },
+      "challenging": {
+        "title": "Your Desire Refuses Old Rules",
+        "body": "Friction around pleasure can reveal where you have been negotiating against your own aliveness. Creativity, romance, play, or self-expression may feel blocked by guilt, performance pressure, or the belief that enjoyment has to be earned first. In practice, you may notice that a project or connection loses vitality when it becomes too managed. The invitation is to question the rule that makes joy feel unsafe, and to choose a form of expression that leaves you more present, without turning a living desire into another performance you have to manage.",
+        "action": "Release one old rule that makes creativity or pleasure feel like something you must earn first."
+      }
+    },
+    "material_sovereignty": {
+      "flowing": {
+        "title": "Your Resources Start Moving With You",
+        "body": "A steadier relationship with resources is becoming easier to build. Money, time, possessions, skills, and self-worth may begin to feel more connected when your choices reflect what you actually value. In practice, a practical opportunity or clearer priority can help you simplify a decision that once felt loaded. The invitation is to direct what you have toward greater stability and choice, rather than using it only to manage immediate pressure, and to let practical stability become a source of more freedom, not less.",
+        "action": "Make one grounded resource decision that supports both present comfort and greater future flexibility for you."
+      },
+      "challenging": {
+        "title": "Your Values Need Clearer Boundaries",
+        "body": "Pressure around resources can expose a gap between what you value and what your current arrangements are asking you to sustain. Money, time, energy, or self-worth may feel stretched where a habit, expense, or obligation no longer reflects your real priorities. In practice, this can look like needing firmer terms around spending, receiving, or what you give away. The invitation is to let your values become visible in the structure of your choices, so your practical life begins carrying the same truth as your stated values.",
+        "action": "Identify one expense, obligation, or exchange that no longer reflects what you truly value today."
+      }
+    },
+    "quiet_current": {
+      "flowing": {
+        "title": "Your Inner Life Offers Direction",
+        "body": "A quieter form of understanding is becoming more available beneath the surface of ordinary life. Rest, imagination, reflection, and private meaning-making may help you notice what constant activity has made harder to hear. In practice, a dream, creative impulse, or unstructured pause can reveal a useful next step without providing every answer at once. The invitation is to protect the conditions that let insight arrive, then bring one piece of it into daily life, without demanding that the insight become useful before it has had time to deepen.",
+        "action": "Protect one pocket of unstructured time and use it to notice what your mind keeps returning to."
+      },
+      "challenging": {
+        "title": "Your Inner World Needs Gentler Edges",
+        "body": "The quieter parts of life may feel unusually active, especially where you have been carrying more than you have had space to process. Rest, privacy, and emotional clarity can become difficult when other people's expectations or constant input keep filling the room. In practice, this may look like fatigue, mixed signals, or a need to step back before deciding what something means. The invitation is to reduce noise long enough to separate intuition from pressure, so clarity has a genuine chance to emerge without being hurried into an answer.",
+        "action": "Create one protected boundary around rest, privacy, or input before making a decision that needs clarity."
+      }
+    }
+  },
+  "timing_windows": {
+    "_note": "Key: natal_house → aspect_character. Use for concise timing-table copy when a selected event does not carry a more specific event-level short label. Preserve engine-supplied date_label, chronological order, intensity, and featured status.",
+    "fallback": {
+      "flowing": {
+        "theme": "A Useful Opening",
+        "best_use": "Use one available opening to move a practical priority forward without overcommitting your energy."
+      },
+      "challenging": {
+        "theme": "A Necessary Adjustment",
+        "best_use": "Name one pressure point clearly, then choose the smallest change that improves the conditions around it."
+      }
+    },
+    "1": {
+      "flowing": {
+        "theme": "A More Visible Direction",
+        "best_use": "Make one choice that lets your outward presence reflect the direction you are already moving toward."
+      },
+      "challenging": {
+        "theme": "A Shift in Self-Definition",
+        "best_use": "Release one expectation about yourself that has become too narrow to keep carrying every day."
+      }
+    },
+    "2": {
+      "flowing": {
+        "theme": "More Support Around Resources",
+        "best_use": "Put one available resource toward greater stability instead of letting it disappear into immediate pressure."
+      },
+      "challenging": {
+        "theme": "A Clearer Value Decision",
+        "best_use": "Review one exchange of money, time, or energy and bring it closer to what you actually value."
+      }
+    },
+    "3": {
+      "flowing": {
+        "theme": "A Useful Conversation Opens",
+        "best_use": "Follow up on one conversation, idea, or local connection while the exchange still has momentum."
+      },
+      "challenging": {
+        "theme": "Information Needs Sorting",
+        "best_use": "Ask one precise question before responding to information that feels incomplete or emotionally charged."
+      }
+    },
+    "4": {
+      "flowing": {
+        "theme": "More Room to Settle",
+        "best_use": "Make one change at home or in your schedule that gives your private life more actual support."
+      },
+      "challenging": {
+        "theme": "Your Foundation Needs Care",
+        "best_use": "Address one private stressor before it becomes the hidden driver of every outward decision."
+      }
+    },
+    "5": {
+      "flowing": {
+        "theme": "Creative Energy Has Momentum",
+        "best_use": "Give one creative, romantic, or playful impulse enough structure to become more than a passing mood."
+      },
+      "challenging": {
+        "theme": "Desire Asks for Honesty",
+        "best_use": "Notice one rule that keeps joy at a distance and test a kinder alternative."
+      }
+    },
+    "6": {
+      "flowing": {
+        "theme": "A More Workable Rhythm",
+        "best_use": "Strengthen one practical system that gives back more energy than it requires to maintain."
+      },
+      "challenging": {
+        "theme": "Daily Pressure Shows Its Cost",
+        "best_use": "Reduce one repeating source of friction before adding another task, tool, promise, or new responsibility."
+      }
+    },
+    "7": {
+      "flowing": {
+        "theme": "Support Becomes More Specific",
+        "best_use": "Use one conversation to turn goodwill into a clear agreement about time, care, or contribution."
+      },
+      "challenging": {
+        "theme": "An Agreement Needs Revision",
+        "best_use": "Say one honest thing about reciprocity before the imbalance has to become an argument."
+      }
+    },
+    "8": {
+      "flowing": {
+        "theme": "Trust Finds Better Terms",
+        "best_use": "Clarify one shared arrangement so support can remain generous without becoming vague or unequal."
+      },
+      "challenging": {
+        "theme": "The Deeper Terms Appear",
+        "best_use": "Name one hidden expectation around trust, money, privacy, or care before it grows heavier."
+      }
+    },
+    "9": {
+      "flowing": {
+        "theme": "Your Perspective Widens",
+        "best_use": "Take one concrete step toward learning, travel, study, or inquiry that expands your actual horizon."
+      },
+      "challenging": {
+        "theme": "A Bigger Question Needs Grounding",
+        "best_use": "Check one practical requirement before committing to an idea that feels exciting but still undefined."
+      }
+    },
+    "10": {
+      "flowing": {
+        "theme": "Public Momentum Builds",
+        "best_use": "Take one visible step that lets others understand the scope of what you are ready to offer."
+      },
+      "challenging": {
+        "theme": "Standards Come Into Focus",
+        "best_use": "Clarify one responsibility, deadline, or role before it asks more of you than it can support."
+      }
+    },
+    "11": {
+      "flowing": {
+        "theme": "The Right People Gather",
+        "best_use": "Follow one promising connection or collective idea that makes a long-range goal more practical."
+      },
+      "challenging": {
+        "theme": "Community Needs Discernment",
+        "best_use": "Step back from one group demand that adds noise without supporting your actual future."
+      }
+    },
+    "12": {
+      "flowing": {
+        "theme": "Quiet Insight Is Available",
+        "best_use": "Protect one unstructured pause and let it show you what needs attention before you act."
+      },
+      "challenging": {
+        "theme": "Noise Needs Reducing",
+        "best_use": "Create one boundary around input, rest, or privacy before deciding what the situation means."
+      }
+    }
+  },
+  "featured_event": {
+    "_note": "Turning-point wrapper. Prefer the chosen event's existing transit/eclipse/ingress/station block as optional body_3 when it adds specificity without repeating body_1. Assemble body_1 from domain_core[natal_house], body_2 from character_adjustment[aspect_character], and use the domain action. body_3 may be null.",
+    "fallback": {
+      "title": "A Moment Asking for Attention",
+      "body_1": "Something in the season is gathering enough weight to deserve a slower look. The point is not to force a conclusion, but to notice what has become too clear to keep treating as background noise.",
+      "action": "Choose one practical response that creates more room to understand the situation before you commit further."
+    },
+    "domain_core": {
+      "1": {
+        "title": "A Clearer Choice About Yourself",
+        "body_1": "Your sense of identity, presence, or direction comes into sharper focus here. A choice about how you show up may feel more consequential because it asks you to act from who you are becoming rather than from an older role. It becomes especially meaningful when you let the choice alter a practical detail of everyday life.",
+        "action": "Make one outward choice that reflects your present direction instead of an expectation you have already outgrown in daily life."
+      },
+      "2": {
+        "title": "A Practical Question of Value",
+        "body_1": "Resources, self-worth, and the terms of what you sustain come into focus. A financial or energy-related decision may matter because it reveals whether your current choices are supporting security or only relieving immediate pressure. The deeper question is what kind of security leaves you with more room to choose.",
+        "action": "Review one resource decision and choose the option that creates more stability without abandoning your real needs over the next few months."
+      },
+      "3": {
+        "title": "The Conversation Beneath the Conversation",
+        "body_1": "Information, communication, and your immediate environment ask for closer attention. A message, question, or local development may become important because it changes how you understand the practical choices in front of you. The most useful response comes from slowing down enough to separate facts from assumptions.",
+        "action": "Ask one clarifying question before making a decision based on incomplete information or a first impression that affects your next step."
+      },
+      "4": {
+        "title": "Your Foundation Comes Into View",
+        "body_1": "Home, belonging, privacy, or emotional security reaches a point where the underlying conditions matter more than appearances. A private decision can carry wider consequences when it changes the support beneath the rest of your life. Give the decision enough time to reveal what truly helps you feel settled.",
+        "action": "Address one private need directly so your foundation can support the choices you are making elsewhere without putting it off again."
+      },
+      "5": {
+        "title": "A More Honest Yes to Joy",
+        "body_1": "Creativity, pleasure, romance, or self-expression reaches a point of greater truth. An invitation or desire may matter because it asks whether you can let something meaningful be alive before you know exactly what it becomes. The more you let curiosity lead, the easier it becomes to recognize what deserves sustained attention.",
+        "action": "Give one creative or joyful impulse a real place in your schedule before practicality talks you out of it."
+      },
+      "6": {
+        "title": "The Rhythm of Daily Life Needs Revision",
+        "body_1": "Daily work, health, routines, and capacity reach a point where the system itself deserves attention. A recurring frustration may become useful information about what needs to change for ordinary life to feel more workable. A modest revision can matter because it changes how much energy remains for everything else.",
+        "action": "Change one repeating part of your routine so it requires less effort to support your actual life this week."
+      },
+      "7": {
+        "title": "The Terms of Connection Become Clear",
+        "body_1": "A close relationship or agreement asks for more explicit attention. What matters here is not perfect harmony, but whether care, responsibility, and autonomy have enough clarity to remain mutual. The decision becomes clearer when both people can name what they can genuinely offer without losing their own direction.",
+        "action": "Name one need or expectation directly enough that the relationship has a real chance to respond with care."
+      },
+      "8": {
+        "title": "The Deeper Terms Need Naming",
+        "body_1": "Trust, shared resources, privacy, or emotional exchange reaches a point where what has been implied may need to become visible. The moment can be productive when honest terms replace silent assumptions. The choice becomes more workable when each person can speak plainly about need and responsibility.",
+        "action": "Make one shared arrangement clearer before generosity, fear, or obligation starts carrying more than it can hold between everyone involved."
+      },
+      "9": {
+        "title": "A Larger Direction Takes Shape",
+        "body_1": "A question of meaning, learning, travel, belief, or long-range direction moves closer to action. The opportunity lies in allowing a broader perspective to change something practical, not simply to remain an inspiring idea. The difference lies in whether the new perspective changes how you move through ordinary life.",
+        "action": "Take one concrete step that turns a larger question into a lived learning experience in the months ahead."
+      },
+      "10": {
+        "title": "Your Public Direction Reaches a Threshold",
+        "body_1": "Work, reputation, authority, or long-term direction reaches a point where your contribution needs a clearer form. Recognition or pressure may matter because it reveals what level of responsibility genuinely fits your next chapter. The most useful opportunity is one that lets you be seen without abandoning the conditions you need to deliver well.",
+        "action": "Choose one visible professional step that demonstrates the standard you are prepared to maintain over the long term."
+      },
+      "11": {
+        "title": "Your Future Needs the Right People",
+        "body_1": "Community, friendship, collective work, or a future plan moves into sharper relief. A connection or invitation may prove significant because it shows which forms of belonging make your larger aims more possible. What matters is choosing connection that expands possibility without asking you to surrender your own priorities.",
+        "action": "Invest in one relationship or collective effort that supports the future you actually want to build with your time and attention."
+      },
+      "12": {
+        "title": "The Quieter Truth Comes to Surface",
+        "body_1": "Rest, privacy, inner life, and the patterns beneath visible activity ask for attention. A feeling, dream, or need for distance may matter because it reveals what becomes clearer when external noise has less control over your attention. A little more space around the decision can show which need has been waiting beneath the surface.",
+        "action": "Protect one period of quiet long enough to hear what your inner life has been trying to communicate."
+      }
+    },
+    "character_adjustment": {
+      "flowing": "Conditions around this issue may be more receptive than usual, making it easier to recognize support, choose a useful opening, or give a long-held priority clearer form. Use the ease deliberately; what moves well now can become a durable part of your life when it receives a practical next step.",
+      "challenging": "The pressure around this issue may reveal a gap between what you want and what the current arrangement can actually hold. Treat the friction as information rather than proof that you have failed. A clearer boundary, smaller scope, or more honest conversation can change the conditions around the choice."
+    }
+  },
+  "guidance": {
+    "_note": "Compose each guidance card as theme_focus[dominant_theme][card] + character_adjustment[dominant_character][card]. The result targets roughly 35–55 words and is client-facing.",
+    "fallback": {
+      "professional": "Choose the next professional or creative step that has enough structure to survive ordinary life.",
+      "relationships": "Let your closest connections know what kind of support is useful instead of relying on guesswork.",
+      "capacity": "Protect the part of your schedule that keeps your energy from becoming an afterthought."
+    },
+    "theme_focus": {
+      "public_emergence": {
+        "professional": "Make the work legible: clarify what you offer, what standard you meet, and what kind of role has room for your real strengths.",
+        "relationships": "Let trusted people understand the direction your work is taking, especially where their support can become more specific.",
+        "capacity": "Build visibility around a pace you can maintain, so opportunity does not depend on disappearing from your own life."
+      },
+      "self_in_motion": {
+        "professional": "Choose work and creative opportunities that let you act from your current identity rather than from a role that has become too small.",
+        "relationships": "Give close connections a chance to meet the version of you that is emerging, without overexplaining every change.",
+        "capacity": "Treat self-definition as an energy practice: fewer performative obligations can leave more room for actual presence."
+      },
+      "bonds_and_boundaries": {
+        "professional": "Use collaboration selectively, choosing agreements where expectations, credit, and contribution can be made clear from the beginning.",
+        "relationships": "Name the mutuality you need, then pay attention to whether care becomes visible in action as well as intention.",
+        "capacity": "Protect enough time and energy for relationships that nourish you, rather than spending it all managing preventable misunderstandings."
+      },
+      "daily_craft": {
+        "professional": "Improve the system before increasing the workload; a better process can create more room for meaningful output than another push.",
+        "relationships": "Share the practical reality of your capacity, so people close to you are not left interpreting limits as a lack of care.",
+        "capacity": "Choose repeatable care over ideal routines, especially where a smaller rhythm could prevent a larger crash."
+      },
+      "roots_and_sanctuary": {
+        "professional": "Let your work plans account for the conditions that help you recover, concentrate, and feel safe enough to take meaningful risks.",
+        "relationships": "Make room for connections that feel like refuge, and reduce the access of patterns that keep turning belonging into obligation.",
+        "capacity": "Treat home, privacy, and restoration as real requirements, not rewards that arrive after every other demand is met."
+      },
+      "pleasure_current": {
+        "professional": "Follow the project or medium that gives you more energy back, especially where enjoyment points toward a sustainable creative direction.",
+        "relationships": "Let affection, play, and curiosity become forms of information about which connections make you feel more alive.",
+        "capacity": "Protect joy before exhaustion decides it is optional; delight often restores a part of you that discipline alone cannot reach."
+      },
+      "material_sovereignty": {
+        "professional": "Direct your effort toward work that improves both present stability and future choice, rather than only solving the nearest financial pressure.",
+        "relationships": "Make the terms around giving, receiving, and shared responsibilities visible enough that care does not become resentment.",
+        "capacity": "Spend time, money, and energy in ways that reduce chronic strain instead of repeatedly purchasing temporary relief."
+      },
+      "quiet_current": {
+        "professional": "Give ideas enough quiet to mature before demanding that they become public output, especially where reflection improves the quality of your next move.",
+        "relationships": "Explain the need for privacy or recovery as a form of care for the relationship, not as a failure to stay connected.",
+        "capacity": "Protect low-input time as part of your working system, because clarity often depends on having less to process at once."
+      }
+    },
+    "character_adjustment": {
+      "flowing": {
+        "professional": "Supportive conditions make one concrete next step more useful than waiting for total certainty. Let visible progress guide the next move.",
+        "relationships": "Use the available goodwill to turn care into a clear and sustainable pattern. Make each person’s contribution visible.",
+        "capacity": "Keep the helpful adjustment simple enough that it can become part of ordinary life. A modest rhythm can protect the gains already available."
+      },
+      "challenging": {
+        "professional": "Reduce the scope where needed, so the work remains credible without asking you to overextend. Durable progress matters more than an impressive temporary pace.",
+        "relationships": "Let directness arrive before strain has to carry the message for you. Clarity now can prevent avoidable misunderstanding.",
+        "capacity": "Choose the smallest honest adjustment that returns some energy to your actual life. Preserving capacity is a valid form of forward motion."
+      }
+    }
+  },
+  "closing_integration": {
+    "_note": "Compose closing_integration as theme_core[dominant_theme] + character_finish[dominant_character]. The result targets 80–120 words and should not repeat opening_snapshot wording.",
+    "fallback": "The larger movement of this season is toward a more usable relationship with what matters. You do not need to resolve every question at once in order to recognize which patterns deserve continued care. Notice what becomes steadier when you simplify, what grows clearer when you name it, and what asks for more room before it can develop. Let the next practical choice be guided by what supports both your values and your actual capacity.",
+    "theme_core": {
+      "public_emergence": "This season asks you to let public direction become more deliberate. The work is not only to be seen, but to decide what kind of visibility supports the future you want to build. As responsibilities, opportunities, or expectations take shape, keep returning to the difference between an impressive role and a sustainable one. Your contribution becomes stronger when it reflects a standard you can live with, not merely a demand you can meet once.",
+      "self_in_motion": "This season centers on the relationship between identity and direction. Change becomes more useful when it is not performed for an audience, but allowed to alter the everyday choices that define your life. You may not have every word for what is shifting yet, and you do not need to. Pay attention to the decisions that make your body, schedule, and relationships feel more congruent with who you are becoming.",
+      "bonds_and_boundaries": "This season brings relationships and agreements into a more honest light. The goal is not to create perfect harmony or to make every need identical; it is to recognize where mutuality can become more real. Let care be practical, let boundaries be legible, and let the terms of shared responsibility be discussed before they become invisible burdens. What becomes clearer now can support a more durable form of closeness.",
+      "daily_craft": "This season teaches through the ordinary systems that carry your life. The deeper question is not whether you can do more, but whether your routines make room for the life you are trying to have. Pay attention to what repeatedly drains you, what quietly helps, and what becomes possible when a small adjustment is allowed to stay in place. A workable rhythm can become a form of freedom.",
+      "roots_and_sanctuary": "This season returns you to the conditions beneath visible achievement. Home, privacy, belonging, and emotional safety are not separate from your larger aims; they determine how much of those aims you can actually inhabit. Let the private foundation receive the same thoughtfulness you give to outward commitments. The choices that make your life more livable from the inside can change what becomes possible everywhere else.",
+      "pleasure_current": "This season asks you to take aliveness seriously. Creativity, enjoyment, affection, and play are not distractions from the work of building a life; they can reveal which pursuits return you to yourself. Notice where delight becomes more honest, where expression gains courage, and where an old rule about deserving pleasure begins to lose its authority. A life with room for joy has more energy available for everything else.",
+      "material_sovereignty": "This season clarifies the relationship between resources and self-respect. The practical decisions in front of you may be small, but they can reveal what you are willing to sustain, what you are ready to receive, and what costs too much to keep normalizing. Let your values appear in the arrangements you make around time, money, energy, and support. Stability becomes more meaningful when it increases both security and choice.",
+      "quiet_current": "This season works beneath the level of immediate answers. Reflection, rest, imagination, and the need for privacy may be carrying information that a busier pace would overlook. You do not need to turn every feeling into a conclusion, but you can honor the conditions that let deeper understanding arrive. Let the quieter parts of life inform your choices, especially where constant input has made your own signal harder to hear."
+    },
+    "character_finish": {
+      "flowing": "Use the support that is available, not as a reason to rush, but as an opening to make one lasting choice in your own favor.",
+      "challenging": "Let the pressure refine your terms rather than define your worth; a more honest structure can emerge from the adjustment you are willing to make."
+    }
+  }
+}

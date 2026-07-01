@@ -1,0 +1,66 @@
+{
+  "_note": "Key: dominant_planet → aspect_character. 10×2=20 aspect blocks, plus ten planet fallbacks, one general fallback, and six eclipse prefix blocks. ~70 words.",
+  "fallback": "The weeks ahead favor observation before overcommitment. Daily responsibilities and wider plans may ask for attention at the same time, making small adjustments more useful than a dramatic reset. Notice where energy is going, what keeps recurring, and which tasks can be simplified. A flexible plan provides enough direction to act without pretending every variable is already known.",
+  "Jupiter": {
+    "flowing": "Jupiter brings room to explore, learn, or connect beyond the usual range. Support may appear through a conversation, invitation, or resource that makes a larger goal feel more reachable. Let enthusiasm open the door, then choose a pace that keeps the opportunity sustainable. Growth has more value when it strengthens existing capacities instead of turning every possibility into another obligation.",
+    "challenging": "An urge to expand may run ahead of available time, money, or attention. The friction can show where an appealing plan needs clearer limits before it becomes burdensome. Scale back without dismissing the aspiration itself. A focused version of the idea may prove more rewarding than trying to do everything at once.",
+    "fallback": "Jupiter heightens the wish for perspective, movement, and meaning. Learning something new, meeting people outside the usual circle, or revisiting a larger aim can refresh the month. Choose experiences that leave you with usable insight rather than simply more activity."
+  },
+  "Saturn": {
+    "flowing": "Saturn supports steady follow-through. A responsibility that once felt heavy may become easier to manage when it is broken into repeatable steps, and experienced guidance can be particularly useful. The month favors decisions that are modest enough to keep. Progress is likely to show through reliability rather than spectacle.",
+    "challenging": "Pressure around commitments may expose a weak link in a routine, agreement, or timeline. Rather than interpreting the delay as failure, use it to identify what needs repair or clearer ownership. Reduce the load where possible, then give the remaining work a realistic structure. The effort invested here can prevent a longer complication later.",
+    "fallback": "Saturn asks for attention to maintenance: paperwork, boundaries, scheduling, health routines, budgets, and the small acts that keep larger plans viable. The pace may feel slower, but consistency has a calming effect. A workable system is more useful than an ambitious one that cannot survive the week."
+  },
+  "Uranus": {
+    "flowing": "Uranus introduces a useful variation in the usual pattern. A new method, chance encounter, or change of route can offer a perspective that routine has not provided. Give experimentation a defined space rather than requiring it to solve everything at once. The month favors discoveries that increase choice and reduce unnecessary friction.",
+    "challenging": "A disruption may make it clear that an existing plan has little room to adapt. Information can arrive quickly, and the first response may not be the final one. Keep the essentials steady while testing a different approach around the edges. Flexibility is most helpful when it protects what matters rather than creating change for its own sake.",
+    "fallback": "Uranus raises the value of curiosity. Repeated methods may feel less effective, while a small experiment could reveal a better way to organize time, communicate, or solve a practical problem. Leave some room in the schedule for the unexpected."
+  },
+  "Neptune": {
+    "flowing": "Neptune softens the month’s edges and can make imagination, empathy, and quiet reflection more available. Creative work or time away from constant input may restore a sense of proportion. Let intuition contribute to your choices, especially when it points toward rest or a gentler pace. Practical details still deserve a place beside the feeling.",
+    "challenging": "Mixed signals or vague expectations can make a situation harder to read. This is a good period for asking what has actually been agreed, what remains uncertain, and what information still needs confirmation. Hope is not a substitute for clarity, though it can help you stay open while the facts come into focus.",
+    "fallback": "Neptune heightens sensitivity to mood, setting, and symbolism. Music, art, solitude, or a meaningful conversation may offer more restoration than usual. Choose forms of escape that bring you back to yourself, then anchor the insight in one practical next step."
+  },
+  "Pluto": {
+    "flowing": "Pluto supports a close look at what has been operating beneath the surface. A pattern involving trust, money, attachment, or self-protection may become easier to name, which creates room for a more honest response. Small decisions can carry real weight when they interrupt an old cycle. Put energy toward the change that returns agency rather than merely rearranging appearances.",
+    "challenging": "A conflict over control, privacy, or responsibility may reveal a deeper issue than the immediate disagreement suggests. Avoid turning the moment into a contest of endurance. Clarify what is yours to decide, what needs to be discussed, and what cannot continue under the same terms. Directness can reduce the pressure when it is paired with care.",
+    "fallback": "Pluto gives the month a theme of revision beneath the visible surface. You may notice where an old agreement, coping strategy, or attachment is costing more than it returns. Naming the pattern is a meaningful first step. The next is choosing a response that changes the conditions that keep it alive."
+  },
+  "Mars": {
+    "flowing": "Mars supplies initiative and a clearer sense of where to place effort. A task that has been waiting may move quickly once you begin, especially when the goal is concrete. Use the momentum for action that leaves something finished or better defined. Strong energy benefits from a chosen target.",
+    "challenging": "Frustration can rise when progress is blocked or a boundary has been crossed. The reaction may contain useful information, but it does not need to set the entire agenda. Give the energy a practical outlet first, then return to the conversation or decision with a clearer strategy. Timing matters as much as force.",
+    "fallback": "Mars increases drive, impatience, and the wish to move something forward. Independent work, physical activity, and direct problem-solving can use the energy well. Pace yourself around projects that invite an early sprint; endurance may matter more than speed."
+  },
+  "Sun": {
+    "flowing": "The Sun brings a sense of alignment between intention and expression. Recognition, leadership, or a chance to share your work may arrive with less resistance than usual. Let visibility be useful rather than performative. When your choices reflect what matters to you, confidence tends to follow without being forced.",
+    "challenging": "A conflict between personal priorities and outside expectations may ask for clearer self-definition. There is little benefit in either shrinking back or making every disagreement a referendum on your worth. State what you need, consider the context, and adjust the method where it helps. Your direction can remain intact while the approach evolves.",
+    "fallback": "The Sun emphasizes identity, purpose, and the places where you want to be more fully present. A small act of self-expression can shift the tone of the month, particularly when it reconnects you with a capability you have been underusing. Make room for what feels genuinely yours."
+  },
+  "Moon": {
+    "flowing": "The Moon supports connection with the conditions that help you feel settled: familiar people, nourishing routines, a quiet space, or time to process before responding. Emotional needs may be easier to recognize and share. Let comfort be a resource, not a reason to stop growing. A steadier inner base can make outward choices easier.",
+    "challenging": "Feelings may move faster than the circumstances around them, especially when old sensitivities are touched. Notice the need beneath the reaction before deciding what action is appropriate. A pause can create enough distance to distinguish a present concern from a past echo. Care for the feeling without making it carry the whole story.",
+    "fallback": "The Moon brings attention to home, belonging, memory, and emotional rhythm. Your capacity may vary more than usual, so leave room for restoration and familiar forms of support. The month is easier to navigate when private needs are treated as real information."
+  },
+  "Mercury": {
+    "flowing": "Mercury supports clear thinking, useful exchanges, and the ability to connect details into a workable plan. A conversation or bit of information may resolve a problem that has felt more complicated than it is. Write down the key points while they are fresh. Good communication can turn a loose idea into a next step.",
+    "challenging": "Details may be missed, messages may cross, or a decision may need to be revisited once new information appears. Slow the process enough to check names, dates, expectations, and the assumptions underneath them. A clarifying question can save more time than a quick answer. Precision is the month’s quiet advantage.",
+    "fallback": "Mercury places emphasis on learning, organizing, correspondence, and the stories you are telling yourself about a situation. Curiosity is useful, especially when it leads to better questions. Sort what is known from what is inferred before reaching a conclusion."
+  },
+  "Venus": {
+    "flowing": "Venus supports ease in connection, pleasure, and the choices that make daily life feel more hospitable. An exchange may become warmer, a resource may arrive through relationship, or a creative impulse may ask for room. Let enjoyment be part of the month’s design. Appreciation often grows when it is expressed plainly.",
+    "challenging": "A difference in values, effort, or expectations may become harder to ignore in a relationship or financial arrangement. Politeness alone cannot resolve a pattern that no longer feels mutual. Name the imbalance with care, then consider what would make the agreement more equitable. Honest adjustment can protect affection rather than diminish it.",
+    "fallback": "Venus turns attention toward values, beauty, comfort, money, and the people whose company changes the texture of a day. Small gestures of care can be restorative, especially when the month has felt overly functional. Choose what genuinely replenishes you rather than what merely looks pleasing from the outside."
+  },
+  "eclipse_prefix": {
+    "solar": {
+      "landmark": "A solar eclipse marks a beginning whose full shape may take time to emerge. A new direction, role, or priority can become visible through a change in circumstances. Notice what is asking to be initiated, then give it space to develop before demanding certainty.",
+      "significant": "The solar eclipse draws attention to a seed point in the story. A choice, invitation, or renewed intention may carry further than it first appears. Stay attentive to what gains momentum in the weeks around it; early signals can reveal where growth wants to occur.",
+      "active": "The solar eclipse activates a fresh current in the month. Events may move quickly enough to require a response before every detail is known. Take the next clear step, while allowing the larger direction to unfold through experience."
+    },
+    "lunar": {
+      "landmark": "A lunar eclipse brings a pattern, feeling, or outcome into fuller view. Something that has been developing in the background may reach a point where acknowledgement changes what happens next. Let the information settle before deciding what closure or adjustment is appropriate.",
+      "significant": "The lunar eclipse highlights what has reached a threshold. A relationship, habit, commitment, or emotional story may show its results more clearly than before. The month can support release where an attachment no longer fits the life you are building.",
+      "active": "The lunar eclipse concentrates attention on a matter that needs to be seen plainly. A turning point may arrive through a conversation, realization, or change in emotional weather. Respond to what is real, and let conclusions form at their own pace."
+    }
+  }
+}

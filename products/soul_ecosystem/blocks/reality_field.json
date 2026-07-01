@@ -1,0 +1,25 @@
+{
+  "_note": "Reality Field (soul_ecosystem). Key: archetype_key → tier (dominant/present/subtle). Selector call: select_block('soul_ecosystem', 'reality_field', archetype_key, tier_key). SUBTLE tier routes to root 'subtle' key only. Archetypes: the_world_weaver, the_trickster_architect, the_disruptor, the_storyteller.",
+  "subtle": "There is a quiet reality-shaping current in you. It may not be the loudest force in your life, but you still notice how people, stories, and systems fit together—and where they could become more alive.",
+  "fallback": "Your reality field is still taking shape. You are learning which worlds, systems, and stories are truly yours to enter, change, or build.",
+  "the_world_weaver": {
+    "dominant": "You do not just make things; you create worlds people can inhabit. Your strongest gift is seeing the hidden threads between people, ideas, and possibilities, then weaving them into something magnetic, useful, and alive. Others often feel held inside the ecosystems you build because your work gives connection a real structure.",
+    "present": "You have a natural instinct for connecting the dots. When you are engaged, you can turn separate people, ideas, or projects into a living network that feels more coherent than the pieces did alone. Your work becomes strongest when you trust that your way of linking things is part of the craft.",
+    "fallback": "Your worldbuilding gift is emerging through patience. Notice the patterns you return to, the people you naturally connect, and the systems you keep imagining. Those threads are asking to be woven."
+  },
+  "the_trickster_architect": {
+    "dominant": "You are built to question structures that have gone stale. Where other people see confusion, you can sense the moment before a new form becomes possible. Your genius is not chaos for its own sake; it is making room for a truer, more imaginative arrangement to appear.",
+    "present": "You have a talent for interrupting assumptions and revealing better options. You may be the person who asks the question no one else thought to ask, then helps a group see that the old rules were never the only rules. Your disruption works best when it stays connected to a real future-facing vision.",
+    "fallback": "Your relationship with uncertainty is becoming a creative resource. You do not need every answer before you begin; sometimes the opening appears only after you loosen your grip on the old structure."
+  },
+  "the_disruptor": {
+    "dominant": "You move between worlds and bring the future with you. Your presence unsettles fixed thinking because you notice connections across boundaries that other people treat as permanent. You are often ahead of the room—not because you reject belonging, but because you keep discovering new ways for people and ideas to meet.",
+    "present": "You are a natural translator of what is changing. You can carry ideas between different groups, languages, or frameworks and help people see what they were missing. Your impact grows when you let your mobility become a service rather than a reason to stay detached.",
+    "fallback": "Your difference is not a flaw to smooth away. Pay attention to the places where you naturally cross boundaries, connect unlikely people, or spot the next direction before it is obvious."
+  },
+  "the_storyteller": {
+    "dominant": "You give meaning a shape people can remember. Your strongest reality-shaping power is narrative: you can name what is happening, illuminate the pattern underneath it, and make a scattered experience feel like part of a larger story. People trust your version because you help them see what matters.",
+    "present": "You carry a clear instinct for framing experience. You can turn a moment, idea, or feeling into language that helps others recognize themselves. Your voice becomes especially powerful when you choose clarity over performance and tell the truth of the story as you see it.",
+    "fallback": "Your voice is gathering its material. The stories that stay with you, the truths you repeat, and the questions you cannot stop asking are all clues to the narrative work you are here to do."
+  }
+}

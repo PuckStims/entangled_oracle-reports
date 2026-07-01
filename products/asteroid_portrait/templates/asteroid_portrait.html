@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Asteroid Portrait · {{ querent_name }}</title>
+  <style>{{ shared_report_css | safe }}</style>
+  <style>
+    :root {
+      --bg:        {{ palette.bg }};
+      --surface:   {{ palette.surface }};
+      --surface-2: {{ palette.surface_2 }};
+      --border:    {{ palette.border }};
+      --text:      {{ palette.text }};
+      --muted:     {{ palette.muted }};
+      --subtle:    {{ palette.subtle }};
+      --color-identity:      {{ palette.identity }};
+      --color-growth:        {{ palette.growth }};
+      --color-relationships: {{ palette.relationships }};
+      --color-creativity:    {{ palette.creativity }};
+      --color-vocation:      {{ palette.vocation }};
+      --color-home:          {{ palette.home }};
+      --color-spiritual:     {{ palette.spiritual }};
+      --accent:  {{ palette.accent }};
+      --purple:  {{ palette.purple }};
+      --gold:    {{ palette.gold }};
+      --rose:    {{ palette.rose }};
+      --ember:   {{ palette.ember }};
+      --blue:    {{ palette.blue }};
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Georgia', serif;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 48px 24px 72px;
+      line-height: 1.8;
+    }
+    header { text-align: center; margin-bottom: 48px; }
+    .name {
+      font-size: 1.8rem;
+      color: var(--accent);
+      letter-spacing: 4px;
+      text-transform: uppercase;
+    }
+    .report-title {
+      font-size: 0.78rem;
+      color: var(--muted);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-top: 8px;
+    }
+    .meta { font-size: 0.72rem; color: var(--subtle); margin-top: 4px; }
+    hr { border: none; border-top: 1px solid var(--border); margin: 36px 0; }
+    /* Overview */
+    .overview { font-size: 1rem; color: var(--text); margin-bottom: 48px; }
+    /* Dimension cards */
+    .dimension { margin-bottom: 40px; }
+    .dimension-name {
+      font-size: 0.68rem;
+      color: var(--muted);
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .archetype-name {
+      font-size: 1.3rem;
+      color: var(--purple);
+      margin-bottom: 14px;
+      font-weight: normal;
+    }
+    .tier-dominant .block { font-size: 0.96rem; }
+    .tier-present  .block { font-size: 0.92rem; color: #C0C0CC; }
+    .tier-subtle   .block { font-size: 0.84rem; color: var(--subtle); font-style: italic; }
+    /* Synthesis */
+    .synthesis {
+      margin-top: 48px;
+      padding: 32px 28px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-top: 2px solid var(--purple);
+      border-radius: 8px;
+    }
+    .synthesis-label {
+      font-size: 0.68rem;
+      color: var(--purple);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .synthesis .block { font-size: 0.96rem; }
+    footer {
+      text-align: center;
+      font-size: 0.68rem;
+      color: #333;
+      margin-top: 60px;
+      letter-spacing: 1px;
+    }
+    @media print {
+      body { background: #fff; color: #111; }
+      .name { color: #000; }
+      .report-title, .meta { color: #666; }
+      .dimension-name { color: #888; }
+      .archetype-name { color: #333; }
+      .tier-present .block { color: #444; }
+      .tier-subtle .block { color: #888; }
+      .synthesis { background: #f5f5f5; border-color: #ccc; }
+      .synthesis-label { color: #666; }
+      footer { color: #aaa; }
+    }
+  </style>
+</head>
+<body class="report-shell report-asteroid-portrait" data-palette="{{ palette_name | default('vibrant') }}">
+
+  <header>
+    <div class="name">{{ querent_name }}</div>
+    <div class="report-title">Asteroid Portrait</div>
+    <div class="meta">{{ generation_date }}{% if generation_location %} · {{ generation_location }}{% endif %}</div>
+    <div class="meta">{{ report_brand_line | default('Entangled Oracle · Ksisti-Puck LLC') }}</div>
+  </header>
+
+  <!-- Portrait Overview -->
+  <div class="overview">{{ portrait_overview_block }}</div>
+
+  <hr>
+
+  <!-- The Dimensions — ordered by score, dynamic per chart -->
+  {% for section in dimension_sections %}
+  <div class="dimension tier-{{ section.tier | lower }}">
+    <div class="dimension-name">{{ section.name }}</div>
+    {% if section.archetype %}
+    <div class="archetype-name">{{ section.archetype }}</div>
+    {% endif %}
+    <div class="block">{{ section.block }}</div>
+  </div>
+  {% if not loop.last %}<hr>{% endif %}
+  {% endfor %}
+
+  <!-- Portrait Synthesis -->
+  <div class="synthesis">
+    <div class="synthesis-label">Portrait Synthesis</div>
+    <div class="block">{{ portrait_synthesis_block }}</div>
+  </div>
+
+  <footer>{{ report_footer_text | default('Entangled Oracle · Ksisti-Puck LLC · Generated ' ~ generation_date) }} <span class="report-page-number"></span></footer>
+
+</body>
+</html>

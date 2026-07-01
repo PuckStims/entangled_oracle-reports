@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Soul Ecosystem · {{ querent_name }}</title>
+  <style>{{ shared_report_css | safe }}</style>
+  <style>
+    :root {
+      /* Base */
+      --bg:        {{ palette.bg }};
+      --surface:   {{ palette.surface }};
+      --surface-2: {{ palette.surface_2 }};
+      --border:    {{ palette.border }};
+      --text:      {{ palette.text }};
+      --muted:     {{ palette.muted }};
+      --subtle:    {{ palette.subtle }};
+
+      /* Semantic color tokens */
+      --color-identity:      {{ palette.identity }};
+      --color-growth:        {{ palette.growth }};
+      --color-relationships: {{ palette.relationships }};
+      --color-creativity:    {{ palette.creativity }};
+      --color-vocation:      {{ palette.vocation }};
+      --color-home:          {{ palette.home }};
+      --color-spiritual:     {{ palette.spiritual }};
+
+      /* Legacy aliases for backward compatibility */
+      --accent:  {{ palette.accent }};
+      --purple:  {{ palette.purple }};
+      --gold:    {{ palette.gold }};
+      --rose:    {{ palette.rose }};
+      --ember:   {{ palette.ember }};
+      --blue:    {{ palette.blue }};
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: Georgia, serif;
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+      line-height: 1.8;
+    }
+
+    p,
+    li,
+    div,
+    span,
+    strong,
+    em,
+    h1,
+    h2,
+    h3,
+    h4 {
+      overflow-wrap: break-word;
+      word-break: normal;
+      hyphens: auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 46px;
+    }
+
+    .name {
+      font-size: 1.8rem;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+    }
+    [data-palette="vibrant"] .name { color: var(--accent); }
+    [data-palette="muted"]   .name { color: #1A1410; }
+
+    .report-title {
+      font-size: 0.78rem;
+      color: var(--muted);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-top: 8px;
+    }
+
+    .meta {
+      font-size: 0.72rem;
+      color: var(--subtle);
+      margin-top: 4px;
+    }
+    .natal-ref-label { font-size: 0.6rem; letter-spacing: 2px; text-transform: uppercase; opacity: 0.55; margin-top: 10px; }
+
+    .time-status {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 3px 9px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      font-size: 0.62rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .time-status.exact { color: var(--accent); border-color: var(--accent); }
+    .time-status.unknown { color: var(--subtle); border-color: var(--border); }
+
+    hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 42px 0;
+    }
+
+    .section-label {
+      font-size: 0.62rem;
+      color: var(--muted);
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .opening {
+      font-size: 1.05rem;
+      font-style: italic;
+      color: #D8E8EA;
+    }
+    [data-palette="muted"] .opening { color: #2A2420; }
+
+    /* ── Chart Wheel ── */
+    .chart-wheel-container {
+      margin: 28px auto 0;
+      max-width: 460px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+    }
+    .chart-wheel-container svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .chart-wheel-label {
+      font-size: 0.58rem;
+      color: var(--subtle);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-top: 12px;
+    }
+
+    .ecosystem-map {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 14px;
+      margin-top: 22px;
+    }
+
+    .map-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px 14px;
+      min-height: 122px;
+    }
+
+    .map-label {
+      font-size: 0.56rem;
+      color: var(--muted);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .map-title {
+      font-size: 0.96rem;
+      line-height: 1.45;
+      color: var(--text);
+    }
+
+    .map-note {
+      font-size: 0.76rem;
+      line-height: 1.55;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+
+    .post-chart-opening {
+      margin-top: 22px;
+    }
+
+    .ecosystem-section {
+      margin-bottom: 38px;
+      padding-left: 18px;
+      border-left: 2px solid var(--border);
+    }
+
+    .ecosystem-section.core      { border-left-color: var(--color-identity); }
+    .ecosystem-section.hidden    { border-left-color: var(--color-growth); }
+    .ecosystem-section.growth    { border-left-color: var(--color-creativity); }
+    .ecosystem-section.inherited { border-left-color: var(--color-relationships); }
+    .ecosystem-section.meaning   { border-left-color: var(--color-creativity); }
+    .ecosystem-section.world     { border-left-color: var(--color-vocation); }
+
+    .section-eyebrow {
+      font-size: 0.60rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .ecosystem-section.core      .section-eyebrow { color: var(--color-identity); }
+    .ecosystem-section.hidden    .section-eyebrow { color: var(--color-growth); }
+    .ecosystem-section.growth    .section-eyebrow { color: var(--color-creativity); }
+    .ecosystem-section.inherited .section-eyebrow { color: var(--color-relationships); }
+    .ecosystem-section.meaning   .section-eyebrow { color: var(--color-creativity); }
+    .ecosystem-section.world     .section-eyebrow { color: var(--color-vocation); }
+
+    .section-title {
+      font-size: 1.22rem;
+      font-weight: normal;
+      color: var(--text);
+      margin-bottom: 14px;
+    }
+
+    .block {
+      font-size: 0.95rem;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+
+    .block:last-child { margin-bottom: 0; }
+
+    .support-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 14px;
+    }
+
+    .support-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px 18px;
+    }
+
+    .support-type {
+      font-size: 0.58rem;
+      color: var(--muted);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .support-name {
+      font-size: 1.08rem;
+      color: var(--rose);
+      margin-bottom: 12px;
+    }
+
+    .integration {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-top: 2px solid var(--gold);
+      border-radius: 10px;
+      padding: 32px 28px;
+      margin-top: 46px;
+    }
+
+    .integration .section-label { color: var(--gold); }
+
+    .proprietary-depth {
+      margin-top: 16px;
+      padding: 18px 18px 16px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--surface);
+    }
+    .proprietary-depth-label {
+      font-size: 0.58rem;
+      color: var(--muted);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .proprietary-depth-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .proprietary-depth-card {
+      min-width: 0;
+      padding: 14px 14px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface-2);
+    }
+    .proprietary-depth-card.primary { border-top: 2px solid var(--accent); }
+    .proprietary-depth-slot {
+      font-size: 0.55rem;
+      color: var(--muted);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .proprietary-depth-title {
+      font-size: 0.9rem;
+      color: var(--text);
+      line-height: 1.4;
+      margin-bottom: 6px;
+    }
+    .proprietary-depth-archetype {
+      font-size: 0.82rem;
+      color: var(--text);
+      margin-bottom: 6px;
+      line-height: 1.55;
+    }
+    .proprietary-depth-expression {
+      font-size: 0.76rem;
+      color: var(--muted);
+      line-height: 1.55;
+      margin-bottom: 10px;
+    }
+    .proprietary-depth-meta {
+      display: grid;
+      gap: 6px;
+    }
+    .proprietary-depth-meta div {
+      font-size: 0.72rem;
+      line-height: 1.55;
+      color: var(--text);
+    }
+    .proprietary-depth-meta strong {
+      color: var(--muted);
+      font-size: 0.6rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-right: 4px;
+    }
+    .translator-hook {
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-left: 3px solid var(--gold);
+      background: var(--surface-2);
+      border-radius: 6px;
+      font-size: 0.78rem;
+      line-height: 1.65;
+      color: var(--muted);
+    }
+
+    /* ── Astrologer's Index ── */
+    .astro-index {
+      margin-top: 48px;
+      border-top: 1px solid var(--border);
+      padding-top: 24px;
+    }
+    .astro-index-label {
+      font-size: 0.60rem;
+      color: var(--subtle);
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .astro-data {
+      font-family: 'Courier New', monospace;
+      font-size: 0.72rem;
+      color: var(--subtle);
+      line-height: 1.7;
+      white-space: pre;
+      overflow-x: auto;
+      background: none;
+      border: none;
+      padding: 0;
+    }
+
+    /* ── EAS Activation Ranking ── */
+    .eas-ranking {
+      margin-top: 28px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+    .eas-ranking-label {
+      font-size: 0.58rem;
+      color: var(--subtle);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+    .eas-rank-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 5px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.78rem;
+    }
+    .eas-rank-row:last-child { border-bottom: none; }
+    .eas-rank-name { flex: 1; color: var(--muted); }
+    .eas-rank-score {
+      color: var(--subtle);
+      font-size: 0.72rem;
+      font-variant-numeric: tabular-nums;
+      min-width: 28px;
+      text-align: right;
+    }
+    .eas-rank-tier {
+      font-size: 0.56rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--subtle);
+      min-width: 64px;
+      text-align: right;
+    }
+    .eas-rank-row.is-dominant .eas-rank-name  { color: var(--gold); }
+    .eas-rank-row.is-dominant .eas-rank-tier  { color: var(--gold); }
+    .eas-rank-row.is-dominant .eas-rank-score { color: var(--gold); }
+    .eas-rank-row.is-secondary .eas-rank-name { color: var(--text); }
+
+    /* ── NGE Body Spectrum ── */
+    .nge-spectrum {
+      margin-top: 18px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+    }
+    .nge-spectrum-label {
+      font-size: 0.56rem;
+      color: var(--subtle);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .nge-body-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+      font-size: 0.74rem;
+    }
+    .nge-body-name {
+      color: var(--muted);
+      width: 94px;
+      flex-shrink: 0;
+    }
+    .nge-body-name.is-dominant  { color: var(--text); font-style: italic; }
+    .nge-body-name.is-secondary { color: var(--muted); }
+    .nge-bar-track {
+      flex: 1;
+      height: 3px;
+      background: var(--border);
+      border-radius: 2px;
+      position: relative;
+    }
+    .nge-bar-fill {
+      position: absolute;
+      left: 0; top: 0; height: 3px;
+      border-radius: 2px;
+      background: var(--subtle);
+    }
+    .nge-body-row.is-dominant  .nge-bar-fill { background: var(--gold); }
+    .nge-body-row.is-secondary .nge-bar-fill { background: var(--purple); opacity: 0.55; }
+    .nge-facet-label {
+      font-size: 0.64rem;
+      color: var(--subtle);
+      width: 110px;
+      flex-shrink: 0;
+      text-align: right;
+    }
+    .nge-body-row.is-dominant  .nge-facet-label { color: var(--muted); }
+    .nge-body-row.is-secondary .nge-facet-label { color: var(--subtle); }
+
+    /* ── AHL Contributor Qualifier ── */
+    .ahl-qualifier {
+      margin-top: 14px;
+      padding: 11px 14px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 2px solid var(--color-relationships);
+      border-radius: 0 6px 6px 0;
+      font-size: 0.76rem;
+    }
+    .ahl-qualifier-label {
+      font-size: 0.54rem;
+      color: var(--color-relationships);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+    .ahl-contributor { color: var(--muted); line-height: 1.55; }
+
+    .grounding {
+      margin-top: 44px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      font-size: 0.78rem;
+      line-height: 1.7;
+      color: var(--subtle);
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.68rem;
+      color: #333343;
+      margin-top: 60px;
+      letter-spacing: 1px;
+    }
+
+    @media (max-width: 620px) {
+      body { padding: 38px 20px 70px; }
+      .ecosystem-map { grid-template-columns: 1fr; }
+      .support-grid { grid-template-columns: 1fr; }
+      .proprietary-depth-grid { grid-template-columns: 1fr; }
+    }
+
+    @media print {
+      body { background: #fff; color: #111; padding: 18px 24px 24px; }
+      header { margin-bottom: 30px; }
+      .report-title, .meta, .section-label, .map-label,
+      .support-type { color: #777; }
+      .section-eyebrow { color: #777; }
+      .opening { color: #333; }
+      .map-card, .support-card, .integration { background: #f8f8f8; border-color: #ddd; }
+      .section-title, .map-title, .support-name { color: #111; }
+      .map-note, .grounding { color: #888; }
+      .time-status { border-color: #ccc; color: #777; }
+      .astro-index-label { color: #aaa; }
+      .astro-data { color: #aaa; font-size: 0.65rem; }
+      footer { color: #bbb; }
+      .chart-wheel-container { background: #f5f5f5; border-color: #ddd; }
+      .chart-wheel-label { color: #aaa; }
+      .chart-wheel-container {
+        margin-top: 18px;
+        page-break-inside: avoid;
+        break-inside: avoid-page;
+      }
+      .post-chart-opening {
+        page-break-before: always;
+        break-before: page;
+      }
+      .astro-index {
+        page-break-before: always;
+        break-before: page;
+        break-inside: avoid;
+      }
+      .ecosystem-map,
+      .map-card,
+      .support-card,
+      .proprietary-depth,
+      .proprietary-depth-card {
+        page-break-inside: avoid;
+        break-inside: avoid-page;
+      }
+    }
+  </style>
+</head>
+<body class="report-shell report-soul-ecosystem" data-palette="{{ palette_name | default('vibrant') }}">
+
+  <!-- ── Header ── -->
+  <header>
+    <div class="name">{{ querent_name }}</div>
+    <div class="report-title">Soul Ecosystem</div>
+    {% if birth_date_display or birth_time_display or birth_location %}
+    <div class="meta natal-ref-label">Born</div>
+    <div class="meta">{{ birth_date_display }}{% if birth_time_display %} - {{ birth_time_display }}{% endif %}</div>
+    {% if birth_location %}<div class="meta">{{ birth_location }}</div>{% endif %}
+    {% else %}
+    <div class="meta">{{ generation_date }}</div>
+    {% endif %}
+    <div class="meta">{{ report_brand_line | default('Entangled Oracle - Ksisti-Puck LLC') }}</div>
+    <div class="time-status {% if birth_time_status == 'exact' %}exact{% else %}unknown{% endif %}">
+      Birth time: {{ birth_time_status | default('unknown') }}
+    </div>
+  </header>
+
+  <!-- ── Opening Synthesis ── -->
+  <div class="section-label">Your Inner Ecology</div>
+  <div class="opening">
+    {{ ecosystem_overview_block | default(souls_story_block, true) }}
+  </div>
+
+  {% if chart_wheel_svg %}
+  <div class="chart-wheel-container">
+    {{ chart_wheel_svg | safe }}
+    <div class="chart-wheel-label">Natal Chart - {{ house_system_label | default(house_system | default('Whole Sign')) }} Houses - {{ zodiac_label | default('Tropical') }} Zodiac</div>
+  </div>
+  {% endif %}
+
+  {% set eas_depth = soul_ecosystem_eas_depth | default({}, true) %}
+  {% set dominant_depth = eas_depth.dominant | default({}, true) %}
+  {% set secondary_depth = eas_depth.secondary | default({}, true) %}
+  {% set tertiary_depth = eas_depth.tertiary | default({}, true) %}
+  <div class="post-chart-opening">
+  <div class="ecosystem-map">
+    <div class="map-card">
+      <div class="map-label">Core Pattern</div>
+      <div class="map-title">{{ core_pattern_title | default('How your inner life organizes itself', true) }}</div>
+      <div class="map-note">{{ core_pattern_note | default('The baseline rhythm underneath identity, feeling, and self-expression.', true) }}</div>
+    </div>
+    <div class="map-card">
+      <div class="map-label">Growth Pattern</div>
+      <div class="map-title">{{ growth_pattern_title | default('Where pressure becomes capacity', true) }}</div>
+      <div class="map-note">{{ growth_pattern_note | default('The developmental edge that asks for structure, repair, and practice.', true) }}</div>
+    </div>
+    <div class="map-card">
+      <div class="map-label">World Pattern</div>
+      <div class="map-title">{{ world_pattern_title | default('How your contribution meets the world', true) }}</div>
+      <div class="map-note">{{ world_pattern_note | default('The public-facing current that shapes vocation, impact, and legacy.', true) }}</div>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- ── Core Nature ── -->
+  <div class="ecosystem-section world">
+    <div class="section-eyebrow">World Interface</div>
+    <div class="section-title">How Your Work Meets the Larger Field</div>
+    {% if midheaven_block %}<div class="block">{{ midheaven_block }}</div>{% endif %}
+    {% if pluto_generation_block %}<div class="block">{{ pluto_generation_block }}</div>{% endif %}
+    {% if proprietary_section_block %}
+      <div class="block"><strong>{{ proprietary_section_title }}</strong></div>
+      <div class="block">{{ proprietary_section_block }}</div>
+    {% endif %}
+    {% if eas_depth.available_slots %}
+    <div class="proprietary-depth">
+      <div class="proprietary-depth-label">Pattern Depth</div>
+      <div class="proprietary-depth-grid">
+        {% if dominant_depth.available %}
+        <article class="proprietary-depth-card primary">
+          <div class="proprietary-depth-slot">Dominant</div>
+          {% if dominant_depth.title %}<div class="proprietary-depth-title">{{ dominant_depth.title }}</div>{% endif %}
+          {% if dominant_depth.archetype %}<div class="proprietary-depth-archetype">{{ dominant_depth.archetype }}</div>{% endif %}
+          {% if dominant_depth.expression %}<div class="proprietary-depth-expression">{{ dominant_depth.expression }}</div>{% endif %}
+          <div class="proprietary-depth-meta">
+            {% if dominant_depth.activation %}<div><strong>Activation</strong>{{ dominant_depth.activation }}</div>{% endif %}
+            {% if dominant_depth.score %}<div><strong>Pattern score</strong>{{ "%.2f"|format(dominant_depth.score) }}</div>{% endif %}
+            {% if dominant_depth.activation_score %}<div><strong>Activation score</strong>{{ "%.2f"|format(dominant_depth.activation_score) }}</div>{% endif %}
+            {% if dominant_depth.driver and (dominant_depth.driver.body or dominant_depth.driver.modality) %}
+            <div><strong>Driver</strong>{{ dominant_depth.driver.body }}{% if dominant_depth.driver.modality %} - {{ dominant_depth.driver.modality }}{% endif %}</div>
+            {% endif %}
+            {% if dominant_depth.nge and dominant_depth.nge.dominant_facet %}<div><strong>Facet</strong>{{ dominant_depth.nge.dominant_facet }}</div>{% endif %}
+            {% if dominant_depth.nge and dominant_depth.nge.narrative_question %}<div><strong>Question</strong>{{ dominant_depth.nge.narrative_question }}</div>{% endif %}
+          </div>
+          {% if dominant_depth.index == "KVQ" and kvq_clear_translator %}
+          {% set clear_translator_note = "This pattern can translate complexity into usable language without flattening it. When something important needs to be named clearly, the bridge is already present in the chart." %}
+          {% set clear_translator_note_soft = "There is a workable clear-translator current here. It tends to help meaning travel between inner knowing and language when you let understanding unfold in stages." %}
+          {% set clear_translator_note_light = "A subtle clear-translator thread is present. Clarity tends to arrive through patient phrasing, revision, and the right moment rather than force." %}
+          <div class="translator-hook">
+            {% if kvq_clear_translator_strength >= 0.75 %}
+            {{ clear_translator_note }}
+            {% elif kvq_clear_translator_strength >= 0.35 %}
+            {{ clear_translator_note_soft }}
+            {% else %}
+            {{ clear_translator_note_light }}
+            {% endif %}
+          </div>
+          {% endif %}
+        </article>
+        {% endif %}
+        {% if secondary_depth.available %}
+        <article class="proprietary-depth-card">
+          <div class="proprietary-depth-slot">Secondary</div>
+          {% if secondary_depth.title %}<div class="proprietary-depth-title">{{ secondary_depth.title }}</div>{% endif %}
+          {% if secondary_depth.archetype %}<div class="proprietary-depth-archetype">{{ secondary_depth.archetype }}</div>{% endif %}
+          {% if secondary_depth.expression %}<div class="proprietary-depth-expression">{{ secondary_depth.expression }}</div>{% endif %}
+          <div class="proprietary-depth-meta">
+            {% if secondary_depth.score %}<div><strong>Pattern score</strong>{{ "%.2f"|format(secondary_depth.score) }}</div>{% endif %}
+            {% if secondary_depth.activation_score %}<div><strong>Activation score</strong>{{ "%.2f"|format(secondary_depth.activation_score) }}</div>{% endif %}
+            {% if secondary_depth.driver and (secondary_depth.driver.body or secondary_depth.driver.modality) %}
+            <div><strong>Driver</strong>{{ secondary_depth.driver.body }}{% if secondary_depth.driver.modality %} - {{ secondary_depth.driver.modality }}{% endif %}</div>
+            {% endif %}
+          </div>
+        </article>
+        {% endif %}
+        {% if tertiary_depth.available %}
+        <article class="proprietary-depth-card">
+          <div class="proprietary-depth-slot">Tertiary</div>
+          {% if tertiary_depth.title %}<div class="proprietary-depth-title">{{ tertiary_depth.title }}</div>{% endif %}
+          {% if tertiary_depth.archetype %}<div class="proprietary-depth-archetype">{{ tertiary_depth.archetype }}</div>{% endif %}
+          {% if tertiary_depth.expression %}<div class="proprietary-depth-expression">{{ tertiary_depth.expression }}</div>{% endif %}
+          <div class="proprietary-depth-meta">
+            {% if tertiary_depth.score %}<div><strong>Pattern score</strong>{{ "%.2f"|format(tertiary_depth.score) }}</div>{% endif %}
+            {% if tertiary_depth.activation_score %}<div><strong>Activation score</strong>{{ "%.2f"|format(tertiary_depth.activation_score) }}</div>{% endif %}
+            {% if tertiary_depth.driver and (tertiary_depth.driver.body or tertiary_depth.driver.modality) %}
+            <div><strong>Driver</strong>{{ tertiary_depth.driver.body }}{% if tertiary_depth.driver.modality %} - {{ tertiary_depth.driver.modality }}{% endif %}</div>
+            {% endif %}
+          </div>
+        </article>
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+    {% if world_interface_block %}<div class="block">{{ world_interface_block }}</div>{% endif %}
+
+    {# NGE Body Spectrum â€” compact display of the five narrative-body weights #}
+    {% set nge_bodies = [
+      {"key": "Apollo",       "weight": nge_apollo_weight,       "facet": nge_dominant_facet   if nge_dominant_body == "Apollo"       else (nge_secondary_facet if nge_secondary_body == "Apollo" else "")},
+      {"key": "Themis",       "weight": nge_themis_weight,       "facet": nge_dominant_facet   if nge_dominant_body == "Themis"       else (nge_secondary_facet if nge_secondary_body == "Themis" else "")},
+      {"key": "Terpsichore",  "weight": nge_terpsichore_weight,  "facet": nge_dominant_facet   if nge_dominant_body == "Terpsichore"  else (nge_secondary_facet if nge_secondary_body == "Terpsichore" else "")},
+      {"key": "Sirene",       "weight": nge_sirene_weight,       "facet": nge_dominant_facet   if nge_dominant_body == "Sirene"       else (nge_secondary_facet if nge_secondary_body == "Sirene" else "")},
+      {"key": "Aphrodite",    "weight": nge_aphrodite_weight,    "facet": nge_dominant_facet   if nge_dominant_body == "Aphrodite"    else (nge_secondary_facet if nge_secondary_body == "Aphrodite" else "")},
+    ] | sort(attribute="weight", reverse=True) %}
+    {% set nge_max = nge_bodies | map(attribute="weight") | max %}
+    {% if nge_max and nge_max > 0 %}
+    <div class="nge-spectrum">
+      <div class="nge-spectrum-label">Narrative Body Spectrum</div>
+      {% for body in nge_bodies %}
+        {% set is_dom = body.key == nge_dominant_body %}
+        {% set is_sec = body.key == nge_secondary_body %}
+        {% set bar_pct = ((body.weight / nge_max * 100) | round | int) %}
+      <div class="nge-body-row {% if is_dom %}is-dominant{% elif is_sec %}is-secondary{% endif %}">
+        <span class="nge-body-name {% if is_dom %}is-dominant{% elif is_sec %}is-secondary{% endif %}">{{ body.key }}</span>
+        <span class="nge-bar-track"><span class="nge-bar-fill" style="width: {{ bar_pct }}%;"></span></span>
+        <span class="nge-facet-label">{{ body.facet }}</span>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+  </div>
+
+  <hr>
+
+  {% set core_block = core_nature_block | default(sun_moon_integration_block, true) %}
+  {% if core_block or core_identity_block %}
+  <div class="ecosystem-section core">
+    <div class="section-eyebrow">Core Nature</div>
+    <div class="section-title">Your Baseline Operating Pattern</div>
+    {% if core_block %}<div class="block">{{ core_block }}</div>{% endif %}
+    {% if core_identity_block %}<div class="block">{{ core_identity_block }}</div>{% endif %}
+  </div>
+  {% endif %}
+
+  <!-- ── Hidden Resources ── -->
+  {% if hidden_resources_block or twelfth_house_blocks or ancestral_block or ahl_fires %}
+  <div class="ecosystem-section hidden">
+    <div class="section-eyebrow">Hidden Resources</div>
+    <div class="section-title">What Works Beneath the Surface</div>
+    {% if hidden_resources_block %}
+      <div class="block">{{ hidden_resources_block }}</div>
+    {% endif %}
+    {% if twelfth_house_blocks %}
+      {% for item in twelfth_house_blocks %}
+        <div class="block">{{ item.block }}</div>
+      {% endfor %}
+    {% endif %}
+    {% if ancestral_block %}
+      <div class="block">{{ ancestral_block }}</div>
+    {% endif %}
+
+    {# AHL Contributor Qualifier — shown only when the ancestral signal qualifies #}
+    {% if ahl_fires %}
+    <div class="ahl-qualifier">
+      <div class="ahl-qualifier-label">Ancestral Thread Active</div>
+      <div class="ahl-contributor">
+        {%- set parts = [] -%}
+        {%- if ahl_dna_retro and ahl_dna_retro > 0 -%}{%- set parts = parts + ["Retrograde ancestral signal"] -%}{%- endif -%}
+        {%- if ahl_child_chiron and ahl_child_chiron > 0 -%}{%- set parts = parts + ["Child–Chiron resonance"] -%}{%- endif -%}
+        {%- if ahl_anubis_4th and ahl_anubis_4th > 0 -%}{%- set parts = parts + ["Anubis in the fourth house"] -%}{%- endif -%}
+        {{ parts | join(" - ") if parts else "Ancestral pattern at threshold" }}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+  {% endif %}
+
+  <!-- ── Growth Edges ── -->
+  {% if saturn_block or chiron_block or growth_edge_block %}
+  <div class="ecosystem-section growth">
+    <div class="section-eyebrow">Growth Edges</div>
+    <div class="section-title">Where the System Builds Strength</div>
+    {% if saturn_block %}<div class="block">{{ saturn_block }}</div>{% endif %}
+    {% if chiron_block %}<div class="block">{{ chiron_block }}</div>{% endif %}
+    {% if growth_edge_block %}<div class="block">{{ growth_edge_block }}</div>{% endif %}
+  </div>
+  {% endif %}
+
+  <hr>
+
+  <!-- ── The Inherited Pattern ── -->
+  {% if south_node_sign_block or south_node_house_block or inherited_pattern_block %}
+  <div class="ecosystem-section inherited">
+    <div class="section-eyebrow">The Inherited Pattern</div>
+    <div class="section-title">What You Arrive Already Knowing</div>
+    {% if south_node_sign_block %}<div class="block">{{ south_node_sign_block }}</div>{% endif %}
+    {% if south_node_house_block %}<div class="block">{{ south_node_house_block }}</div>{% endif %}
+    {% if inherited_pattern_block %}<div class="block">{{ inherited_pattern_block }}</div>{% endif %}
+  </div>
+  {% endif %}
+
+  <!-- ── What Pulls You Forward ── -->
+  {% if north_node_sign_block or north_node_house_block or jupiter_block or meaning_direction_block %}
+  <div class="ecosystem-section meaning">
+    <div class="section-eyebrow">What Pulls You Forward</div>
+    <div class="section-title">The Direction Your Life Is Growing Toward</div>
+    {% if north_node_sign_block %}<div class="block">{{ north_node_sign_block }}</div>{% endif %}
+    {% if north_node_house_block %}<div class="block">{{ north_node_house_block }}</div>{% endif %}
+    {% if jupiter_block %}<div class="block">{{ jupiter_block }}</div>{% endif %}
+    {% if meaning_direction_block %}<div class="block">{{ meaning_direction_block }}</div>{% endif %}
+  </div>
+  {% endif %}
+
+  <hr>
+
+  <!-- ── World Interface ── -->
+  {% set eas_depth = soul_ecosystem_eas_depth | default({}, true) %}
+  {% set dominant_depth = eas_depth.dominant | default({}, true) %}
+  {% set secondary_depth = eas_depth.secondary | default({}, true) %}
+  {% set tertiary_depth = eas_depth.tertiary | default({}, true) %}
+  {% if false %}
+  <div class="ecosystem-section world">
+    <div class="section-eyebrow">World Interface</div>
+    <div class="section-title">How Your Work Meets the Larger Field</div>
+    {% if midheaven_block %}<div class="block">{{ midheaven_block }}</div>{% endif %}
+    {% if pluto_generation_block %}<div class="block">{{ pluto_generation_block }}</div>{% endif %}
+    {% if proprietary_section_block %}
+      <div class="block"><strong>{{ proprietary_section_title }}</strong></div>
+      <div class="block">{{ proprietary_section_block }}</div>
+    {% endif %}
+    {% if eas_depth.available_slots %}
+    <div class="proprietary-depth">
+      <div class="proprietary-depth-label">Pattern Depth</div>
+      <div class="proprietary-depth-grid">
+        {% if dominant_depth.available %}
+        <article class="proprietary-depth-card primary">
+          <div class="proprietary-depth-slot">Dominant</div>
+          {% if dominant_depth.title %}<div class="proprietary-depth-title">{{ dominant_depth.title }}</div>{% endif %}
+          {% if dominant_depth.archetype %}<div class="proprietary-depth-archetype">{{ dominant_depth.archetype }}</div>{% endif %}
+          {% if dominant_depth.expression %}<div class="proprietary-depth-expression">{{ dominant_depth.expression }}</div>{% endif %}
+          <div class="proprietary-depth-meta">
+            {% if dominant_depth.activation %}<div><strong>Activation</strong>{{ dominant_depth.activation }}</div>{% endif %}
+            {% if dominant_depth.score %}<div><strong>Pattern score</strong>{{ "%.2f"|format(dominant_depth.score) }}</div>{% endif %}
+            {% if dominant_depth.activation_score %}<div><strong>Activation score</strong>{{ "%.2f"|format(dominant_depth.activation_score) }}</div>{% endif %}
+            {% if dominant_depth.driver and (dominant_depth.driver.body or dominant_depth.driver.modality) %}
+            <div><strong>Driver</strong>{{ dominant_depth.driver.body }}{% if dominant_depth.driver.modality %} · {{ dominant_depth.driver.modality }}{% endif %}</div>
+            {% endif %}
+            {% if dominant_depth.nge and dominant_depth.nge.dominant_facet %}<div><strong>Facet</strong>{{ dominant_depth.nge.dominant_facet }}</div>{% endif %}
+            {% if dominant_depth.nge and dominant_depth.nge.narrative_question %}<div><strong>Question</strong>{{ dominant_depth.nge.narrative_question }}</div>{% endif %}
+          </div>
+          {% if dominant_depth.index == "KVQ" and kvq_clear_translator %}
+          {% set clear_translator_note = "This pattern can translate complexity into usable language without flattening it. When something important needs to be named clearly, the bridge is already present in the chart." %}
+          {% set clear_translator_note_soft = "There is a workable clear-translator current here. It tends to help meaning travel between inner knowing and language when you let understanding unfold in stages." %}
+          {% set clear_translator_note_light = "A subtle clear-translator thread is present. Clarity tends to arrive through patient phrasing, revision, and the right moment rather than force." %}
+          <div class="translator-hook">
+            {% if kvq_clear_translator_strength >= 0.75 %}
+            {{ clear_translator_note }}
+            {% elif kvq_clear_translator_strength >= 0.35 %}
+            {{ clear_translator_note_soft }}
+            {% else %}
+            {{ clear_translator_note_light }}
+            {% endif %}
+          </div>
+          {% endif %}
+        </article>
+        {% endif %}
+        {% if secondary_depth.available %}
+        <article class="proprietary-depth-card">
+          <div class="proprietary-depth-slot">Secondary</div>
+          {% if secondary_depth.title %}<div class="proprietary-depth-title">{{ secondary_depth.title }}</div>{% endif %}
+          {% if secondary_depth.archetype %}<div class="proprietary-depth-archetype">{{ secondary_depth.archetype }}</div>{% endif %}
+          {% if secondary_depth.expression %}<div class="proprietary-depth-expression">{{ secondary_depth.expression }}</div>{% endif %}
+          <div class="proprietary-depth-meta">
+            {% if secondary_depth.score %}<div><strong>Pattern score</strong>{{ "%.2f"|format(secondary_depth.score) }}</div>{% endif %}
+            {% if secondary_depth.activation_score %}<div><strong>Activation score</strong>{{ "%.2f"|format(secondary_depth.activation_score) }}</div>{% endif %}
+            {% if secondary_depth.driver and (secondary_depth.driver.body or secondary_depth.driver.modality) %}
+            <div><strong>Driver</strong>{{ secondary_depth.driver.body }}{% if secondary_depth.driver.modality %} · {{ secondary_depth.driver.modality }}{% endif %}</div>
+            {% endif %}
+          </div>
+        </article>
+        {% endif %}
+        {% if tertiary_depth.available %}
+        <article class="proprietary-depth-card">
+          <div class="proprietary-depth-slot">Tertiary</div>
+          {% if tertiary_depth.title %}<div class="proprietary-depth-title">{{ tertiary_depth.title }}</div>{% endif %}
+          {% if tertiary_depth.archetype %}<div class="proprietary-depth-archetype">{{ tertiary_depth.archetype }}</div>{% endif %}
+          {% if tertiary_depth.expression %}<div class="proprietary-depth-expression">{{ tertiary_depth.expression }}</div>{% endif %}
+          <div class="proprietary-depth-meta">
+            {% if tertiary_depth.score %}<div><strong>Pattern score</strong>{{ "%.2f"|format(tertiary_depth.score) }}</div>{% endif %}
+            {% if tertiary_depth.activation_score %}<div><strong>Activation score</strong>{{ "%.2f"|format(tertiary_depth.activation_score) }}</div>{% endif %}
+            {% if tertiary_depth.driver and (tertiary_depth.driver.body or tertiary_depth.driver.modality) %}
+            <div><strong>Driver</strong>{{ tertiary_depth.driver.body }}{% if tertiary_depth.driver.modality %} · {{ tertiary_depth.driver.modality }}{% endif %}</div>
+            {% endif %}
+          </div>
+        </article>
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+    {% if world_interface_block %}<div class="block">{{ world_interface_block }}</div>{% endif %}
+
+    {# NGE Body Spectrum — compact display of the five narrative-body weights #}
+    {% set nge_bodies = [
+      {"key": "Apollo",       "weight": nge_apollo_weight,       "facet": nge_dominant_facet   if nge_dominant_body == "Apollo"       else (nge_secondary_facet if nge_secondary_body == "Apollo" else "")},
+      {"key": "Themis",       "weight": nge_themis_weight,       "facet": nge_dominant_facet   if nge_dominant_body == "Themis"       else (nge_secondary_facet if nge_secondary_body == "Themis" else "")},
+      {"key": "Terpsichore",  "weight": nge_terpsichore_weight,  "facet": nge_dominant_facet   if nge_dominant_body == "Terpsichore"  else (nge_secondary_facet if nge_secondary_body == "Terpsichore" else "")},
+      {"key": "Sirene",       "weight": nge_sirene_weight,       "facet": nge_dominant_facet   if nge_dominant_body == "Sirene"       else (nge_secondary_facet if nge_secondary_body == "Sirene" else "")},
+      {"key": "Aphrodite",    "weight": nge_aphrodite_weight,    "facet": nge_dominant_facet   if nge_dominant_body == "Aphrodite"    else (nge_secondary_facet if nge_secondary_body == "Aphrodite" else "")},
+    ] | sort(attribute="weight", reverse=True) %}
+    {% set nge_max = nge_bodies | map(attribute="weight") | max %}
+    {% if nge_max and nge_max > 0 %}
+    <div class="nge-spectrum">
+      <div class="nge-spectrum-label">Narrative Body Spectrum</div>
+      {% for body in nge_bodies %}
+        {% set is_dom = body.key == nge_dominant_body %}
+        {% set is_sec = body.key == nge_secondary_body %}
+        {% set bar_pct = ((body.weight / nge_max * 100) | round | int) %}
+      <div class="nge-body-row {% if is_dom %}is-dominant{% elif is_sec %}is-secondary{% endif %}">
+        <span class="nge-body-name {% if is_dom %}is-dominant{% elif is_sec %}is-secondary{% endif %}">{{ body.key }}</span>
+        <span class="nge-bar-track"><span class="nge-bar-fill" style="width: {{ bar_pct }}%;"></span></span>
+        <span class="nge-facet-label">{{ body.facet }}</span>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+
+  <hr>
+
+  <!-- ── Archetypal Supports ── -->
+  {% endif %}
+  {% if primary_archetype_name or primary_archetype_block or secondary_archetype_name or secondary_archetype_block %}
+  <div class="section-label">Archetypal Supports</div>
+  <div class="support-grid">
+    {% if primary_archetype_name or primary_archetype_block %}
+    <div class="support-card">
+      <div class="support-type">Primary Pattern</div>
+      <div class="support-name">{{ primary_archetype_name }}</div>
+      <div class="block">{{ primary_archetype_block }}</div>
+    </div>
+    {% endif %}
+    {% if secondary_archetype_name or secondary_archetype_block %}
+    <div class="support-card">
+      <div class="support-type">Secondary Pattern</div>
+      <div class="support-name">{{ secondary_archetype_name }}</div>
+      <div class="block">{{ secondary_archetype_block }}</div>
+    </div>
+    {% endif %}
+  </div>
+  {% endif %}
+
+  <!-- ── EAS Activation Rankings ── -->
+  {# Compact dimension ranking with activation scores. Ordered by the resolver's
+     eas_dimension_order (score-descending). Six fixed EAS primaries only. #}
+  {% set eas_rows = [
+    {"key": "KVQ",      "name": "Foresight Pattern",  "score": kvq_activation_score,      "tier": kvq_tier},
+    {"key": "MKI",      "name": "Knowledge Legacy",   "score": mki_activation_score,      "tier": mki_tier},
+    {"key": "RWI",      "name": "Reality Field",      "score": rwi_activation_score,      "tier": rwi_tier},
+    {"key": "DFIS",     "name": "Power Current",      "score": dfis_activation_score,     "tier": dfis_tier},
+    {"key": "NGE",      "name": "Narrative Genre",    "score": nge_activation_score,      "tier": nge_tier},
+    {"key": "CATALYST", "name": "Impact Radius",      "score": catalyst_activation_score, "tier": catalyst_tier},
+  ] | sort(attribute="score", reverse=True) %}
+  {% set ranked_eas_rows = eas_rows | selectattr("score", "gt", 0) | list %}
+  {% if ranked_eas_rows %}
+  <div class="eas-ranking">
+    <div class="eas-ranking-label">Activation Field</div>
+    {% for row in ranked_eas_rows %}
+      {% set is_dom = row.key == dominant_eas_dimension %}
+      {% set is_sec = row.key == secondary_eas_dimension %}
+    <div class="eas-rank-row {% if is_dom %}is-dominant{% elif is_sec %}is-secondary{% endif %}">
+      <span class="eas-rank-name">{{ row.name }}</span>
+      <span class="eas-rank-score">{{ "%.1f"|format(row.score) }}</span>
+      <span class="eas-rank-tier">{{ row.tier | lower }}</span>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- ── Living Integration ── -->
+  {% set living_integration_text = living_integration_block | default(souls_promise_block, true) %}
+  {% if living_integration_text %}
+  <div class="integration">
+    <div class="section-label">Living Integration</div>
+    <div class="block">
+      {{ living_integration_text }}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- ── Astrologer's Index ── -->
+  <div class="astro-index">
+    <div class="astro-index-label">Astrologer's Index</div>
+    <pre class="astro-data">House system     {{ house_system_label | default(house_system | default('Whole Sign')) }}
+Birth time       {{ birth_time_status }}
+
+NATAL POSITIONS
+{{ natal_index_data | default('Natal position data coming soon.') }}</pre>
+  </div>
+
+  <div class="grounding">
+    Astrology describes symbolic patterns, timing, and meaning-making frameworks. It does not replace practical judgment, professional advice, medical care, legal guidance, or lived consent. Keep what is useful, and let real-world information guide important decisions.
+  </div>
+
+  <footer>{{ report_footer_text | default('Entangled Oracle - Ksisti-Puck LLC - Generated ' ~ generation_date) }} <span class="report-page-number"></span></footer>
+
+</body>
+</html>

@@ -1,0 +1,28 @@
+{
+  "_note": "Key: index_key (KVQ, MKI, RWI, DFIS, NGE, CATALYST). ~35-50 words. Specific but not explanatory. Names the thing, stops there.",
+  "KVQ": {
+    "dominant": "Foresight Pattern is close to the surface today, making small inconsistencies harder to dismiss. A changed tone, missing detail, or repeated signal may deserve careful attention before it becomes a larger pattern.",
+    "fallback": "A quieter Foresight Pattern may still register in the background, especially through timing, subtext, and details that do not immediately explain themselves."
+  },
+  "MKI": {
+    "dominant": "Knowledge Legacy is active today, pulling older material into present use. A memory, practice, document, lineage, or long-held question may carry context that makes the current moment easier to understand.",
+    "fallback": "A subtle Knowledge Legacy thread may appear through remembered guidance, inherited habits, or a piece of older wisdom becoming newly relevant."
+  },
+  "RWI": {
+    "dominant": "Reality Field is emphasized today, making the arrangement beneath events easier to notice. Roles, routines, language, and invisible expectations may reveal which small structural change would alter the whole pattern.",
+    "fallback": "A quiet Reality Field signal may show up through process, atmosphere, or the sense that one condition is shaping more than it seems."
+  },
+  "DFIS": {
+    "dominant": "Power Current is active today, bringing limits, desire, refusal, and embodied choice into sharper focus. The important signal may be where consent, capacity, or self-protection needs more precise language.",
+    "fallback": "A subtle Power Current may move through the body as a boundary, appetite, refusal, or instinct that deserves respectful attention."
+  },
+  "NGE": {
+    "dominant": "Narrative Gravity is heightened today, gathering scattered choices around a larger question of meaning. A role, promise, pursuit, or turning point may begin to show what story is organizing the moment.",
+    "fallback": "A softer Narrative Gravity thread may appear through repeated themes, meaningful timing, or the sense that a small choice belongs to a larger arc."
+  },
+  "CATALYST": {
+    "dominant": "Impact Radius is active today, making certain exchanges more consequential than they first appear. A meeting, message, or point of friction may clarify what needs to change between people.",
+    "fallback": "A quieter Impact Radius signal may surface through timing, contact, or an interaction that shifts the terms of a familiar dynamic."
+  },
+  "fallback": "A proprietary current is present in the background today, adding texture to the forecast without demanding that every detail become a major signal."
+}

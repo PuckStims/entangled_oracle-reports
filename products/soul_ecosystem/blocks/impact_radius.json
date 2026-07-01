@@ -1,0 +1,25 @@
+{
+  "_note": "Impact Radius (soul_ecosystem). Key: archetype_key → tier (dominant/present/subtle). Selector call: select_block('soul_ecosystem', 'impact_radius', archetype_key, tier_key). SUBTLE tier routes to root 'subtle' key only. Archetypes: the_awakener, the_mirror, the_catalyst, the_herald.",
+  "subtle": "Your impact on other people is real, even when it is quiet. You may not always see the change you set in motion, but your presence can leave people thinking differently about themselves, their choices, or what comes next.",
+  "fallback": "Your impact radius is still clarifying. Not every important connection arrives with fireworks; some of your influence will become visible only after time has passed.",
+  "the_awakener": {
+    "dominant": "You do not just enter people’s lives; you interrupt the timeline they thought was fixed. Your presence can make stagnant situations impossible to ignore, pushing others toward a decision, a truth, or a change they had been avoiding. You are not responsible for managing every reaction to the wake-up call you bring.",
+    "present": "You tend to activate movement in people. Around you, others may suddenly question old routines, take a risk, or admit that something in their life needs to change. Your gift is strongest when you offer freedom without demanding that everyone transform at your speed.",
+    "fallback": "Your disruptive force is developing. Notice where your honesty, originality, or refusal to settle gives other people permission to reconsider what they thought they had to accept."
+  },
+  "the_mirror": {
+    "dominant": "You make authenticity difficult to avoid. People may feel deeply seen around you—sometimes before they are ready—because your presence reflects the gap between who they say they are and what they actually need to heal. Your role is not to fix anyone; it is to remain honest enough that the reflection stays clear.",
+    "present": "You have a way of drawing out what is underneath the surface. People may confide in you, confront uncomfortable truths near you, or realize that an old wound is still shaping their choices. Compassion matters here: a mirror can be clear without being cruel.",
+    "fallback": "Your reflective impact is becoming easier to recognize. Pay attention to the moments when people tell you that a conversation with you changed what they were willing to admit to themselves."
+  },
+  "the_catalyst": {
+    "dominant": "You are a living turning point. Certain connections with you can feel unusually consequential because you arrive when a person is ready to meet a deeper lesson, choose a new direction, or close an old chapter. You do not create every transformation, but you often become the moment that makes change impossible to postpone.",
+    "present": "You tend to show up at meaningful crossroads in other people’s lives. Your relationships may carry a feeling of recognition, momentum, or unfinished business that asks both people to grow. Your power is in honoring the lesson without turning every bond into a burden.",
+    "fallback": "Your catalytic role is quietly unfolding. Some encounters may make more sense in hindsight, once you can see the choice, release, or new path they helped set in motion."
+  },
+  "the_herald": {
+    "dominant": "You bring the message that changes the room. Whether through words, timing, or sheer presence, you often arrive carrying information people need before they know they need it. Your impact comes from moving truth between people, worlds, and moments until it finally lands where it can be heard.",
+    "present": "You have a gift for delivering what needs to be said. You may connect people to an idea, opportunity, or perspective that alters their next step. Your message carries furthest when you trust your instinct for timing and speak with enough clarity that others can act on what they hear.",
+    "fallback": "Your messenger role is finding its voice. Notice what people seek you out to explain, introduce, or translate; those small transmissions are part of your larger impact."
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "_note": "Shared standard-natal templates for Year Ahead foundation prose and short natal-relevance bridge copy on forecast event cards. These templates must stay method-clean, non-deterministic, and clearly distinct from EO overlay language.",
+  "foundation": {
+    "opening": "The forecast is anchored to a natal baseline before it moves into timing. These pages prioritize the chart structures that repeat across more than one calculation layer, so the year is read against an actual foundation rather than a list of isolated placements.",
+    "orientation_supported": "{element_label} and {modality_label} signatures arrive first in the chart's overall posture. That combination suggests a life pattern that tends to meet experience through {element_action} and {modality_action}, with the strongest emphasis carried by the core seven-planet structure rather than by a single stray placement.",
+    "orientation_fallback": "No single orientation factor needs to carry the whole chart on its own. The baseline is better understood through how several structures repeat together than through one simplified temperament label.",
+    "central_planet_same": "{planet} carries unusual weight here because it is both the chart ruler and the strongest prominence factor. It tends to organize decisions, attention, and timing more than a background planet would, so later forecast contacts to {planet} deserve proportionate attention. {condition_sentence} {driver_sentence}",
+    "central_planet_split": "{prominent_planet} is the loudest repeating factor in the chart's current hierarchy, while {chart_ruler} still functions as the steering logic of the whole map. That means visibility and emphasis are not exactly the same thing: one planet may draw the eye first, while the ruler still describes how the life tends to move. {condition_sentence}",
+    "house_emphasis": "House emphasis gathers most strongly around the {top_house_ordinal} house, with secondary reinforcement through the {second_house_ordinal} house. In practical terms, the year is more likely to become legible where life keeps returning to {top_domain} and {second_domain}, rather than through every detected topic at equal volume.",
+    "luminary": "The Sun-Moon architecture is best read as {luminary_state}, and the natal lunar phase points toward a {lunar_phase_label} baseline. Taken together, that suggests the inner and outer life are not separate background stories; they set the rhythm through which choices tend to become usable, visible, or difficult to ignore.",
+    "aspect_rulership": "{aspect_sentence} {rulership_sentence} {configuration_sentence}",
+    "convergence": "The strongest standard convergence theme in this chart is {convergence_label}. It earns priority because it is supported by multiple independent structures rather than by a single symbolic hit, which makes it a reliable bridge between natal pattern and forecast timing.",
+    "methodology": "Method note: this standard foundation uses the Tropical zodiac with Whole Sign houses and keeps angle- or house-dependent claims inside their actual birth-time confidence limits. When a structure is better kept technical than editorial, it remains traceable in the calculation layer without being inflated into extra prose.",
+    "closing": "Use the forecast chapters as timing around this baseline, not as a replacement for it. The year is most readable when dated events are interpreted in relation to these established natal priorities, while EO material remains an additional lens rather than the chart's primary foundation."
+  },
+  "forecast_context": {
+    "transit_central": "{target_label} is one of the chart's main organizing points, so this transit is treated as a live developmental contact rather than as background weather.",
+    "transit_supporting": "{target_label} already participates in the chart's stronger repeating structures, which is why this contact deserves more attention than a generic transit description alone would give it.",
+    "transit_house": "This contact matters mainly through {house_domain}, a life area that the natal chart already flags as active enough to notice when pressure or support returns there.",
+    "transit_fallback": "This event is kept in proportion: it may still be useful, but it is not treated as a defining signal unless it also repeats an established natal priority.",
+    "ingress_headline": "{house_domain} is already one of the chart's stronger domains, so this ingress is read as a real chapter shift in an area that tends to carry more narrative weight than average.",
+    "ingress_supporting": "{house_domain} has enough natal emphasis to make this ingress worth tracking, though it is treated as contextual development rather than as automatic headline material.",
+    "ingress_background": "{house_domain} is part of the story, but not one of the chart's loudest natal repeats, so this ingress stays proportionate to the house it activates.",
+    "station_retrograde_central": "Because this station turns back across {target_label}, the emphasis is on review, revision, and redirection around a natal factor that already matters in the chart's hierarchy.",
+    "station_direct_central": "Because this station turns direct across {target_label}, the emphasis is on renewed movement and clarified momentum around a natal factor that is already structurally important.",
+    "station_retrograde_background": "This station is treated as a review or recalibration point, not as automatic drama; it becomes more meaningful only to the extent that the surrounding cycle proves relevant in lived experience.",
+    "station_direct_background": "This station is treated as a pivot in pace or emphasis, not as an automatic turning point on its own.",
+    "eclipse_targeted": "This eclipse becomes more specific because it lands on {target_label}, one of the natal chart's clearer organizing factors rather than a random background point.",
+    "eclipse_house": "This eclipse is read primarily through {house_domain}; without a stronger natal contact, the emphasis stays on chapter-setting conditions rather than a fixed prediction."
+  }
+}

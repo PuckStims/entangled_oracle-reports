@@ -1,0 +1,36 @@
+{
+  "_note": "Key: planet -> Retrograde/Direct. Station language is intentionally plainspoken, non-deterministic, and suitable for timing summaries.",
+  "fallback": "A station slows the usual pace of events and makes a transition easier to notice. What was moving outward may need review; what was stalled may begin to move again in a more workable form.",
+  "Mercury": {
+    "Retrograde": "Mercury station retrograde tends to slow decisions, conversations, and planning just enough to show what needs revision. Use the pause to review assumptions, clarify language, and return to details that were easy to skip the first time.",
+    "Direct": "Mercury station direct often brings movement back to plans that have been under review. Clarity tends to return in stages, so let the next step be practical and specific rather than rushing to solve everything at once."
+  },
+  "Venus": {
+    "Retrograde": "Venus station retrograde turns attention toward value, attachment, and the quality of exchange in close relationships. It can help to notice what feels genuine, what feels performative, and where your standards need to be named more clearly.",
+    "Direct": "Venus station direct can restore flow in relational and creative matters after a period of reconsideration. What has been clarified about taste, reciprocity, and self-respect is easier to act on now without forcing a final answer too quickly."
+  },
+  "Mars": {
+    "Retrograde": "Mars station retrograde redirects effort inward and can expose where energy has been spent faster than it can be replenished. This is a good moment to adjust strategy, conserve strength, and choose actions that do not depend on constant urgency.",
+    "Direct": "Mars station direct usually returns traction where effort has felt delayed, indirect, or uneven. Momentum is more useful when it follows reflection, so let action build from a clearer plan instead of proving itself through speed alone."
+  },
+  "Jupiter": {
+    "Retrograde": "Jupiter station retrograde invites a review of growth, belief, and the scale of your commitments. It can be a helpful time to ask whether optimism is supported by structure and whether a larger vision still fits your actual capacity.",
+    "Direct": "Jupiter station direct can reopen movement around learning, opportunity, and long-range plans. Expansion works best here when it has been edited well, so follow the opening that feels both encouraging and sustainable."
+  },
+  "Saturn": {
+    "Retrograde": "Saturn station retrograde often draws attention back to responsibility, maintenance, and the parts of life that need reinforcement. The tone may feel slower, but the benefit is precision: you can see what requires repair before it becomes a larger burden.",
+    "Direct": "Saturn station direct can make disciplined effort feel more available after a long internal review. Commitments that still matter tend to regain structure here, especially when they are built from steadiness rather than pressure."
+  },
+  "Uranus": {
+    "Retrograde": "Uranus station retrograde brings change into a quieter, more internal register. Restlessness may still be present, but it is more useful as information than as a command, helping you notice where independence or experimentation needs a better design.",
+    "Direct": "Uranus station direct can release movement in areas that have been waiting for a clearer break from old patterns. New directions tend to work better when they are specific, well-timed, and grounded enough to hold their own disruption."
+  },
+  "Neptune": {
+    "Retrograde": "Neptune station retrograde can sharpen awareness of where hope, confusion, longing, or idealization have blurred together. Instead of chasing certainty, it helps to sort what is felt, what is imagined, and what remains true once the atmosphere clears a little.",
+    "Direct": "Neptune station direct can return a sense of imaginative or spiritual flow after a period of uncertainty. The most useful guidance now is usually gentle and concrete, helping inspiration move closer to reality without pretending everything is already resolved."
+  },
+  "Pluto": {
+    "Retrograde": "Pluto station retrograde turns deeper pressure inward and often exposes the quieter layers of a longer transformation. What emerges here may not need immediate action, but it does ask for honesty about control, fear, and what can no longer be managed through avoidance.",
+    "Direct": "Pluto station direct can make a longer process of change feel more visible in outer life again. The shift is rarely sudden; it is more often a return of momentum in places where you have already been doing difficult inner work."
+  }
+}

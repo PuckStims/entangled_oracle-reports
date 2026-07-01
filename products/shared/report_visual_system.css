@@ -1,0 +1,128 @@
+:root {
+  --faint: var(--subtle);
+  --green: var(--color-growth);
+  --amber: var(--ember);
+  --eclipse: var(--purple);
+  --surface-hi: var(--surface-2);
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --radius-card: 10px;
+  --radius-soft: 8px;
+  --radius-pill: 999px;
+  --type-body: Georgia, "Times New Roman", serif;
+  --type-mono: "Courier New", monospace;
+  --type-label-size: 0.62rem;
+  --type-body-size: 0.95rem;
+  --type-footnote-size: 0.72rem;
+  --line-body: 1.75;
+  --line-tight: 1.45;
+  --measure-readable: 72ch;
+}
+
+html {
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+body.report-shell {
+  font-family: var(--type-body);
+  line-height: var(--line-body);
+  text-rendering: optimizeLegibility;
+}
+
+.report-shell header,
+.report-shell section,
+.report-shell article,
+.report-shell .event-card,
+.report-shell .month-opener,
+.report-shell .support-card,
+.report-shell .guidance-card,
+.report-shell .map-card,
+.report-shell .synthesis,
+.report-shell .integration,
+.report-shell .featured-section,
+.report-shell .characteristic-card,
+.report-shell .timing-table,
+.report-shell .snapshot-table {
+  max-width: 100%;
+}
+
+.report-shell p,
+.report-shell li,
+.report-shell td,
+.report-shell .block,
+.report-shell .event-block,
+.report-shell .opening,
+.report-shell .overview,
+.report-shell .integration,
+.report-shell .month-snapshot,
+.report-shell .lens-block {
+  max-width: var(--measure-readable);
+}
+
+.report-shell footer {
+  border-top: 1px solid var(--border);
+  padding-top: var(--space-4);
+}
+
+.report-shell .report-page-number {
+  display: none;
+  margin-left: var(--space-2);
+}
+
+@media print {
+  @page {
+    size: letter;
+    margin: 0.6in 0.55in 0.7in;
+  }
+
+  html,
+  body.report-shell {
+    background: #fff !important;
+    color: #111 !important;
+  }
+
+  body.report-shell {
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .report-shell header,
+  .report-shell .section,
+  .report-shell .month-section,
+  .report-shell .featured-section,
+  .report-shell .integration,
+  .report-shell .synthesis,
+  .report-shell .month-opener,
+  .report-shell .event-card,
+  .report-shell .support-card,
+  .report-shell .guidance-card,
+  .report-shell .map-card,
+  .report-shell .proprietary-depth,
+  .report-shell .characteristic-card,
+  .report-shell .turning-guide-item,
+  .report-shell .turning-guide-month,
+  .report-shell .appendix-grid article,
+  .report-shell .ledger-month {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .report-shell .section-header,
+  .report-shell h2,
+  .report-shell h3,
+  .report-shell .chronology-divider {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  .report-shell .report-page-number::after {
+    content: "";
+  }
+}

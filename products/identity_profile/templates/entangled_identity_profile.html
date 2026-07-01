@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Entangled Identity Profile · {{ querent_name }}</title>
+  <style>
+    :root {
+      --bg: #08090d;
+      --surface: #11131a;
+      --surface-2: #171a23;
+      --surface-3: #1d2030;
+      --line: rgba(220, 224, 255, 0.12);
+      --text: #e8e9f1;
+      --muted: #9ca0b5;
+      --dim: #666b7c;
+      --purple: #b9a0ff;
+      --violet: #8d73f5;
+      --gold: #f2ce87;
+      --mint: #8ee7c2;
+      --rose: #ef9dc3;
+      --page-max: 900px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 18% 0%, rgba(141,115,245,.14), transparent 26rem),
+        radial-gradient(circle at 88% 12%, rgba(142,231,194,.08), transparent 25rem),
+        var(--bg);
+      color: var(--text);
+      font-family: Georgia, "Times New Roman", serif;
+      line-height: 1.72;
+    }
+
+    .page {
+      width: min(var(--page-max), calc(100% - 32px));
+      margin: 0 auto;
+      padding: 48px 0 80px;
+    }
+
+    .cover {
+      min-height: 76vh;
+      display: grid;
+      align-content: center;
+      text-align: center;
+      position: relative;
+      padding: 52px 26px;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      overflow: hidden;
+      background: linear-gradient(150deg, rgba(17,19,26,.92), rgba(11,12,19,.94));
+    }
+
+    .cover::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(90deg, transparent 49.8%, rgba(185,160,255,.06) 50%, transparent 50.2%),
+        linear-gradient(0deg, transparent 49.8%, rgba(185,160,255,.04) 50%, transparent 50.2%);
+      opacity: .7;
+    }
+
+    .eyebrow,
+    .section-kicker,
+    .micro-label {
+      text-transform: uppercase;
+      letter-spacing: .2em;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: .68rem;
+      font-weight: 700;
+    }
+
+    .eyebrow { color: var(--gold); margin-bottom: 18px; }
+    .section-kicker { color: var(--purple); margin-bottom: 8px; }
+    .micro-label { color: var(--muted); }
+
+    .cover h1 {
+      margin: 0;
+      font-size: clamp(2.6rem, 7vw, 5.35rem);
+      line-height: .98;
+      letter-spacing: -.045em;
+      font-weight: normal;
+      position: relative;
+      z-index: 1;
+    }
+
+    .cover .subtitle {
+      max-width: 680px;
+      margin: 20px auto 0;
+      color: var(--muted);
+      font-size: clamp(1.03rem, 2.2vw, 1.3rem);
+      position: relative;
+      z-index: 1;
+    }
+
+    .meta-row {
+      margin-top: 30px;
+      color: var(--dim);
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: .78rem;
+      letter-spacing: .08em;
+      position: relative;
+      z-index: 1;
+    }
+
+    .cover-mark {
+      margin: 34px auto 0;
+      width: 72px;
+      height: 72px;
+      border: 1px solid rgba(185,160,255,.45);
+      border-radius: 50%;
+      position: relative;
+      display: grid;
+      place-items: center;
+      color: var(--purple);
+      font-size: 1.9rem;
+      z-index: 1;
+    }
+
+    .cover-mark::before,
+    .cover-mark::after {
+      content: "";
+      position: absolute;
+      width: 114px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(185,160,255,.45), transparent);
+    }
+
+    .cover-mark::before { left: -128px; }
+    .cover-mark::after { right: -128px; }
+
+    section { margin-top: 84px; }
+
+    .section-title {
+      margin: 0;
+      font-size: clamp(1.9rem, 4vw, 3.2rem);
+      line-height: 1.1;
+      font-weight: normal;
+      letter-spacing: -.03em;
+    }
+
+    .section-intro {
+      max-width: 720px;
+      margin: 16px 0 0;
+      color: var(--muted);
+      font-size: 1.02rem;
+    }
+
+    .hero-reading {
+      margin-top: 28px;
+      padding: 30px;
+      border-left: 2px solid var(--gold);
+      background: linear-gradient(90deg, rgba(242,206,135,.10), transparent 68%);
+      font-size: 1.16rem;
+      white-space: pre-line;
+    }
+
+    .identity-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 26px;
+    }
+
+    .identity-chip {
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(17,19,26,.76);
+    }
+
+    .identity-chip strong {
+      display: block;
+      margin-top: 7px;
+      color: var(--text);
+      font-size: .98rem;
+      font-weight: normal;
+    }
+
+    .systems {
+      display: grid;
+      gap: 18px;
+      margin-top: 30px;
+    }
+
+    .system-card {
+      position: relative;
+      padding: 28px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: linear-gradient(145deg, rgba(23,26,35,.98), rgba(13,15,22,.98));
+      overflow: hidden;
+      break-inside: avoid;
+    }
+
+    .system-card::after {
+      content: "";
+      position: absolute;
+      inset: auto -20px -40px auto;
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background: rgba(141,115,245,.08);
+      filter: blur(4px);
+      pointer-events: none;
+    }
+
+    .system-topline {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .system-name {
+      margin: 0;
+      color: var(--purple);
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: .72rem;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    .activation {
+      padding: 5px 9px;
+      border: 1px solid rgba(142,231,194,.30);
+      border-radius: 999px;
+      color: var(--mint);
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: .63rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .system-expression {
+      margin: 18px 0 6px;
+      font-size: clamp(1.5rem, 3vw, 2.15rem);
+      line-height: 1.15;
+      font-weight: normal;
+      letter-spacing: -.025em;
+      position: relative;
+      z-index: 1;
+    }
+
+    .system-archetype {
+      margin: 0;
+      color: var(--gold);
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: .78rem;
+      letter-spacing: .05em;
+      position: relative;
+      z-index: 1;
+    }
+
+    .system-tagline {
+      margin: 18px 0 0;
+      color: var(--mint);
+      font-size: 1.02rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .system-body {
+      margin: 16px 0 0;
+      color: #c8cad6;
+      position: relative;
+      z-index: 1;
+      white-space: pre-line;
+    }
+
+    .system-detail-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 18px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .detail-pill {
+      border: 1px solid rgba(220,224,255,.12);
+      color: var(--muted);
+      border-radius: 999px;
+      padding: 4px 8px;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: .67rem;
+      letter-spacing: .05em;
+    }
+
+    .tension-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+      margin-top: 28px;
+    }
+
+    .tension-card {
+      padding: 26px;
+      border: 1px solid rgba(239,157,195,.22);
+      background: linear-gradient(145deg, rgba(36,22,36,.74), rgba(18,18,28,.92));
+      border-radius: 18px;
+      break-inside: avoid;
+    }
+
+    .tension-pair {
+      margin: 10px 0 16px;
+      font-size: 1.38rem;
+      line-height: 1.2;
+    }
+
+    .tension-pair span { color: var(--rose); }
+    .tension-body { color: #d0c9d4; white-space: pre-line; }
+
+    .quiet-field {
+      margin-top: 26px;
+      padding: 26px 28px;
+      border: 1px dashed rgba(156,160,181,.26);
+      border-radius: 18px;
+      color: var(--muted);
+      background: rgba(17,19,26,.50);
+    }
+
+    .quiet-list {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .quiet-card {
+      padding: 14px;
+      border: 1px solid rgba(220,224,255,.08);
+      border-radius: 12px;
+      background: rgba(8,9,13,.42);
+    }
+
+    .cast-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 28px;
+    }
+
+    .cast-card {
+      min-height: 230px;
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(17,19,26,.82);
+      break-inside: avoid;
+    }
+
+    .cast-card h3 {
+      margin: 8px 0 4px;
+      font-size: 1.48rem;
+      font-weight: normal;
+    }
+
+    .cast-role { color: var(--gold); font-size: .95rem; }
+    .cast-meta { margin-top: 12px; color: var(--dim); font-family: Arial, Helvetica, sans-serif; font-size: .72rem; letter-spacing: .06em; }
+    .cast-body { margin: 14px 0 0; color: #c5c7d2; white-space: pre-line; }
+
+    .synthesis {
+      margin-top: 84px;
+      padding: 38px 34px;
+      border: 1px solid rgba(185,160,255,.38);
+      border-top: 3px solid var(--purple);
+      border-radius: 22px;
+      background:
+        radial-gradient(circle at 10% 0%, rgba(185,160,255,.13), transparent 24rem),
+        linear-gradient(145deg, rgba(25,24,39,.96), rgba(12,13,20,.96));
+    }
+
+    .synthesis .section-title { color: var(--purple); }
+    .synthesis-body { margin: 18px 0 0; font-size: 1.1rem; color: #d8d9e5; white-space: pre-line; }
+
+    footer {
+      margin-top: 66px;
+      text-align: center;
+      color: #525666;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: .68rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+
+    @media (max-width: 720px) {
+      .page { width: min(100% - 24px, var(--page-max)); padding-top: 12px; }
+      .cover { min-height: 64vh; border-radius: 16px; }
+      .identity-grid, .tension-grid, .cast-grid, .quiet-list { grid-template-columns: 1fr; }
+      .system-topline { flex-direction: column; gap: 10px; }
+      section { margin-top: 56px; }
+      .synthesis { margin-top: 56px; padding: 28px 24px; }
+    }
+
+    @media print {
+      :root {
+        --bg: #ffffff;
+        --surface: #f7f6fb;
+        --surface-2: #f2effb;
+        --surface-3: #ece8f7;
+        --line: #d7d4e3;
+        --text: #191826;
+        --muted: #5c5968;
+        --dim: #777382;
+        --purple: #4b3475;
+        --violet: #5f4e9b;
+        --gold: #78602b;
+        --mint: #245a49;
+        --rose: #804061;
+      }
+
+      body { background: #fff; }
+      .page { width: 100%; max-width: none; padding: 0; }
+      .cover { min-height: 92vh; background: #fbfaff; }
+      .system-card, .cast-card, .tension-card, .synthesis { box-shadow: none; }
+      section { page-break-before: auto; }
+      .system-card, .cast-card, .tension-card, .quiet-field, .synthesis { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+
+    <!-- COVER / PAGE 1 -->
+    <header class="cover">
+      <div class="eyebrow">Entangled Oracle · Ksisti-Puck LLC</div>
+      <h1>{{ querent_name }}</h1>
+      <p class="subtitle">Entangled Identity Profile</p>
+      <div class="cover-mark">✦</div>
+      <div class="meta-row">{{ generation_date }}{% if generation_location %} · {{ generation_location }}{% endif %}</div>
+    </header>
+
+    <!-- OVERVIEW / PAGE 1-2 -->
+    <section aria-labelledby="overview-title">
+      <div class="section-kicker">The portrait</div>
+      <h2 id="overview-title" class="section-title">Your living archetypal map</h2>
+      <p class="section-intro">This profile is not a personality label. It is a map of the mythic forces that become most active when your chart is read as a conversation rather than a category.</p>
+
+      <div class="hero-reading">
+        {{ portrait_overview_block }}
+      </div>
+
+      <div class="identity-grid">
+        {% for item in identity_at_a_glance %}
+        <div class="identity-chip">
+          <div class="micro-label">{{ item.label }}</div>
+          <strong>{{ item.value }}</strong>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+
+    <!-- ACTIVE SYSTEMS / PAGE 2+ -->
+    {% if active_index_sections %}
+    <section aria-labelledby="systems-title">
+      <div class="section-kicker">The active field</div>
+      <h2 id="systems-title" class="section-title">Archetypes currently shaping the story</h2>
+      <p class="section-intro">These are the systems with enough force in the chart to be treated as active identity patterns. Their titles are not grades; they describe the kind of relationship you are currently living with each force.</p>
+
+      <div class="systems">
+        {% for section in active_index_sections %}
+        <article class="system-card activation-{{ section.activation | lower }}">
+          <div class="system-topline">
+            <div class="system-name">{{ section.name }}</div>
+            <div class="activation">{{ section.activation }}</div>
+          </div>
+
+          <h3 class="system-expression">{{ section.expression }}</h3>
+          <p class="system-archetype">{{ section.archetype }}</p>
+
+          {% if section.tagline %}
+          <p class="system-tagline">{{ section.tagline }}</p>
+          {% endif %}
+
+          <div class="system-body">{{ section.block }}</div>
+
+          {% if section.details %}
+          <div class="system-detail-row">
+            {% for detail in section.details %}
+            <span class="detail-pill">{{ detail }}</span>
+            {% endfor %}
+          </div>
+          {% endif %}
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+    {% endif %}
+
+    <!-- TENSIONS / PAGE 3+ -->
+    {% if tension_sections %}
+    <section aria-labelledby="tensions-title">
+      <div class="section-kicker">The conversation</div>
+      <h2 id="tensions-title" class="section-title">Where your archetypes complicate one another</h2>
+      <p class="section-intro">The portrait becomes personal where one living force interrupts, questions, or deepens another. These are not contradictions to solve. They are the tensions that give the life story texture.</p>
+
+      <div class="tension-grid">
+        {% for tension in tension_sections %}
+        <article class="tension-card">
+          <div class="micro-label">{{ tension.label }}</div>
+          <div class="tension-pair">{{ tension.left }} <span>↔</span> {{ tension.right }}</div>
+          <div class="tension-body">{{ tension.block }}</div>
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+    {% endif %}
+
+    <!-- QUIET / DORMANT SIGNALS -->
+    {% if quiet_signal_sections %}
+    <section aria-labelledby="quiet-title">
+      <div class="section-kicker">The quiet field</div>
+      <h2 id="quiet-title" class="section-title">Archetypes present at the edge of the story</h2>
+      <div class="quiet-field">
+        <p>These signals are not absent. They simply are not driving the current portrait with the same force. They may become more meaningful through lived experience, changing life context, or deeper study.</p>
+        <div class="quiet-list">
+          {% for quiet in quiet_signal_sections %}
+          <div class="quiet-card">
+            <div class="micro-label">{{ quiet.name }}</div>
+            <strong>{{ quiet.archetype }}</strong>
+            <p>{{ quiet.note }}</p>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+    {% endif %}
+
+    <!-- MYTHIC CAST / PAGE 4+ -->
+    {% if mythic_cast %}
+    <section aria-labelledby="cast-title">
+      <div class="section-kicker">The cast</div>
+      <h2 id="cast-title" class="section-title">The entities behind the portrait</h2>
+      <p class="section-intro">These are not raw placement notes. They are the mythic presences whose chart relationships helped compose the profile above.</p>
+
+      <div class="cast-grid">
+        {% for entity in mythic_cast %}
+        <article class="cast-card">
+          <div class="micro-label">{{ entity.domain }}</div>
+          <h3>{{ entity.name }}</h3>
+          <div class="cast-role">{{ entity.role }}</div>
+          <div class="cast-meta">{{ entity.position }}{% if entity.house %} · {{ entity.house }}{% endif %}</div>
+          <div class="cast-body">{{ entity.block }}</div>
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+    {% endif %}
+
+    <!-- FINAL SYNTHESIS -->
+    {% if has_portrait_synthesis %}
+    <section class="synthesis" aria-labelledby="synthesis-title">
+      <div class="section-kicker">Portrait synthesis</div>
+      <h2 id="synthesis-title" class="section-title">The story these forces make together</h2>
+      <div class="synthesis-body">{{ portrait_synthesis_block }}</div>
+    </section>
+    {% endif %}
+
+    <footer>
+      Entangled Oracle · Ksisti-Puck LLC · Generated {{ generation_date }}
+    </footer>
+  </main>
+</body>
+</html>

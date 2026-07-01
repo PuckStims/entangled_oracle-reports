@@ -1,0 +1,51 @@
+{
+  "_note": "Key: transit_planet -> aspect_character (flowing/challenging) -> Vertex. 6 planets x 2 aspect characters = 12 blocks. Approx. 65-85 words each. Flowing covers Conjunction, Trine, Sextile. Challenging covers Square, Opposition.",
+  "Jupiter": {
+    "flowing": {
+      "Vertex": "Jupiter contacting your Vertex can bring an arrival that widens the horizon in an unexpected way. A person, opportunity, invitation, or community may enter your life carrying more possibility than you would have known to pursue on your own. The contact often feels expansive, not because everything becomes effortless, but because something fits into place with unusual precision. Stay curious about what is appearing. Some opportunities reveal their full significance only after you have had time to walk through the door."
+    },
+    "challenging": {
+      "Vertex": "Jupiter contacting your Vertex in a challenging alignment can bring an arrival that stretches your current assumptions, capacity, or plans. An opportunity, encounter, or circumstance may appear under imperfect conditions, demanding more growth than comfort. The friction does not necessarily indicate a wrong turn. Instead, it may reveal where life is asking for a larger response than the one you expected to give. What arrives may not fit your schedule, but it may still belong to your path."
+    }
+  },
+  "Saturn": {
+    "flowing": {
+      "Vertex": "A contact arriving under this transit tends to carry weight without being unwelcome. What enters your field — a person, institution, role, or recognition — may arrive with a formality or seriousness that feels appropriate rather than imposing. Saturn near your Vertex can mark the moment when something that has been building is finally named, acknowledged, or made real. Meet it with the seriousness it offers. What arrives under this kind of contact often turns out to have been worth the wait."
+    },
+    "challenging": {
+      "Vertex": "Something arriving now may carry real legitimacy, but the terms of the contact feel difficult to meet. A person, obligation, institution, or threshold may appear before you feel fully prepared — not because the timing is wrong, but because readiness and arrival do not always coordinate neatly. The weight here is not punishment; it is the pressure of something genuine asking to be taken seriously. What you are being asked to meet may be harder to ignore than it is to face."
+    }
+  },
+  "Uranus": {
+    "flowing": {
+      "Vertex": "Something unexpected enters the field and reorients your direction before you have fully processed its arrival. A person, message, circumstance, or sudden opening may appear in a way that bypasses your usual filters — not because it is disruptive, but because it is faster than your plans. Uranus near your Vertex in a supportive alignment tends to deliver contacts that feel liberating rather than destabilizing. Follow the thread before you analyze it. What interrupts the expected path may be the more honest one."
+    },
+    "challenging": {
+      "Vertex": "An arrival under this transit may feel more like a collision than a contact. A person, circumstance, or unexpected development enters the field with a force that disrupts what was already in motion. The difficulty is not that the contact is wrong — it is that it refuses to wait for a better moment. What arrives may require you to release something you were not finished with. The reorientation this brings can take time to understand, but it rarely leaves the landscape unchanged."
+    }
+  },
+  "Neptune": {
+    "flowing": {
+      "Vertex": "What arrives under this transit may not announce itself clearly, but its presence is felt. A person, creative current, spiritual opening, or shift in atmosphere enters your field in a way that softens ordinary boundaries. Neptune near your Vertex in a supportive alignment can bring contacts that feel fated in a quiet register — less like a door opening and more like a membrane thinning. Stay receptive without abandoning discernment. What is genuinely meaningful here will hold up to a closer look."
+    },
+    "challenging": {
+      "Vertex": "An arrival under this transit may be difficult to read at first. A person, situation, or atmosphere enters the field carrying qualities that are hard to name — inspiring and disorienting in roughly equal measure. Neptune contacting your Vertex in a tense alignment can blur the line between what is genuinely significant and what only feels that way. Take your time before committing to an interpretation. What is real will remain after the initial impression settles."
+    }
+  },
+  "Pluto": {
+    "flowing": {
+      "Vertex": "What arrives under this transit does not announce itself as ordinary. A person, institution, realization, or circumstance enters your field carrying a kind of gravity that changes the terms of what was already in motion. Pluto near your Vertex in a supportive alignment does not promise ease, but it does promise consequence. The contact tends to be the kind that divides time into before and after. Let it be significant. What has arrived deserves your full attention, not a managed response."
+    },
+    "challenging": {
+      "Vertex": "Something enters your field with a force that is difficult to negotiate with. A person, circumstance, institution, or revelation may arrive carrying an intensity that exposes what was already under pressure — hidden dependencies, unspoken dynamics, or a truth that has been waiting for the right pressure to surface. The contact is not comfortable, but comfort is not what it came to offer. What Pluto brings to your Vertex in a tense alignment tends to be exactly as significant as it feels, and worth meeting on its own terms."
+    }
+  },
+  "Mars": {
+    "flowing": {
+      "Vertex": "Something enters the field with momentum and it moves fast. A person, conflict, desire, or sudden circumstance arrives carrying an activating force — not gradual, not subtle, not easy to defer. Mars near your Vertex in a supportive alignment tends to deliver contacts that demand immediate presence rather than careful planning. The arrival may feel charged, competitive, or urgent. Meet it directly. What appears now has energy behind it, and that energy is most useful when it is met rather than managed."
+    },
+    "challenging": {
+      "Vertex": "An arrival under this transit comes in hot. A person, confrontation, unexpected demand, or flash of circumstance enters your field in a way that bypasses diplomacy entirely. Mars contacting your Vertex in a tense alignment can feel like being handed something you did not ask for and cannot easily put down. The friction is real, but so is the activation. What forces itself into your attention now may be revealing something that quieter contacts would have left undisturbed. Stay grounded. The charge is information."
+    }
+  }
+}

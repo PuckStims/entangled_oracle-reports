@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Year Ahead · {{ querent_name }}</title>
+  <style>
+    :root {
+      /* Base */
+      --bg:        {{ palette.bg }};
+      --surface:   {{ palette.surface }};
+      --surface-2: {{ palette.surface_2 }};
+      --border:    {{ palette.border }};
+      --text:      {{ palette.text }};
+      --muted:     {{ palette.muted }};
+      --subtle:    {{ palette.subtle }};
+
+      /* Semantic color tokens */
+      --color-identity:      {{ palette.identity }};
+      --color-growth:        {{ palette.growth }};
+      --color-relationships: {{ palette.relationships }};
+      --color-creativity:    {{ palette.creativity }};
+      --color-vocation:      {{ palette.vocation }};
+      --color-home:          {{ palette.home }};
+      --color-spiritual:     {{ palette.spiritual }};
+
+      /* Legacy aliases for backward compatibility */
+      --accent:  {{ palette.accent }};
+      --purple:  {{ palette.purple }};
+      --gold:    {{ palette.gold }};
+      --rose:    {{ palette.rose }};
+      --ember:   {{ palette.ember }};
+      --blue:    {{ palette.blue }};
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Georgia, "Times New Roman", serif;
+      line-height: 1.75;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 220px minmax(0, 1fr);
+      min-height: 100vh;
+    }
+
+    aside {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 30px 18px;
+      background: #0A0A14;
+      border-right: 1px solid var(--border);
+      overflow-y: auto;
+    }
+
+    .brand {
+      margin: 0 0 26px;
+      color: var(--accent);
+      font-size: 0.72rem;
+      line-height: 1.45;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .brand span {
+      display: block;
+      margin-top: 6px;
+      color: var(--faint);
+      font-size: 0.61rem;
+      letter-spacing: 1.2px;
+    }
+
+    nav a {
+      display: block;
+      margin: 2px 0;
+      padding: 7px 10px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.78rem;
+      border-left: 2px solid transparent;
+    }
+
+    nav a:hover {
+      color: var(--text);
+      border-left-color: var(--accent);
+      background: rgba(136, 221, 255, 0.06);
+    }
+
+    main {
+      width: min(940px, 100%);
+      margin: 0 auto;
+      padding: 52px 42px 84px;
+    }
+
+    header {
+      margin-bottom: 54px;
+      text-align: center;
+    }
+
+    .name {
+      font-size: clamp(1.55rem, 4vw, 2.2rem);
+      font-weight: normal;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+    }
+    [data-palette="vibrant"] .name { color: var(--accent); }
+    [data-palette="muted"]   .name { color: #1A1410; }
+
+    .report-title {
+      margin-top: 10px;
+      color: var(--gold);
+      font-size: 0.74rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+
+    .meta {
+      margin-top: 9px;
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
+    .natal-ref-label { font-size: 0.6rem; letter-spacing: 2px; text-transform: uppercase; opacity: 0.55; margin-top: 10px; }
+
+    .section {
+      margin: 60px 0 0;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 22px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .eyebrow {
+      margin: 0 0 4px;
+      color: var(--muted);
+      font-size: 0.62rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+
+    h2 {
+      margin: 0;
+      color: var(--gold);
+      font-size: 1.25rem;
+      font-weight: normal;
+      letter-spacing: 0.5px;
+    }
+
+    h3 {
+      margin: 0;
+      color: var(--gold);
+      font-size: 1.05rem;
+      font-weight: normal;
+    }
+
+    .snapshot-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      font-size: 0.86rem;
+    }
+
+    .snapshot-table th,
+    .snapshot-table td {
+      padding: 10px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .snapshot-table tr:last-child td { border-bottom: 0; }
+
+    .snapshot-table th {
+      color: var(--muted);
+      font-size: 0.65rem;
+      font-weight: normal;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .chart-note {
+      margin: 12px 2px 0;
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
+
+    .wheel-wrap {
+      margin: 0 auto 28px;
+      max-width: 480px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      background: #0d0d1a;
+    }
+
+    .wheel-wrap svg {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    @media (max-width: 560px) {
+      .wheel-wrap { max-width: 100%; }
+    }
+
+    .overview,
+    .integration {
+      padding: 26px 28px;
+      border: 1px solid var(--border);
+      border-top: 2px solid var(--accent);
+      border-radius: 8px;
+      background: var(--surface);
+      color: #D4E3EF;
+      font-size: 0.98rem;
+      font-style: italic;
+      white-space: pre-line;
+    }
+    [data-palette="muted"] .overview,
+    [data-palette="muted"] .integration { color: #2A2420; }
+
+    .arc-grid {
+      display: grid;
+      gap: 9px;
+      padding: 21px 23px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface);
+    }
+
+    .arc-row {
+      display: grid;
+      grid-template-columns: 45px minmax(70px, 1fr) 88px;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .arc-month {
+      color: var(--muted);
+      font-size: 0.74rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .arc-track {
+      height: 9px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #252638;
+    }
+
+    .arc-fill {
+      height: 100%;
+      border-radius: inherit;
+      background: var(--purple);
+    }
+
+    .arc-label {
+      color: var(--muted);
+      font-size: 0.72rem;
+      text-align: right;
+    }
+
+    .landmark-grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .landmark-card,
+    .event-card {
+      padding: 22px 22px 24px;
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: 7px;
+      background: var(--surface);
+    }
+
+    .event-card.flowing,
+    .landmark-card.flowing { border-left-color: var(--green); }
+
+    .event-card.challenging,
+    .landmark-card.challenging { border-left-color: var(--amber); }
+
+    .event-card.eclipse,
+    .landmark-card.eclipse { border-left-color: var(--eclipse); }
+
+    .event-card.ingress,
+    .landmark-card.ingress { border-left-color: var(--accent); }
+
+    .card-top {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .card-kind {
+      color: var(--muted);
+      font-size: 0.62rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .card-date {
+      margin-left: auto;
+      color: var(--faint);
+      font-size: 0.72rem;
+      letter-spacing: 1px;
+    }
+
+    .card-subtitle {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 0.80rem;
+    }
+
+    .timing-line {
+      margin-top: 12px;
+      color: var(--faint);
+      font-size: 0.72rem;
+      letter-spacing: 0.4px;
+    }
+
+    .intensity-line {
+      margin-top: 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.72rem;
+      letter-spacing: 0.5px;
+      color: var(--muted);
+    }
+
+    .intensity-symbol {
+      font-size: 0.85rem;
+      line-height: 1;
+    }
+
+    .intensity-label-text {
+      text-transform: uppercase;
+      font-size: 0.68rem;
+      letter-spacing: 1px;
+      color: var(--faint);
+    }
+
+    .event-block {
+      margin: 17px 0 0;
+      color: var(--text);
+      font-size: 0.93rem;
+      white-space: pre-line;
+    }
+
+    .section-subtitle {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 0.92rem;
+      font-style: italic;
+    }
+
+    .constellation-lens {
+      margin-top: 14px;
+      padding: 12px 0;
+      border-top: 1px dotted var(--border);
+    }
+
+    .lens-label {
+      margin: 0 0 8px;
+      color: var(--muted);
+      font-size: 0.72rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .lens-block {
+      color: var(--text);
+      font-size: 0.95rem;
+      font-style: italic;
+      line-height: 1.7;
+    }
+
+    .event-card.convergence {
+      border-left: 3px solid var(--accent);
+      background: rgba(136, 221, 255, 0.04);
+    }
+
+    /*
+      MONTHLY READING RHYTHM
+      Each month now opens as a distinct chapter. The opener contains the
+      high-level monthly pattern; the labelled divider below it explicitly
+      begins the dated, chronological cascade.
+    */
+    .month-section {
+      scroll-margin-top: 20px;
+      margin-top: 66px;
+      padding-top: 2px;
+    }
+
+    .month-opener {
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 20px;
+      padding: 25px 26px 22px;
+      border: 1px solid var(--border);
+      border-top: 3px solid var(--accent);
+      border-radius: 10px;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.055), rgba(255,255,255,0)),
+        var(--surface);
+      break-inside: avoid;
+    }
+
+    .month-opener::after {
+      content: "";
+      position: absolute;
+      right: -28px;
+      top: -54px;
+      width: 175px;
+      height: 175px;
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      opacity: 0.55;
+      pointer-events: none;
+    }
+
+    .month-opener-top {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+      padding-bottom: 17px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .month-index-wrap {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+    }
+
+    .month-index {
+      display: grid;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      flex: 0 0 38px;
+      border: 1px solid var(--accent);
+      border-radius: 50%;
+      color: var(--accent);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 0.92rem;
+      letter-spacing: 1px;
+    }
+
+    .month-kicker {
+      margin: 0 0 3px;
+      color: var(--muted);
+      font-size: 0.61rem;
+      letter-spacing: 2.6px;
+      text-transform: uppercase;
+    }
+
+    .month-heading {
+      margin: 0;
+      color: var(--gold);
+      font-size: clamp(1.45rem, 3.5vw, 1.95rem);
+      font-weight: normal;
+      letter-spacing: 0.25px;
+    }
+
+    .month-range {
+      position: relative;
+      z-index: 1;
+      max-width: 176px;
+      color: var(--muted);
+      font-size: 0.75rem;
+      line-height: 1.5;
+      text-align: right;
+    }
+
+    .month-brief-label {
+      position: relative;
+      z-index: 1;
+      margin: 19px 0 8px;
+      color: var(--accent);
+      font-size: 0.61rem;
+      letter-spacing: 2.3px;
+      text-transform: uppercase;
+    }
+
+    .month-snapshot {
+      position: relative;
+      z-index: 1;
+      margin: 0;
+      padding: 15px 17px;
+      border-left: 3px solid var(--purple);
+      border-radius: 0 6px 6px 0;
+      background: rgba(192, 160, 255, 0.075);
+      color: #DAD1F3;
+      white-space: pre-line;
+    }
+    [data-palette="muted"] .month-snapshot { color: #2A2420; }
+
+    .domains-wrap {
+      position: relative;
+      z-index: 1;
+      margin-top: 18px;
+    }
+
+    .domains-label {
+      margin: 0 0 8px;
+      color: var(--muted);
+      font-size: 0.61rem;
+      letter-spacing: 2.3px;
+      text-transform: uppercase;
+    }
+
+    .domains {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 0;
+    }
+
+    .chronology-divider {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      margin: 28px 0 16px;
+      color: var(--accent);
+      break-after: avoid;
+    }
+
+    .chronology-divider::before,
+    .chronology-divider::after {
+      content: "";
+      height: 1px;
+      background: var(--border);
+    }
+
+    .chronology-divider::before { width: 20px; }
+    .chronology-divider::after { flex: 1; }
+
+    .chronology-title {
+      color: var(--accent);
+      font-size: 0.67rem;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .chronology-note {
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-style: italic;
+      white-space: nowrap;
+    }
+
+    .event-card.first-in-month {
+      border-top: 2px solid var(--accent);
+    }
+
+    .activity-legend {
+      margin: 20px 0 28px;
+      padding: 16px 20px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface);
+    }
+
+    .activity-legend-heading {
+      margin: 0 0 6px;
+      font-size: 0.72rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .activity-legend-intro {
+      margin: 0 0 12px;
+      font-size: 0.80rem;
+      color: var(--faint);
+      line-height: 1.55;
+    }
+
+    .activity-legend-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .activity-legend-list li {
+      font-size: 0.80rem;
+      color: var(--muted);
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .legend-symbol {
+      font-size: 0.85rem;
+      color: var(--text);
+      width: 16px;
+      flex-shrink: 0;
+      text-align: center;
+    }
+
+    .legend-item-label {
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .domain-chip {
+      padding: 7px 10px;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      background: var(--surface-hi);
+      color: var(--muted);
+      font-size: 0.72rem;
+    }
+
+    .domain-chip b {
+      color: var(--accent);
+      font-weight: normal;
+    }
+
+    .monthly-events {
+      display: grid;
+      gap: 14px;
+    }
+
+    .empty-month,
+    .empty-landmarks {
+      padding: 26px;
+      color: var(--muted);
+      font-style: italic;
+      text-align: center;
+      border: 1px dashed var(--border);
+      border-radius: 7px;
+    }
+
+    footer {
+      margin-top: 70px;
+      color: var(--faint);
+      font-size: 0.68rem;
+      letter-spacing: 1px;
+      text-align: center;
+    }
+
+    @media (max-width: 820px) {
+      .layout { display: block; }
+      aside {
+        position: static;
+        height: auto;
+        padding: 18px;
+        border-right: 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .brand { margin-bottom: 12px; }
+      nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2px;
+      }
+      nav a { padding: 5px 7px; }
+      main { padding: 36px 19px 64px; }
+    }
+
+    @media (max-width: 560px) {
+      .month-opener { padding: 20px 18px; }
+      .month-opener-top { align-items: flex-start; }
+      .month-range { max-width: 108px; font-size: 0.69rem; }
+      .chronology-divider { gap: 8px; }
+      .chronology-note { display: none; }
+    }
+
+    /* Year Ahead PDF print recovery.
+   Derived mechanically from the color values embedded in puck_year_ahead.pdf.
+   Replace the template's existing @media print block with this entire block.
+*/
+@media print {
+  :root { color-scheme: light; }
+
+  html,
+  body {
+    background: #ffffff;
+    color: #1a1a2e;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  aside { display: none; }
+  .layout { display: block; }
+  main { width: auto; max-width: none; margin: 0; padding: 0.45in; }
+
+  .name { color: #1a6b9a; }
+  .report-title,
+  h2,
+  h3 { color: #8b6200; }
+
+  .meta,
+  .eyebrow,
+  .snapshot-table th { color: #555570; }
+
+  .chart-note,
+  .card-kind,
+  .card-subtitle,
+  .timing-line,
+  .intensity-line,
+  .arc-month,
+  .arc-label,
+  .section-subtitle,
+  .lens-label,
+  .month-kicker,
+  .month-range,
+  .domains-label,
+  .chronology-note { color: #555555; }
+
+  .card-date { color: #8888a0; }
+  .section-header { border-color: #aaaaaa; }
+
+  .snapshot-table {
+    background: #ffffff;
+    border-color: #d0d0dc;
+    color: #1a1a2e;
+  }
+  .snapshot-table th {
+    background: #efeff5;
+    border-color: #d0d0dc;
+  }
+  .snapshot-table td {
+    background: #ffffff;
+    border-color: #d0d0dc;
+    color: #1a1a2e;
+  }
+
+  .overview,
+  .integration,
+  .arc-grid,
+  .month-opener {
+    background: #f7f7fa;
+    border-color: #d0d0dc;
+    color: #1a1a2e;
+  }
+  .overview,
+  .integration,
+  .month-opener { border-top-color: #1a6b9a; }
+  .month-opener::after { display: none; }
+
+  .landmark-card,
+  .event-card {
+    background: #f7f7fa;
+    border: 1px solid #d0d0dc;
+    border-left: 3px solid #1a6b9a;
+    color: #1a1a2e;
+  }
+  .event-card.flowing,
+  .landmark-card.flowing { border-left-color: #1a7a4a; }
+  .event-card.challenging,
+  .landmark-card.challenging { border-left-color: #8b5000; }
+  .event-card.eclipse,
+  .landmark-card.eclipse { border-left-color: #7a1a8a; }
+  .event-card.ingress,
+  .landmark-card.ingress { border-left-color: #1a6b9a; }
+
+  .event-block,
+  .lens-block { color: #1a1a2e; }
+  .constellation-lens { border-top-color: #d0d0dc; }
+
+  .arc-track { background: #dddddd; }
+  .arc-fill { background: #777777; }
+
+  .month-index,
+  .month-brief-label,
+  .chronology-divider,
+  .chronology-title,
+  .domain-chip b { color: #1a6b9a; }
+  .month-index { border-color: #1a6b9a; }
+  .month-heading { color: #8b6200; }
+
+  .month-snapshot {
+    background: #f6f4ff;
+    border-left-color: #5a3a9a;
+    color: #222222;
+  }
+
+  .domain-chip {
+    background: #ffffff;
+    border-color: #d0d0dc;
+    color: #111111;
+  }
+  .chronology-divider::before,
+  .chronology-divider::after { background: #d0d0dc; }
+
+  .wheel-wrap,
+  .chart-wheel-container,
+  .mini-wheel-wrap {
+    background: #ffffff;
+    border-color: #d0d0dc;
+  }
+
+  .empty-month,
+  .empty-landmarks { color: #555555; border-color: #d0d0dc; }
+  footer { color: #8888a0; }
+  .month-section {
+    break-before: auto;
+    page-break-before: auto;
+  }
+
+  .landmark-grid,
+  .monthly-events {
+    display: block;
+  }
+
+  .landmark-card,
+  .event-card,
+  .constellation-lens {
+    break-inside: auto;
+    page-break-inside: auto;
+  }
+
+  .card-top,
+  .card-subtitle,
+  .timing-line,
+  .intensity-line,
+  .lens-label {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  h3 {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+}
+
+  </style>
+</head>
+<body data-palette="{{ palette_name | default('vibrant') }}">
+  <div class="layout">
+    <aside>
+      <p class="brand">
+        Entangled Oracle
+        <span>Year-Ahead Forecast</span>
+      </p>
+      <nav aria-label="Forecast months">
+        <a href="#overview">Overview</a>
+        <a href="#landmarks">Landmarks</a>
+        {% for month in months %}
+        <a href="#{{ month.id }}">{{ month.short_name }} · {{ month.number }}</a>
+        {% endfor %}
+        <a href="#integration">Integration</a>
+      </nav>
+    </aside>
+
+    <main>
+      <header>
+        <div class="name">{{ querent_name }}</div>
+        <div class="report-title">Year-Ahead Transit Forecast</div>
+        <div class="meta">{{ report_start_date }} — {{ report_end_date }}</div>
+        {% if birth_date_display or birth_time_display or birth_location %}
+        <div class="meta natal-ref-label">Born</div>
+        <div class="meta">{{ birth_date_display }}{% if birth_time_display %} · {{ birth_time_display }}{% endif %}</div>
+        {% if birth_location %}<div class="meta">{{ birth_location }}</div>{% endif %}
+        {% endif %}
+        <div class="meta">Entangled Oracle · Ksisti-Puck LLC</div>
+      </header>
+
+      <section class="section" id="chart-snapshot">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">Natal reference</p>
+            <h2>Positions at a Glance</h2>
+          </div>
+        </div>
+
+        {% if chart_wheel_svg %}
+        <div class="wheel-wrap">{{ chart_wheel_svg | safe }}</div>
+        {% endif %}
+
+        <table class="snapshot-table">
+          <thead>
+            <tr>
+          <th scope="col">Point</th>
+          <th scope="col">Position</th>
+          <th scope="col">House</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in natal_positions %}
+            <tr>
+              <td>{{ row.name }}</td>
+              <td>{{ row.position }}</td>
+              <td>{{ row.house }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <p class="chart-note">{{ house_system_label | default(house_system | default('Whole Sign')) }} houses · {{ zodiac_label | default('Tropical') }} zodiac</p>
+      </section>
+
+      <section class="section" id="overview">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">Orientation</p>
+            <h2>The Year in Context</h2>
+          </div>
+        </div>
+        {% if year_overview_block %}
+        <div class="overview">{{ year_overview_block }}</div>
+        {% else %}
+        <div class="empty-landmarks">A single dominant slow-planet theme did not emerge strongly enough to anchor this section.</div>
+        {% endif %}
+      </section>
+
+      {% if archetypal_opening_section %}
+      <section class="section" id="archetypal-year">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">Archetypal Frame</p>
+            <h2>{{ archetypal_opening_section.title }}</h2>
+            {% if archetypal_opening_section.subtitle %}
+            <p class="section-subtitle">{{ archetypal_opening_section.subtitle }}</p>
+            {% endif %}
+          </div>
+        </div>
+        <div class="overview">{{ archetypal_opening_section.body }}</div>
+      </section>
+      {% endif %}
+
+      <section class="section" id="annual-arc">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">Intensity map</p>
+            <h2>Your Year at a Glance</h2>
+          </div>
+        </div>
+        <div class="arc-grid">
+          {% for month in annual_arc %}
+          <div class="arc-row">
+            <div class="arc-month">{{ month.short_name }}</div>
+            <div class="arc-track"><div class="arc-fill" style="width: {{ month.arc_percent }}%"></div></div>
+            <div class="arc-label">{{ month.arc_label }}</div>
+          </div>
+          {% endfor %}
+        </div>
+      </section>
+
+      <section class="section" id="landmarks">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">Headline layer</p>
+            <h2>Your Year-Defining Patterns</h2>
+          </div>
+        </div>
+
+        <div class="activity-legend">
+          <p class="activity-legend-heading">Understanding Activity Levels</p>
+          <p class="activity-legend-intro">These markers indicate how much symbolic activity tends to gather around a period. They describe the relative concentration of themes within this report, not the certainty or importance of life events.</p>
+          <ul class="activity-legend-list">
+            <li><span class="legend-symbol">○</span><span class="legend-item-label">Background</span> — gentle supporting influences</li>
+            <li><span class="legend-symbol">●</span><span class="legend-item-label">Active</span> — noticeable periods of movement or change</li>
+            <li><span class="legend-symbol">◆</span><span class="legend-item-label">Significant</span> — periods likely to deserve additional attention</li>
+            <li><span class="legend-symbol">✦</span><span class="legend-item-label">Key Window</span> — one of the year's strongest concentrations of symbolic activity</li>
+          </ul>
+        </div>
+
+        {% if landmarks %}
+        <div class="landmark-grid">
+          {% for event in landmarks %}
+          <article class="landmark-card {{ event.tone }}">
+            <div class="card-top">
+              <span class="card-kind">{{ event.event_label }}</span>
+              <span class="card-date">{{ event.peak_date }}</span>
+            </div>
+            <h3>{{ event.title }}</h3>
+            {% if event.subtitle %}<div class="card-subtitle">{{ event.subtitle }}</div>{% endif %}
+            {% if event.duration_descriptor %}<div class="timing-line">{{ event.duration_descriptor }}</div>{% endif %}
+            <div class="intensity-line"><span class="intensity-symbol">{{ event.intensity_bar }}</span><span class="intensity-label-text">{{ event.intensity_label }}</span></div>
+            {% if event.block %}<div class="event-block">{{ event.block }}</div>{% endif %}
+            {% if event.constellation_lens %}
+            <div class="constellation-lens">
+              <p class="lens-label">Through Your Constellation{% if event.constellation_lens_label %} · {{ event.constellation_lens_label }}{% endif %}</p>
+              <div class="lens-block">{{ event.constellation_lens }}</div>
+            </div>
+            {% endif %}
+          </article>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-landmarks">No sustained transit met the landmark threshold in this forecast window.</div>
+        {% endif %}
+      </section>
+
+      {% for month in months %}
+      <section class="month-section" id="{{ month.id }}">
+        <div class="month-opener">
+          <div class="month-opener-top">
+            <div class="month-index-wrap">
+              <div class="month-index">{{ "%02d"|format(month.number) }}</div>
+              <div>
+                <p class="month-kicker">Monthly chapter · {{ month.arc_label }}</p>
+                <h2 class="month-heading">{{ month.name }}</h2>
+              </div>
+            </div>
+            <div class="month-range">{{ month.range }}</div>
+          </div>
+
+          {% if month.snapshot_block %}
+          <p class="month-brief-label">The month’s pattern</p>
+          <div class="month-snapshot">{{ month.snapshot_block }}</div>
+          {% endif %}
+
+          {% if month.activated_domains %}
+          <div class="domains-wrap">
+            <p class="domains-label">Most activated areas</p>
+            <div class="domains">
+              {% for domain in month.activated_domains %}
+              <div class="domain-chip"><b>{{ domain.bar }}</b> {{ domain.domain }}</div>
+              {% endfor %}
+            </div>
+          </div>
+          {% endif %}
+        </div>
+
+        {% if month.events %}
+        <div class="chronology-divider" aria-label="Chronological forecast begins">
+          <span class="chronology-title">Chronological forecast</span>
+          <span class="chronology-note">Dated events & turning points</span>
+        </div>
+        <div class="monthly-events">
+          {% for event in month.events %}
+          <article class="event-card {{ event.tone }}{% if loop.first %} first-in-month{% endif %}">
+            <div class="card-top">
+              <span class="card-kind">{{ event.event_label }}</span>
+              <span class="card-date">{{ event.date_label }}</span>
+            </div>
+            <h3>{{ event.title }}</h3>
+            {% if event.subtitle %}<div class="card-subtitle">{{ event.subtitle }}</div>{% endif %}
+            {% if event.duration_descriptor %}<div class="timing-line">{{ event.duration_descriptor }}</div>{% endif %}
+            <div class="intensity-line"><span class="intensity-symbol">{{ event.intensity_bar }}</span><span class="intensity-label-text">{{ event.intensity_label }}</span></div>
+            {% if event.block %}<div class="event-block">{{ event.block }}</div>{% endif %}
+            {% if event.constellation_lens %}
+            <div class="constellation-lens">
+              <p class="lens-label">Through Your Constellation{% if event.constellation_lens_label %} · {{ event.constellation_lens_label }}{% endif %}</p>
+              <div class="lens-block">{{ event.constellation_lens }}</div>
+            </div>
+            {% endif %}
+          </article>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-month">No qualifying dated entries begin in this forecast period.</div>
+        {% endif %}
+      </section>
+      {% endfor %}
+
+      <section class="section" id="integration">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">Closing synthesis</p>
+            <h2>Year Integration</h2>
+          </div>
+        </div>
+        {% if year_integration_block %}
+        <div class="integration">{{ year_integration_block }}</div>
+        {% else %}
+        <div class="empty-landmarks">Your integration theme will appear here when the dominant-theme mapping is finalized.</div>
+        {% endif %}
+      </section>
+
+      <footer>
+        Entangled Oracle · Ksisti-Puck LLC · Generated {{ generation_date }}
+      </footer>
+    </main>
+  </div>
+</body>
+</html>

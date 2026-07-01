@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Constellation Mesh Preview</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 48px;
+            background: #05050a; /* Darker backdrop to frame the mesh */
+            font-family: Arial, sans-serif;
+            color: #E7E9F1;
+        }
+
+        main {
+            max-width: 800px;
+            margin: auto;
+            background: #0d0d1a; /* Matches the mesh SVG background */
+            padding: 36px;
+            border-radius: 14px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            border: 1px solid #25253a;
+        }
+
+        h1 {
+            margin-top: 0;
+            margin-bottom: 24px;
+            font-size: 24px;
+            text-align: center;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #C8CDE8;
+        }
+        
+        .svg-container {
+            display: flex;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>Constellation Mesh — Visual Test</h1>
+        <div class="svg-container">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" width="100%" aria-label="Constellation Mesh">
+<defs>
+<filter id="mesh-glow-41b60d" x="-50%" y="-50%" width="200%" height="200%">
+<feGaussianBlur stdDeviation="4" result="blur"/>
+<feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+</filter>
+<style>
+
+        .cm-bg { fill: #0d0d1a; }
+        .cm-node-core { fill: #FFFFFF; }
+        .cm-node-aura { fill: #C0A0FF; opacity: 0.6; mix-blend-mode: screen; }
+        .cm-label { font-family: 'Georgia', serif; font-size: 14px; fill: #E7E9F1; text-anchor: middle; font-weight: bold; letter-spacing: 2px; text-transform: uppercase; }
+        .cm-sublabel { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 11px; fill: #8390AB; text-anchor: middle; font-style: italic; }
+        
+        @media print {
+            .cm-bg { fill: #ffffff; }
+            .cm-node-core { fill: #333333; }
+            .cm-node-aura { display: none; }
+            .cm-label, .cm-sublabel { fill: #111111; }
+        }
+    
+</style>
+</defs>
+<rect class="cm-bg" width="800" height="800"/>
+<path d="M 625.17 270.00 Q 400.00 363.58 174.83 270.00" stroke="#3A3A55" stroke-width="0.80" fill="none" opacity="0.40" class="cm-edge"/>
+<path d="M 400.00 660.00 Q 362.24 421.80 174.83 270.00" stroke="#3A3A55" stroke-width="0.80" fill="none" opacity="0.40" class="cm-edge"/>
+<path d="M 174.83 530.00 Q 318.20 400.00 174.83 270.00" stroke="#3A3A55" stroke-width="0.80" fill="none" opacity="0.40" class="cm-edge"/>
+<path d="M 625.17 270.00 Q 441.48 423.95 400.00 660.00" stroke="#3A3A55" stroke-width="0.80" fill="none" opacity="0.40" class="cm-edge"/>
+<path d="M 400.00 140.00 Q 355.56 323.03 174.83 270.00" stroke="#3A3A55" stroke-width="0.80" fill="none" opacity="0.40" class="cm-edge"/>
+<path d="M 625.17 270.00 Q 400.00 400.00 174.83 530.00" stroke="#3A3A55" stroke-width="0.80" fill="none" opacity="0.40" class="cm-edge"/>
+<path d="M 625.17 530.00 Q 400.00 400.00 174.83 270.00" stroke="#3A3A55" stroke-width="0.80" fill="none" opacity="0.40" class="cm-edge"/>
+<path d="M 400.00 140.00 Q 449.80 313.75 625.17 270.00" stroke="#88DDFF" stroke-width="1.45" fill="none" opacity="0.60" class="cm-edge"/>
+<path d="M 625.17 270.00 Q 504.09 400.00 625.17 530.00" stroke="#88DDFF" stroke-width="1.49" fill="none" opacity="0.60" class="cm-edge"/>
+<path d="M 400.00 660.00 Q 338.84 505.93 174.83 530.00" stroke="#88DDFF" stroke-width="1.64" fill="none" opacity="0.60" class="cm-edge"/>
+<path d="M 400.00 140.00 Q 400.00 400.00 400.00 660.00" stroke="#88DDFF" stroke-width="1.77" fill="none" opacity="0.60" class="cm-edge"/>
+<path d="M 625.17 530.00 Q 472.38 525.37 400.00 660.00" stroke="#88DDFF" stroke-width="1.83" fill="none" opacity="0.60" class="cm-edge"/>
+<path d="M 400.00 140.00 Q 321.90 354.91 174.83 530.00" stroke="#88DDFF" stroke-width="1.93" fill="none" opacity="0.60" class="cm-edge"/>
+<path d="M 625.17 530.00 Q 400.00 495.46 174.83 530.00" stroke="#FFD080" stroke-width="3.84" fill="none" opacity="0.90" filter="url(#mesh-glow-41b60d)" class="cm-edge"/>
+<path d="M 400.00 140.00 Q 494.25 345.59 625.17 530.00" stroke="#FFD080" stroke-width="4.09" fill="none" opacity="0.90" filter="url(#mesh-glow-41b60d)" class="cm-edge"/>
+<circle class="cm-node-aura" cx="400.00" cy="140.00" r="38.40" filter="url(#mesh-glow-41b60d)"/>
+<circle class="cm-node-core" cx="400.00" cy="140.00" r="15.36"/>
+<circle class="cm-node-aura" cx="625.17" cy="270.00" r="24.60" filter="url(#mesh-glow-41b60d)"/>
+<circle class="cm-node-core" cx="625.17" cy="270.00" r="9.84"/>
+<circle class="cm-node-aura" cx="625.17" cy="530.00" r="40.20" filter="url(#mesh-glow-41b60d)"/>
+<circle class="cm-node-core" cx="625.17" cy="530.00" r="16.08"/>
+<circle class="cm-node-aura" cx="400.00" cy="660.00" r="31.50" filter="url(#mesh-glow-41b60d)"/>
+<circle class="cm-node-core" cx="400.00" cy="660.00" r="12.60"/>
+<circle class="cm-node-aura" cx="174.83" cy="530.00" r="34.80" filter="url(#mesh-glow-41b60d)"/>
+<circle class="cm-node-core" cx="174.83" cy="530.00" r="13.92"/>
+<circle class="cm-node-aura" cx="174.83" cy="270.00" r="22.50" filter="url(#mesh-glow-41b60d)"/>
+<circle class="cm-node-core" cx="174.83" cy="270.00" r="9.00"/>
+<text class="cm-label" x="400.00" y="96.00">Identity</text>
+<text class="cm-sublabel" x="400.00" y="114.00">Vindicated Oracle</text>
+<text class="cm-label" x="661.54" y="247.00">Reality Field</text>
+<text class="cm-sublabel" x="661.54" y="265.00">The Storyteller</text>
+<text class="cm-label" x="661.54" y="549.00">Knowledge Legacy</text>
+<text class="cm-sublabel" x="661.54" y="567.00">The Archivist</text>
+<text class="cm-label" x="400.00" y="700.00">Narrative</text>
+<text class="cm-sublabel" x="400.00" y="718.00">The Epic</text>
+<text class="cm-label" x="138.46" y="549.00">Power Current</text>
+<text class="cm-sublabel" x="138.46" y="567.00">The Sovereign Queen</text>
+<text class="cm-label" x="138.46" y="247.00">Impact Radius</text>
+<text class="cm-sublabel" x="138.46" y="265.00">The Awakener</text>
+</svg>
+        </div>
+    </main>
+</body>
+</html>

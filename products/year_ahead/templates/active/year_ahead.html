@@ -1,0 +1,2378 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Year Ahead - {{ querent_name }}</title>
+  <style>{{ shared_report_css | safe }}</style>
+  <style>
+    :root {
+      /* Base */
+      --bg:        {{ palette.bg }};
+      --surface:   {{ palette.surface }};
+      --surface-2: {{ palette.surface_2 }};
+      --border:    {{ palette.border }};
+      --text:      {{ palette.text }};
+      --muted:     {{ palette.muted }};
+      --subtle:    {{ palette.subtle }};
+
+      /* Semantic color tokens */
+      --color-identity:      {{ palette.identity }};
+      --color-growth:        {{ palette.growth }};
+      --color-relationships: {{ palette.relationships }};
+      --color-creativity:    {{ palette.creativity }};
+      --color-vocation:      {{ palette.vocation }};
+      --color-home:          {{ palette.home }};
+      --color-spiritual:     {{ palette.spiritual }};
+
+      /* Legacy aliases for backward compatibility */
+      --accent:  {{ palette.accent }};
+      --purple:  {{ palette.purple }};
+      --gold:    {{ palette.gold }};
+      --rose:    {{ palette.rose }};
+      --ember:   {{ palette.ember }};
+      --blue:    {{ palette.blue }};
+      --faint: var(--subtle);
+      --green: var(--color-growth);
+      --amber: var(--ember);
+      --eclipse: var(--purple);
+      --surface-hi: var(--surface-2);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Georgia, "Times New Roman", serif;
+      line-height: 1.75;
+      widows: 3;
+      orphans: 3;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 220px minmax(0, 1fr);
+      min-height: 100vh;
+    }
+
+    aside {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 30px 18px;
+      background: #0A0A14;
+      border-right: 1px solid var(--border);
+      overflow-y: auto;
+    }
+
+    .brand {
+      margin: 0 0 26px;
+      color: var(--accent);
+      font-size: 0.72rem;
+      line-height: 1.45;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .brand span {
+      display: block;
+      margin-top: 6px;
+      color: var(--faint);
+      font-size: 0.61rem;
+      letter-spacing: 1.2px;
+    }
+
+    nav a {
+      display: block;
+      margin: 2px 0;
+      padding: 7px 10px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.78rem;
+      border-left: 2px solid transparent;
+    }
+
+    nav a:hover {
+      color: var(--text);
+      border-left-color: var(--accent);
+      background: rgba(136, 221, 255, 0.06);
+    }
+
+    main {
+      width: min(940px, 100%);
+      margin: 0 auto;
+      padding: 52px 42px 84px;
+    }
+
+    header {
+      margin-bottom: 54px;
+      text-align: center;
+    }
+
+    .name {
+      font-size: clamp(1.55rem, 4vw, 2.2rem);
+      font-weight: normal;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+    }
+    [data-palette="vibrant"] .name { color: var(--accent); }
+    [data-palette="muted"]   .name { color: #1A1410; }
+
+    .report-title {
+      margin-top: 10px;
+      color: var(--gold);
+      font-size: 0.74rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+
+    .meta {
+      margin-top: 9px;
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
+    .natal-ref-label { font-size: 0.6rem; letter-spacing: 2px; text-transform: uppercase; opacity: 0.55; margin-top: 10px; }
+
+    .section {
+      margin: 60px 0 0;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 22px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+      break-after: avoid;
+      page-break-after: avoid;
+    }
+
+    .eyebrow {
+      margin: 0 0 4px;
+      color: var(--muted);
+      font-size: 0.62rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+
+    h2 {
+      margin: 0;
+      color: var(--gold);
+      font-size: 1.25rem;
+      font-weight: normal;
+      letter-spacing: 0.5px;
+    }
+
+    h3 {
+      margin: 0;
+      color: var(--gold);
+      font-size: 1.05rem;
+      font-weight: normal;
+      break-after: avoid;
+      page-break-after: avoid;
+    }
+
+    p,
+    li,
+    div,
+    span,
+    strong,
+    em {
+      overflow-wrap: break-word;
+      word-break: normal;
+    }
+
+    .snapshot-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      font-size: 0.86rem;
+    }
+
+    .snapshot-table th,
+    .snapshot-table td {
+      padding: 10px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .snapshot-table tr:last-child td { border-bottom: 0; }
+
+    .snapshot-table th {
+      color: var(--muted);
+      font-size: 0.65rem;
+      font-weight: normal;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .chart-note {
+      margin: 12px 2px 0;
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
+
+    .wheel-wrap {
+      margin: 0 auto 28px;
+      max-width: 480px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      background: #0d0d1a;
+    }
+
+    .wheel-wrap svg {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    @media (max-width: 560px) {
+      .wheel-wrap { max-width: 100%; }
+    }
+
+    .overview,
+    .integration {
+      padding: 26px 28px;
+      border: 1px solid var(--border);
+      border-top: 2px solid var(--accent);
+      border-radius: 8px;
+      background: var(--surface);
+      color: #D4E3EF;
+      font-size: 0.98rem;
+      font-style: italic;
+      white-space: pre-line;
+    }
+    [data-palette="muted"] .overview,
+    [data-palette="muted"] .integration { color: #2A2420; }
+
+    .event-card {
+      padding: 22px 22px 24px;
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: 7px;
+      background: var(--surface);
+    }
+
+    .event-card.flowing { border-left-color: var(--green); }
+
+    .event-card.challenging { border-left-color: var(--amber); }
+
+    .event-card.eclipse { border-left-color: var(--eclipse); }
+
+    .event-card.ingress { border-left-color: var(--accent); }
+
+    .card-top {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .card-kind {
+      color: var(--muted);
+      font-size: 0.62rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .card-date {
+      margin-left: auto;
+      color: var(--faint);
+      font-size: 0.72rem;
+      letter-spacing: 1px;
+    }
+
+    .card-subtitle {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 0.80rem;
+    }
+
+    .timing-line {
+      margin-top: 12px;
+      color: var(--faint);
+      font-size: 0.72rem;
+      letter-spacing: 0.4px;
+    }
+
+
+    .event-block {
+      margin: 17px 0 0;
+      color: var(--text);
+      font-size: 0.93rem;
+      white-space: pre-line;
+    }
+
+    .section-subtitle {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 0.92rem;
+      font-style: italic;
+    }
+
+    .constellation-lens {
+      margin-top: 14px;
+      padding: 12px 0;
+      border-top: 1px dotted var(--border);
+    }
+
+    .lens-label {
+      margin: 0 0 8px;
+      color: var(--muted);
+      font-size: 0.72rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .lens-block {
+      color: var(--text);
+      font-size: 0.95rem;
+      font-style: italic;
+      line-height: 1.7;
+    }
+
+    .event-card.convergence {
+      border-left: 3px solid var(--accent);
+      background: rgba(136, 221, 255, 0.04);
+    }
+
+    /*
+      MONTHLY READING RHYTHM
+      Each month now opens as a distinct chapter. The opener contains the
+      high-level monthly pattern; the labelled divider below it explicitly
+      begins the dated, chronological cascade.
+    */
+    .month-section {
+      scroll-margin-top: 20px;
+      margin-top: 66px;
+      padding-top: 2px;
+    }
+
+    .month-opener {
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 20px;
+      padding: 25px 26px 22px;
+      border: 1px solid var(--border);
+      border-top: 3px solid var(--accent);
+      border-radius: 10px;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.055), rgba(255,255,255,0)),
+        var(--surface);
+      break-inside: avoid;
+    }
+
+    .month-opener::after {
+      content: "";
+      position: absolute;
+      right: -28px;
+      top: -54px;
+      width: 175px;
+      height: 175px;
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      opacity: 0.55;
+      pointer-events: none;
+    }
+
+    .month-opener-top {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+      padding-bottom: 17px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .month-index-wrap {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+    }
+
+    .month-index {
+      display: grid;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      flex: 0 0 38px;
+      border: 1px solid var(--accent);
+      border-radius: 50%;
+      color: var(--accent);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 0.92rem;
+      letter-spacing: 1px;
+    }
+
+    .month-kicker {
+      margin: 0 0 3px;
+      color: var(--muted);
+      font-size: 0.61rem;
+      letter-spacing: 2.6px;
+      text-transform: uppercase;
+    }
+
+    .month-heading {
+      margin: 0;
+      color: var(--gold);
+      font-size: clamp(1.45rem, 3.5vw, 1.95rem);
+      font-weight: normal;
+      letter-spacing: 0.25px;
+    }
+
+    .month-range {
+      position: relative;
+      z-index: 1;
+      max-width: 176px;
+      color: var(--muted);
+      font-size: 0.75rem;
+      line-height: 1.5;
+      text-align: right;
+    }
+
+    .month-brief-label {
+      position: relative;
+      z-index: 1;
+      margin: 19px 0 8px;
+      color: var(--accent);
+      font-size: 0.61rem;
+      letter-spacing: 2.3px;
+      text-transform: uppercase;
+    }
+
+    .month-snapshot {
+      position: relative;
+      z-index: 1;
+      margin: 0;
+      padding: 15px 17px;
+      border-left: 3px solid var(--purple);
+      border-radius: 0 6px 6px 0;
+      background: rgba(192, 160, 255, 0.075);
+      color: #DAD1F3;
+      white-space: pre-line;
+    }
+    [data-palette="muted"] .month-snapshot { color: #2A2420; }
+
+    .month-opener-body {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(220px, 0.75fr);
+      gap: 18px;
+      align-items: start;
+      margin-top: 18px;
+    }
+
+    .month-opener-main {
+      display: grid;
+      gap: 16px;
+    }
+
+    .month-opener-aside {
+      display: grid;
+      gap: 12px;
+      align-content: start;
+    }
+
+    .month-opener-aside-card {
+      padding: 14px 15px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--surface-2);
+    }
+
+    .month-opener-aside-card span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.61rem;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+    }
+
+    .month-opener-aside-card strong {
+      display: block;
+      margin-top: 7px;
+      color: var(--text);
+      font-weight: normal;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .month-opener-aside-card p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 0.77rem;
+      line-height: 1.55;
+    }
+
+    .domains-wrap {
+      position: relative;
+      z-index: 1;
+    }
+
+    .domains-label {
+      margin: 0 0 8px;
+      color: var(--muted);
+      font-size: 0.61rem;
+      letter-spacing: 2.3px;
+      text-transform: uppercase;
+    }
+
+    .domains {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 0;
+    }
+
+    .chronology-divider {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      margin: 28px 0 16px;
+      color: var(--accent);
+      break-after: avoid;
+    }
+
+    .chronology-divider::before,
+    .chronology-divider::after {
+      content: "";
+      height: 1px;
+      background: var(--border);
+    }
+
+    .chronology-divider::before { width: 20px; }
+    .chronology-divider::after { flex: 1; }
+
+    .chronology-title {
+      color: var(--accent);
+      font-size: 0.67rem;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .chronology-note {
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-style: italic;
+      white-space: nowrap;
+    }
+
+    .event-card.first-in-month {
+      border-top: 2px solid var(--accent);
+    }
+
+    .activity-legend {
+      margin: 20px 0 28px;
+      padding: 16px 20px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface);
+    }
+
+    .activity-legend-heading {
+      margin: 0 0 6px;
+      font-size: 0.72rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .activity-legend-intro {
+      margin: 0 0 12px;
+      font-size: 0.80rem;
+      color: var(--faint);
+      line-height: 1.55;
+    }
+
+    .activity-legend-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .activity-legend-list li {
+      font-size: 0.80rem;
+      color: var(--muted);
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .legend-symbol {
+      font-size: 0.85rem;
+      color: var(--text);
+      width: 16px;
+      flex-shrink: 0;
+      text-align: center;
+    }
+
+    .legend-item-label {
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .domain-chip {
+      padding: 7px 10px;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      background: var(--surface-hi);
+      color: var(--muted);
+      font-size: 0.72rem;
+    }
+
+    .domain-chip b {
+      color: var(--accent);
+      font-weight: normal;
+    }
+
+    .monthly-events {
+      display: grid;
+      gap: 14px;
+    }
+
+    .empty-month,
+    .empty-landmarks {
+      padding: 26px;
+      color: var(--muted);
+      font-style: italic;
+      text-align: center;
+      border: 1px dashed var(--border);
+      border-radius: 7px;
+    }
+
+    footer {
+      margin-top: 70px;
+      color: var(--faint);
+      font-size: 0.68rem;
+      letter-spacing: 1px;
+      text-align: center;
+    }
+
+    @media (max-width: 820px) {
+      .layout { display: block; }
+      aside {
+        position: static;
+        height: auto;
+        padding: 18px;
+        border-right: 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .brand { margin-bottom: 12px; }
+      nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2px;
+      }
+      nav a { padding: 5px 7px; }
+      main { padding: 36px 19px 64px; }
+    }
+
+    @media (max-width: 560px) {
+      .month-opener { padding: 20px 18px; }
+      .month-opener-top { align-items: flex-start; }
+      .month-range { max-width: 108px; font-size: 0.69rem; }
+      .chronology-divider { gap: 8px; }
+      .chronology-note { display: none; }
+    }
+
+    /* Year Ahead PDF print recovery.
+   Derived mechanically from the color values embedded in puck_year_ahead.pdf.
+   Replace the template's existing @media print block with this entire block.
+*/
+@media print {
+  :root { color-scheme: light; }
+
+  html,
+  body {
+    background: #ffffff;
+    color: #1a1a2e;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  aside { display: none; }
+  .layout { display: block; }
+  main { width: auto; max-width: none; margin: 0; padding: 0.45in; }
+
+  .name { color: #1a6b9a; }
+  .report-title,
+  h2,
+  h3 { color: #8b6200; }
+
+  .meta,
+  .eyebrow,
+  .snapshot-table th { color: #555570; }
+
+  .chart-note,
+  .card-kind,
+  .card-subtitle,
+  .timing-line,
+  .section-subtitle,
+  .lens-label,
+  .month-kicker,
+  .month-range,
+  .domains-label,
+  .chronology-note { color: #555555; }
+
+  .card-date { color: #8888a0; }
+  .section-header { border-color: #aaaaaa; }
+
+  .snapshot-table {
+    background: #ffffff;
+    border-color: #d0d0dc;
+    color: #1a1a2e;
+  }
+  .snapshot-table th {
+    background: #efeff5;
+    border-color: #d0d0dc;
+  }
+  .snapshot-table td {
+    background: #ffffff;
+    border-color: #d0d0dc;
+    color: #1a1a2e;
+  }
+
+  .overview,
+  .integration,
+  .month-opener {
+    background: #f7f7fa;
+    border-color: #d0d0dc;
+    color: #1a1a2e;
+  }
+  .overview,
+  .integration,
+  .month-opener { border-top-color: #1a6b9a; }
+  .month-opener::after { display: none; }
+
+  .event-card {
+    background: #f7f7fa;
+    border: 1px solid #d0d0dc;
+    border-left: 3px solid #1a6b9a;
+    color: #1a1a2e;
+  }
+  .event-card.flowing { border-left-color: #1a7a4a; }
+  .event-card.challenging { border-left-color: #8b5000; }
+  .event-card.eclipse { border-left-color: #7a1a8a; }
+  .event-card.ingress { border-left-color: #1a6b9a; }
+
+  .event-block,
+  .lens-block { color: #1a1a2e; }
+  .constellation-lens { border-top-color: #d0d0dc; }
+
+  .month-index,
+  .month-brief-label,
+  .chronology-divider,
+  .chronology-title,
+  .domain-chip b { color: #1a6b9a; }
+  .month-index { border-color: #1a6b9a; }
+  .month-heading { color: #8b6200; }
+
+  .month-snapshot {
+    background: #f6f4ff;
+    border-left-color: #5a3a9a;
+    color: #222222;
+  }
+
+  .domain-chip {
+    background: #ffffff;
+    border-color: #d0d0dc;
+    color: #111111;
+  }
+  .chronology-divider::before,
+  .chronology-divider::after { background: #d0d0dc; }
+
+  .wheel-wrap,
+  .chart-wheel-container,
+  .mini-wheel-wrap {
+    background: #ffffff;
+    border-color: #d0d0dc;
+  }
+
+  .empty-month,
+  .empty-landmarks { color: #555555; border-color: #d0d0dc; }
+  footer { color: #8888a0; }
+  .month-section {
+    break-before: auto;
+    page-break-before: auto;
+  }
+
+  .monthly-events {
+    display: block;
+  }
+
+  .event-card,
+  .constellation-lens {
+    break-inside: auto;
+    page-break-inside: auto;
+  }
+
+  .card-top,
+  .card-subtitle,
+  .timing-line,
+  .lens-label {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  h3 {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+}
+
+
+    /* â”€â”€ Year Ahead v2: reader-first report architecture â”€â”€â”€â”€â”€ */
+    :root { --faint: var(--subtle); --green: var(--color-growth); --amber: var(--ember); --eclipse: var(--purple); --surface-hi: var(--surface-2); }
+    .section-opening { margin-top: 0; }
+    .record-grid, .orientation-layout { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; }
+    .record-card, .shape-card, .characteristics-strip, .integrity-panel, .reader-guide, .climate-card, .arc-story, .season-card, .turning-guide-card, .method-note, .reflection-grid article { border:1px solid var(--border); border-radius:10px; background:var(--surface); }
+    .record-card { padding:20px; min-height:160px; }
+    .record-card-primary { border-top:3px solid var(--accent); }
+    .record-label, .record-value, .record-detail { margin:0; }
+    .record-label, .season-number, .reflection-label { color:var(--muted); font-size:.62rem; letter-spacing:2px; text-transform:uppercase; }
+    .record-value { margin-top:9px; color:var(--gold); font-size:1rem; line-height:1.45; }
+    .record-detail { margin-top:10px; color:var(--muted); font-size:.78rem; line-height:1.55; }
+    .integrity-panel { margin-top:16px; padding:22px; display:grid; grid-template-columns:180px 1fr; gap:20px; }
+    .integrity-list { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:0 24px; margin:0; }
+    .integrity-list div { display:grid; grid-template-columns:42% 58%; padding:8px 0; border-bottom:1px dotted var(--border); }
+    .integrity-list dt { color:var(--muted); font-size:.73rem; }
+    .integrity-list dd { margin:0; font-size:.8rem; }
+    .characteristics-strip { margin-top:18px; padding:16px 18px; display:grid; grid-template-columns:190px 1fr; gap:18px; }
+    .characteristics-strip span { display:block; color:var(--muted); font-size:.61rem; letter-spacing:2px; text-transform:uppercase; }
+    .characteristics-strip strong { display:block; margin-top:6px; color:var(--gold); font-weight:normal; }
+    .characteristics-strip p { margin:0; color:var(--muted); font-size:.8rem; line-height:1.6; }
+    .characteristics-grid { margin-top:16px; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
+    .characteristic-card { border:1px solid var(--border); border-radius:10px; background:var(--surface); padding:18px; break-inside:avoid; page-break-inside:avoid; }
+    .characteristic-label { margin:0 0 8px; color:var(--muted); font-size:.67rem; letter-spacing:1.6px; text-transform:uppercase; }
+    .characteristic-value { margin:0 0 10px; color:var(--ink); font-size:1rem; line-height:1.4; }
+    .characteristic-explainer { margin:0; color:var(--muted); font-size:.82rem; line-height:1.6; }
+    .characteristic-note { margin:10px 0 0; color:var(--muted); font-size:.74rem; line-height:1.5; }
+    .characteristic-card.unavailable .characteristic-value { color:var(--muted); }
+    .reader-guide { overflow:hidden; }
+    .reader-guide-intro { padding:24px 26px; background:linear-gradient(135deg,rgba(255,255,255,.055),rgba(255,255,255,0)),var(--surface-2); font-size:1rem; font-style:italic; }
+    .reader-principles { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .reader-principles article { padding:20px 24px; border-top:1px solid var(--border); }
+    .reader-principles article:nth-child(odd) { border-right:1px solid var(--border); }
+    .reader-principles h3 { font-size:.96rem; }
+    .reader-principles p { margin:8px 0 0; color:var(--muted); font-size:.85rem; line-height:1.65; }
+    .orientation-layout { grid-template-columns:1fr; align-items:stretch; gap:18px; }
+    .orientation-layout .overview { margin:0; }
+    .orientation-card-grid { display:grid; grid-template-columns:minmax(0,1.18fr) minmax(0,.82fr); gap:14px; align-items:start; }
+    .shape-card { padding:24px; border-top:3px solid var(--accent); }
+    .shape-card,
+    .orientation-notes { align-self:start; }
+    .shape-card h3 { margin-top:8px; font-size:1.22rem; }
+    .shape-card p:last-child { margin:11px 0 0; color:var(--muted); font-size:.83rem; line-height:1.7; }
+    .shape-card .shape-note { margin:11px 0 0; color:var(--muted); font-size:.83rem; line-height:1.7; }
+    .shape-editorial-summary { margin-top:14px; color:var(--text); font-size:.94rem; line-height:1.75; }
+    .shape-meta { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin-top:16px; }
+    .shape-meta div { padding-top:8px; border-top:1px dotted var(--border); }
+    .shape-meta span { display:block; color:var(--muted); font-size:.61rem; letter-spacing:1.6px; text-transform:uppercase; }
+    .shape-meta strong { display:block; margin-top:5px; color:var(--text); font-size:.82rem; font-weight:normal; line-height:1.5; }
+    .shape-legend { display:flex; flex-wrap:wrap; gap:10px 16px; margin-top:14px; color:var(--muted); font-size:.73rem; line-height:1.5; }
+    .shape-legend span { display:inline-flex; align-items:center; gap:6px; }
+    .shape-legend b { display:inline-block; width:18px; height:8px; border-radius:999px; background:var(--purple); opacity:.35; }
+    .shape-legend strong { color:var(--text); font-weight:normal; }
+    .shape-map { display:grid; grid-template-columns:repeat(12,minmax(0,1fr)); gap:8px; align-items:end; margin-top:16px; padding:16px 14px 12px; border:1px solid var(--border); border-radius:10px; background:var(--surface-2); }
+    .shape-month { display:grid; gap:7px; justify-items:center; }
+    .shape-month-label { color:var(--muted); font-size:.64rem; letter-spacing:1px; text-transform:uppercase; }
+    .shape-month-bar-wrap { display:flex; align-items:flex-end; height:76px; width:100%; }
+    .shape-month-bar { width:100%; min-height:8px; border-radius:999px 999px 4px 4px; background:var(--purple); box-shadow:inset 0 -1px 0 rgba(255,255,255,.18); }
+    .shape-month-text { color:var(--text); font-size:.62rem; line-height:1.4; text-align:center; }
+    .shape-confidence-note { margin:12px 0 0; color:var(--muted); font-size:.74rem; line-height:1.55; }
+    .orientation-notes { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+    .orientation-note { padding:17px 18px; border:1px solid var(--border); border-radius:10px; background:var(--surface-2); }
+    .orientation-note span { display:block; color:var(--muted); font-size:.61rem; letter-spacing:1.8px; text-transform:uppercase; }
+    .orientation-note strong { display:block; margin-top:7px; color:var(--gold); font-weight:normal; line-height:1.5; }
+    .orientation-note p { margin:8px 0 0; color:var(--muted); font-size:.8rem; line-height:1.6; }
+    .orientation-themes { margin:0; padding:0; list-style:none; display:grid; gap:8px; }
+    .orientation-themes li { padding:12px 14px; border-left:3px solid var(--accent); background:var(--surface-2); color:var(--text); font-size:.86rem; line-height:1.6; }
+    .orientation-theme-card { padding:17px 18px; border:1px solid var(--border); border-radius:10px; background:var(--surface-2); }
+    .orientation-theme-card p { margin:8px 0 0; color:var(--muted); font-size:.8rem; line-height:1.6; }
+    .curated-summary-stack { margin-top: 2px; display: grid; gap: 14px; }
+    .curated-summary-panel { padding: 18px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); }
+    .curated-summary-label { margin: 0 0 12px; color: var(--muted); font-size: .61rem; letter-spacing: 1.8px; text-transform: uppercase; }
+    .climate-highlight-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .climate-highlight-card { padding: 16px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface-2); }
+    .climate-highlight-card h3 { margin: 8px 0 10px; font-size: .95rem; line-height: 1.4; }
+    .climate-highlight-card p { margin: 0; color: var(--muted); font-size: .78rem; line-height: 1.6; }
+    .climate-highlight-meta { margin-top: 12px; display: grid; gap: 8px; }
+    .climate-highlight-meta div { padding-top: 8px; border-top: 1px dotted var(--border); }
+    .climate-highlight-meta span { display: block; color: var(--muted); font-size: .6rem; letter-spacing: 1.5px; text-transform: uppercase; }
+    .climate-highlight-meta strong { display: block; margin-top: 5px; color: var(--text); font-size: .78rem; font-weight: normal; line-height: 1.55; }
+    .archetypal-contract { margin:0 0 14px; padding:14px 17px; border-left:3px solid var(--accent); background:var(--surface-2); color:var(--muted); font-size:.84rem; line-height:1.62; }
+    .forecast-climate-intro {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: .9rem;
+      line-height: 1.7;
+      break-after: avoid;
+      page-break-after: avoid;
+    }
+    .climate-field {
+      margin: 0;
+      padding: 18px 18px 1.1rem;
+      border: 1px solid #d8d5e6;
+      border-radius: 12px;
+      background: #fbfaf7;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.8);
+      color: #1f1c30;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+    .climate-field-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 1rem;
+      break-after: avoid;
+      page-break-after: avoid;
+    }
+    .climate-field-name {
+      color: #8b6200;
+      font-size: 1.05rem;
+      line-height: 1.3;
+    }
+    .climate-field-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 0 0 10px;
+    }
+    .climate-field-meta span {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: #f1eef8;
+      border: 1px solid #dfd9ef;
+      color: #5e5b73;
+      font-size: .63rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      line-height: 1.35;
+    }
+    .climate-field-status {
+      color: #5e5b73;
+      font-size: .62rem;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+      text-align: right;
+      white-space: nowrap;
+    }
+    .climate-field-definition {
+      margin: .45rem 0 .85rem;
+      color: #5e5b73;
+      font-size: .84rem;
+      font-style: italic;
+      line-height: 1.65;
+      break-after: avoid;
+      page-break-after: avoid;
+    }
+    .climate-field-body {
+      margin: 0;
+      color: #1f1c30;
+      font-size: .93rem;
+      line-height: 1.72;
+      white-space: pre-line;
+    }
+    .climate-field-evidence {
+      margin-top: .9rem;
+      color: #5e5b73;
+      font-size: .76rem;
+      line-height: 1.6;
+    }
+    .climate-field-evidence span {
+      display: block;
+      margin-top: .28rem;
+    }
+    .climate-field-evidence strong {
+      color: #1f1c30;
+      font-weight: normal;
+    }
+    .climate-field-support {
+      display: grid;
+      gap: 8px;
+      margin-top: 14px;
+      padding: 12px;
+      background: #f6f4fb;
+      border: 1px solid #e1dcef;
+      border-radius: 10px;
+    }
+    .climate-field-support-item {
+      display: grid;
+      gap: 3px;
+    }
+    .climate-field-support-item + .climate-field-support-item {
+      padding-top: 8px;
+      border-top: 1px dotted #d8d5e6;
+    }
+    .climate-field-support-item strong {
+      color: #1f1c30;
+      font-weight: normal;
+      font-size: .82rem;
+      line-height: 1.5;
+    }
+    .climate-field-support-item span {
+      color: #5e5b73;
+      font-size: .73rem;
+      line-height: 1.5;
+    }
+    .climate-note-stack {
+      display: grid;
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .climate-note-panel {
+      padding: 12px 0 0;
+      border: 0;
+      border-top: 1px solid var(--border);
+      border-radius: 0;
+      background: transparent;
+      color: var(--muted);
+      font-size: .76rem;
+      line-height: 1.55;
+    }
+    .section-note { margin:14px 2px 0; color:var(--muted); font-size:.76rem; font-style:italic; }
+    .arc-story-grid { display:grid; grid-template-columns:1fr; gap:20px; align-items:start; padding-top:2px; }
+    .arc-story {
+      display: flex;
+      flex-direction: column;
+      margin: 0;
+      padding: 18px 18px 20px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--surface);
+      min-height: 7.95in;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+    .arc-story + .arc-story { break-before: page; page-break-before: always; }
+    .arc-story.flowing { --arc-rule: var(--green); }
+    .arc-story.challenging { --arc-rule: var(--amber); }
+    .arc-story:not(.flowing):not(.challenging) { --arc-rule: var(--accent); }
+    .arc-story-kicker {
+      margin: 0 0 8px;
+      padding-top: 8px;
+      border-top: 3px solid var(--arc-rule);
+      color: var(--muted);
+      font-size: .62rem;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+    }
+    .arc-story h3 { font-size: 1.03rem; }
+    .arc-story-layout { display:grid; grid-template-columns:1fr; gap:18px; align-items:start; min-height:100%; }
+    .arc-story-main { min-width:0; }
+    .arc-story-side {
+      display:grid;
+      gap:10px;
+      align-content:start;
+      margin-top:auto;
+      padding:14px 14px 0;
+      background:linear-gradient(180deg,#f3f0f8 0%,#f8f6fb 100%);
+      border:1px solid #ddd7ea;
+      border-radius:12px;
+    }
+    .arc-story-side-card { padding:12px 13px; border:1px solid #ddd7ea; border-radius:10px; background:#fffdfa; }
+    .arc-story-side-card span { display:block; color:#5e5b73; font-size:.6rem; letter-spacing:1.6px; text-transform:uppercase; }
+    .arc-story-side-card strong { display:block; margin-top:6px; color:#2b2840; font-weight:normal; font-size:.8rem; line-height:1.5; }
+    .arc-story-side-card p { margin:8px 0 0; color:#2b2840; font-size:.82rem; line-height:1.6; font-style:italic; }
+    .arc-story-subtitle { margin: 7px 0 0; color: var(--muted); font-size: .84rem; }
+    .arc-story-body { margin-top: 14px; font-size: .9rem; line-height: 1.7; white-space: pre-line; }
+    .season-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; }
+    .season-card { padding:18px; }
+    .season-card h3 { margin:7px 0 16px; font-size:1rem; }
+    .season-months { display:grid; gap:11px; }
+    .season-month-row { display:grid; grid-template-columns:34px 1fr; gap:7px; align-items:center; }
+    .season-month-row span { color:var(--muted); font-size:.7rem; letter-spacing:1px; }
+    .season-month-row em { grid-column:2; color:var(--muted); font-size:.66rem; font-style:normal; }
+    .annual-rhythm-visual { padding:22px; border:1px solid var(--border); border-radius:12px; background:var(--surface); break-inside:avoid; page-break-inside:avoid; }
+    .annual-rhythm-months { display:flex; flex-direction:column; gap:6px; }
+    .annual-rhythm-month { display:grid; grid-template-columns:52px 1fr 74px; align-items:center; gap:12px; padding:3px 0; }
+    .annual-rhythm-month-label { color:var(--muted); font-size:.68rem; letter-spacing:1px; text-transform:uppercase; }
+    .annual-rhythm-month-bar-wrap { height:9px; border-radius:999px; background:var(--surface-hi); overflow:hidden; }
+    .annual-rhythm-month-bar { height:100%; min-width:4px; border-radius:inherit; background:var(--purple); }
+    .annual-rhythm-month-tier { color:var(--muted); font-size:.72rem; text-align:right; }
+    .annual-rhythm-month.is-peak .annual-rhythm-month-bar { background:var(--gold,var(--amber,var(--purple))); }
+    .annual-rhythm-month.is-peak .annual-rhythm-month-label { color:var(--text); }
+    .annual-rhythm-month.is-quiet .annual-rhythm-month-label { color:var(--faint); }
+    .annual-rhythm-caption { margin:16px 0 0; color:var(--muted); font-size:.82rem; line-height:1.7; }
+    .quarter-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; margin-top:24px; }
+    @media (max-width:700px) { .quarter-grid { grid-template-columns:1fr; } }
+    .quarter-card { padding:22px 24px 24px; border:1px solid var(--border); border-left:3px solid var(--accent); border-radius:7px; background:var(--surface); break-inside:avoid; page-break-inside:avoid; }
+    .q-top { display:flex; align-items:baseline; gap:10px; margin-bottom:4px; }
+    .q-index { font-size:.62rem; letter-spacing:2px; color:var(--faint); }
+    .q-months { font-size:.72rem; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); margin-left:auto; }
+    .q-title { margin:2px 0 14px; font-size:1.15rem; font-weight:normal; color:var(--text); }
+    .q-row { margin-top:12px; }
+    .q-row-label { font-size:.6rem; letter-spacing:2px; text-transform:uppercase; color:var(--faint); margin:0 0 5px; }
+    .q-cycle { margin:0 0 4px; font-size:.92rem; color:var(--text); line-height:1.4; }
+    .q-footnote { margin-top:16px; padding-top:14px; border-top:1px solid var(--border); color:var(--faint); font-size:.74rem; font-style:italic; line-height:1.5; }
+    .season-summary-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin-top:18px; }
+    .season-summary-card { padding:18px; border:1px solid var(--border); border-radius:10px; background:var(--surface); }
+    .season-summary-card p { margin:0; color:var(--muted); font-size:.78rem; line-height:1.6; }
+    .season-summary-card h3 { margin:8px 0 12px; font-size:1rem; }
+    .season-summary-meta { display:grid; gap:8px; margin-top:14px; }
+    .season-summary-meta div { padding-top:8px; border-top:1px dotted var(--border); }
+    .season-summary-meta span { display:block; color:var(--muted); font-size:.62rem; letter-spacing:1.5px; text-transform:uppercase; }
+    .season-summary-meta strong { display:block; margin-top:5px; color:var(--text); font-size:.84rem; font-weight:normal; line-height:1.55; }
+    .turning-guide-timeline { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+    .turning-guide-month { padding:18px; border:1px solid var(--border); border-radius:10px; background:var(--surface); break-inside:avoid; page-break-inside:avoid; }
+    .turning-guide-month-head { display:grid; grid-template-columns:auto 1fr; gap:12px; align-items:center; margin-bottom:14px; }
+    .turning-guide-month-badge { display:inline-flex; align-items:center; justify-content:center; min-width:48px; height:48px; border-radius:999px; border:1px solid var(--border); background:var(--surface-2); color:var(--gold); font-size:.72rem; letter-spacing:1.5px; text-transform:uppercase; }
+    .turning-guide-month-head h3 { margin:0; font-size:1rem; }
+    .turning-guide-month-head p { margin:4px 0 0; color:var(--muted); font-size:.76rem; line-height:1.5; }
+    .turning-guide-list { display:grid; gap:10px; }
+    .turning-guide-item { padding:14px 15px; border:1px solid var(--border); border-radius:8px; background:var(--surface-2); border-left:4px solid var(--accent); break-inside:avoid; page-break-inside:avoid; }
+    .turning-guide-item.flowing { border-left-color:var(--green); }
+    .turning-guide-item.challenging { border-left-color:var(--amber); }
+    .turning-guide-item-top { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:10px; align-items:start; }
+    .turning-guide-item-top h4 { margin:0; font-size:.93rem; line-height:1.45; }
+    .turning-guide-item-date { color:var(--muted); font-size:.72rem; letter-spacing:1px; }
+    .turning-guide-item-window { margin:7px 0 0; color:var(--muted); font-size:.75rem; line-height:1.55; }
+    .turning-guide-item-meta { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; margin-top:10px; }
+    .turning-guide-item-meta div { padding-top:8px; border-top:1px dotted var(--border); }
+    .turning-guide-item-meta span { display:block; color:var(--muted); font-size:.6rem; letter-spacing:1.5px; text-transform:uppercase; }
+    .turning-guide-item-meta strong { display:block; margin-top:5px; color:var(--text); font-size:.77rem; font-weight:normal; line-height:1.5; }
+    .turning-guide-reason { margin-top:10px; padding-top:10px; border-top:1px dotted var(--border); color:var(--text); font-size:.82rem; line-height:1.6; }
+    .month-guidance-card { padding:16px 17px; border:1px solid var(--border); border-radius:10px; background:var(--surface); break-inside:avoid; page-break-inside:avoid; }
+    .month-guidance-card h3 { margin:0 0 10px; font-size:.95rem; }
+    .month-guidance-card p { margin:0; color:var(--muted); font-size:.84rem; line-height:1.7; }
+    .timing-window-list { display:grid; gap:10px; }
+    .timing-window-item { padding-top:10px; border-top:1px dotted var(--border); }
+    .timing-window-item:first-child { padding-top:0; border-top:0; }
+    .timing-window-item strong { display:block; color:var(--text); font-size:.87rem; font-weight:normal; line-height:1.55; }
+    .timing-window-item span { display:block; margin-top:4px; color:var(--muted); font-size:.75rem; line-height:1.55; }
+    .convergence-window-list { display:grid; gap:10px; }
+    .convergence-window-item { padding-top:10px; border-top:1px dotted var(--border); }
+    .convergence-window-item:first-child { padding-top:0; border-top:0; }
+    .convergence-window-item strong { display:block; color:var(--gold); font-size:.87rem; font-weight:normal; line-height:1.55; }
+    .convergence-window-item span { display:block; margin-top:4px; color:var(--muted); font-size:.75rem; line-height:1.55; }
+    .month-section + .month-section { margin-top:22px; }
+    .month-opening-flow { display:grid; gap:14px; }
+    .month-opener, .month-guidance-grid-opening, .chronology-divider { break-inside:avoid; page-break-inside:avoid; }
+    .chronology-divider { margin-top:20px; }
+    .monthly-events .event-card:first-child { break-before:avoid; page-break-before:avoid; }
+    .event-card { break-inside:avoid; page-break-inside:avoid; }
+    .ledger-intro { margin:0 0 18px; color:var(--muted); font-size:.87rem; line-height:1.7; }
+    .convergence-line { margin-top:10px; color:var(--text); font-size:.78rem; line-height:1.65; }
+    .convergence-line strong { color:var(--muted); font-weight:normal; text-transform:uppercase; letter-spacing:1px; font-size:.72rem; }
+    .convergence-line.markers { letter-spacing:2px; color:var(--accent); }
+    .ledger-months { display:grid; gap:20px; }
+    .ledger-month { padding:18px; border:1px solid var(--border); border-radius:10px; background:var(--surface); }
+    .ledger-month h3 { margin:0 0 14px; font-size:1rem; }
+    .ledger-table-wrap { overflow-x:auto; }
+    .ledger-table, .structure-note-table { width:100%; border-collapse:collapse; table-layout:fixed; }
+    .ledger-table th, .ledger-table td, .structure-note-table th, .structure-note-table td {
+      padding:10px 12px; border-bottom:1px solid var(--border); text-align:left; vertical-align:top;
+      overflow-wrap:break-word; word-break:normal; hyphens:auto;
+    }
+    .ledger-table th, .structure-note-table th {
+      color:var(--muted); font-size:.63rem; letter-spacing:1.4px; text-transform:uppercase; font-weight:600;
+    }
+    .ledger-table td, .structure-note-table td { color:var(--text); font-size:.77rem; line-height:1.55; }
+    .ledger-table tbody tr:last-child td, .structure-note-table tbody tr:last-child td { border-bottom:0; }
+    .ledger-table td:first-child, .ledger-table th:first-child { width:14%; }
+    .ledger-table td:nth-child(2), .ledger-table th:nth-child(2) { width:19%; }
+    .ledger-table td:nth-child(3), .ledger-table th:nth-child(3) { width:12%; }
+    .ledger-table td:nth-child(4), .ledger-table th:nth-child(4) { width:17%; }
+    .ledger-table td:nth-child(5), .ledger-table th:nth-child(5) { width:15%; }
+    .ledger-table td:nth-child(6), .ledger-table th:nth-child(6) { width:14%; }
+    .ledger-table td:nth-child(7), .ledger-table th:nth-child(7) { width:9%; }
+    .ledger-type { display:inline-block; padding:2px 0; border-top:2px solid var(--accent); color:var(--text); }
+    .ledger-type.natal-transit { border-color:var(--gold); }
+    .ledger-type.whole-sign-ingress { border-color:var(--accent); }
+    .ledger-type.planetary-station { border-color:var(--green); }
+    .ledger-type.eclipse { border-color:var(--eclipse); }
+    .ledger-type.lunation { border-color:var(--amber); }
+    .ledger-field-note-list { display:grid; gap:10px; margin:16px 0 18px; }
+    .ledger-field-note { padding:12px 14px; border:1px solid var(--border); border-radius:10px; background:var(--surface-2); }
+    .ledger-field-note strong { display:block; color:var(--gold); font-size:.72rem; letter-spacing:1.4px; text-transform:uppercase; }
+    .ledger-field-note p { margin:7px 0 0; color:var(--muted); font-size:.77rem; line-height:1.55; }
+    .ledger-method-note { margin:14px 0 18px; color:var(--muted); font-size:.79rem; line-height:1.65; }
+    .structure-note-bank { display:grid; gap:18px; margin-top:20px; }
+    .structure-note-bank h3 { margin:0 0 10px; font-size:.95rem; }
+    .structure-note-section { padding:18px; border:1px solid var(--border); border-radius:10px; background:var(--surface); }
+    .appendix-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
+    .appendix-grid article { padding:18px; border:1px solid var(--border); border-radius:10px; background:var(--surface); break-inside:avoid; page-break-inside:avoid; }
+    .appendix-grid h3 { font-size:.96rem; }.appendix-grid p { margin:8px 0 0; color:var(--muted); font-size:.83rem; line-height:1.62; }
+    .method-note { margin-top:16px; padding:21px; }.method-note p { margin:8px 0 0; color:var(--muted); font-size:.86rem; line-height:1.65; }
+    .integration-intro { margin-top:14px; padding:16px 18px; border-left:3px solid var(--accent); background:var(--surface-2); color:var(--muted); font-size:.86rem; line-height:1.7; }
+    .reflection-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px; margin-top:20px; }
+    .reflection-grid article { padding:22px; min-height:210px; }.reflection-lines { margin-top:18px; height:128px; background:repeating-linear-gradient(to bottom,transparent 0,transparent 25px,var(--border) 26px); opacity:.75; }
+    .notes-space { margin-top:18px; padding:18px; border:1px solid var(--border); border-radius:10px; background:var(--surface); }
+    .notes-space h3 { margin:0 0 10px; font-size:.95rem; }
+    .notes-space .reflection-lines { height:180px; }
+    @media (max-width: 800px) { .record-grid,.season-grid,.season-summary-grid,.month-guidance-grid,.month-guidance-layout,.characteristics-grid,.forecast-climate-list,.forecast-climate-pair,.climate-highlight-grid,.turning-guide-timeline { grid-template-columns:repeat(2,minmax(0,1fr)); } .integrity-panel,.characteristics-strip,.orientation-card-grid,.turning-guide-item-meta,.month-opening-flow,.month-opener-body,.arc-story-layout { grid-template-columns:1fr; } .arc-story-grid { grid-template-columns:1fr; } .orientation-notes { grid-template-columns:1fr; } .annual-rhythm-bands,.annual-rhythm-months { grid-template-columns:repeat(6,minmax(0,1fr)); } .annual-rhythm-band { grid-column:span 3; } .ledger-table, .structure-note-table { table-layout:auto; } }
+    @media (max-width: 560px) { .record-grid,.reader-principles,.forecast-climate-list,.forecast-climate-pair,.season-grid,.appendix-grid,.reflection-grid,.season-summary-grid,.month-guidance-grid,.month-guidance-layout,.characteristics-grid,.turning-guide-item-meta,.climate-highlight-grid,.annual-rhythm-bands,.annual-rhythm-months,.turning-guide-timeline { grid-template-columns:1fr; } .reader-principles article:nth-child(odd) { border-right:0; } .orientation-layout { grid-template-columns:1fr; } .integrity-list { grid-template-columns:1fr; } .turning-guide-item-top,.turning-guide-month-head { grid-template-columns:1fr; } .climate-field-header { display:block; } .climate-field-status { margin-top:6px; text-align:left; white-space:normal; } .annual-rhythm-band { grid-column:auto; } .ledger-table, .structure-note-table { table-layout:auto; } }
+    @media print { .record-card,.integrity-panel,.reader-guide,.climate-card,.arc-story,.season-card,.appendix-grid article,.method-note,.reflection-grid article,.month-guidance-card,.ledger-month,.season-summary-card,.notes-space,.characteristic-card,.turning-guide-month,.turning-guide-item,.structure-note-section { break-inside:avoid; page-break-inside:avoid; } .section-opening { break-before:avoid; page-break-before:avoid; } }
+
+
+    /* â”€â”€ Print recovery for reader-first v2 structures â”€â”€â”€â”€â”€â”€â”€â”€â”€
+       Keeps the dark screen panels readable and lets long-form Year Arc
+       prose fragment naturally instead of reserving whole-page card boxes. */
+    @media print {
+      @page {
+        size: letter;
+        margin: 0.6in 0.55in 0.7in;
+      }
+
+      body {
+        widows: 3;
+        orphans: 3;
+      }
+
+      .record-card,
+      .shape-card,
+      .characteristics-strip,
+      .integrity-panel,
+      .reader-guide,
+      .season-card,
+      .turning-guide-card,
+      .method-note,
+      .reflection-grid article {
+        background: #f7f7fa;
+        border-color: #d0d0dc;
+        color: #1a1a2e;
+      }
+
+      .record-card-primary { border-top-color: #1a6b9a; }
+      .record-label,
+      .record-detail,
+      .integrity-list dt,
+      .characteristics-strip span,
+      .characteristics-strip p,
+      .reader-principles p,
+      .shape-card p:last-child,
+      .climate-note-panel,
+      .section-note,
+      .season-number,
+      .season-month-row span,
+      .season-month-row em,
+      .turning-guide-month-head p,
+      .turning-guide-item-date,
+      .turning-guide-item-window,
+      .turning-guide-item-meta span,
+      .appendix-grid p,
+      .method-note p,
+      .reflection-label {
+        color: #555570;
+      }
+      .record-value,
+      .characteristics-strip strong,
+      .turning-guide-month-badge { color: #8b6200; }
+
+      .climate-field-name { color: #8b6200; }
+      .climate-field-status,
+      .climate-field-definition,
+      .climate-field-evidence { color: #555570; }
+      .climate-field-body,
+      .climate-field-evidence strong { color: #1a1a2e; }
+      .forecast-climate-pairs { gap: 14px; }
+      .forecast-climate-pair { grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
+      .forecast-climate-list { display:grid; grid-template-columns:1fr; gap:18px; }
+      .climate-field {
+        display:block;
+        margin:0;
+        padding:16px 16px 0.14in;
+        background:#fbfaf7;
+        border-color:#d8d5e6;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.8);
+        break-inside:avoid;
+        page-break-inside:avoid;
+      }
+      .climate-field-header,
+      .climate-field-definition {
+        break-after: avoid;
+        page-break-after: avoid;
+      }
+      .climate-field-meta span {
+        background: #f1eef8;
+        color: #5e5b73;
+        border: 1px solid #dfd9ef;
+      }
+      .climate-field-support {
+        margin-top: 16px;
+        padding: 12px 12px 0;
+        background: #f6f4fb;
+        border: 1px solid #e1dcef;
+        border-radius: 10px;
+      }
+      .climate-field-support-item + .climate-field-support-item {
+        padding-top: 8px;
+        border-top: 1px dotted #d8d5e6;
+      }
+
+      .reader-guide-intro {
+        background: #f7f7fa;
+        color: #1a1a2e;
+      }
+      .reader-principles article { border-color: #d0d0dc; }
+      .reader-principles h3 { color: #8b6200; }
+
+      .archetypal-contract {
+        background: #f7f7fa;
+        border-left-color: #1a6b9a;
+        color: #555570;
+      }
+
+      .arc-story-grid { grid-template-columns:1fr; gap:18px; }
+      .arc-story {
+        background: #f7f7fa;
+        border: 1px solid #d0d0dc;
+        border-radius: 12px;
+        min-height: 8.15in;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+      .arc-story + .arc-story {
+        break-before: page;
+        page-break-before: always;
+      }
+      .arc-story-kicker { border-top-color: #1a6b9a; color: #555570; }
+      .arc-story.flowing .arc-story-kicker { border-top-color: #1a7a4a; }
+      .arc-story.challenging .arc-story-kicker { border-top-color: #8b5000; }
+      .arc-story-subtitle,
+      .arc-story-duration,
+      .arc-story-lens strong { color: #555570; }
+      .arc-story-body,
+      .arc-story-lens p { color: #1a1a2e; }
+      .arc-story-layout {
+        min-height: 100%;
+        grid-template-columns: 1fr;
+        gap: 18px;
+        align-content: start;
+      }
+      .arc-story-side {
+        margin-top: auto;
+        padding: 14px 14px 0;
+        background: linear-gradient(180deg, #f3f0f8 0%, #f8f6fb 100%);
+        border: 1px solid #ddd7ea;
+        border-radius: 12px;
+      }
+      .arc-story-side-card {
+        background: #fffdfa;
+        border-color: #ddd7ea;
+        box-shadow: none;
+      }
+      .arc-story-side-card span { color: #5e5b73; }
+      .arc-story-side-card strong,
+      .arc-story-side-card p { color: #2b2840; }
+
+      .mini-track { background: #dddddd; }
+      .mini-track i { background: #777777; }
+
+      .orientation-note,
+      .season-summary-card,
+      .month-guidance-card,
+      .ledger-month,
+      .structure-note-section,
+      .notes-space,
+      .appendix-grid article,
+      .ledger-field-note,
+      .annual-rhythm-visual,
+      .annual-rhythm-band,
+      .annual-rhythm-month {
+        background: #f7f7fa;
+        border-color: #d0d0dc;
+      }
+      .annual-rhythm-pill { background:#f2f2f7; color:#555570; }
+      .orientation-card-grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: 12px; }
+      .shape-card {
+        display: block;
+        margin: 0;
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+      .orientation-notes {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+      .orientation-theme-card {
+        margin-top: 0;
+      }
+      .orientation-note span,
+      .season-summary-card p,
+      .season-summary-meta span,
+      .turning-guide-item-meta span,
+      .month-guidance-card p,
+      .timing-window-item span,
+      .ledger-intro,
+      .ledger-method-note,
+      .ledger-table th,
+      .ledger-field-note p,
+      .structure-note-table th {
+        color: #555570;
+      }
+      .orientation-note strong,
+      .season-summary-meta strong,
+      .turning-guide-item-meta strong,
+      .timing-window-item strong,
+      .ledger-table td,
+      .structure-note-table td {
+        color: #1a1a2e;
+      }
+      .month-section {
+        break-inside: auto;
+        page-break-inside: auto;
+      }
+      .section-header + *,
+      .forecast-climate-intro,
+      .month-opener-top,
+      .chronology-divider {
+        break-before: avoid;
+        page-break-before: avoid;
+      }
+      .month-opening-flow { display:block; break-inside:auto; page-break-inside:auto; }
+      .month-opener-body { grid-template-columns: 1.18fr .82fr; gap: 14px; }
+      .month-opener-aside-card { background: #ffffff; }
+      .month-guidance-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin-top:14px; }
+      .month-guidance-layout { grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin-top:14px; }
+      .month-guidance-card {
+        margin: 0;
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+      .month-opener,
+      .chronology-divider,
+      .monthly-events .event-card:first-child,
+      .ledger-table-wrap {
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+
+      .chronology-divider {
+        margin-top: 0;
+        break-before: page;
+        page-break-before: always;
+      }
+
+      .event-card {
+        padding: 17px 17px 18px;
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+
+      .monthly-events { gap: 12px; }
+
+      .turning-guide-timeline { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+      .turning-guide-month { padding: 16px; }
+
+      .ledger-table thead,
+      .structure-note-table thead {
+        display: table-header-group;
+      }
+
+      .ledger-table-wrap { overflow: visible; }
+
+      .ledger-table tr,
+      .structure-note-table tr {
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+
+      .ledger-table td,
+      .ledger-table th,
+      .structure-note-table td,
+      .structure-note-table th {
+        font-size: .79rem;
+        line-height: 1.5;
+      }
+
+      #cycle-ledger,
+      #technical-appendix {
+        break-before: page;
+        page-break-before: always;
+      }
+
+      .section-note { margin-top: 12px; }
+    }
+
+    /* ── Browser print ─────────────────────────────────────────── */
+    @media print {
+      /* Light-mode palette override */
+      :root {
+        --bg:        #ffffff;
+        --surface:   #f7f7f7;
+        --surface-2: #efefef;
+        --border:    #cccccc;
+        --text:      #111111;
+        --muted:     #555555;
+        --subtle:    #888888;
+        --accent:    #1a6b54;
+        --purple:    #4a28a0;
+        --gold:      #7a5010;
+        --rose:      #902040;
+        --ember:     #903010;
+        --blue:      #1a4070;
+      }
+
+      /* Layout: collapse sidebar, give main full width */
+      .layout { display: block; }
+      aside   { display: none !important; }
+      main    { width: 100%; padding: 0; }
+
+      /* Strip screen-only chrome */
+      body { background: #fff; }
+      a    { color: inherit; text-decoration: none; }
+
+      /* Page-break control */
+      .section              { break-before: page; }
+      .section:first-of-type { break-before: avoid; }
+      .month-section        { break-before: page; }
+      .ledger-month         { break-inside: avoid; }
+      .arc-story,
+      .climate-field,
+      .quarter-card,
+      .turning-guide-month,
+      .ledger-entry,
+      .orientation-note     { break-inside: avoid; }
+
+      /* Ensure backgrounds and colors print */
+      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+
+  </style>
+</head>
+<body class="report-shell report-year-ahead" data-palette="{{ palette_name | default('vibrant') }}">
+  <div class="layout">
+    <aside>
+      <p class="brand">
+        Entangled Oracle
+        <span>Year-Ahead Forecast</span>
+      </p>
+      <nav aria-label="Year Ahead report sections">
+        <a href="#report-record">I. Report Record</a>
+        <a href="#natal-reference">II. Natal Reference</a>
+        <a href="#reading-this-report">III. Reading This Forecast</a>
+        <a href="#year-orientation">IV. Year Orientation</a>
+        <a href="#archetypal-frame">V. Archetypal Frame</a>
+        <a href="#forecast-climate">VI. Forecast Climate</a>
+        <a href="#year-arcs">VII. Year Arcs</a>
+        <a href="#annual-rhythm">VIII. Annual Rhythm</a>
+        <a href="#monthly-chapters">IX. Monthly Chapters</a>
+        <a href="#turning-point-guide">X. Turning Point Guide</a>
+        <a href="#cycle-ledger">XI. Cycle Ledger</a>
+        <a href="#technical-appendix">XII. Technical Appendix</a>
+        <a href="#year-integration">XIII. Year Integration</a>
+      </nav>
+    </aside>
+
+    <main>
+      <header>
+        <div class="name">{{ querent_name }}</div>
+        <div class="report-title">Year-Ahead Transit Forecast</div>
+        <div class="meta">{{ report_start_date }} - {{ report_end_date }}</div>
+        <div class="meta">{{ report_brand_line | default('Entangled Oracle · Ksisti-Puck LLC') }}</div>
+      </header>
+
+      <!-- I. REPORT IDENTITY & CALCULATION RECORD -->
+      <section class="section section-opening" id="report-record">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">I. Report identity & calculation record</p>
+            <h2>This Forecast, At a Glance</h2>
+          </div>
+        </div>
+        <div class="record-grid">
+          <article class="record-card record-card-primary">
+            <p class="record-label">Forecast span</p>
+            <p class="record-value">{{ report_start_date }} - {{ report_end_date }}</p>
+            <p class="record-detail">A one-year forecast built around sustained cycles, changing conditions, and dated concentrations of activity.</p>
+          </article>
+          <article class="record-card">
+            <p class="record-label">Birth data</p>
+            <p class="record-value">{{ birth_date_display }}{% if birth_time_status == 'exact' and birth_time_display %} - {{ birth_time_display }}{% endif %}</p>
+            <p class="record-detail">{{ birth_location | default('Location not supplied') }}</p>
+          </article>
+          <article class="record-card">
+            <p class="record-label">Birth-time confidence</p>
+            <p class="record-value">{{ birth_time_confidence }}</p>
+            <p class="record-detail">Timing-sensitive chart features are interpreted in proportion to the information available.</p>
+          </article>
+        </div>
+
+        <div class="integrity-panel">
+          <div class="integrity-heading">
+            <p class="eyebrow">Data integrity</p>
+            <h3>Calculation record</h3>
+          </div>
+          <dl class="integrity-list">
+            {% for item in calculation_record %}
+            <div><dt>{{ item.label }}</dt><dd>{{ item.value }}</dd></div>
+            {% endfor %}
+          </dl>
+        </div>
+      </section>
+
+      <!-- II. NATAL REFERENCE -->
+      <section class="section" id="natal-reference">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">II. Natal reference</p>
+            <h2>Chart Reference</h2>
+            <p class="section-subtitle">A stable reference map for the chart this forecast moves through.</p>
+          </div>
+        </div>
+
+        {% if chart_wheel_svg %}
+        <div class="wheel-wrap">{{ chart_wheel_svg | safe }}</div>
+        {% endif %}
+
+        <table class="snapshot-table">
+          <thead>
+            <tr><th scope="col">Point</th><th scope="col">Position</th><th scope="col">House</th></tr>
+          </thead>
+          <tbody>
+            {% for row in natal_positions %}
+            <tr><td>{{ row.name }}</td><td>{{ row.position }}</td><td>{{ row.house }}</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <p class="chart-note">
+          {% if chart_characteristics.has_exact_birth_time %}
+          {{ house_system_label | default(house_system | default('Whole Sign')) }} houses - {{ zodiac_label | default('Tropical') }} zodiac
+          {% else %}
+          {{ zodiac_label | default('Tropical') }} zodiac reference. Planetary sign positions remain usable; angle and house features are withheld without exact birth time.
+          {% endif %}
+        </p>
+
+        <div class="characteristics-strip">
+          <div><span>Chart characteristics</span><strong>Reference-led</strong></div>
+          <p>{{ chart_characteristics.method_note }}</p>
+        </div>
+
+        <div class="characteristics-grid">
+          {% for card in chart_characteristics.cards %}
+          <article class="characteristic-card{% if not card.is_available %} unavailable{% endif %}">
+            <p class="characteristic-label">{{ card.label }}</p>
+            <h3 class="characteristic-value">{{ card.value }}</h3>
+            <p class="characteristic-explainer">{{ card.explanation }}</p>
+            {% if card.availability_note %}<p class="characteristic-note">{{ card.availability_note }}</p>{% endif %}
+          </article>
+          {% endfor %}
+        </div>
+
+        {% if standard_natal_foundation and standard_natal_foundation.sections %}
+        <div class="reader-guide" style="margin-top: 2rem;">
+          <div class="reader-guide-intro">{{ standard_natal_foundation.intro }}</div>
+          <div class="reader-principles">
+            {% for section in standard_natal_foundation.sections %}
+            <article><h3>{{ section.title }}</h3><p>{{ section.body }}</p></article>
+            {% endfor %}
+          </div>
+          {% if standard_natal_foundation.methodology_note %}<div class="method-note" style="margin-top: 1rem;"><p>{{ standard_natal_foundation.methodology_note }}</p></div>{% endif %}
+          {% if standard_natal_foundation.closing %}<div class="integration-intro" style="margin-top: 1rem;">{{ standard_natal_foundation.closing }}</div>{% endif %}
+        </div>
+        {% endif %}
+      </section>
+
+      <!-- III. READING THIS FORECAST -->
+      <section class="section" id="reading-this-report">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">III. Reading this forecast</p>
+            <h2>How to Use This Book</h2>
+          </div>
+        </div>
+        <div class="reader-guide">
+          <div class="reader-guide-intro">You do not need to read this report from beginning to end. Start with the Year Orientation, return to the current Monthly Chapter as the year arrives, and use the Cycle Ledger or Technical Appendix whenever you want the astrological detail behind a pattern.</div>
+          <div class="reader-principles">
+            <article><h3>Timing is a condition, not a command.</h3><p>Dated windows describe changing symbolic conditions and concentration points. They do not guarantee a single external event.</p></article>
+            <article><h3>Long cycles matter more than one day.</h3><p>An exact contact is often a peak inside a larger cycle that may already be active, developing, or still integrating.</p></article>
+            <article><h3>Quiet is not unimportant.</h3><p>A softer month can be restorative, preparatory, private, or structurally necessary. A quieter chapter can still be meaningful.</p></article>
+            <article><h3>Your life remains part of the meaning.</h3><p>Relationships, material reality, health, choice, context, and capacity shape how any forecast condition is lived.</p></article>
+          </div>
+        </div>
+      </section>
+
+      <!-- IV. YEAR ORIENTATION -->
+      <section class="section" id="year-orientation">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">IV. Year orientation</p>
+            <h2>The Year in Context</h2>
+          </div>
+        </div>
+        {% set ya_summary = year_ahead_curated_summaries | default({}, true) %}
+        {% set seasonal_highlights = ya_summary.seasonal_highlights | default([], true) %}
+        {% set climate_highlights = ya_summary.climate_highlights | default([], true) %}
+        <div class="orientation-layout">
+          <div class="overview">
+            {% if year_overview_block %}{{ year_overview_block }}{% else %}The strongest sustained patterns in this forecast gather here as a practical orientation for the year ahead.{% endif %}
+          </div>
+        <div class="orientation-card-grid">
+            <aside class="shape-card">
+              <p class="eyebrow">Forecast shape</p>
+              <h3>{{ forecast_shape | default('Annual pattern') }}</h3>
+              <p class="shape-note">{{ forecast_shape_details.short_explanation }}</p>
+              <p class="shape-editorial-summary">{{ forecast_shape_details.distribution_note }}</p>
+              {% if show_forecast_shape_visuals %}
+              <div class="shape-map" role="img" aria-label="Twelve-month forecast shape map showing relative month concentration across the year." aria-describedby="shape-legend-text">
+                {% for month in forecast_shape_details.months %}
+                <div class="shape-month">
+                  <div class="shape-month-bar-wrap">
+                    <div class="shape-month-bar" style="height: {{ month.display_value }}%;" aria-label="{{ month.aria_label }}"></div>
+                  </div>
+                  <div class="shape-month-label">{{ month.short_name }}</div>
+                  <div class="shape-month-text">{{ month.arc_label }}</div>
+                </div>
+                {% endfor %}
+              </div>
+              <div id="shape-legend-text" class="shape-legend" aria-label="Forecast shape legend">
+                <span><b></b><strong>{{ forecast_shape_details.legend_label }}</strong></span>
+                <span>Bars show month position relative to this year's peak month.</span>
+                <span>Labels carry the month intensity tier; color is not the only cue.</span>
+              </div>
+              <div class="shape-meta">
+                <div><span>Peak month</span><strong>{{ forecast_shape_details.peak_month }}</strong></div>
+                <div><span>Quiet month</span><strong>{{ forecast_shape_details.quiet_month }}</strong></div>
+                <div><span>Peak season</span><strong>{{ forecast_shape_details.peak_season }}</strong></div>
+                <div><span>Distribution note</span><strong>{{ forecast_shape_details.curve_note }}</strong></div>
+              </div>
+              {% endif %}
+              <p class="shape-confidence-note">{{ forecast_shape_details.confidence_note }}</p>
+            </aside>
+            <div class="orientation-notes">
+              <article class="orientation-note">
+                <span>Year orientation</span>
+                <strong>{{ ya_summary.forecast_shape.label if ya_summary.forecast_shape else forecast_shape_details.label }}</strong>
+                <p>{{ ya_summary.forecast_shape.curve_note if ya_summary.forecast_shape and ya_summary.forecast_shape.curve_note else forecast_shape_details.distribution_note }}</p>
+              </article>
+              <article class="orientation-note">
+                <span>Dominant long cycle</span>
+                <strong>{{ ya_summary.orientation.long_cycle_emphasis if ya_summary.orientation and ya_summary.orientation.long_cycle_emphasis else orientation_summary.long_cycle_emphasis }}</strong>
+                <p>{{ orientation_summary.long_cycle_explanation }}</p>
+              </article>
+              {% if show_forecast_shape_visuals %}
+              <article class="orientation-note">
+                <span>Highest concentration</span>
+                <strong>{{ ya_summary.orientation.highest_concentration_period if ya_summary.orientation and ya_summary.orientation.highest_concentration_period else orientation_summary.highest_concentration_period }}</strong>
+                <p>{{ orientation_summary.highest_concentration_explanation }}</p>
+              </article>
+              <article class="orientation-note">
+                <span>Quietest period</span>
+                <strong>{{ ya_summary.orientation.quietest_period if ya_summary.orientation and ya_summary.orientation.quietest_period else orientation_summary.quietest_period }}</strong>
+                <p>{{ orientation_summary.quietest_period_explanation }}</p>
+              </article>
+              <article class="orientation-theme-card">
+                <span class="record-label">Strongest themes</span>
+                {% if orientation_summary.strongest_annual_themes %}
+                <ul class="orientation-themes">
+                  {% for theme in orientation_summary.strongest_annual_themes %}
+                  <li>{{ theme }}</li>
+                  {% endfor %}
+                </ul>
+                {% else %}
+                <p>No landmark themes rose above the current threshold.</p>
+                {% endif %}
+                <p>{{ orientation_summary.themes_explanation }}</p>
+              </article>
+              {% endif %}
+            </div>
+          </div>
+          {% if seasonal_highlights or climate_highlights %}
+          <div class="curated-summary-stack">
+            {% if seasonal_highlights %}
+            <div class="curated-summary-panel">
+              <p class="curated-summary-label">Seasonal Highlights</p>
+              <div class="season-summary-grid" style="margin-top: 0;">
+                {% for item in seasonal_highlights %}
+                <article class="season-summary-card">
+                  <p>{{ item.months_label }}</p>
+                  <h3>{{ item.title }}</h3>
+                  {% if item.summary %}<p>{{ item.summary }}</p>{% endif %}
+                  {% if item.peak_month or item.dominant_domains %}
+                  <div class="season-summary-meta">
+                    {% if item.peak_month %}<div><span>Peak month</span><strong>{{ item.peak_month }}</strong></div>{% endif %}
+                    {% if item.dominant_domains %}<div><span>Dominant domains</span><strong>{{ item.dominant_domains }}</strong></div>{% endif %}
+                  </div>
+                  {% endif %}
+                </article>
+                {% endfor %}
+              </div>
+            </div>
+            {% endif %}
+            {% if climate_highlights %}
+            <div class="curated-summary-panel">
+              <p class="curated-summary-label">Field Highlights</p>
+              <div class="climate-highlight-grid">
+                {% for item in climate_highlights %}
+                <article class="climate-highlight-card">
+                  <p>{{ item.band_label }}</p>
+                  <h3>{{ item.field_label }}</h3>
+                  {% if item.summary_line %}<p>{{ item.summary_line }}</p>{% endif %}
+                  {% if item.signal_family_label or item.supporting_event_titles %}
+                  <div class="climate-highlight-meta">
+                    {% if item.signal_family_label %}<div><span>Primary pattern</span><strong>{{ item.signal_family_label }}</strong></div>{% endif %}
+                    {% if item.supporting_event_titles %}<div><span>Representative cycles</span><strong>{{ item.supporting_event_titles | join(' - ') }}</strong></div>{% endif %}
+                  </div>
+                  {% endif %}
+                </article>
+                {% endfor %}
+              </div>
+            </div>
+            {% endif %}
+          </div>
+          {% endif %}
+        </div>
+      </section>
+
+      <!-- V. ARCHETYPAL FRAME -->
+      <section class="section" id="archetypal-frame">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">V. Archetypal frame</p>
+            <h2>{% if archetypal_opening_section %}{{ archetypal_opening_section.title }}{% else %}Your Archetypal Year{% endif %}</h2>
+            {% if archetypal_opening_section and archetypal_opening_section.subtitle %}<p class="section-subtitle">{{ archetypal_opening_section.subtitle }}</p>{% endif %}
+          </div>
+        </div>
+        <div class="archetypal-contract">Astrology identifies movement. Archetypal framing helps translate that movement into a human story that can be recognized, questioned, and lived. It is a lens for coherence, not a claim that fate is narrating your life literally.</div>
+        {% if archetypal_opening_section %}
+        <div class="overview">{{ archetypal_opening_section.body }}</div>
+        {% else %}
+        <div class="empty-landmarks">No archetypal synthesis is available for this forecast.</div>
+        {% endif %}
+      </section>
+
+      <!-- VI. FORECAST CLIMATE -->
+      <section class="section" id="forecast-climate">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">VI. Forecast climate</p>
+            <h2>The Conditions Around the Year</h2>
+            <p class="section-subtitle">Field qualities, not isolated life-area horoscopes.</p>
+          </div>
+        </div>
+        <p class="forecast-climate-intro">{{ forecast_climate.prominence_note }} {{ forecast_climate.certainty_note }}</p>
+        <div class="forecast-climate-pairs">
+          {% for field in forecast_climate.fields %}
+          <article class="climate-field">
+            <div class="climate-field-header">
+              <h3 class="climate-field-name">{{ field.field_label }}</h3>
+            </div>
+            <div class="climate-field-meta">
+              <span>{{ field.band_label }}</span>
+              <span>{{ field.signal_family_label }}</span>
+              {% if field.top_domains %}<span>{{ field.top_domains[:2] | join(' - ') }}</span>{% endif %}
+            </div>
+            <p class="climate-field-definition">{{ field.description }}</p>
+            <p class="climate-field-body">{% if field.block %}{{ field.block }}{% elif field.top_domains %}This field gathers most clearly around {{ field.top_domains[:2] | join(' and ') }}, without needing every supporting transit to be foregrounded here.{% else %}This field remains part of the year's background climate, with fuller technical provenance retained in the ledger and appendix.{% endif %}</p>
+            <div class="climate-field-evidence">
+              <span><strong>Primary pattern:</strong> {{ field.signal_family_label }}</span>
+              {% if field.top_domains %}
+              <span><strong>Most activated territory:</strong> {{ field.top_domains[:2] | join(' - ') }}</span>
+              {% endif %}
+              {% if field.supporting_events %}
+              <span><strong>Primary cycles:</strong> {% for event in field.supporting_events[:2] %}{{ event.title }}{% if not loop.last %} - {% endif %}{% endfor %}</span>
+              {% endif %}
+            </div>
+            {% if field.supporting_events %}
+            <div class="climate-field-support">
+              {% for event in field.supporting_events[:2] %}
+              <div class="climate-field-support-item">
+                <strong>{{ event.title }}</strong>
+                <span>{{ event.event_label }}{% if event.intensity_label %} - {{ event.intensity_label }}{% endif %}</span>
+              </div>
+              {% endfor %}
+            </div>
+            {% endif %}
+          </article>
+          {% endfor %}
+        </div>
+        <div class="climate-note-stack">
+          {% if forecast_climate.confidence_note %}
+          <div class="climate-note-panel">{{ forecast_climate.confidence_note }}</div>
+          {% endif %}
+        </div>
+        <p class="section-note">These field qualities organize the recurring conditions already visible across the report's retained annual event set.</p>
+      </section>
+
+      <!-- VII. YEAR ARCS -->
+      <section class="section" id="year-arcs">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">VII. Year arcs</p>
+            <h2>Long Stories in Motion</h2>
+            <p class="section-subtitle">Longer cycles provide the deeper backdrop for the dated events and turning points that follow.</p>
+          </div>
+        </div>
+        {% if landmarks %}
+        <div class="arc-story-grid">
+          {% for event in landmarks %}
+          <article class="arc-story {{ event.tone }}">
+            <p class="arc-story-kicker">{{ event.event_label }}</p>
+            <h3>{{ event.title }}</h3>
+            <div class="arc-story-layout">
+              <div class="arc-story-main">
+                {% if event.subtitle %}<p class="arc-story-subtitle">{{ event.subtitle }}</p>{% endif %}
+                {% if event.block %}<div class="arc-story-body">{{ event.block }}</div>{% endif %}
+              </div>
+              <aside class="arc-story-side">
+                {% if event.duration_descriptor %}
+                <div class="arc-story-side-card">
+                  <span>Window</span>
+                  <strong>{{ event.duration_descriptor }}</strong>
+                  <p>Use this as the longer arc holding the dated peaks that appear elsewhere in the year.</p>
+                </div>
+                {% endif %}
+                {% if event.constellation_lens %}
+                <div class="arc-story-side-card">
+                  <span>Constellation lens{% if event.constellation_lens_label %} - {{ event.constellation_lens_label }}{% endif %}</span>
+                  <p>{{ event.constellation_lens }}</p>
+                </div>
+                {% endif %}
+              </aside>
+            </div>
+          </article>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-landmarks">No sustained transit cycles met the current Year Arc threshold.</div>
+        {% endif %}
+      </section>
+
+      <!-- VIII. ANNUAL RHYTHM -->
+      <section class="section" id="annual-rhythm">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">VIII. Annual rhythm</p>
+            <h2>The Year at a Glance</h2>
+            <p class="section-subtitle">Relative concentration by month — not a ranking of importance.</p>
+          </div>
+        </div>
+        <div class="annual-rhythm-visual">
+          <div class="annual-rhythm-months" role="img" aria-label="Twelve-month annual rhythm timeline showing monthly concentration and activated area tags." aria-describedby="annual-rhythm-caption">
+            {% for month in months %}
+            <article class="annual-rhythm-month">
+              <div class="annual-rhythm-month-label">{{ month.short_name }}</div>
+              <div class="annual-rhythm-month-bar-wrap">
+                <div class="annual-rhythm-month-bar" style="width: {{ month.event_count_percent | default(4) }}%;"></div>
+              </div>
+              <div class="annual-rhythm-month-tier">{{ month.event_count }} {{ 'event' if month.event_count == 1 else 'events' }}</div>
+            </article>
+            {% endfor %}
+          </div>
+          <p id="annual-rhythm-caption" class="annual-rhythm-caption">{{ orientation_summary.highest_concentration_explanation }} {{ orientation_summary.quietest_period_explanation }}</p>
+        </div>
+        {% if annual_rhythm_quarters %}
+        <div class="quarter-grid">
+          {% for q in annual_rhythm_quarters %}
+          <div class="quarter-card">
+            <div class="q-top">
+              <span class="q-index">{{ q.index }}</span>
+              <span class="q-months">{{ q.months_label }}</span>
+            </div>
+            <h3 class="q-title">{{ q.season_name }}</h3>
+            {% if q.dominant_cycles %}
+            <div class="q-row">
+              <p class="q-row-label">Carrying through this stretch</p>
+              {% for cycle in q.dominant_cycles %}
+              <p class="q-cycle">{{ cycle.description }}</p>
+              {% endfor %}
+            </div>
+            {% endif %}
+            {% if q.activated_domains %}
+            <div class="q-row">
+              <p class="q-row-label">Most activated areas</p>
+              <div class="domains-wrap">
+                {% for d in q.activated_domains %}
+                <span class="domain-chip">{{ d.domain }}</span>
+                {% endfor %}
+              </div>
+            </div>
+            {% endif %}
+            {% if q.footnote %}
+            <p class="q-footnote">{{ q.footnote }}</p>
+            {% endif %}
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </section>
+
+      <!-- IX. MONTHLY CHAPTERS -->
+      <section class="section" id="monthly-chapters">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">IX. Monthly chapters</p>
+            <h2>The Year as It Arrives</h2>
+            <p class="section-subtitle">Return here month by month. The dated forecast is anchored inside a broader seasonal and narrative context.</p>
+          </div>
+        </div>
+      </section>
+
+      {% for month in months %}
+      <section class="month-section" id="{{ month.id }}">
+        <div class="month-opening-flow">
+          <div class="month-opener">
+            <div class="month-opener-top">
+              <div class="month-index-wrap"><div class="month-index">{{ "%02d"|format(month.number) }}</div><div><p class="month-kicker">Monthly chapter</p><h2 class="month-heading">{{ month.name }}</h2></div></div>
+              <div class="month-range">{{ month.range }}</div>
+            </div>
+            <div class="month-opener-body">
+              <div class="month-opener-main">
+                {% if month.month_overview %}<p class="month-brief-label">The month's pattern</p><div class="month-snapshot">{{ month.month_overview }}</div>{% endif %}
+                {% if month.activated_domains %}
+                <div class="domains-wrap"><p class="domains-label">Most activated chart areas</p><div class="domains">{% for domain in month.activated_domains %}<div class="domain-chip"><b>{{ domain.bar }}</b> {{ domain.domain }}</div>{% endfor %}</div></div>
+                {% endif %}
+              </div>
+              <aside class="month-opener-aside">
+                <div class="month-opener-aside-card">
+                  <span>Chapter pace</span>
+                  <strong>{{ month.chapter_density }}</strong>
+                  <p>This chapter gathers {{ month.event_count }} dated {{ 'entry' if month.event_count == 1 else 'entries' }} arranged below in chronological order.</p>
+                </div>
+                {% if month.chapter_focus or month.chapter_driver or month.chapter_signal %}
+                <div class="month-opener-aside-card">
+                  <span>Reading cue</span>
+                  {% if month.chapter_focus %}<strong>{{ month.chapter_focus }}</strong>{% elif month.chapter_driver %}<strong>{{ month.chapter_driver }}</strong>{% endif %}
+                  <p>
+                    {% if month.chapter_driver %}Primary motion: {{ month.chapter_driver }}.{% endif %}
+                    {% if month.chapter_signal %} Earliest major window: {{ month.chapter_signal }}.{% endif %}
+                  </p>
+                </div>
+                {% endif %}
+              </aside>
+            </div>
+          </div>
+
+          <div class="month-guidance-layout">
+            <article class="month-guidance-card">
+              <h3>Major timing windows</h3>
+              {% if month.major_timing_windows %}
+              <div class="timing-window-list">
+                {% for item in month.major_timing_windows %}
+                <div class="timing-window-item">
+                  <strong>{{ item.title }}</strong>
+                  <span>{{ item.date_label }} - {{ item.event_label }}</span>
+                  {% if item.subtitle %}<span>{{ item.subtitle }}</span>{% endif %}
+                </div>
+                {% endfor %}
+              </div>
+              {% else %}
+              <p>No major timing windows were isolated from the existing event set for this month.</p>
+              {% endif %}
+            </article>
+            <div class="month-guidance-column">
+              {% if month.convergence_windows %}
+              <article class="month-guidance-card">
+                <h3>Convergence windows</h3>
+                <div class="convergence-window-list">
+                  {% for item in month.convergence_windows %}
+                  <div class="convergence-window-item">
+                    <strong>{{ item.title }}</strong>
+                    <span>{{ item.date_label }} - {{ item.scope_label }}</span>
+                    {% if item.shared_emphasis %}<span>{{ item.shared_emphasis }}</span>{% endif %}
+                  </div>
+                  {% endfor %}
+                </div>
+              </article>
+              {% endif %}
+              <article class="month-guidance-card">
+                <h3>Activated areas</h3>
+                <p>{{ month.activated_areas_summary }}</p>
+              </article>
+              {% if month.continuity_from_previous %}
+              <article class="month-guidance-card">
+                <h3>Continuing Thread</h3>
+                <p>{{ month.continuity_from_previous }}</p>
+              </article>
+              {% endif %}
+            </div>
+            <div class="month-guidance-column">
+              <article class="month-guidance-card">
+                <h3>Looking ahead</h3>
+                <p>{{ month.looking_ahead }}</p>
+              </article>
+              {% if month.continuity_into_next %}
+              <article class="month-guidance-card">
+                <h3>What Carries Forward</h3>
+                <p>{{ month.continuity_into_next }}</p>
+              </article>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        {% if month.events %}
+        <div class="chronology-divider" aria-label="Chronological forecast begins"><span class="chronology-title">Chronological forecast</span><span class="chronology-note">Dated events & turning points</span></div>
+        <div class="monthly-events">
+          {% for event in month.events %}
+          <article class="event-card {{ event.tone }}{% if loop.first %} first-in-month{% endif %}">
+            <div class="card-top"><span class="card-kind">{{ event.event_label }}</span><span class="card-date">{{ event.date_label }}</span></div>
+            <h3>{{ event.title }}</h3>
+            {% if event.subtitle %}<div class="card-subtitle">{{ event.subtitle }}</div>{% endif %}
+            {% if event.why_this_matters %}<div class="timing-line">{{ event.why_this_matters }}</div>{% endif %}
+            {% if event.duration_descriptor %}<div class="timing-line">{{ event.duration_descriptor }}</div>{% endif %}
+            {% if event.event_type == 'convergence_window' %}
+            {% if event.shared_emphasis %}<div class="convergence-line"><strong>Shared emphasis</strong><br>{{ event.shared_emphasis }}</div>{% endif %}
+            {% if event.participating_condition_line %}<div class="convergence-line"><strong>Participating conditions</strong><br>{{ event.participating_condition_line }}</div>{% endif %}
+            {% if event.participating_markers %}<div class="convergence-line markers">{{ event.participating_markers }}</div>{% endif %}
+            {% if event.reader_synthesis %}<div class="event-block">{{ event.reader_synthesis }}</div>{% endif %}
+            {% else %}
+            {% if event.block %}<div class="event-block">{{ event.block }}</div>{% endif %}
+            {% endif %}
+            {% if event.constellation_lens %}<div class="constellation-lens"><p class="lens-label">Through Your Constellation{% if event.constellation_lens_label %} - {{ event.constellation_lens_label }}{% endif %}</p><div class="lens-block">{{ event.constellation_lens }}</div></div>{% endif %}
+          </article>
+          {% endfor %}
+        </div>
+        {% else %}<div class="empty-month">No qualifying dated entries peak in this forecast period.</div>{% endif %}
+      </section>
+      {% endfor %}
+
+      <!-- X. TURNING POINT GUIDE -->
+      <section class="section" id="turning-point-guide">
+        <div class="section-header"><div><p class="eyebrow">X. Turning point guide</p><h2>Windows Worth Returning To</h2><p class="section-subtitle">A compact guide to the most sustained or concentrated cycles in this report.</p></div></div>
+        <div class="activity-legend"><p class="activity-legend-heading">Understanding activity levels</p><p class="activity-legend-intro">These markers describe relative symbolic concentration in this report, not certainty, inevitability, or the importance of a life event.</p><ul class="activity-legend-list"><li><span class="legend-symbol">BG</span><span class="legend-item-label">Background</span> - gentle supporting influences</li><li><span class="legend-symbol">AC</span><span class="legend-item-label">Active</span> - noticeable movement or change</li><li><span class="legend-symbol">SG</span><span class="legend-item-label">Significant</span> - a period likely to deserve additional attention</li><li><span class="legend-symbol">KW</span><span class="legend-item-label">Key Window</span> - one of the year's strongest concentrations</li></ul></div>
+        {% if turning_point_timeline %}
+        <div class="turning-guide-timeline">
+          {% for month in turning_point_timeline %}
+          {% if month.entries %}
+          <section class="turning-guide-month">
+            <div class="turning-guide-month-head">
+              <div class="turning-guide-month-badge">{{ month.short_name }}</div>
+              <div>
+                <h3>{{ month.name }}</h3>
+                <p>{{ month.entries | length }} turning window{{ 's' if month.entries | length != 1 else '' }} anchored in this forecast month.</p>
+              </div>
+            </div>
+            <div class="turning-guide-list">
+              {% for entry in month.entries %}
+              <article class="turning-guide-item {{ entry.tone }}">
+                <div class="turning-guide-item-top">
+                  <h4>{{ entry.title }}</h4>
+                  <div class="turning-guide-item-date">{{ entry.date_label }}</div>
+                </div>
+                {% if entry.window_label %}<div class="turning-guide-item-window">{{ entry.window_label }}</div>{% endif %}
+                <div class="turning-guide-item-meta">
+                  <div><span>Intensity</span><strong>{{ entry.intensity_text }}</strong></div>
+                  {% if entry.natal_target %}<div><span>Natal target</span><strong>{{ entry.natal_target }}</strong></div>{% endif %}
+                  {% if entry.related_month %}<div><span>Related month</span><strong>{{ entry.related_month }}</strong></div>{% endif %}
+                  {% if entry.date_label %}<div><span>Window</span><strong>{{ entry.date_label }}</strong></div>{% endif %}
+                </div>
+                {% if entry.reason_line %}<div class="turning-guide-reason">{{ entry.reason_line }}</div>{% endif %}
+              </article>
+              {% endfor %}
+            </div>
+          </section>
+          {% endif %}
+          {% endfor %}
+        </div>
+        {% else %}
+        <p class="empty-month">No sustained landmark cycles met the turning point threshold for this forecast period.</p>
+        {% endif %}
+      </section>
+
+      <!-- XI. CYCLE LEDGER -->
+      <section class="section" id="cycle-ledger">
+        <div class="section-header"><div><p class="eyebrow">XI. Cycle ledger</p><h2>{{ raw_cycle_ledger.title if raw_cycle_ledger and raw_cycle_ledger.title else 'Cycle Ledger - Forecast Event Registry' }}</h2><p class="section-subtitle">{{ raw_cycle_ledger.subtitle if raw_cycle_ledger and raw_cycle_ledger.subtitle else 'A chronological technical index of the selected forecast events.' }}</p></div></div>
+        <p class="ledger-intro">This registry keeps event types distinct and lists them in chronological order without ranking them by hidden score, tier, or theme-strength claims.</p>
+        {% if raw_cycle_ledger and raw_cycle_ledger.field_notes %}
+        <div class="ledger-field-note-list">
+          {% for note in raw_cycle_ledger.field_notes %}
+          <article class="ledger-field-note">
+            <strong>{{ note.event_type | replace('_', ' ') }}</strong>
+            <p>{{ note.summary }}</p>
+          </article>
+          {% endfor %}
+        </div>
+        {% endif %}
+        {% if raw_cycle_ledger and raw_cycle_ledger.status_method_note %}
+        <p class="ledger-method-note">{{ raw_cycle_ledger.status_method_note }}</p>
+        {% endif %}
+        <div class="ledger-months">
+          {% set ledger_source_months = raw_cycle_ledger.months if raw_cycle_ledger and raw_cycle_ledger.months else ledger_months %}
+          {% for month in ledger_source_months %}
+          <section class="ledger-month">
+            <h3>{{ month.name }}</h3>
+            {% if month.entries and month.entries[0].date_window is defined %}
+            <div class="ledger-table-wrap">
+              <table class="ledger-table">
+                <thead>
+                  <tr>
+                <th scope="col">Date / Window</th>
+                <th scope="col">Event</th>
+                <th scope="col">Event Type</th>
+                <th scope="col">Astrological Status</th>
+                <th scope="col">Activated Target / House</th>
+                <th scope="col">Cycle Structure</th>
+                <th scope="col">Related Convergence</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for event in month.entries %}
+                  <tr>
+                    <td>{{ event.date_window }}</td>
+                    <td>{{ event.title }}</td>
+                    <td><span class="ledger-type {{ event.event_type_label | lower | replace(' ', '-') }}">{{ event.event_type_label }}</span></td>
+                    <td>{{ event.astrological_status }}</td>
+                    <td>{{ event.target_house }}</td>
+                    <td>{{ event.cycle_structure }}</td>
+                    <td>{{ event.related_convergence }}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            {% else %}
+            <div class="ledger-entry-list">
+              {% for event in month.entries %}
+              <article class="ledger-entry">
+                <div class="ledger-entry-top">
+                  <p class="ledger-entry-title">{{ event.title }}</p>
+                  <div class="ledger-entry-date">{{ event.date_label }}</div>
+                </div>
+                {% if event.subtitle %}<p class="ledger-entry-subtitle">{{ event.subtitle }}</p>{% endif %}
+                {% if event.technical_fields %}
+                <div class="ledger-entry-meta">
+                  {% for field in event.technical_fields %}
+                  <div><span>{{ field.label }}</span><strong>{{ field.value }}</strong></div>
+                  {% endfor %}
+                </div>
+                {% else %}
+                <div class="ledger-entry-meta">
+                  <div><span>Type</span><strong>{{ event.event_label }}</strong></div>
+                  <div><span>Intensity</span><strong>{{ event.intensity }}</strong></div>
+                  <div><span>Timing note</span><strong>{{ event.timing_note }}</strong></div>
+                </div>
+                {% endif %}
+                {% if event.exact_contacts %}
+                <div class="ledger-contact-list">
+                  {% for contact in event.exact_contacts %}
+                  <div class="ledger-contact-item">
+                    <div class="ledger-contact-top">
+                      <strong>{{ contact.sequence_label }} - {{ contact.exactness_label }}</strong>
+                      <span>{{ contact.date_label }}</span>
+                    </div>
+                    <div class="ledger-contact-meta">{{ contact.motion_label }} - Orb {{ contact.orb_label }}</div>
+                  </div>
+                  {% endfor %}
+                </div>
+                {% endif %}
+              </article>
+              {% endfor %}
+            </div>
+            {% endif %}
+          </section>
+          {% endfor %}
+        </div>
+        {% if raw_cycle_ledger and raw_cycle_ledger.convergence_index %}
+        <section class="ledger-month">
+          <h3>Convergence Index</h3>
+          <div class="ledger-table-wrap">
+            <table class="ledger-table">
+              <thead>
+                <tr>
+                <th scope="col">Window</th>
+                <th scope="col">Shared emphasis</th>
+                <th scope="col">Participating conditions</th>
+                <th scope="col">Activated territories</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for row in raw_cycle_ledger.convergence_index %}
+                <tr>
+                  <td>{{ row.window }}{% if row.title %}<br><span class="ledger-type">{{ row.title }}</span>{% endif %}</td>
+                  <td>{{ row.shared_emphasis }}</td>
+                  <td>{{ row.participating_conditions }}</td>
+                  <td>{{ row.activated_territories }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </section>
+        {% endif %}
+        {% if raw_cycle_ledger and raw_cycle_ledger.structure_notes %}
+        <div class="structure-note-bank">
+          {% for section in raw_cycle_ledger.structure_notes %}
+          <section class="structure-note-section">
+            <h3>{{ section.title }}</h3>
+            <div class="ledger-table-wrap">
+              <table class="structure-note-table">
+                <thead>
+                  <tr>
+                    {% for column in section.columns %}
+                <th scope="col">{{ column }}</th>
+                    {% endfor %}
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for row in section.rows %}
+                  <tr>
+                    {% for cell in row %}
+                    <td>{{ cell }}</td>
+                    {% endfor %}
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </section>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </section>
+
+      <!-- XII. TECHNICAL APPENDIX -->
+      <section class="section" id="technical-appendix">
+        <div class="section-header"><div><p class="eyebrow">XII. Technical appendix</p><h2>Terms, Methods & Definitions</h2></div></div>
+        <div class="appendix-grid">
+          <article><h3>Transit</h3><p>A moving planet's relationship to a natal placement or chart angle.</p></article>
+          <article><h3>Exact contact</h3><p>The closest point of an aspect inside a larger timing window.</p></article>
+          <article><h3>Orb</h3><p>The allowable distance from exactness used to define an aspect's timing range.</p></article>
+          <article><h3>Station</h3><p>The point at which a planet appears to pause before turning retrograde or direct.</p></article>
+          <article><h3>Retrograde</h3><p>An apparent backward motion from Earth's perspective that often marks review, revision, or reworking in timing language.</p></article>
+          <article><h3>House ingress</h3><p>A planet entering a new Whole Sign house, shifting the life territory through which it is expressed.</p></article>
+          <article><h3>Eclipse</h3><p>A solar or lunar event that may concentrate attention around a natal point or area of life.</p></article>
+          <article><h3>Whole Sign houses</h3><p>A house system in which the entire sign containing the Ascendant is the first house.</p></article>
+          <article><h3>Activity levels</h3><p>Reader-facing labels for relative symbolic concentration; they are not predictions of guaranteed outcomes.</p></article>
+          {% if show_landmark_visuals %}
+          <article><h3>Landmark</h3><p>A sustained, high-priority transit cycle used here as a major turning point within the forecast year.</p></article>
+          {% endif %}
+          <article><h3>Forecast shape</h3><p>A structural label describing how concentration is distributed across the year's existing monthly intensity pattern.</p></article>
+        </div>
+        <div class="method-note"><h3>Method note</h3><p>This forecast is calculated with the Swiss Ephemeris using the {{ methodology_label | default('Tropical zodiac + Whole Sign houses') }} methodology. The report draws on natal transits, Whole Sign house ingresses, planetary stations, and eclipses that contact selected natal targets. It does not claim to predict one fixed future; it maps changing symbolic conditions, timing concentrations, and recurring developmental patterns.</p><p>{{ raw_cycle_ledger.status_method_note if raw_cycle_ledger and raw_cycle_ledger.status_method_note else 'Interim display statuses use conventional event-structure signals and are not the finalized Entangled Oracle weighting model.' }}</p></div>
+      </section>
+
+      <!-- XIII. YEAR INTEGRATION -->
+      <section class="section" id="year-integration">
+        <div class="section-header"><div><p class="eyebrow">XIII. Year integration</p><h2>What You Carry Forward</h2></div></div>
+        {% if year_integration_block %}<div class="integration">{{ year_integration_block }}</div>{% else %}<div class="empty-landmarks">No end-of-year integration synthesis is available for this forecast.</div>{% endif %}
+        <div class="integration-intro">Use these closing pages to register what the year clarified, what changed shape over time, and what still feels alive as the next cycle begins.</div>
+        <div class="reflection-grid">
+          <article><p class="reflection-label">Looking back</p><div class="reflection-lines"></div></article>
+          <article><p class="reflection-label">What became clearer?</p><div class="reflection-lines"></div></article>
+          <article><p class="reflection-label">What changed form?</p><div class="reflection-lines"></div></article>
+          <article><p class="reflection-label">Looking forward</p><div class="reflection-lines"></div></article>
+        </div>
+        <div class="notes-space"><h3>Notes</h3><div class="reflection-lines"></div></div>
+      </section>
+
+      <footer>{{ report_footer_text | default('Entangled Oracle - Ksisti-Puck LLC - Generated ' ~ generation_date) }} <span class="report-page-number"></span></footer>
+    </main>
+  </div>
+</body>
+</html>
+

@@ -1,0 +1,28 @@
+{
+  "_note": "Key: planet → station (Retrograde/Direct). 6 planets × 2 = 12 blocks, plus fallback. ~30 words.",
+  "fallback": "A planetary station marks a change in pace. Matters linked to this planet may pause, turn inward, or begin moving forward again. Give the shift time to show its direction.",
+  "Jupiter": {
+    "Retrograde": "Jupiter retrograde invites a review of growth, belief, and opportunity. Revisit what has already expanded before seeking more. Meaning often returns through reflection, study, or a changed sense of proportion.",
+    "Direct": "Jupiter direct renews forward movement around learning, travel, confidence, or possibility. A perspective developed during the review period can now be tested in practical circumstances."
+  },
+  "Saturn": {
+    "Retrograde": "Saturn retrograde turns attention toward commitments, limits, and systems of support. Reassess what is sustainable. Private adjustments to structure may matter more than visible progress for a while.",
+    "Direct": "Saturn direct brings responsibilities back into clearer motion. Plans refined during the retrograde can meet real conditions again, revealing which commitments are ready for consistent follow-through."
+  },
+  "Uranus": {
+    "Retrograde": "Uranus retrograde shifts the urge for change inward. Review recent disruptions and emerging ideas before acting on them. A private realization may reshape how freedom is pursued later.",
+    "Direct": "Uranus direct makes experimentation more visible. Changes that were forming internally may begin altering routines, environments, or relationships. Stay curious enough to notice the option that did not exist before."
+  },
+  "Neptune": {
+    "Retrograde": "Neptune retrograde invites a quieter review of ideals, images, and emotional assumptions. Let impressions settle. This is useful for distinguishing a meaningful vision from a comforting projection.",
+    "Direct": "Neptune direct lets imagination and sensitivity move outward again. Creative or spiritual insights may become easier to express, especially when they are paired with ordinary grounding and clear agreements."
+  },
+  "Pluto": {
+    "Retrograde": "Pluto retrograde returns attention to private patterns around power, trust, and attachment. Notice what has been operating beneath the surface. Change begins with a more honest understanding of the dynamic.",
+    "Direct": "Pluto direct brings previously internal changes into visible decisions or exchanges. The way you handle boundaries, influence, and shared resources may begin to reflect a deeper shift already underway."
+  },
+  "Mars": {
+    "Retrograde": "Mars retrograde asks for a reconsideration of effort, anger, and direction. Momentum may slow so motives can be clarified. Revise the strategy before recommitting your energy.",
+    "Direct": "Mars direct restores outward drive. Delayed efforts can begin moving again, provided the pause has clarified priorities. Direct energy toward a specific aim rather than every available conflict."
+  }
+}

@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Personal Forecast · {{ querent_name }}</title>
+  <style>{{ shared_report_css | safe }}</style>
+  <style>
+    :root {
+      /* Base */
+      --bg:        {{ palette.bg }};
+      --surface:   {{ palette.surface }};
+      --surface-2: {{ palette.surface_2 }};
+      --border:    {{ palette.border }};
+      --text:      {{ palette.text }};
+      --muted:     {{ palette.muted }};
+      --subtle:    {{ palette.subtle }};
+
+      /* Semantic color tokens */
+      --color-identity:      {{ palette.identity }};
+      --color-growth:        {{ palette.growth }};
+      --color-relationships: {{ palette.relationships }};
+      --color-creativity:    {{ palette.creativity }};
+      --color-vocation:      {{ palette.vocation }};
+      --color-home:          {{ palette.home }};
+      --color-spiritual:     {{ palette.spiritual }};
+
+      /* Legacy aliases for backward compatibility */
+      --accent:  {{ palette.accent }};
+      --purple:  {{ palette.purple }};
+      --gold:    {{ palette.gold }};
+      --rose:    {{ palette.rose }};
+      --ember:   {{ palette.ember }};
+      --blue:    {{ palette.blue }};
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Georgia', serif;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 48px 24px 72px;
+      line-height: 1.8;
+    }
+
+    p,
+    li,
+    div,
+    span,
+    strong,
+    em,
+    h1,
+    h2,
+    h3,
+    h4,
+    td,
+    th {
+      overflow-wrap: break-word;
+      word-break: normal;
+      hyphens: auto;
+    }
+
+    /* ── Header ── */
+    header { text-align: center; margin-bottom: 52px; }
+    .name {
+      font-size: 1.8rem;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+    }
+    [data-palette="vibrant"] .name { color: var(--accent); }
+    [data-palette="muted"]   .name { color: #1A1410; }
+    .report-title {
+      font-size: 0.78rem;
+      color: var(--muted);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-top: 8px;
+    }
+    .meta { font-size: 0.72rem; color: var(--subtle); margin-top: 4px; }
+    .natal-ref-label { font-size: 0.6rem; letter-spacing: 2px; text-transform: uppercase; opacity: 0.55; margin-top: 10px; }
+    .time-status {
+      display: inline-block;
+      font-size: 0.62rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      padding: 2px 8px;
+      border-radius: 3px;
+      margin-top: 10px;
+    }
+    .time-status.exact { border-color: var(--accent); color: var(--accent); }
+    .time-status.unknown { border-color: var(--subtle); color: var(--subtle); }
+
+    /* ── Dividers ── */
+    hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
+
+    /* ── Section labels ── */
+    .section-label {
+      font-size: 0.62rem;
+      color: var(--muted);
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+
+    /* ── Opening Snapshot ── */
+    .opening {
+      font-size: 1rem;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    /* ── Headline Themes ── */
+    .themes { margin-bottom: 8px; }
+
+    .theme-card {
+      margin-bottom: 36px;
+      padding-left: 18px;
+      border-left: 2px solid var(--border);
+      transition: border-color 0.2s;
+    }
+    .theme-card.theme-1 { border-left-color: var(--color-creativity); }
+    .theme-card.theme-2 { border-left-color: var(--color-growth); }
+    .theme-card.theme-3 { border-left-color: var(--color-identity); }
+
+    .theme-eyebrow {
+      font-size: 0.60rem;
+      color: var(--muted);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+    .theme-card.theme-1 .theme-eyebrow { color: var(--color-creativity); }
+    .theme-card.theme-2 .theme-eyebrow { color: var(--color-growth); }
+    .theme-card.theme-3 .theme-eyebrow { color: var(--color-identity); }
+
+    .theme-title {
+      font-size: 1.2rem;
+      font-weight: normal;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+    .theme-body { font-size: 0.95rem; color: var(--text); margin-bottom: 10px; }
+    .theme-action {
+      font-size: 0.82rem;
+      color: var(--muted);
+      font-style: italic;
+    }
+    .theme-action strong {
+      color: var(--muted);
+      font-style: normal;
+      font-weight: normal;
+      text-transform: uppercase;
+      font-size: 0.70rem;
+      letter-spacing: 2px;
+    }
+
+    /* ── Key Timing Windows ── */
+    .timing-section { margin-bottom: 8px; }
+
+    /* Signature element: timeline bar */
+    .timeline-track {
+      position: relative;
+      height: 2px;
+      background: var(--border);
+      margin: 28px 0 36px;
+      border-radius: 1px;
+    }
+    .timeline-track::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0;
+      height: 2px;
+      width: 100%;
+      background: linear-gradient(to right, var(--gold), var(--purple), var(--accent));
+      opacity: 0.25;
+      border-radius: 1px;
+    }
+    .timeline-dot {
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--muted);
+    }
+    .timeline-dot.high { background: var(--gold); box-shadow: 0 0 6px var(--gold); }
+    .timeline-dot.featured { background: var(--ember); box-shadow: 0 0 8px var(--ember); width: 8px; height: 8px; }
+
+    .timing-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+    .timing-table th {
+      font-size: 0.60rem;
+      color: var(--muted);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      text-align: left;
+      padding: 0 0 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .timing-table td {
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    .timing-table tr:last-child td { border-bottom: none; }
+    .timing-table td:first-child { color: var(--gold); width: 32%; }
+    .timing-table td:nth-child(2) { color: var(--text); width: 34%; padding-right: 12px; }
+    .timing-table td:last-child { color: var(--muted); font-style: italic; font-size: 0.82rem; }
+
+    /* ── Featured Transit ── */
+    .featured-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-top: 2px solid var(--ember);
+      border-radius: 8px;
+      padding: 32px 28px;
+      margin-bottom: 8px;
+    }
+    .featured-section .section-label { color: var(--ember); }
+    .featured-date {
+      font-size: 0.72rem;
+      color: var(--muted);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .featured-title {
+      font-size: 1.25rem;
+      color: var(--ember);
+      font-weight: normal;
+      margin-bottom: 20px;
+    }
+    .featured-body { font-size: 0.95rem; margin-bottom: 14px; }
+    .featured-action {
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      font-size: 0.82rem;
+      color: var(--muted);
+      font-style: italic;
+    }
+    .featured-action strong {
+      display: block;
+      font-size: 0.60rem;
+      font-style: normal;
+      font-weight: normal;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--ember);
+      margin-bottom: 6px;
+    }
+
+    /* ── Practical Guidance ── */
+    .guidance-section {
+      margin-bottom: 8px;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+    .guidance-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+      margin-top: 4px;
+    }
+    .guidance-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 18px 16px;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+    .guidance-label {
+      font-size: 0.58rem;
+      color: var(--muted);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .guidance-text { font-size: 0.88rem; color: var(--text); }
+
+    /* ── Supporting Events (beneath theme anchor) ── */
+    .supporting-events {
+      margin-top: 14px;
+      padding-top: 11px;
+      border-top: 1px solid var(--border);
+    }
+    .supporting-events-label {
+      font-size: 0.54rem;
+      color: var(--subtle);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 7px;
+    }
+    .supporting-event-row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      padding: 4px 0;
+      font-size: 0.79rem;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+      opacity: 0.80;
+    }
+    .supporting-event-row:last-child { border-bottom: none; }
+    .supporting-event-date {
+      color: var(--subtle);
+      font-size: 0.70rem;
+      min-width: 80px;
+      flex-shrink: 0;
+    }
+    .supporting-event-label { flex: 1; }
+    /* Challenging marker is a small diamond glyph — no extra words needed */
+    .supporting-event-marker {
+      font-size: 0.60rem;
+      color: var(--subtle);
+      flex-shrink: 0;
+      opacity: 0.70;
+    }
+
+    /* ── Closing ── */
+    .closing { font-size: 0.95rem; color: var(--text); }
+
+    /* ── Chart Snapshot (natal reference) ── */
+    .chart-snapshot {
+      margin-bottom: 48px;
+    }
+
+    .mini-wheel-wrap {
+      margin: 0 auto 20px;
+      max-width: 320px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      background: #0d0d1a;
+    }
+
+    .mini-wheel-wrap svg {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .snapshot-ref-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+      margin-top: 4px;
+    }
+
+    .snapshot-ref-table th {
+      font-size: 0.60rem;
+      color: var(--muted);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      text-align: left;
+      padding: 0 0 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .snapshot-ref-table td {
+      padding: 7px 0;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+      vertical-align: top;
+    }
+
+    .snapshot-ref-table tr:last-child td { border-bottom: none; }
+
+    .snapshot-ref-table td:first-child {
+      color: var(--gold);
+      width: 32%;
+    }
+
+    .snapshot-ref-table td:nth-child(2) {
+      width: 34%;
+      padding-right: 12px;
+    }
+
+    .snapshot-ref-table td:last-child {
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
+
+    .chart-note-pf {
+      margin-top: 10px;
+      font-size: 0.72rem;
+      color: var(--subtle);
+    }
+
+    /* ── Grounding Note ── */
+    .grounding {
+      margin-top: 48px;
+      font-size: 0.78rem;
+      color: var(--subtle);
+      border-top: 1px solid var(--border);
+      padding-top: 24px;
+      line-height: 1.7;
+    }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      font-size: 0.68rem;
+      color: #333;
+      margin-top: 60px;
+      letter-spacing: 1px;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 560px) {
+      .guidance-grid { grid-template-columns: 1fr; }
+      .timing-table td:last-child { display: none; }
+    }
+
+    /* ── Print ── */
+    @media print {
+      body { background: #fff; color: #111; padding: 24px; }
+      .report-title, .meta { color: #666; }
+      .section-label { color: #888; }
+      .theme-title { color: #111; }
+      .theme-action { color: #666; }
+      .timing-table th { color: #888; }
+      .timing-table td:first-child { color: #333; }
+      .timing-table td:last-child { color: #666; }
+      .featured-section { background: #f5f5f5; border-color: #ccc; border-top-color: var(--ember); }
+      .featured-title { color: #333; }
+      .featured-action { color: #666; }
+      .featured-action strong { color: #888; }
+      .guidance-card { background: #f9f9f9; border-color: #ddd; }
+      .guidance-label { color: #888; }
+      .timeline-track { display: none; }
+      .grounding { color: #999; border-top-color: #ddd; }
+      footer { color: #bbb; }
+      .time-status { border-color: #ccc; color: #888; }
+      .mini-wheel-wrap { background: #fff; border-color: #ccc; }
+      .snapshot-ref-table th { color: #888; }
+      .snapshot-ref-table td:first-child { color: #333; }
+      .snapshot-ref-table td:last-child { color: #666; }
+      .chart-note-pf { color: #aaa; }
+    }
+  </style>
+</head>
+<body class="report-shell report-personal-forecast" data-palette="{{ palette_name | default('vibrant') }}">
+
+  <!-- ── Header ── -->
+  <header>
+    <div class="name">{{ querent_name }}</div>
+    <div class="report-title">Personal Forecast</div>
+    <div class="meta">{{ report_start_display }} - {{ report_end_display }}</div>
+    <div class="meta natal-ref-label">Born</div>
+    <div class="meta">{{ birth_date_display }}{% if birth_time_display %} - {{ birth_time_display }}{% endif %}</div>
+    {% if birth_location %}<div class="meta">{{ birth_location }}</div>{% endif %}
+    <div class="meta">{{ report_brand_line | default('Entangled Oracle - Ksisti-Puck LLC') }}</div>
+    <div class="time-status {% if birth_time_status == 'exact' %}exact{% else %}unknown{% endif %}">
+      Birth time: {{ birth_time_status | default('unknown') }}
+    </div>
+  </header>
+
+  {% if chart_wheel_svg or chart_wheel_data %}
+  <!-- ── Natal Chart Snapshot ── -->
+  <div class="chart-snapshot">
+    <div class="section-label">Natal Reference - Chart Snapshot</div>
+
+    {% if chart_wheel_svg %}
+    <div class="mini-wheel-wrap">{{ chart_wheel_svg | safe }}</div>
+    {% endif %}
+
+    {% if chart_wheel_data and chart_wheel_data.bodies %}
+    <table class="snapshot-ref-table">
+      <thead>
+        <tr>
+          <th scope="col">Point</th>
+          <th scope="col">Position</th>
+          <th scope="col">House</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for body in chart_wheel_data.bodies %}
+        <tr>
+          <td>{{ body.name | replace("_", " ") }}</td>
+          <td>{{ body.position }}</td>
+          <td>{% if body.house %}{{ body.house }}{% else %}-{% endif %}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <p class="chart-note-pf">{{ house_system_label | default(house_system | default('Whole Sign')) }} houses - {{ zodiac_label | default('Tropical') }} zodiac</p>
+    {% endif %}
+  </div>
+
+  <hr>
+  {% endif %}
+
+  <!-- ── Opening Snapshot ── -->
+  <div class="section-label">Your Season at a Glance</div>
+  <div class="opening">
+    {{ opening_snapshot | default('Opening snapshot unavailable.') }}
+  </div>
+
+  <hr>
+
+  <!-- ── Three Headline Themes ── -->
+  <div class="section-label">Three Headline Themes</div>
+  <div class="themes">
+    {% for theme in themes %}
+    <div class="theme-card theme-{{ loop.index }}">
+      <div class="theme-eyebrow">{{ theme.theme_label }}</div>
+      <div class="theme-title">{{ theme.title | default('Theme title unavailable.') }}</div>
+      <div class="theme-body">{{ theme.body | default('Theme interpretation unavailable.') }}</div>
+      <div class="theme-action">
+        <strong>Best use</strong>
+        {{ theme.action | default('Practical application unavailable.') }}
+      </div>
+
+      {# Supporting events - max 3; change the slice to adjust display count #}
+      {% if theme.supporting_events and theme.supporting_events | length > 0 %}
+      <div class="supporting-events">
+        <div class="supporting-events-label">Also active</div>
+        {% for event in theme.supporting_events[:3] %}
+        <div class="supporting-event-row">
+          <span class="supporting-event-date">{{ event.peak_date }}</span>
+          <span class="supporting-event-label">{{ event.label }}</span>
+          {% if event.character == "challenging" %}
+          <span class="supporting-event-marker" aria-label="challenging">◆</span>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+
+  <hr>
+
+  <!-- ── Key Timing Windows ── -->
+  <div class="timing-section">
+    <div class="section-label">Key Timing Windows</div>
+
+    <!-- Signature timeline bar -->
+    <div class="timeline-track" aria-hidden="true">
+      {% if timing_windows %}
+        {% set window_count = timing_windows | length %}
+        {% for window in timing_windows %}
+          {% set pct = (loop.index0 / (window_count - 1) * 100) if window_count > 1 else 50 %}
+          <div class="timeline-dot {% if window.featured %}featured{% elif window.intensity == 'high' %}high{% endif %}"
+               style="left: {{ pct }}%;"
+               title="{{ window.date_label }}"></div>
+        {% endfor %}
+      {% endif %}
+    </div>
+
+    <table class="timing-table">
+      <thead>
+        <tr>
+          <th scope="col">Timing</th>
+          <th scope="col">Theme</th>
+          <th scope="col">Best Use</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if timing_windows %}
+          {% for window in timing_windows %}
+          <tr>
+            <td>{{ window.date_label }}</td>
+            <td>{{ window.theme }}</td>
+            <td>{{ window.best_use }}</td>
+          </tr>
+          {% endfor %}
+        {% else %}
+          <tr>
+            <td colspan="3" style="color: var(--subtle); font-style: italic;">
+              Key timing windows unavailable.
+            </td>
+          </tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+
+  <hr>
+
+  <!-- ── Featured Transit ── -->
+  <div class="featured-section">
+    <div class="section-label">Turning Point</div>
+    {% if featured_event %}
+      <div class="featured-date">{{ featured_event.peak_date }}</div>
+      <div class="featured-title">{{ featured_event.title | default('Featured event title unavailable.') }}</div>
+      <div class="featured-body">{{ featured_event.body_1 | default('') }}</div>
+      <div class="featured-body">{{ featured_event.body_2 | default('') }}</div>
+      {% if featured_event.body_3 %}<div class="featured-body">{{ featured_event.body_3 }}</div>{% endif %}
+      <div class="featured-action">
+        <strong>Suggested action</strong>
+        {{ featured_event.action | default('Suggested action unavailable.') }}
+      </div>
+    {% else %}
+      <div class="featured-date" style="color: var(--subtle);">Peak event date</div>
+      <div class="featured-title" style="color: var(--subtle);">Featured turning point unavailable.</div>
+    {% endif %}
+  </div>
+
+  <hr>
+
+  <!-- ── Practical Guidance ── -->
+  <div class="guidance-section">
+    <div class="section-label">Best Use of This Forecast Window</div>
+    <div class="guidance-grid">
+      <div class="guidance-card">
+        <div class="guidance-label">Professional - Creative</div>
+        <div class="guidance-text">
+          {{ guidance_professional | default('Professional guidance unavailable.') }}
+        </div>
+      </div>
+      <div class="guidance-card">
+        <div class="guidance-label">Relationships - Support</div>
+        <div class="guidance-text">
+          {{ guidance_relationships | default('Relationship guidance unavailable.') }}
+        </div>
+      </div>
+      <div class="guidance-card">
+        <div class="guidance-label">Capacity - Routine</div>
+        <div class="guidance-text">
+          {{ guidance_capacity | default('Capacity guidance unavailable.') }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- ── Closing Integration ── -->
+  <div class="section-label">Closing Integration</div>
+  <div class="closing">
+    {{ closing_integration | default('Closing synthesis unavailable.') }}
+  </div>
+
+  <!-- ── Grounding Note ── -->
+  <div class="grounding">
+    Astrology describes timing, themes, and symbolic patterns. It does not replace practical judgment, professional advice, medical care, legal guidance, or lived consent. Keep what is useful, and let real-world information guide important decisions.
+  </div>
+
+  <footer>{{ report_footer_text | default('Entangled Oracle - Ksisti-Puck LLC - Generated ' ~ generation_date) }} <span class="report-page-number"></span></footer>
+
+</body>
+</html>
