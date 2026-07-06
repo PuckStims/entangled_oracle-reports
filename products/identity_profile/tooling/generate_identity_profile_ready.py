@@ -27,7 +27,7 @@ sys.path.insert(0, str(PROJECT_ROOT))
 from config import OUTPUT_DIR, TEMPLATES_DIR
 
 try:
-    from jinja2 import Environment, FileSystemLoader
+    from jinja2 import Environment, FileSystemLoader, select_autoescape
     JINJA2_AVAILABLE = True
 except ImportError:
     JINJA2_AVAILABLE = False
@@ -1200,7 +1200,10 @@ def render_template(report_type: str, context: dict) -> str:
     if not JINJA2_AVAILABLE:
         return _render_fallback(report_type, context)
 
-    env = Environment(loader=FileSystemLoader(TEMPLATES_DIR))
+    env = Environment(
+        loader=FileSystemLoader(TEMPLATES_DIR),
+        autoescape=select_autoescape(["html", "xml"]),
+    )
     template_map = {
         "horoscope":         "daily_horoscope/templates/daily_horoscope.html",
         "year_ahead":        "year_ahead/templates/active/year_ahead.html",

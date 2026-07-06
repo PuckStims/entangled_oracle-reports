@@ -5,10 +5,10 @@ Main entry point. Run from the command line.
 
 Usage:
     python generate.py horoscope --name "Puck" --date 1992-03-21 --time 08:11 --location "Peoria, IL"
+    python generate.py weekly_horoscope --name "Puck" --date 1992-03-21 --time 08:11 --location "Peoria, IL"
     python generate.py year_ahead --name "Puck" --date 1992-03-21 --time 08:11 --location "Peoria, IL"
     python generate.py personal_forecast --name "Puck" --date 1992-03-21 --time 08:11 --location "Peoria, IL"
     python generate.py soul_ecosystem --name "Puck" --date 1992-03-21 --time 08:11 --location "Peoria, IL"
-    python generate.py asteroid_portrait --name "Puck" --date 1992-03-21 --time 08:11 --location "Peoria, IL"
     python generate.py predictive_sandbox --name "Puck" --date 1992-03-21 --time 08:11 --location "Peoria, IL"
 
 DOB-only mode (simple horoscope, no birth time needed):
@@ -16,17 +16,19 @@ DOB-only mode (simple horoscope, no birth time needed):
 """
 import argparse
 import hashlib
+import html
 import os
 import sys
 import json
 import re
+import uuid
 import webbrowser
 from functools import lru_cache
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from config import OUTPUT_DIR, TEMPLATES_DIR
+from config import OUTPUT_DIR, TEMPLATES_DIR, PRODUCTS_DIR
 from formulas.standard.methodology_profiles import get_active_methodology_metadata
 from product_versions import (
     REPORT_MANIFEST_SCHEMA_VERSION,
@@ -38,10 +40,14 @@ from product_versions import (
 
 # Dev-only content trace. Set EO_CONTENT_TRACE=1 to print station source/subtitle
 # resolution to the terminal. Never written to HTML or PDF output.
-_EO_CONTENT_TRACE = os.environ.get("EO_CONTENT_TRACE", "0") == "1"
+def _env_flag(name: str) -> bool:
+    return os.environ.get(name, "").strip().lower() in {"1", "true", "yes", "on"}
+
+
+_EO_CONTENT_TRACE = _env_flag("EO_CONTENT_TRACE")
 
 try:
-    from jinja2 import Environment, FileSystemLoader
+    from jinja2 import Environment, FileSystemLoader, select_autoescape
     JINJA2_AVAILABLE = True
 except ImportError:
     JINJA2_AVAILABLE = False
@@ -50,16 +56,41 @@ except ImportError:
 
 # ── Input Parsing ──────────────────────────────────────────────
 
+class InputValidationError(ValueError):
+    """Raised when CLI-supplied birth data is malformed. Caught in main()
+    for a clean one-line error instead of a raw Python traceback."""
+
+
 def parse_birth_data(args) -> dict:
     """Parses CLI arguments into a birth data dict."""
+    name = args.name
+    if not name or not name.strip():
+        raise InputValidationError("--name cannot be empty or whitespace-only.")
+
+    date_string = args.date
+    try:
+        datetime.strptime(date_string, "%Y-%m-%d")
+    except ValueError:
+        raise InputValidationError(
+            f"--date '{date_string}' is not a valid date in YYYY-MM-DD format."
+        ) from None
+
     birth_data = {
-        "name": args.name,
-        "date": args.date,
-        "location": args.location or "Unknown location",
+        "name": name,
+        "date": date_string,
+        "location": args.location or "",
         "simple_mode": getattr(args, "simple", False)
     }
     if hasattr(args, "time") and args.time and not birth_data["simple_mode"]:
-        birth_data["time"] = args.time
+        time_string = args.time
+        time_format = "%H:%M:%S" if time_string.count(":") == 2 else "%H:%M"
+        try:
+            datetime.strptime(time_string, time_format)
+        except ValueError:
+            raise InputValidationError(
+                f"--time '{time_string}' is not a valid 24-hour time in HH:MM or HH:MM:SS format."
+            ) from None
+        birth_data["time"] = time_string
     else:
         birth_data["time"] = None
         birth_data["simple_mode"] = True
@@ -86,6 +117,67 @@ def _add_one_year(start: datetime) -> datetime:
         return start.replace(year=start.year + 1, month=2, day=28)
 
 
+def _align_to_week_start(moment: datetime) -> datetime:
+    """Returns UTC midnight of the Monday in the same calendar week as moment."""
+    day_start = moment.replace(hour=0, minute=0, second=0, microsecond=0)
+    return day_start - timedelta(days=day_start.weekday())
+
+
+def _report_window(report_type: str, report_start: datetime) -> tuple[datetime, datetime]:
+    """
+    Returns (report_start, report_end) for a report type's forecast window.
+
+    weekly_horoscope aligns to the Monday-Friday work week containing
+    report_start, regardless of which day generation happens to run on —
+    so a whole cohort generated together (the intended B2B batch-export
+    use case) shares identical week boundaries rather than each member's
+    window drifting by generation time. Clinical / theory / off-day
+    custom schedules are an explicit later follow-on; Monday-Friday is
+    just the default for now.
+    """
+    if report_type == "weekly_horoscope":
+        monday = _align_to_week_start(report_start)
+        return monday, monday + timedelta(days=5)
+    return report_start, _add_one_year(report_start)
+
+
+def _stdout_report_paths_enabled() -> bool:
+    return _env_flag("EO_STDOUT_REPORT_PATHS")
+
+
+def _stdout_verbose_enabled() -> bool:
+    return _env_flag("EO_VERBOSE_STDOUT")
+
+
+def _log_verbose(message: str) -> None:
+    if _stdout_verbose_enabled():
+        print(message)
+
+
+def _atomic_write_text(path: str, content: str) -> None:
+    directory = os.path.dirname(path) or "."
+    Path(directory).mkdir(parents=True, exist_ok=True)
+    temp_name = f".{os.path.basename(path)}.{uuid.uuid4().hex}.tmp"
+    temp_path = os.path.join(directory, temp_name)
+    try:
+        with open(temp_path, "w", encoding="utf-8") as handle:
+            handle.write(content)
+        os.replace(temp_path, path)
+    finally:
+        if os.path.exists(temp_path):
+            try:
+                os.remove(temp_path)
+            except OSError:
+                pass
+
+
+def _default_output_filename(report_type: str, birth_data: dict, report_start: datetime) -> str:
+    safe_name = birth_data["name"].replace(" ", "_").lower()
+    timestamp = report_start.strftime("%Y%m%d_%H%M%S")
+    request_id = uuid.uuid4().hex[:8]
+    return f"{safe_name}_{report_type}_{timestamp}_{request_id}.html"
+
+
 def generate_report(
     report_type: str,
     birth_data: dict,
@@ -103,7 +195,7 @@ def generate_report(
 
     payload = get_payload(birth_data)
 
-    print("[Formulas] Computing indexes...")
+    _log_verbose("[Formulas] Computing indexes...")
     index_results = compute_all_indexes(payload)
     standard_report_bundle = build_layered_report_bundle(
         payload,
@@ -115,9 +207,9 @@ def generate_report(
         report_start = datetime.strptime(birth_data["report_date"], "%Y-%m-%d").replace(tzinfo=timezone.utc)
     else:
         report_start = datetime.now(timezone.utc)
-    report_end = _add_one_year(report_start)
+    report_start, report_end = _report_window(report_type, report_start)
 
-    print("[Variables] Resolving...")
+    _log_verbose("[Variables] Resolving...")
     variables = resolve_all(
         payload=payload,
         index_results=index_results,
@@ -138,7 +230,7 @@ def generate_report(
     if report_type in ("year_ahead", "personal_forecast", "predictive_sandbox"):
         try:
             from engine.predictive_engine import compute_predictive_windows
-            print("[Predictive] Computing windows...")
+            _log_verbose("[Predictive] Computing windows...")
             predictive_results = compute_predictive_windows(
                 natal_payload=payload,
                 index_results=index_results,
@@ -147,12 +239,12 @@ def generate_report(
             )
             _pw = len(predictive_results.get("windows", []))
             _ps = len(predictive_results.get("signals", []))
-            print(f"[Predictive] {_pw} window(s), {_ps} signal(s)")
+            _log_verbose(f"[Predictive] {_pw} window(s), {_ps} signal(s)")
         except Exception as _pe_err:
             print(f"[Predictive] Skipped (non-fatal): {_pe_err}")
     variables["predictive_results"] = predictive_results
 
-    print("[Blocks] Selecting...")
+    _log_verbose("[Blocks] Selecting...")
     context = build_report_context(
         report_type,
         variables,
@@ -164,20 +256,17 @@ def generate_report(
         standard_report_bundle=standard_report_bundle,
     )
 
-    print("[Render] Building HTML...")
+    _log_verbose("[Render] Building HTML...")
     html = render_template(report_type, context)
 
     if output_filename is None:
-        safe_name = birth_data["name"].replace(" ", "_").lower()
-        timestamp = report_start.strftime("%Y%m%d_%H%M")
-        output_filename = f"{safe_name}_{report_type}_{timestamp}.html"
+        output_filename = _default_output_filename(report_type, birth_data, report_start)
 
     effective_dir = output_dir if output_dir else OUTPUT_DIR
     output_path = os.path.join(effective_dir, output_filename)
     os.makedirs(effective_dir, exist_ok=True)
 
-    with open(output_path, "w", encoding="utf-8") as output_file:
-        output_file.write(html)
+    _atomic_write_text(output_path, html)
 
     manifest_path = _write_report_manifest(
         report_type=report_type,
@@ -192,8 +281,11 @@ def generate_report(
         report_end=report_end,
     )
 
-    print(f"[Done] Report saved: {output_path}")
-    print(f"[Done] Manifest saved: {manifest_path}")
+    print(f"[Done] Report saved: {os.path.basename(output_path)}")
+    print(f"[Done] Manifest saved: {os.path.basename(manifest_path)}")
+    if _stdout_report_paths_enabled():
+        print(f"[Done] Report path: {output_path}")
+        print(f"[Done] Manifest path: {manifest_path}")
     return output_path
 
 
@@ -234,6 +326,9 @@ def build_report_context(
     if report_type == "horoscope":
         ctx.update(_build_horoscope_context(variables, index_results, payload))
 
+    elif report_type == "weekly_horoscope":
+        ctx.update(_build_weekly_horoscope_context(variables, index_results, payload, report_start, report_end))
+
     elif report_type == "year_ahead":
         ctx.update(
             _build_year_ahead_context(
@@ -252,9 +347,6 @@ def build_report_context(
 
     elif report_type == "soul_ecosystem":
         ctx.update(_build_soul_ecosystem_context(variables, index_results, payload))
-
-    elif report_type == "asteroid_portrait":
-        ctx.update(_build_asteroid_portrait_context(variables, index_results, payload))
 
     elif report_type == "predictive_sandbox":
         ctx.update(_build_predictive_sandbox_context(variables, index_results, payload, report_start, report_end))
@@ -671,7 +763,7 @@ def _build_personal_forecast_context(
         block_path = CONTENT_PACKS["entangled_oracle"]["personal_forecast"]
     blocks = _load_personal_forecast_blocks(block_path)
 
-    print("[Timeline] Scanning 90-day personal forecast events...")
+    _log_verbose("[Timeline] Scanning 90-day personal forecast events...")
     timeline = compute_year_ahead_events(
         payload,
         start_date=start_date,
@@ -690,11 +782,79 @@ def _build_personal_forecast_context(
         count_key = count_keys.get(event.get("event_type", ""), "other")
         counts[count_key] += 1
 
-    print(f"[Timeline] Found {len(all_events)} events in 90 days:")
-    print(f"  - Transits: {counts['transits']}")
-    print(f"  - Ingresses: {counts['ingresses']}")
-    print(f"  - Stations: {counts['stations']}")
-    print(f"  - Eclipses: {counts['eclipses']}")
+    _log_verbose(f"[Timeline] Found {len(all_events)} events in 90 days:")
+    _log_verbose(f"  - Transits: {counts['transits']}")
+    _log_verbose(f"  - Ingresses: {counts['ingresses']}")
+    _log_verbose(f"  - Stations: {counts['stations']}")
+    _log_verbose(f"  - Eclipses: {counts['eclipses']}")
+
+    # Retrograde cluster climate note: is a stretch of 2+ simultaneous
+    # retrogrades active right now (at report_start)? Additive/optional —
+    # any failure here is non-fatal and simply omits the section.
+    retrograde_cluster_active = False
+    retrograde_cluster_tier = ""
+    retrograde_cluster_planets = []
+    retrograde_cluster_block = ""
+    try:
+        from engine.transit_engine import detect_retrograde_clusters
+        from selectors.block_selector import select_block
+        clusters = detect_retrograde_clusters(payload, start_date, end_date)
+        current_cluster = next(
+            (c for c in clusters if c["start"] <= start_date <= c["end"]),
+            None,
+        )
+        if current_cluster:
+            retrograde_cluster_active = True
+            retrograde_cluster_tier = current_cluster["tier"]
+            retrograde_cluster_planets = current_cluster["planets"]
+            variant_index = sum(ord(ch) for ch in "".join(retrograde_cluster_planets)) % 3
+            variant_key = ["v1", "v2", "v3"][variant_index]
+            retrograde_cluster_block = _usable_block(
+                select_block(
+                    "personal_forecast", "retrograde_cluster_blocks",
+                    retrograde_cluster_tier, variant_key,
+                    fallback=select_block("personal_forecast", "retrograde_cluster_blocks", "fallback"),
+                )
+            )
+    except Exception as retrograde_cluster_error:
+        print(f"[RetrogradeCluster] Skipped (non-fatal): {retrograde_cluster_error}")
+
+    # Void-of-Course Moon note: the next (or currently active) VOC window
+    # from report_start. Unlike the retrograde climate note above, VOC
+    # windows are hours long rather than months long, so a "current
+    # snapshot" would usually already be over by the time the report is
+    # read — a forward-looking "next window" is more useful here.
+    # Additive/optional — any failure here is non-fatal and simply omits
+    # the section.
+    voc_next_active = False
+    voc_next_tier = ""
+    voc_next_start = None
+    voc_next_duration_hours = 0.0
+    voc_next_block = ""
+    try:
+        from engine.transit_engine import detect_void_of_course_windows
+        from selectors.block_selector import select_block
+        voc_windows = detect_void_of_course_windows(start_date, end_date)
+        next_voc = next(
+            (w for w in voc_windows if w["end"] >= start_date),
+            None,
+        )
+        if next_voc:
+            voc_next_active = True
+            voc_next_tier = next_voc["tier"]
+            voc_next_start = next_voc["start"]
+            voc_next_duration_hours = next_voc["duration_hours"]
+            variant_index = int(next_voc["duration_hours"] * 10) % 3
+            variant_key = ["v1", "v2", "v3"][variant_index]
+            voc_next_block = _usable_block(
+                select_block(
+                    "personal_forecast", "void_of_course_moon_blocks",
+                    voc_next_tier, variant_key,
+                    fallback=select_block("personal_forecast", "void_of_course_moon_blocks", "fallback"),
+                )
+            )
+    except Exception as voc_error:
+        print(f"[VoidOfCourse] Skipped (non-fatal): {voc_error}")
 
     raw_themes = _group_into_themes(all_events)
     theme_metadata = blocks["theme_metadata"]
@@ -838,13 +998,23 @@ def _build_personal_forecast_context(
 
     chart_wheel_data = None
     chart_wheel_svg = ""
-    try:
-        from engine.chart_wheel import build_chart_wheel_data, render_natal_wheel_svg
-        chart_wheel_data = build_chart_wheel_data(payload, report_type="personal_forecast")
-        if chart_wheel_data:
-            chart_wheel_svg = render_natal_wheel_svg(chart_wheel_data, compact=True)
-    except Exception as chart_wheel_error:
-        print(f"[ChartWheel] Skipped (non-fatal): {chart_wheel_error}")
+    wheel_transit_retrograde_planets = []
+    if _has_exact_birth_time(payload):
+        try:
+            from engine.chart_wheel import build_chart_wheel_data, render_natal_wheel_svg
+            from engine.transit_engine import current_retrograde_planets
+            transit_rx = current_retrograde_planets(start_date)
+            chart_wheel_data = build_chart_wheel_data(
+                payload, report_type="personal_forecast", current_retrograde=transit_rx
+            )
+            if chart_wheel_data:
+                chart_wheel_svg = render_natal_wheel_svg(chart_wheel_data, compact=True)
+                wheel_transit_retrograde_planets = sorted(
+                    b["name"] for b in chart_wheel_data.get("bodies", [])
+                    if b.get("currently_retrograde")
+                )
+        except Exception as chart_wheel_error:
+            print(f"[ChartWheel] Skipped (non-fatal): {chart_wheel_error}")
 
     from config import PALETTES as _PALETTES
     _pf_palette_name = variables.get("palette", "vibrant")
@@ -870,9 +1040,19 @@ def _build_personal_forecast_context(
         "timeline_data_json": timeline_json,
         "chart_wheel_data": chart_wheel_data,
         "chart_wheel_svg": chart_wheel_svg,
+        "wheel_transit_retrograde_planets": wheel_transit_retrograde_planets,
         "palette_name":        _pf_palette_name,
         "palette":             _pf_palette,
         "predictive_results":  variables.get("predictive_results", {}),
+        "retrograde_cluster_active":  retrograde_cluster_active,
+        "retrograde_cluster_tier":    retrograde_cluster_tier,
+        "retrograde_cluster_planets": retrograde_cluster_planets,
+        "retrograde_cluster_block":   retrograde_cluster_block,
+        "voc_next_active":         voc_next_active,
+        "voc_next_tier":           voc_next_tier,
+        "voc_next_start_display":  voc_next_start.strftime("%B %d, %Y, %I:%M %p UTC") if voc_next_start else "",
+        "voc_next_duration_hours": voc_next_duration_hours,
+        "voc_next_block":          voc_next_block,
     }
 
 def _build_horoscope_context(variables, index_results, payload) -> dict:
@@ -932,6 +1112,75 @@ def _build_horoscope_context(variables, index_results, payload) -> dict:
     ctx["palette"] = _PALETTES.get(_h_palette_name, _PALETTES["vibrant"])
 
     return ctx
+
+
+def _build_weekly_horoscope_context(
+    variables: dict,
+    index_results: dict,
+    payload: dict,
+    report_start: datetime | None = None,
+    report_end: datetime | None = None,
+) -> dict:
+    """
+    Foundational Weekly Horoscope context.
+
+    Reuses the same Today's Timeline engine that Daily Horoscope's engine
+    layer already ships (compute_daily_timeline), pointed at a 7-day window
+    instead of a single day — the function is date-range-agnostic, so no
+    engine changes were needed to generalize it to a week.
+
+    Content blocks are intentionally not wired here yet (out of scope for
+    this pass). This only assembles the computed timeline moments and the
+    simple/exact-birth-time gating so a template and block library can be
+    built on top of a working data layer.
+    """
+    from engine.transit_engine import compute_daily_timeline
+    from config import PALETTES as _PALETTES
+
+    v = variables
+    report_start = report_start or _align_to_week_start(datetime.now(timezone.utc))
+    report_end = report_end or (report_start + timedelta(days=5))
+    simple_mode = bool(payload.get("simple_mode") or v.get("simple_mode"))
+
+    _log_verbose("[Timeline] Scanning 7-day window for weekly moments...")
+    raw_moments = compute_daily_timeline(
+        payload,
+        day_start=report_start,
+        day_end=report_end,
+        count=10,
+        include_angles=not simple_mode,
+    )
+
+    weekly_timeline = []
+    for moment in raw_moments:
+        peak_dt = moment.get("peak_datetime")
+        time_label = peak_dt.strftime("%I:%M %p UTC").lstrip("0") if peak_dt else ""
+        weekly_timeline.append({
+            "day_label": peak_dt.strftime("%A, %B %d") if peak_dt else "",
+            "time_label": time_label,
+            "peak_datetime": peak_dt.isoformat() if peak_dt else "",
+            "transit_planet": moment.get("transit_planet", ""),
+            "aspect": moment.get("aspect", ""),
+            "aspect_character": moment.get("aspect_character", ""),
+            "natal_target": moment.get("natal_target", ""),
+            "natal_target_display": moment.get("natal_target_display", ""),
+            "natal_house": moment.get("natal_house", ""),
+            "score": moment.get("score", 0),
+        })
+
+    _palette_name = v.get("palette", "vibrant")
+
+    return {
+        "simple_mode": simple_mode,
+        "week_start_display": report_start.strftime("%B %d, %Y"),
+        # report_end is the exclusive window boundary (Saturday 00:00 UTC for a
+        # Mon-Fri window) — display the actual last covered day, Friday.
+        "week_end_display": (report_end - timedelta(days=1)).strftime("%B %d, %Y"),
+        "weekly_timeline": weekly_timeline,
+        "weekly_timeline_count": len(weekly_timeline),
+        "palette_name": _palette_name,
+        "palette": _PALETTES.get(_palette_name, _PALETTES["vibrant"]),
+    }
 
 
 def _safe_mapping(value) -> dict:
@@ -1089,16 +1338,29 @@ def _build_soul_ecosystem_context(variables, index_results, payload) -> dict:
                 "fallback_used": fallback_used,
                 "selector_inputs": inputs or {},
             })
-        return text
+        # select_block_traced can return literal "[BLOCK NOT FOUND: ...]" /
+        # "[MISSING BLOCK FILE: ...]" markers with no filtering of its own —
+        # scrub those (and any stray [TODO] markers) before they reach the template.
+        return _usable_block(text)
 
     chart_wheel_data = None
     chart_wheel_svg = ""
-    try:
-        chart_wheel_data = build_chart_wheel_data(payload, "soul_ecosystem")
-        if chart_wheel_data:
-            chart_wheel_svg = render_natal_wheel_svg(chart_wheel_data)
-    except Exception as _cw_err:
-        print(f"[ChartWheel] Skipped (non-fatal): {_cw_err}")
+    wheel_transit_retrograde_planets = []
+    if _has_exact_birth_time(payload):
+        try:
+            from engine.transit_engine import current_retrograde_planets
+            transit_rx = current_retrograde_planets()
+            chart_wheel_data = build_chart_wheel_data(
+                payload, "soul_ecosystem", current_retrograde=transit_rx
+            )
+            if chart_wheel_data:
+                chart_wheel_svg = render_natal_wheel_svg(chart_wheel_data)
+                wheel_transit_retrograde_planets = sorted(
+                    b["name"] for b in chart_wheel_data.get("bodies", [])
+                    if b.get("currently_retrograde")
+                )
+        except Exception as _cw_err:
+            print(f"[ChartWheel] Skipped (non-fatal): {_cw_err}")
 
     ctx = {}
 
@@ -1394,6 +1656,7 @@ def _build_soul_ecosystem_context(variables, index_results, payload) -> dict:
         **methodology,
         "generation_date":    datetime.now().strftime("%B %d, %Y"),
         "chart_wheel_svg":    chart_wheel_svg,
+        "wheel_transit_retrograde_planets": wheel_transit_retrograde_planets,
         "chart_wheel_data":   chart_wheel_data,
         "natal_index_data":   natal_index_data,
         "palette_name":       _se_palette_name,
@@ -1415,120 +1678,6 @@ def _build_soul_ecosystem_context(variables, index_results, payload) -> dict:
     return ctx
 
 
-def _build_asteroid_portrait_context(variables, index_results, payload) -> dict:
-    from selectors.block_selector import select_block, select_tier_block
-    from formulas.proprietary_indexes import get_dimension_order
-    from config import INDEX_DIMENSION_NAMES
-
-    if os.environ.get("EO_ASTEROID_TRACE", "0") == "1":
-        for k, idx_debug in index_results.items():
-            print(f"[Debug] {k}: {idx_debug}")
-
-    dim_order = get_dimension_order(index_results)
-    dominant = dim_order[0] if dim_order else "KVQ"
-    aspect_character = index_results.get(dominant, {}).get("aspect_character", "harmonious")
-
-    ctx = {
-        "portrait_overview_block": select_block(
-            "asteroid_portrait", "portrait_overview", dominant
-        ),
-        "dimension_order":    dim_order,
-        "dimension_sections": [],
-        "portrait_synthesis_block": select_block(
-            "asteroid_portrait", "portrait_synthesis", dominant, aspect_character
-        ),
-    }
-
-    file_map = {
-        "KVQ":      "foresight_pattern",
-        "MKI":      "knowledge_legacy",
-        "RWI":      "reality_field",
-        "DFIS":     "power_current",
-        "CATALYST": "impact_radius",
-        "MAGNETIC": "magnetic_frequency",
-        "AHL":      "ancestral_thread",
-    }
-
-    # KVQ/MKI/RWI/DFIS/CATALYST use v0.2 EAS display flags.
-    # NGE uses shared genre library keyed by genre + activation, not archetype + tier.
-    # MAGNETIC is computed for backward compatibility but does not render as a section.
-    EAS_CURRENT = {"KVQ", "MKI", "RWI", "DFIS", "CATALYST"}
-    eas_dominant_assigned = False
-
-    for dim_key in dim_order:
-        idx = index_results.get(dim_key, {})
-        archetype = idx.get("archetype", "")
-
-        if dim_key in EAS_CURRENT:
-            if idx.get("suppressed"):
-                continue
-            if idx.get("display_full"):
-                if not eas_dominant_assigned:
-                    display_tier = "DOMINANT"
-                    eas_dominant_assigned = True
-                else:
-                    display_tier = "PRESENT"
-            elif idx.get("subtle_signal"):
-                display_tier = "SUBTLE"
-            else:
-                continue
-            block_file = file_map[dim_key]
-            block = select_tier_block("asteroid_portrait", block_file, archetype, display_tier)
-
-        elif dim_key == "NGE":
-            if idx.get("suppressed"):
-                continue
-            if idx.get("display_full"):
-                if not eas_dominant_assigned:
-                    display_tier = "DOMINANT"
-                    eas_dominant_assigned = True
-                else:
-                    display_tier = "PRESENT"
-            elif idx.get("subtle_signal"):
-                display_tier = "SUBTLE"
-            else:
-                continue
-            genre_key = (
-                (idx.get("genre") or archetype or "")
-                .strip().lower().replace(" ", "_").replace("/", "_")
-            )
-            activation_key = (idx.get("activation") or "awakening").lower()
-            block = select_block("shared", "nge_narrative_gravity", genre_key, activation_key)
-
-        elif dim_key == "MAGNETIC":
-            if float(idx.get("score", 0.0) or 0.0) <= 0.0:
-                continue
-            display_tier = str(idx.get("tier") or "SUBTLE").upper()
-            block = select_tier_block("asteroid_portrait", file_map[dim_key], archetype, display_tier)
-
-        elif dim_key == "AHL":
-            if not idx.get("fires"):
-                continue
-            ahl_content_tier = idx.get("tier", "PRESENT")
-            display_tier = "PRESENT"
-            block = select_block("asteroid_portrait", "ancestral_thread", ahl_content_tier)
-
-        else:
-            # Unknown legacy keys remain compatibility-only and never render.
-            continue
-
-        ctx["dimension_sections"].append({
-            "key":       dim_key,
-            "name":      INDEX_DIMENSION_NAMES.get(dim_key, dim_key),
-            "archetype": archetype if display_tier == "DOMINANT" else "",
-            "tier":      display_tier,
-            "block":     block,
-        })
-
-    from config import PALETTES as _PALETTES
-    _ap_palette_name = variables.get("palette", "vibrant")
-    ctx["palette_name"] = _ap_palette_name
-    ctx["palette"] = _PALETTES.get(_ap_palette_name, _PALETTES["vibrant"])
-
-    return ctx
-
-
-
 # ── Year Ahead Timeline Assembly ───────────────────────────────
 
 
@@ -1545,7 +1694,9 @@ def _usable_block(value: str) -> str:
 
     cleaned = value.replace("\r\n", "\n").replace("\r", "\n").strip()
 
-    if not cleaned or re.match(r"^\[\s*TODO\b", cleaned, flags=re.IGNORECASE):
+    if not cleaned or re.match(
+        r"^\[\s*(TODO|BLOCK NOT FOUND|MISSING BLOCK FILE)\b", cleaned, flags=re.IGNORECASE
+    ):
         return ""
 
     # Some finished overview blocks were stored as [full paragraph].
@@ -4096,9 +4247,10 @@ _DISPLAY_STATUS_PRESENTATION = {
     "passing": ("Background", "○"),
 }
 
-_INTERIM_DISPLAY_STATUS_METHOD_NOTE = (
-    "Interim display statuses use conventional event-structure signals and are not the finalized "
-    "Entangled Oracle weighting model."
+_DISPLAY_STATUS_METHOD_NOTE = (
+    "Display statuses (Background, Active, Significant, Key Window) describe how concentrated a "
+    "timing window is relative to the rest of its stretch of the calendar — they are a reading aid, "
+    "not a ranking of importance across your whole year."
 )
 
 _ANGLE_TARGET_ALIASES = {
@@ -5547,7 +5699,7 @@ def _build_raw_cycle_ledger(
     return {
         "title": "Cycle Ledger — Forecast Event Registry",
         "subtitle": "A chronological technical index of the selected forecast events, organized by event type and ordinary astrological structure rather than hidden weighting layers.",
-        "status_method_note": _INTERIM_DISPLAY_STATUS_METHOD_NOTE,
+        "status_method_note": _DISPLAY_STATUS_METHOD_NOTE,
         "months": rendered_months,
         "uses_raw_records": bool(rendered_months),
         "migration_fallback_ready": True,
@@ -5810,7 +5962,14 @@ def _load_json_file(path: str) -> dict:
     try:
         with open(path, encoding="utf-8") as fh:
             return json.load(fh)
-    except Exception:
+    except FileNotFoundError:
+        return {}
+    except Exception as exc:
+        # A missing file is a normal, expected condition at many call
+        # sites — but a file that EXISTS and fails to parse is a real
+        # content bug that would otherwise silently degrade to blank
+        # prose with no trace of why.
+        print(f"[Content] Failed to parse JSON file {path} (using empty content): {exc}")
         return {}
 
 
@@ -6159,7 +6318,12 @@ def _generate_archetypal_opening(
             "body": "\n\n".join(paragraphs),
             "paragraph_count": len(paragraphs),
         }
-    except Exception:
+    except Exception as exc:
+        # This section is optional/decorative — a failure here shouldn't
+        # break the report — but it drops an entire section silently
+        # without this, with no way to tell that happened short of
+        # diffing output length against a working run.
+        print(f"[ArchetypalOpening] Section skipped (non-fatal): {exc}")
         return {}
 
 
@@ -7103,7 +7267,7 @@ def _build_year_ahead_context(
     report_start = report_start or datetime.now(timezone.utc)
     report_end = report_end or _add_one_year(report_start)
 
-    print("[Timeline] Scanning 12-month transit events...")
+    _log_verbose("[Timeline] Scanning 12-month transit events...")
     timeline = compute_year_ahead_events(
         payload,
         start_date=report_start,
@@ -7114,8 +7278,7 @@ def _build_year_ahead_context(
     transit_events = timeline.get("transits", [])
 
     # ── EO_TRANSIT_TRACE — terminal-only diagnostic, not written to HTML ──
-    import os as _eos_os
-    _TRANSIT_TRACE = _eos_os.environ.get("EO_TRANSIT_TRACE", "0") == "1"
+    _TRANSIT_TRACE = _env_flag("EO_TRANSIT_TRACE")
     if _TRANSIT_TRACE:
         multi_contact = [e for e in transit_events if e.get("contact_count", 0) > 1]
         print(f"[Transit Engine] {len(transit_events)} transit cycle(s) found")
@@ -7140,7 +7303,7 @@ def _build_year_ahead_context(
             print(f"  display_anchor={anchor}")
 
     # ── EO_SCORE_TRACE — per-cycle and per-month scoring breakdown ──
-    _SCORE_TRACE = _eos_os.environ.get("EO_SCORE_TRACE", "0") == "1"
+    _SCORE_TRACE = _env_flag("EO_SCORE_TRACE")
     if _SCORE_TRACE:
         print("[Score Trace] Per-cycle breakdown (concentration -> tier | structural -> landmark eligibility)")
         print(f"  {'Transit':<40} {'Dur':>6} {'Orb':>5} {'Base':>6} {'DurMod':>7} {'Struct':>7} {'Conc':>6}  Tier")
@@ -7353,15 +7516,85 @@ def _build_year_ahead_context(
     # ── Natal chart wheel ───────────────────────────────────────
     chart_wheel_data = None
     chart_wheel_svg = ""
+    wheel_transit_retrograde_planets = []
     has_exact_birth_time = _has_exact_birth_time(payload)
     if has_exact_birth_time:
         try:
             from engine.chart_wheel import build_chart_wheel_data, render_natal_wheel_svg
-            chart_wheel_data = build_chart_wheel_data(payload, report_type="year_ahead")
+            from engine.transit_engine import current_retrograde_planets
+            transit_rx = current_retrograde_planets(report_start)
+            chart_wheel_data = build_chart_wheel_data(
+                payload, report_type="year_ahead", current_retrograde=transit_rx
+            )
             if chart_wheel_data:
                 chart_wheel_svg = render_natal_wheel_svg(chart_wheel_data, compact=False)
+                wheel_transit_retrograde_planets = sorted(
+                    b["name"] for b in chart_wheel_data.get("bodies", [])
+                    if b.get("currently_retrograde")
+                )
         except Exception as _cw_err:
             print(f"[ChartWheel] Skipped (non-fatal): {_cw_err}")
+
+    # Retrograde cluster climate note: is a stretch of 2+ simultaneous
+    # retrogrades active right now (at report_start)? Same pattern as
+    # Personal Forecast — additive/optional, non-fatal on failure.
+    retrograde_cluster_active = False
+    retrograde_cluster_tier = ""
+    retrograde_cluster_planets = []
+    retrograde_cluster_block = ""
+    try:
+        from engine.transit_engine import detect_retrograde_clusters
+        from selectors.block_selector import select_block_from_path
+        ya_clusters = detect_retrograde_clusters(payload, report_start, report_end)
+        ya_current_cluster = next(
+            (c for c in ya_clusters if c["start"] <= report_start <= c["end"]),
+            None,
+        )
+        if ya_current_cluster:
+            retrograde_cluster_active = True
+            retrograde_cluster_tier = ya_current_cluster["tier"]
+            retrograde_cluster_planets = ya_current_cluster["planets"]
+            ya_variant_index = sum(ord(ch) for ch in "".join(retrograde_cluster_planets)) % 3
+            ya_variant_key = ["v1", "v2", "v3"][ya_variant_index]
+            retrograde_cluster_block = _usable_block(
+                select_block_from_path(
+                    pack["retrograde_cluster_blocks"], retrograde_cluster_tier, ya_variant_key,
+                    fallback=select_block_from_path(pack["retrograde_cluster_blocks"], "fallback"),
+                )
+            )
+    except Exception as _retrograde_cluster_error:
+        print(f"[RetrogradeCluster] Skipped (non-fatal): {_retrograde_cluster_error}")
+
+    # Void-of-Course Moon note: the next (or currently active) VOC window
+    # from report_start. Same pattern as Personal Forecast.
+    voc_next_active = False
+    voc_next_tier = ""
+    voc_next_start = None
+    voc_next_duration_hours = 0.0
+    voc_next_block = ""
+    try:
+        from engine.transit_engine import detect_void_of_course_windows
+        from selectors.block_selector import select_block_from_path
+        ya_voc_windows = detect_void_of_course_windows(report_start, report_end)
+        ya_next_voc = next(
+            (w for w in ya_voc_windows if w["end"] >= report_start),
+            None,
+        )
+        if ya_next_voc:
+            voc_next_active = True
+            voc_next_tier = ya_next_voc["tier"]
+            voc_next_start = ya_next_voc["start"]
+            voc_next_duration_hours = ya_next_voc["duration_hours"]
+            ya_voc_variant_index = int(ya_next_voc["duration_hours"] * 10) % 3
+            ya_voc_variant_key = ["v1", "v2", "v3"][ya_voc_variant_index]
+            voc_next_block = _usable_block(
+                select_block_from_path(
+                    pack["void_of_course_moon_blocks"], voc_next_tier, ya_voc_variant_key,
+                    fallback=select_block_from_path(pack["void_of_course_moon_blocks"], "fallback"),
+                )
+            )
+    except Exception as _voc_error:
+        print(f"[VoidOfCourse] Skipped (non-fatal): {_voc_error}")
 
     months = _augment_months_for_template(months, landmarks)
     landmarks = _augment_landmarks(landmarks, months)
@@ -7460,6 +7693,7 @@ def _build_year_ahead_context(
         "active_transit_count": len(transit_events),
         "chart_wheel_data": chart_wheel_data,
         "chart_wheel_svg": chart_wheel_svg,
+        "wheel_transit_retrograde_planets": wheel_transit_retrograde_planets,
         "birth_date_display": birth_meta["birth_date_display"],
         "birth_time_display": birth_meta["birth_time_display"],
         "birth_location":     birth_meta["birth_location"],
@@ -7473,6 +7707,15 @@ def _build_year_ahead_context(
         "report_version":     "Year Ahead v2.0",
         "show_landmark_visuals": SHOW_LANDMARK_VISUALS,
         "show_forecast_shape_visuals": SHOW_FORECAST_SHAPE_VISUALS,
+        "retrograde_cluster_active":  retrograde_cluster_active,
+        "retrograde_cluster_tier":    retrograde_cluster_tier,
+        "retrograde_cluster_planets": retrograde_cluster_planets,
+        "retrograde_cluster_block":   retrograde_cluster_block,
+        "voc_next_active":         voc_next_active,
+        "voc_next_tier":           voc_next_tier,
+        "voc_next_start_display":  voc_next_start.strftime("%B %d, %Y, %I:%M %p UTC") if voc_next_start else "",
+        "voc_next_duration_hours": voc_next_duration_hours,
+        "voc_next_block":          voc_next_block,
     }
 
     _validate_year_ahead_render_contract(context)
@@ -7488,6 +7731,46 @@ def _fmt_sandbox_date(d) -> str:
     if hasattr(d, "strftime"):
         return d.strftime("%Y-%m-%d")
     return str(d)
+
+
+_PREDICTIVE_SANDBOX_BLOCK_PATH = os.path.join(
+    PRODUCTS_DIR, "predictive_sandbox", "blocks", "predictive_window_blocks.json"
+)
+
+
+@lru_cache(maxsize=1)
+def _load_predictive_window_blocks() -> dict:
+    """Loads and caches the Predictive Sandbox narrative synthesis library."""
+    with open(_PREDICTIVE_SANDBOX_BLOCK_PATH, "r", encoding="utf-8") as handle:
+        return json.load(handle)
+
+
+def _predictive_window_narrative(window: dict, blocks: dict) -> dict:
+    """
+    Synthesizes a dev-facing narrative card for a single predictive window,
+    keyed by leading_index -> gradient. Mirrors the fallback hierarchy
+    selectors/block_selector.py uses elsewhere: an unrecognized dimension
+    falls back to the 'fallback' dimension, and an unrecognized gradient
+    falls back to the 'fallback' gradient within whatever dimension matched.
+    This is a preview aid for validating the predictive engine's output —
+    it is not consumer-facing content.
+    """
+    dimension = window.get("leading_index") or "fallback"
+    gradient = window.get("gradient") or "fallback"
+
+    dim_blocks = blocks.get(dimension) or blocks["fallback"]
+    card = dim_blocks.get(gradient) or blocks["fallback"].get(gradient) or blocks["fallback"]["fallback"]
+
+    dimension_label = blocks.get("dimension_labels", {}).get(dimension, dimension)
+
+    return {
+        "dimension":       dimension,
+        "dimension_label": dimension_label,
+        "gradient":        gradient,
+        "title":           card.get("title", ""),
+        "body":            card.get("body", ""),
+        "action":          card.get("action", ""),
+    }
 
 
 def _build_predictive_sandbox_context(
@@ -7528,9 +7811,11 @@ def _build_predictive_sandbox_context(
         })
     signals.sort(key=lambda s: s["peak_date"])
 
+    window_blocks = _load_predictive_window_blocks()
+
     windows = []
     for win in raw.get("windows", []):
-        windows.append({
+        window_entry = {
             "window_id":                   win.get("window_id", ""),
             "start_date":                  win.get("start_date", ""),
             "peak_date":                   win.get("peak_date", ""),
@@ -7554,7 +7839,14 @@ def _build_predictive_sandbox_context(
             "coherence":                   win.get("coherence"),
             "memory":                      win.get("memory"),
             "interpretive_tags":           win.get("interpretive_tags") or [],
-        })
+        }
+        window_entry["narrative"] = _predictive_window_narrative(window_entry, window_blocks)
+        windows.append(window_entry)
+
+    predictions = sorted(
+        ({**w, **w["narrative"]} for w in windows),
+        key=lambda w: w["peak_date"],
+    )
 
     daily_series = []
     for day in raw.get("daily_series", []):
@@ -7591,6 +7883,7 @@ def _build_predictive_sandbox_context(
         "window_count":       len(windows),
         "signals":            signals,
         "windows":            windows,
+        "predictions":        predictions,
         "daily_series":       daily_series,
         "debug":              debug,
         "generation_date":    datetime.now().strftime("%Y-%m-%d %H:%M"),
@@ -7606,21 +7899,28 @@ def render_template(report_type: str, context: dict) -> str:
     render_context = dict(_build_render_defaults(context))
     render_context.update(context)
 
-    if not JINJA2_AVAILABLE:
-        return _render_fallback(report_type, render_context)
-
-    env = Environment(loader=FileSystemLoader(TEMPLATES_DIR))
     template_map = {
         "horoscope":          "daily_horoscope/templates/daily_horoscope.html",
+        "weekly_horoscope":   "weekly_horoscope/templates/weekly_horoscope.html",
         "year_ahead":         "year_ahead/templates/active/year_ahead.html",
         "personal_forecast":  "personal_forecast/templates/personal_forecast.html",
         "soul_ecosystem":     "soul_ecosystem/templates/soul_ecosystem.html",
-        "asteroid_portrait":  "asteroid_portrait/templates/asteroid_portrait.html",
         "predictive_sandbox": "predictive_sandbox/templates/predictive_sandbox.html",
     }
-    template_name = template_map.get(
-        report_type,
-        "daily_horoscope/templates/daily_horoscope.html",
+    if report_type not in template_map:
+        raise ValueError(
+            f"Unknown report_type '{report_type}' — no template mapping. "
+            f"Valid types: {', '.join(sorted(template_map))}."
+        )
+    template_name = template_map[report_type]
+
+    if not JINJA2_AVAILABLE:
+        print("[Render] Jinja2 is not available — using plain-text fallback renderer.")
+        return _render_fallback(report_type, render_context)
+
+    env = Environment(
+        loader=FileSystemLoader(TEMPLATES_DIR),
+        autoescape=select_autoescape(["html", "xml"]),
     )
     try:
         template = env.get_template(template_name)
@@ -7628,12 +7928,17 @@ def render_template(report_type: str, context: dict) -> str:
     except Exception as e:
         # Sandbox errors are surfaced explicitly so template issues are never
         # silently buried under the generic fallback during development.
+        import traceback as _tb
         if report_type == "predictive_sandbox":
-            import traceback as _tb
             print("[Render] SANDBOX TEMPLATE ERROR — full traceback:")
             _tb.print_exc()
             return _render_sandbox_error(e)
-        print(f"[Render] Template error: {e}")
+        # Other report types still degrade to the simplified fallback page
+        # (so a client-facing run doesn't hard-crash), but the full
+        # traceback is printed so the failure is actually diagnosable
+        # instead of a one-line "Template error" easy to lose in the log.
+        print(f"[Render] Template error for '{report_type}': {e}")
+        _tb.print_exc()
         return _render_fallback(report_type, context)
 
 
@@ -7705,6 +8010,9 @@ def _build_render_defaults(context: dict | None = None) -> dict:
 
 def _render_fallback(report_type: str, context: dict) -> str:
     """Simple fallback renderer when Jinja2 isn't available."""
+    def _escape(value) -> str:
+        return html.escape(str(value or ""), quote=True)
+
     def _render_fallback_sections(report_type: str, context: dict) -> list[str]:
         sections: list[str] = []
 
@@ -7728,7 +8036,7 @@ def _render_fallback(report_type: str, context: dict) -> str:
                         if not isinstance(item, dict):
                             continue
                         sections.append(
-                            f"<div class=\"block\"><strong>{item.get('title', '')}</strong><br>{item.get('summary', '')}</div>"
+                            f"<div class=\"block\"><strong>{_escape(item.get('title', ''))}</strong><br>{_escape(item.get('summary', ''))}</div>"
                         )
                 if climate:
                     sections.append("<h3>Field Highlights</h3>")
@@ -7736,13 +8044,13 @@ def _render_fallback(report_type: str, context: dict) -> str:
                         if not isinstance(item, dict):
                             continue
                         sections.append(
-                            f"<div class=\"block\"><strong>{item.get('field_label', '')}</strong><br>{item.get('summary_line', '')}</div>"
+                            f"<div class=\"block\"><strong>{_escape(item.get('field_label', ''))}</strong><br>{_escape(item.get('summary_line', ''))}</div>"
                         )
                 orientation = curated.get("orientation", {})
                 if isinstance(orientation, dict) and orientation.get("long_cycle_emphasis"):
                     sections.append("<h3>Dominant long cycle</h3>")
                     sections.append(
-                        f"<div class=\"block\">{orientation.get('long_cycle_emphasis', '')}</div>"
+                        f"<div class=\"block\">{_escape(orientation.get('long_cycle_emphasis', ''))}</div>"
                     )
 
         return sections
@@ -7750,8 +8058,8 @@ def _render_fallback(report_type: str, context: dict) -> str:
     merged = dict(_build_render_defaults(context))
     merged.update(context)
 
-    html = f"""<!DOCTYPE html>
-<html><head><title>{report_type}</title>
+    fallback_html = f"""<!DOCTYPE html>
+<html><head><title>{_escape(report_type)}</title>
 <meta charset="utf-8">
 <style>
   {merged.get('shared_report_css', '')}
@@ -7761,20 +8069,20 @@ def _render_fallback(report_type: str, context: dict) -> str:
   .block {{ margin: 20px 0; line-height: 1.8; }}
 </style>
 </head><body>
-<h1>{merged.get('querent_name','')}</h1>
-<h2>{report_type.replace('_',' ').title()}</h2>
-<p style="color:#888">{merged.get('generation_date','')} · {merged.get('generation_location','')}</p>
-<p style="color:#888">{merged.get('report_brand_line','')}</p>
+<h1>{_escape(merged.get('querent_name',''))}</h1>
+<h2>{_escape(report_type.replace('_',' ').title())}</h2>
+<p style="color:#888">{_escape(merged.get('generation_date',''))} · {_escape(merged.get('generation_location',''))}</p>
+<p style="color:#888">{_escape(merged.get('report_brand_line',''))}</p>
 <hr style="border-color:#333">
 """
     for key, val in merged.items():
         if isinstance(val, str) and len(val) > 30 and not key.startswith("_"):
-            html += f'<h3>{key.replace("_"," ").title()}</h3>\n'
-            html += f'<div class="block">{val}</div>\n'
+            fallback_html += f'<h3>{_escape(key.replace("_"," ").title())}</h3>\n'
+            fallback_html += f'<div class="block">{_escape(val)}</div>\n'
     for section in _render_fallback_sections(report_type, merged):
-        html += f"{section}\n"
-    html += f"<footer>{merged.get('report_footer_text', '')}</footer></body></html>"
-    return html
+        fallback_html += f"{section}\n"
+    fallback_html += f"<footer>{_escape(merged.get('report_footer_text', ''))}</footer></body></html>"
+    return fallback_html
 
 
 # ── Moon Phase Key ─────────────────────────────────────────────
@@ -7800,13 +8108,13 @@ def main():
         description="Entangled Oracle Report Generator"
     )
     parser.add_argument("report_type",
-        choices=["horoscope", "year_ahead", "personal_forecast", "soul_ecosystem", "asteroid_portrait", "predictive_sandbox"],
+        choices=["horoscope", "weekly_horoscope", "year_ahead", "personal_forecast", "soul_ecosystem", "predictive_sandbox"],
         help="Type of report to generate"
     )
     parser.add_argument("--name",     required=True,  help="Querent name")
     parser.add_argument("--date",     required=True,  help="Birth date (YYYY-MM-DD)")
     parser.add_argument("--time",     required=False, help="Birth time (HH:MM), 24h format")
-    parser.add_argument("--location", required=False, help="Birth location (city, state)")
+    parser.add_argument("--location", required=True,  help="Birth location (city, state) — required; every report type resolves real coordinates from it, even in --simple mode")
     parser.add_argument("--current-location", required=False,
                         help="Current/festival location (defaults to birth location)")
     parser.add_argument("--simple",   action="store_true",
@@ -7836,7 +8144,10 @@ def main():
     )
 
     args = parser.parse_args()
-    birth_data = parse_birth_data(args)
+    try:
+        birth_data = parse_birth_data(args)
+    except InputValidationError as exc:
+        raise SystemExit(str(exc))
     birth_data["current_location"] = args.current_location or args.location or ""
 
     output_filename = args.output_filename or args.output
@@ -7847,14 +8158,23 @@ def main():
             from engine.offline_place_resolver import LocationResolutionError
         except Exception:
             LocationResolutionError = None
-        if LocationResolutionError and isinstance(exc, LocationResolutionError):
+        try:
+            from engine.natal_engine import ChartCalculationError
+        except Exception:
+            ChartCalculationError = None
+        clean_exit_errors = tuple(
+            cls for cls in (LocationResolutionError, ChartCalculationError) if cls
+        )
+        if clean_exit_errors and isinstance(exc, clean_exit_errors):
             raise SystemExit(str(exc))
         raise
 
     if not args.no_browser:
         webbrowser.open(f"file://{os.path.abspath(output_path)}")
     else:
-        print(f"Output: {output_path}")
+        print(f"Output: {os.path.basename(output_path)}")
+        if _stdout_report_paths_enabled():
+            print(f"Output path: {output_path}")
 
 
 if __name__ == "__main__":

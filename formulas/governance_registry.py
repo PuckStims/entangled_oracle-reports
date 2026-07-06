@@ -105,7 +105,6 @@ REPORT_TYPE_TO_PROFILE = {
     "year_ahead": REPORT_PROFILE_CORE_STANDARD_PLUS_EO,
     "personal_forecast": REPORT_PROFILE_CORE_STANDARD_PLUS_EO,
     "soul_ecosystem": REPORT_PROFILE_FULL_ENTANGLED_ORACLE,
-    "asteroid_portrait": REPORT_PROFILE_FULL_ENTANGLED_ORACLE,
     "predictive_sandbox": REPORT_PROFILE_FULL_ENTANGLED_ORACLE,
 }
 
@@ -146,9 +145,6 @@ METHOD_REGISTRY_CATALOG: dict[str, RegistryRecord] = {
     "CATALYST": RegistryRecord("CATALYST", "Catalyst Index", METHOD_STATUS_EO_PROPRIETARY, BODY_KIND_EO_FORMULA, ("EO",), ("index_results",)),
     "NGE": RegistryRecord("NGE", "Narrative Genre Engine", METHOD_STATUS_EO_PROPRIETARY, BODY_KIND_EO_FORMULA, ("EO",), ("index_results",)),
     "AHL": RegistryRecord("AHL", "Ancestral Lineage Thread", METHOD_STATUS_EO_PROPRIETARY, BODY_KIND_EO_FORMULA, ("EO",), ("index_results",)),
-    "MCQ": RegistryRecord("MCQ", "MCQ Legacy Bridge", METHOD_STATUS_EO_PROPRIETARY, BODY_KIND_EO_FORMULA, ("EO", "legacy_bridge"), ("index_results",)),
-    "SIREN": RegistryRecord("SIREN", "SIREN Legacy Bridge", METHOD_STATUS_EO_PROPRIETARY, BODY_KIND_EO_FORMULA, ("EO", "legacy_bridge"), ("index_results",)),
-    "MAGNETIC": RegistryRecord("MAGNETIC", "MAGNETIC Legacy Bridge", METHOD_STATUS_EO_PROPRIETARY, BODY_KIND_EO_FORMULA, ("EO", "legacy_bridge"), ("index_results",)),
 }
 
 ASTEROID_ELIGIBILITY_REGISTRY: dict[str, AsteroidEligibilityRecord] = {
@@ -160,7 +156,7 @@ ASTEROID_ELIGIBILITY_REGISTRY: dict[str, AsteroidEligibilityRecord] = {
         method_status=METHOD_STATUS_ESTABLISHED_NICHE,
         lineage=("modern", "asteroid"),
         available_payload_data=("longitude", "sign", "degree", "house", "retrograde_state", "speed", "aspects", "angle_contacts", "transit availability"),
-        eligible_report_types=("asteroid_portrait", "soul_ecosystem", "predictive_sandbox"),
+        eligible_report_types=("soul_ecosystem", "predictive_sandbox"),
         default_visibility="expanded_section",
         birth_time_dependency="angle_contacts_and_house_require_exact_time",
         confidence_requirements=("exact_birth_time", "angle_dependent_unavailable"),
@@ -231,7 +227,7 @@ for key, display_name, catalog_number, eo_uses in (
         method_status=METHOD_STATUS_ESTABLISHED_NICHE,
         lineage=("modern", "asteroid", "specialist"),
         available_payload_data=("longitude", "sign", "degree", "house", "retrograde_state", "speed", "aspects", "angle_contacts", "transit availability"),
-        eligible_report_types=("asteroid_portrait", "soul_ecosystem", "predictive_sandbox"),
+        eligible_report_types=("soul_ecosystem", "predictive_sandbox"),
         default_visibility="technical_reference",
         birth_time_dependency="angle_contacts_and_house_require_exact_time",
         confidence_requirements=("exact_birth_time", "angle_dependent_unavailable"),

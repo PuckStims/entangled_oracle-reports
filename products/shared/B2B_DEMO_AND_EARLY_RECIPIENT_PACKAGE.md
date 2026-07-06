@@ -13,7 +13,6 @@ Required demo set:
 - Soul Ecosystem
 - Horoscope
 - Simple DOB-only Horoscope
-- Asteroid Portrait
 
 ## Designated Test Reports
 

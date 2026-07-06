@@ -48,13 +48,6 @@ REVIEW_PACK_REPORTS = [
         "content_pack": "plainspeak",
         "label": "Simple DOB-only Horoscope",
     },
-    {
-        "slug": "asteroid_portrait_rich",
-        "report_type": "asteroid_portrait",
-        "fixture": "exact_asteroid_rich",
-        "content_pack": "plainspeak",
-        "label": "Asteroid Portrait",
-    },
 ]
 
 REVIEW_CRITERIA = [

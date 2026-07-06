@@ -24,7 +24,6 @@ The manual review pack always includes:
 - `Soul Ecosystem`
 - `Horoscope`
 - `Simple DOB-only Horoscope`
-- `Asteroid Portrait`
 
 For PDF verification, treat the generated HTML as the source of truth and follow:
 

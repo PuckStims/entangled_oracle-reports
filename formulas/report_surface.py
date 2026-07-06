@@ -371,8 +371,6 @@ def _route_niche_results(niche_results: dict[str, dict[str, Any]], report_type: 
             routing_state = "forecast_cross_reference"
         elif report_type == "soul_ecosystem":
             routing_state = "held_for_eo_synthesis"
-        elif report_type == "asteroid_portrait":
-            routing_state = "supporting_context"
         else:
             routing_state = "technical_appendix"
         routed_value.setdefault("routing_state", routing_state)
@@ -501,9 +499,7 @@ def build_layered_report_bundle(
         "visibility_state": "available" if niche_results else "suppressed",
         "routing_state": "held_for_eo_synthesis" if niche_results and report_type == "soul_ecosystem" else (
             "forecast_cross_reference" if niche_results and report_type in {"year_ahead", "personal_forecast"} else (
-                "supporting_context" if niche_results and report_type == "asteroid_portrait" else (
-                    "technical_appendix" if niche_results else "suppressed"
-                )
+                "technical_appendix" if niche_results else "suppressed"
             )
         ),
         "report_type": report_type,

@@ -10,20 +10,31 @@ Python computes -> JSON feeds blocks -> localhost HTML renders beautifully.
 ## Setup
 
 ```bash
-# Install dependencies
-pip install jinja2 geopy
+# Install runtime dependencies
+pip install -e .
 
-# Optional: install pyswisseph for live chart generation
-pip install pyswisseph
+# Optional: install dev/test extras
+pip install -e .[dev]
 ```
 
 ---
 
 ## Quick Start
 
+`--name`, `--date`, and `--location` are required for every report type,
+including `--simple` mode — a real location is always resolved to
+coordinates and a timezone, even when birth time is skipped.
+
 ```bash
-# Asteroid Portrait (Full birth data)
-python generate.py asteroid_portrait \
+# Year Ahead
+python generate.py year_ahead \
+  --name "Puck" \
+  --date 1992-03-21 \
+  --time 08:11 \
+  --location "Peoria, IL"
+
+# Personal Forecast
+python generate.py personal_forecast \
   --name "Puck" \
   --date 1992-03-21 \
   --time 08:11 \
@@ -43,15 +54,25 @@ python generate.py horoscope \
   --time 14:30 \
   --location "Chicago, IL"
 
-# Daily Horoscope (Simple - DOB only)
+# Daily Horoscope (Simple - DOB only, birth time skipped but location is still required)
 python generate.py horoscope \
   --name "Visitor" \
   --date 1990-06-15 \
+  --location "Chicago, IL" \
   --simple
 ```
 
 Reports open automatically in your browser.
 Files saved to `output/`.
+
+Malformed `--date`/`--time`, an empty `--name`, or a missing `--location`
+fail immediately with a clear one-line message rather than a raw
+traceback or a silently wrong chart.
+
+**Retired:** Asteroid Portrait was removed 2026-07-02. Every archetype
+and dimension it covered has a Soul Ecosystem equivalent (same
+taxonomy, better-tuned plainspeak voice) — see `agents/REVISIONS.md`
+for the full migration audit before assuming anything needs rebuilding.
 
 ---
 
@@ -96,9 +117,6 @@ entangled_oracle/
 |   |   |-- templates/
 |   |   |-- drafts/
 |   |   `-- tooling/
-|   |-- asteroid_portrait/
-|   |   |-- blocks/
-|   |   `-- templates/
 |   |-- predictive_sandbox/
 |   |   `-- templates/
 |   `-- identity_profile/
@@ -107,8 +125,38 @@ entangled_oracle/
 |       |-- templates/
 |       `-- tooling/
 |-- tests/                       Regression and rendering-contract coverage
+|-- agents/                      Cross-session notes: revisions log, planned
+|                                 updates, and a running musings file (see
+|                                 agents/README.md)
 `-- output/                      Generated HTML/PDF reports and manifests
 ```
+
+---
+
+## Transit Climate Notes (Personal Forecast, Year Ahead)
+
+Two purely transit-based, natal-independent features run alongside the
+main report content:
+
+- **Retrograde cluster climate** — flags a stretch where 2+ of the eight
+  outer/inner planets (Mercury through Pluto) are simultaneously
+  retrograde, and surfaces a plainspeak framing paragraph for whichever
+  cluster is active at the report's start date.
+- **Void-of-Course Moon** — finds the next Moon VOC window (the Moon's
+  last classical aspect to Sun through Saturn before it changes sign) from
+  the report's start date, tiered `brief_void` vs. `extended_void`.
+
+Both are computed in `engine/transit_engine.py`
+(`detect_retrograde_clusters`, `detect_void_of_course_windows`), authored
+in `products/personal_forecast/blocks/shared/` (shared by both report
+types — see `config.py`'s `CONTENT_PACKS`), and fail non-fatally: if
+either detector errors, the section is simply omitted rather than
+breaking the report.
+
+The natal chart wheel (Personal Forecast, Soul Ecosystem, Year Ahead)
+additionally rings any placement whose planet is *currently* retrograde
+by transit — distinct from, and shown alongside, the existing orange
+natal-retrograde label.
 
 ---
 
@@ -135,17 +183,19 @@ Your engine must return a v2 payload dict with these keys:
 
 ## Writing Paragraph Blocks
 
-Every `[TODO: ...]` placeholder in the `products/**/blocks/` JSON files is a paragraph
-you need to write. Start with the highest-priority blocks:
+The block library is fully written — there are no outstanding `[TODO: ...]`
+placeholders as of this writing. If you add a new report type, placement,
+or key path, drop the new paragraph(s) into the relevant
+`products/<report>/blocks/**/*.json` file using the existing key
+structure in that file as a model.
 
-**Tier 1 - Write these first:**
-1. `products/daily_horoscope/blocks/todays_sky.json` - 32 blocks (~50 words each)
-2. `products/asteroid_portrait/blocks/portrait_overview.json` - 7 blocks (~95 words)
-3. `products/asteroid_portrait/blocks/foresight_pattern.json` - 5 blocks
-4. `products/soul_ecosystem/blocks/souls_promise.json` - 16 blocks (~130 words each)
-
-The block selector falls back gracefully - a `[TODO]` placeholder will
-appear in the report rather than crashing. Write blocks iteratively.
+The block selector falls back gracefully through the key hierarchy (see
+`selectors/block_selector.py`), and `_usable_block()` in `generate.py`
+scrubs any `[TODO]`, `[BLOCK NOT FOUND: ...]`, or `[MISSING BLOCK FILE: ...]`
+marker before it reaches a template — a missing or misspelled key path
+degrades to blank prose instead of visible debug text. That filter
+currently runs for Year Ahead, Personal Forecast, and Soul Ecosystem; it
+has not yet been extended to Daily Horoscope.
 
 ---
 

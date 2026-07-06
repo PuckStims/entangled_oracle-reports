@@ -122,6 +122,67 @@ PLANET_SIGNIFICANCE = {
     "Mars": 0.55,
 }
 
+# ── Daily Activation Set (same-day scan, all planets but the Moon) ──
+#
+# Separate from TRANSIT_PLANETS/TRANSIT_ORB above on purpose. Those are
+# sized for Year Ahead's week/month-scale forecasting, where a 3-4 degree
+# orb is correct: a Saturn transit genuinely unfolds over weeks and the
+# report wants to name it early. Daily Horoscope's "today's activation"
+# selection is a fundamentally different question — not "what transit is
+# broadly active this season" but "what feels specifically true today" —
+# and reusing week/month orbs for that day-scale question was tried and
+# empirically failed: a 120-day sweep against a real chart showed Neptune
+# (orb 3.0, significance 0.95) winning 62% of days outright, because at
+# Neptune's near-standstill daily motion, a 3-degree orb keeps it "in
+# range" for weeks or months at a time. The Moon-house fallback never
+# fired once in the entire sweep.
+#
+# The fix is graduated, tight, same-day-appropriate orbs, tightened
+# further for slower bodies specifically because they linger longer at
+# any given orb width — the goal is roughly comparable "days spent near
+# exactness" across planets, not a flat orb regardless of speed. This
+# matches standard transit-astrology convention for reading transits at
+# daily granularity (roughly 1-2 degrees for personal planets, tighter
+# still is common practice for transiting aspects read day to day — see
+# Cafe Astrology's and Ruby Slipper Astrology's transit guides) and
+# extends the same logic to the outer planets, which the wider Year
+# Ahead orbs were never meant to answer this specific question with.
+DAILY_ACTIVATION_PLANETS = {
+    swe.SUN: "Sun",
+    swe.MERCURY: "Mercury",
+    swe.VENUS: "Venus",
+    swe.MARS: "Mars",
+    swe.JUPITER: "Jupiter",
+    swe.SATURN: "Saturn",
+    swe.URANUS: "Uranus",
+    swe.NEPTUNE: "Neptune",
+    swe.PLUTO: "Pluto",
+}
+
+DAILY_ACTIVATION_ORB = {
+    "Sun": 1.0,
+    "Mercury": 1.0,
+    "Venus": 1.0,
+    "Mars": 1.0,
+    "Jupiter": 0.6,
+    "Saturn": 0.4,
+    "Uranus": 0.3,
+    "Neptune": 0.2,
+    "Pluto": 0.15,
+}
+
+DAILY_ACTIVATION_SIGNIFICANCE = {
+    "Sun": 0.65,
+    "Mercury": 0.45,
+    "Venus": 0.50,
+    "Mars": 0.55,
+    "Jupiter": 0.75,
+    "Saturn": 0.85,
+    "Uranus": 0.90,
+    "Neptune": 0.95,
+    "Pluto": 1.00,
+}
+
 ASPECT_ANGLES = [
     ("Conjunction", 0),
     ("Opposition", 180),
@@ -1113,6 +1174,222 @@ def compute_current_transits(
     return transits
 
 
+def compute_daily_activation_transits(
+    natal_payload: dict,
+    as_of_date: datetime | None = None,
+    include_angles: bool = True,
+) -> list[dict]:
+    """
+    Same-day transit-to-natal-point scan across all planets but the Moon
+    (which has its own always-available house-based fallback rather than
+    an orb-gated aspect check).
+
+    Sibling of compute_current_transits() above, but scoped and orbed for
+    Daily Horoscope's "today's activation" selection rather than Year
+    Ahead's week/month-scale forecasting. See DAILY_ACTIVATION_ORB for
+    why the orbs are tight and graduated by planet speed rather than
+    reusing TRANSIT_ORB.
+
+    include_angles=False excludes Ascendant/Midheaven/Vertex from the
+    natal target pool — those depend on exact birth time. Pass False when
+    the querent's birth time isn't exact; this narrows the target pool,
+    it does not turn the function off (Sun through Pluto stay eligible).
+    """
+    moment = _ensure_utc(as_of_date)
+    targets = _natal_targets(natal_payload)
+    target_names = [
+        name for name in STANDARD_TARGETS
+        if include_angles or targets.get(name, {}).get("kind") != "angle"
+    ]
+    transits: list[dict] = []
+
+    for body_id, transit_planet in DAILY_ACTIVATION_PLANETS.items():
+        state = _planet_state(body_id, moment)
+        maximum_orb = DAILY_ACTIVATION_ORB[transit_planet]
+
+        for target_name in target_names:
+            target = targets.get(target_name)
+            if not target:
+                continue
+
+            aspect, orb = _detect_aspect(
+                state["longitude"],
+                target["longitude"],
+                maximum_orb,
+            )
+            if not aspect or orb is None:
+                continue
+
+            score = DAILY_ACTIVATION_SIGNIFICANCE[transit_planet] * (1.0 - orb / maximum_orb)
+            label, bar = _intensity_label(score)
+
+            transits.append({
+                "event_type": "transit",
+                "transit_planet": transit_planet,
+                "aspect": aspect,
+                "natal_target": target_name,
+                "natal_target_display": _target_display(target_name, target),
+                "natal_house": target["house"],
+                "orb": round(orb, 3),
+                "score": round(score, 4),
+                "raw_score": round(score, 4),
+                "combined_intensity_score": round(score, 4),
+                "intensity_label": label,
+                "intensity_bar": bar,
+                "aspect_character": ASPECT_CHARACTERS[aspect],
+                "priority": "C",
+            })
+
+    transits.sort(key=lambda event: event["score"], reverse=True)
+    return transits
+
+
+#: Moon moves fast enough (~13 degrees/day) to fully approach and
+#: separate from an aspect within a single day, so it can have a
+#: genuine "peaks at this hour" moment. Nothing else in
+#: DAILY_ACTIVATION_PLANETS can, in general — see compute_daily_timeline()'s
+#: docstring for the empirical evidence. Orb follows the same
+#: standard-convention reasoning as DAILY_ACTIVATION_ORB (roughly 1-2
+#: degrees for personal-planet-speed transits read at daily granularity).
+MOON_TIMELINE_ORB = 2.0
+MOON_TIMELINE_SIGNIFICANCE = 0.55
+
+#: Separate from the shared ASPECT_ANGLES (5 majors, used by Year Ahead's
+#: week/month-scale scanning) on purpose — widening orb alone did not
+#: increase how many genuine daily peaks the Moon scan found (tested
+#: 2.0 through 4.5 degrees, identical results every time), because the
+#: real constraint was how many fixed aspect points exist to cross, not
+#: how close counts as "close enough." Adding the three hard minor
+#: aspects closed that gap empirically: a 14-day sweep went from
+#: averaging 2.6 genuine peaks/day (7/14 days short of even 3) to 5.0/day
+#: (0/14 days short of 3). Kept Moon-scan-only rather than added to the
+#: shared ASPECT_ANGLES so Year Ahead's major-aspect-only scanning is
+#: unaffected.
+TIMELINE_ASPECT_ANGLES = ASPECT_ANGLES + [
+    ("Semisquare", 45),
+    ("Sesquiquadrate", 135),
+    ("Quincunx", 150),
+]
+
+TIMELINE_ASPECT_CHARACTERS = {
+    **ASPECT_CHARACTERS,
+    "Semisquare": "challenging",
+    "Sesquiquadrate": "challenging",
+    "Quincunx": "challenging",
+}
+
+#: A refined contact landing within this many minutes of the scan
+#: window's start or end is almost certainly a boundary-fallback
+#: artifact from _find_exact_contacts() (no true interior local minimum
+#: existed inside the window), not a genuine peak. See
+#: compute_daily_timeline()'s docstring.
+_BOUNDARY_ARTIFACT_TOLERANCE_MINUTES = 5
+
+
+def _is_boundary_artifact(contact_datetime: datetime, day_start: datetime, day_end: datetime) -> bool:
+    tolerance = timedelta(minutes=_BOUNDARY_ARTIFACT_TOLERANCE_MINUTES)
+    return (
+        abs(contact_datetime - day_start) <= tolerance
+        or abs(contact_datetime - day_end) <= tolerance
+    )
+
+
+def compute_daily_timeline(
+    natal_payload: dict,
+    day_start: datetime,
+    day_end: datetime,
+    count: int = 3,
+    include_angles: bool = True,
+    include_slow_planet_peaks: bool = True,
+) -> list[dict]:
+    """
+    Finds the top `count` dated moments within [day_start, day_end] for a
+    "today's timeline" feature — genuinely timed events, not a same-day
+    snapshot of what's broadly in orb.
+
+    Primary source is the Moon against every natal target: the Moon is
+    the only body in DAILY_ACTIVATION_PLANETS fast enough to fully
+    approach and separate from an aspect inside a single day, so it's
+    the only one that reliably produces a real interior peak rather than
+    a boundary artifact. This was verified directly during development:
+    even at 1-hour sampling, a Sun-square-natal-Mercury check returned
+    its "peak" sitting exactly on the scan window's boundary (an orb
+    that was simply drifting all day, never turning), while a same-day
+    Moon-square-natal-Moon check returned a genuine interior peak at
+    12:24:52 UTC. _is_boundary_artifact() filters out the former case
+    for every body scanned here, Moon included.
+
+    include_slow_planet_peaks=True also checks the slower
+    DAILY_ACTIVATION_PLANETS bodies (Sun through Pluto) for the rare day
+    they do have a genuine interior peak, so those aren't structurally
+    excluded — just not relied on, since most days they won't have one.
+
+    include_angles=False excludes Ascendant/Midheaven/Vertex from the
+    natal target pool, matching compute_daily_activation_transits().
+    Time-of-day labeling (band or clock time) is left to the caller —
+    this function only returns UTC datetimes.
+
+    Void-of-course windows and stations are NOT computed here — they're
+    already their own genuinely-timed scanners (detect_void_of_course_windows,
+    scan_stations) with their own authored content. Merge their results
+    into this function's output at the call site rather than duplicating
+    that scanning here.
+    """
+    day_start = _ensure_utc(day_start)
+    day_end = _ensure_utc(day_end)
+    targets = _natal_targets(natal_payload)
+    target_names = [
+        name for name in STANDARD_TARGETS
+        if include_angles or targets.get(name, {}).get("kind") != "angle"
+    ]
+
+    def _scan_body(body_id, transit_planet, maximum_orb, significance):
+        found = []
+        for target_name in target_names:
+            target = targets.get(target_name)
+            if not target:
+                continue
+
+            for aspect_name, aspect_angle in TIMELINE_ASPECT_ANGLES:
+                contacts = _find_exact_contacts(
+                    body_id, target["longitude"], aspect_angle, day_start, day_end,
+                )
+                for contact in contacts:
+                    if contact["contact_orb"] > maximum_orb:
+                        continue
+                    if _is_boundary_artifact(contact["contact_datetime"], day_start, day_end):
+                        continue
+
+                    score = significance * (1.0 - contact["contact_orb"] / maximum_orb)
+                    found.append({
+                        "event_type": "timeline",
+                        "transit_planet": transit_planet,
+                        "aspect": aspect_name,
+                        "aspect_character": TIMELINE_ASPECT_CHARACTERS[aspect_name],
+                        "natal_target": target_name,
+                        "natal_target_display": _target_display(target_name, target),
+                        "natal_house": target["house"],
+                        "peak_datetime": contact["contact_datetime"],
+                        "orb": round(contact["contact_orb"], 3),
+                        "score": round(score, 4),
+                    })
+        return found
+
+    candidates = _scan_body(swe.MOON, "Moon", MOON_TIMELINE_ORB, MOON_TIMELINE_SIGNIFICANCE)
+
+    if include_slow_planet_peaks:
+        for body_id, transit_planet in DAILY_ACTIVATION_PLANETS.items():
+            candidates += _scan_body(
+                body_id,
+                transit_planet,
+                DAILY_ACTIVATION_ORB[transit_planet],
+                DAILY_ACTIVATION_SIGNIFICANCE[transit_planet],
+            )
+
+    candidates.sort(key=lambda c: c["score"], reverse=True)
+    return candidates[:count]
+
+
 # ── Forecast Transit Scanner ───────────────────────────────────
 
 
@@ -1497,6 +1774,208 @@ def scan_stations(
 
     events.sort(key=lambda event: event["peak_datetime"])
     return events
+
+
+# ── Retrograde Cluster Detection ────────────────────────────────
+#
+# Independent of scan_stations() above, which only reports the moment a
+# planet turns and filters to natal significance. This instead samples each
+# STATION_PLANETS body's retrograde status directly across the window to
+# find stretches where two or more are simultaneously retrograde —
+# regardless of whether any individual station has natal contact.
+
+
+def current_retrograde_planets(moment: datetime | None = None) -> set:
+    """
+    Returns the set of STATION_PLANETS names retrograde by transit at a
+    single moment (default: now). A lighter-weight sibling of
+    detect_retrograde_clusters() for callers that just need a snapshot
+    (e.g. flagging a natal chart wheel with which placements a current
+    transit retrograde touches) rather than a scan across a date range.
+    """
+    check_moment = _ensure_utc(moment)
+    return {
+        name for body_id, name in STATION_PLANETS.items()
+        if _planet_state(body_id, check_moment)["speed"] < 0
+    }
+
+
+def detect_retrograde_clusters(
+    natal_payload: dict,
+    start_date: datetime | None = None,
+    end_date: datetime | None = None,
+    step_hours: int = 24,
+) -> list[dict]:
+    """
+    Finds stretches within [start_date, end_date] where two or more
+    STATION_PLANETS bodies are simultaneously retrograde.
+
+    Returns a list of cluster windows, each:
+        {"start": datetime, "end": datetime, "planets": [str, ...], "tier": str}
+    "tier" is "two_retrograde" when exactly two planets peak together, or
+    "three_plus_retrograde" when three or more do. "planets" lists the
+    bodies retrograde at that peak moment (not the union across the whole
+    window, since membership can shift while the count stays >= 2).
+
+    A cluster already under way at start_date, or still active at end_date,
+    is reported clipped to the report boundary rather than its true
+    astronomical start/end.
+    """
+    report_start = _ensure_utc(start_date)
+    report_end = _ensure_utc(end_date) if end_date else report_start + timedelta(days=90)
+
+    samples: list[tuple[datetime, set]] = []
+    cursor = report_start
+    while cursor <= report_end:
+        retrograde_planets = {
+            name for body_id, name in STATION_PLANETS.items()
+            if _planet_state(body_id, cursor)["speed"] < 0
+        }
+        samples.append((cursor, retrograde_planets))
+        cursor += timedelta(hours=step_hours)
+
+    clusters: list[dict] = []
+    active_start: datetime | None = None
+    peak_count = 0
+    peak_planets: set = set()
+
+    def _flush(end_moment: datetime) -> None:
+        nonlocal active_start, peak_count, peak_planets
+        if active_start is not None and peak_count >= 2:
+            tier = "two_retrograde" if peak_count == 2 else "three_plus_retrograde"
+            clusters.append({
+                "start": active_start,
+                "end": end_moment,
+                "planets": sorted(peak_planets),
+                "tier": tier,
+            })
+        active_start = None
+        peak_count = 0
+        peak_planets = set()
+
+    for moment, planets in samples:
+        if len(planets) >= 2:
+            if active_start is None:
+                active_start = moment
+            if len(planets) > peak_count:
+                peak_count = len(planets)
+                peak_planets = set(planets)
+        else:
+            _flush(moment)
+
+    _flush(report_end)
+
+    return clusters
+
+
+# ── Void-of-Course Moon Detection ───────────────────────────────
+#
+# Purely transit-based, independent of any natal payload. Uses the
+# traditional/mainstream Void-of-Course definition: the Moon is void from
+# the moment of its last major aspect to one of the seven classical bodies
+# (Sun through Saturn) until it enters its next zodiac sign. Modern
+# variants that also count the outer planets exist, but this matches
+# standard published Void-of-Course convention.
+
+VOC_ASPECT_BODIES = {
+    swe.SUN: "Sun",
+    swe.MERCURY: "Mercury",
+    swe.VENUS: "Venus",
+    swe.MARS: "Mars",
+    swe.JUPITER: "Jupiter",
+    swe.SATURN: "Saturn",
+}
+
+VOC_EXTENDED_THRESHOLD_HOURS = 6.0
+
+
+def _voc_signed_orbs(moment: datetime) -> dict:
+    """Signed angular distance from exactness, for the Moon against each
+    classical body/aspect-angle pair. Sign changes between two samples mean
+    an aspect perfected somewhere in that interval."""
+    moon_longitude = _planet_state(swe.MOON, moment)["longitude"]
+    orbs = {}
+    for body_id, name in VOC_ASPECT_BODIES.items():
+        body_longitude = _planet_state(body_id, moment)["longitude"]
+        for aspect_name, aspect_angle in ASPECT_ANGLES:
+            orbs[(name, aspect_name)] = (
+                (moon_longitude - body_longitude - aspect_angle + 180) % 360
+            ) - 180
+    return orbs
+
+
+def detect_void_of_course_windows(
+    start_date: datetime | None = None,
+    end_date: datetime | None = None,
+    step_hours: float = 1.0,
+) -> list[dict]:
+    """
+    Finds Void-of-Course Moon windows within [start_date, end_date].
+
+    Returns a list of windows, each:
+        {"start": datetime, "end": datetime, "duration_hours": float, "tier": str}
+    "start" is the Moon's last exact classical aspect before it changes
+    sign (or the report's start boundary, if the Moon was already void when
+    scanning began). "end" is the sign-ingress moment. "tier" is
+    "extended_void" when the window is 6+ hours or crosses a calendar day,
+    otherwise "brief_void" — matching the published editorial thresholds
+    for this content set.
+
+    A window already under way at start_date, or still open at end_date, is
+    reported clipped to that report boundary rather than its true
+    astronomical start/end.
+    """
+    report_start = _ensure_utc(start_date)
+    report_end = _ensure_utc(end_date) if end_date else report_start + timedelta(days=90)
+
+    windows: list[dict] = []
+    cursor = report_start
+    previous_moon_sign = int(_planet_state(swe.MOON, cursor)["longitude"] // 30)
+    previous_orbs = _voc_signed_orbs(cursor)
+    last_exact_aspect: datetime | None = None
+    sign_entry_time = report_start
+
+    def _record_window(void_start: datetime, void_end: datetime) -> None:
+        duration_hours = (void_end - void_start).total_seconds() / 3600.0
+        if duration_hours <= 0:
+            return
+        crosses_day = void_start.date() != void_end.date()
+        tier = (
+            "extended_void"
+            if (duration_hours >= VOC_EXTENDED_THRESHOLD_HOURS or crosses_day)
+            else "brief_void"
+        )
+        windows.append({
+            "start": void_start,
+            "end": void_end,
+            "duration_hours": round(duration_hours, 2),
+            "tier": tier,
+        })
+
+    while cursor < report_end:
+        next_moment = min(cursor + timedelta(hours=step_hours), report_end)
+        current_sign = int(_planet_state(swe.MOON, next_moment)["longitude"] // 30)
+        current_orbs = _voc_signed_orbs(next_moment)
+
+        if any(
+            (prev_value == 0 or (prev_value > 0) != (current_orbs[key] > 0))
+            for key, prev_value in previous_orbs.items()
+        ):
+            last_exact_aspect = next_moment
+
+        if current_sign != previous_moon_sign:
+            _record_window(last_exact_aspect or sign_entry_time, next_moment)
+            previous_moon_sign = current_sign
+            last_exact_aspect = None
+            sign_entry_time = next_moment
+
+        previous_orbs = current_orbs
+        cursor = next_moment
+
+    if last_exact_aspect is not None:
+        _record_window(last_exact_aspect, report_end)
+
+    return windows
 
 
 # ── Eclipse Scanner ────────────────────────────────────────────

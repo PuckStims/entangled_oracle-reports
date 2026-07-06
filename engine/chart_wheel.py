@@ -202,13 +202,25 @@ DEFAULT_CHART_CONFIG: dict = {
 
 # ── Data builder ───────────────────────────────────────────────
 
-def build_chart_wheel_data(payload: dict, report_type: str = "year_ahead") -> "dict | None":
+def build_chart_wheel_data(
+    payload: dict,
+    report_type: str = "year_ahead",
+    current_retrograde: set | frozenset | None = None,
+) -> "dict | None":
     """
     Builds chart_wheel_data from a natal payload.
     Returns None if the payload is missing the Ascendant (wheel cannot render).
 
     The returned dict includes a processed 'aspects' list with each aspect
     tagged with its layer (ghost / structural / narrative), score, and colour.
+
+    current_retrograde is an optional set of planet names (e.g. {"Mercury",
+    "Saturn"}) that are retrograde by TRANSIT right now — distinct from each
+    body's "retrograde" field, which reflects that body's own speed at
+    birth. Passing it marks the corresponding natal points with a small
+    ring so a reader can see, at a glance, which of their placements a
+    current transit retrograde touches. Omit it (default) for no change in
+    behavior from before this parameter existed.
     """
     if not isinstance(payload, dict):
         return None
@@ -249,6 +261,7 @@ def build_chart_wheel_data(payload: dict, report_type: str = "year_ahead") -> "d
             "position": f"{deg}°{mins:02d}' {sign}" + (" Rx" if retro else ""),
             "house": int(data.get("house") or 0),
             "retrograde": retro,
+            "currently_retrograde": bool(current_retrograde and name in current_retrograde),
             "abbrev": PLANET_ABBREV.get(name, name[:2]),
             "category": "planet",
         })
@@ -970,6 +983,14 @@ def render_natal_wheel_svg(
         lines.append(
             f'<circle class="cw-pl-dot" cx="{px:.2f}" cy="{py:.2f}" r="2.5"/>'
         )
+        if body.get("currently_retrograde"):
+            # Distinct from the natal-Rx orange label below: this ring
+            # marks a placement currently touched by a TRANSIT retrograde,
+            # independent of whether the body was natally retrograde.
+            lines.append(
+                f'<circle class="cw-pl-transit-rx-ring" cx="{px:.2f}" cy="{py:.2f}" '
+                f'r="5.5" fill="none" stroke="#6FD6FF" stroke-width="1"/>'
+            )
 
         lx, ly = _pt(CX, CY, r_place + 11, sa)
         text_col = "#E7E9F1"

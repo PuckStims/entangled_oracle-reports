@@ -9,12 +9,14 @@ sys.path.insert(0, str(PROJECT_ROOT))
 
 def _generate(args: list[str]) -> Path:
     cmd = [sys.executable, str(PROJECT_ROOT / "generate.py"), "year_ahead", *args, "--no-browser"]
-    result = subprocess.run(cmd, capture_output=True, text=True, cwd=str(PROJECT_ROOT), env=os.environ.copy())
+    env = os.environ.copy()
+    env["EO_STDOUT_REPORT_PATHS"] = "1"
+    result = subprocess.run(cmd, capture_output=True, text=True, cwd=str(PROJECT_ROOT), env=env)
     assert result.returncode == 0, (
         f"generate.py failed:\nSTDOUT:\n{result.stdout}\nSTDERR:\n{result.stderr}"
     )
     for line in result.stdout.splitlines():
-        if line.startswith("[Done] Report saved:"):
+        if line.startswith("[Done] Report path:"):
             return Path(line.split(":", 1)[1].strip())
     raise AssertionError(f"Could not find output path in stdout:\n{result.stdout}")
 

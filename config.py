@@ -15,12 +15,12 @@ OUTPUT_DIR    = os.path.join(BASE_DIR, "output")
 
 REPORT_BLOCK_DIRS = {
     "daily_horoscope":  os.path.join(PRODUCTS_DIR, "daily_horoscope", "blocks"),
+    "weekly_horoscope": os.path.join(PRODUCTS_DIR, "weekly_horoscope", "blocks"),
     "year_ahead":       os.path.join(PRODUCTS_DIR, "year_ahead", "blocks", "plainspeak"),
     "personal_forecast": os.path.join(PRODUCTS_DIR, "personal_forecast", "blocks", "shared"),
     "soul_ecosystem":   os.path.join(PRODUCTS_DIR, "soul_ecosystem", "blocks"),
     "soul_journey":     os.path.join(PRODUCTS_DIR, "soul_ecosystem", "blocks"),
-    "asteroid_portrait": os.path.join(PRODUCTS_DIR, "asteroid_portrait", "blocks"),
-    "predictive_sandbox": os.path.join(PRODUCTS_DIR, "predictive_sandbox"),
+    "predictive_sandbox": os.path.join(PRODUCTS_DIR, "predictive_sandbox", "blocks"),
     "identity_profile": os.path.join(PRODUCTS_DIR, "identity_profile", "blocks"),
     "shared":           os.path.join(PRODUCTS_DIR, "identity_profile", "blocks"),
 }
@@ -180,6 +180,10 @@ _PERSONAL_FORECAST_DIR = os.path.join(PRODUCTS_DIR, "personal_forecast", "blocks
 _PERSONAL_FORECAST_BLOCKS = os.path.join(
     _PERSONAL_FORECAST_DIR, "EO_Standard_Personal_Forecast_Blocks.json"
 )
+# Transit-only climate notes (not natal-chart content) — genuinely shared
+# across report types rather than duplicated per pack/report.
+_RETROGRADE_CLUSTER_BLOCKS = os.path.join(_PERSONAL_FORECAST_DIR, "retrograde_cluster_blocks.json")
+_VOID_OF_COURSE_BLOCKS = os.path.join(_PERSONAL_FORECAST_DIR, "void_of_course_moon_blocks.json")
 
 CONTENT_PACKS = {
     "plainspeak": {
@@ -194,6 +198,8 @@ CONTENT_PACKS = {
         "standard_natal_foundation": os.path.join(_YEAR_AHEAD_SHARED_DIR, "Standard_Natal_Foundation_Blocks.json"),
         # Shared until a separate legacy Personal Forecast voice library exists.
         "personal_forecast":  _PERSONAL_FORECAST_BLOCKS,
+        "retrograde_cluster_blocks": _RETROGRADE_CLUSTER_BLOCKS,
+        "void_of_course_moon_blocks": _VOID_OF_COURSE_BLOCKS,
         # Archetypal integration blocks (written separately; infrastructure only)
         "archetypal_opening_blocks": os.path.join(_YEAR_AHEAD_PLAINSPEAK_DIR, "EO_Year_Ahead_Archetypal_Opening_Blocks.json"),
         "refraction_bridges":        os.path.join(_YEAR_AHEAD_PLAINSPEAK_DIR, "EO_Year_Ahead_Refraction_Bridges.json"),
@@ -220,6 +226,8 @@ CONTENT_PACKS = {
         "year_integration":  os.path.join(_YEAR_AHEAD_EO_DIR, "EO_Standard_Year_Integration_Blocks.json"),
         "standard_natal_foundation": os.path.join(_YEAR_AHEAD_SHARED_DIR, "Standard_Natal_Foundation_Blocks.json"),
         "personal_forecast":  _PERSONAL_FORECAST_BLOCKS,
+        "retrograde_cluster_blocks": _RETROGRADE_CLUSTER_BLOCKS,
+        "void_of_course_moon_blocks": _VOID_OF_COURSE_BLOCKS,
         # Archetypal integration blocks (written separately; infrastructure only)
         "archetypal_opening_blocks": os.path.join(_YEAR_AHEAD_EO_DIR, "EO_Year_Ahead_Archetypal_Opening_Blocks.json"),
         "refraction_bridges":        os.path.join(_YEAR_AHEAD_EO_DIR, "EO_Year_Ahead_Refraction_Bridges.json"),

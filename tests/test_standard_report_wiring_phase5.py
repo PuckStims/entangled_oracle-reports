@@ -86,12 +86,12 @@ class StandardReportWiringPhase5Tests(unittest.TestCase):
 
     def test_core_and_niche_layers_do_not_require_eo_indexes(self):
         horoscope = build_layered_report_bundle(self._payload(), "horoscope", index_results=None)
-        asteroid = build_layered_report_bundle(self._payload(), "asteroid_portrait", index_results=None)
+        niche_only = build_layered_report_bundle(self._payload(), "soul_ecosystem", index_results=None)
 
         self.assertTrue(horoscope["core_standard"])
         self.assertFalse(horoscope["eo_proprietary"])
-        self.assertTrue(asteroid["established_niche"])
-        self.assertFalse(asteroid["eo_proprietary"])
+        self.assertTrue(niche_only["established_niche"])
+        self.assertFalse(niche_only["eo_proprietary"])
 
     def test_resolver_flattened_values_match_structured_bundle(self):
         bundle = build_layered_report_bundle(

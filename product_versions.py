@@ -7,6 +7,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import uuid
 from pathlib import Path
 from typing import Iterable
 
@@ -32,19 +33,19 @@ PACKAGE_VERSIONS = {
 
 REPORT_TYPE_VERSIONS = {
     "horoscope": "Horoscope v1.0",
+    "weekly_horoscope": "Weekly Horoscope v0.1",
     "year_ahead": "Year Ahead v2.0",
     "personal_forecast": "Personal Forecast v1.0",
     "soul_ecosystem": "Soul Ecosystem v1.0",
-    "asteroid_portrait": "Asteroid Portrait v1.0",
     "predictive_sandbox": "Predictive Sandbox v0.2",
 }
 
 TEMPLATE_MAP = {
     "horoscope": os.path.join(PRODUCTS_DIR, "daily_horoscope", "templates", "daily_horoscope.html"),
+    "weekly_horoscope": os.path.join(PRODUCTS_DIR, "weekly_horoscope", "templates", "weekly_horoscope.html"),
     "year_ahead": os.path.join(PRODUCTS_DIR, "year_ahead", "templates", "active", "year_ahead.html"),
     "personal_forecast": os.path.join(PRODUCTS_DIR, "personal_forecast", "templates", "personal_forecast.html"),
     "soul_ecosystem": os.path.join(PRODUCTS_DIR, "soul_ecosystem", "templates", "soul_ecosystem.html"),
-    "asteroid_portrait": os.path.join(PRODUCTS_DIR, "asteroid_portrait", "templates", "asteroid_portrait.html"),
     "predictive_sandbox": os.path.join(PRODUCTS_DIR, "predictive_sandbox", "templates", "predictive_sandbox.html"),
 }
 
@@ -129,8 +130,8 @@ def _report_block_paths(report_type: str, content_pack: str) -> list[str]:
         return _existing_files(paths)
     block_dirs = {
         "horoscope": os.path.join(PRODUCTS_DIR, "daily_horoscope", "blocks"),
+        "weekly_horoscope": os.path.join(PRODUCTS_DIR, "weekly_horoscope", "blocks"),
         "soul_ecosystem": os.path.join(PRODUCTS_DIR, "soul_ecosystem", "blocks"),
-        "asteroid_portrait": os.path.join(PRODUCTS_DIR, "asteroid_portrait", "blocks"),
         "predictive_sandbox": os.path.join(PRODUCTS_DIR, "predictive_sandbox"),
     }
     block_root = block_dirs.get(report_type)
@@ -221,5 +222,16 @@ def build_version_registry(report_type: str, content_pack: str) -> dict:
 
 def write_json(path: str, payload: dict) -> None:
     Path(os.path.dirname(path)).mkdir(parents=True, exist_ok=True)
-    with open(path, "w", encoding="utf-8") as handle:
-        json.dump(payload, handle, indent=2)
+    directory = os.path.dirname(path) or "."
+    temp_name = f".{os.path.basename(path)}.{uuid.uuid4().hex}.tmp"
+    temp_path = os.path.join(directory, temp_name)
+    try:
+        with open(temp_path, "w", encoding="utf-8") as handle:
+            json.dump(payload, handle, indent=2)
+        os.replace(temp_path, path)
+    finally:
+        if os.path.exists(temp_path):
+            try:
+                os.remove(temp_path)
+            except OSError:
+                pass

@@ -187,7 +187,7 @@ def build_phase9_baseline(output_dir: str | None = None) -> dict:
     fixtures = get_phase8_fixture_library()
     version_snapshot = {
         report_type: build_version_registry(report_type, "entangled_oracle" if report_type in {"year_ahead", "personal_forecast"} else "plainspeak")
-        for report_type in ("horoscope", "year_ahead", "personal_forecast", "soul_ecosystem", "asteroid_portrait")
+        for report_type in ("horoscope", "year_ahead", "personal_forecast", "soul_ecosystem")
     }
 
     _write_text(os.path.join(baseline_root, "architecture_map.md"), _architecture_map_text())

@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Entangled Oracle — Symbolic Systems Software</title>
+  <meta name="description" content="Thoughtfully engineered software for symbolic and divinatory traditions, featuring precise procedural astrology reports.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  <style>
+    /* ── Tokens ─────────────────────────────────────────────── */
+    :root {
+      /* Sun-warmed apothecary: parchment, garden sage, and living coral. */
+      --bg:         #F5EEDC;
+      --surface:    #FFF9EC;
+      --surface-2:  #E7EEDC;
+      --border:     #D2C6A8;
+      --text:       #2F3A32;
+      --muted:      #627064;
+      --subtle:     #978C75;
+      --accent:     #D96C5B; /* Coral/terracotta accent */
+      --accent-hover: #C25A4B;
+
+      --font-serif: 'Cormorant Garamond', serif;
+      --font-sans:  'Inter', sans-serif;
+      --font-mono:  'JetBrains Mono', monospace;
+
+      --radius-sm:  4px;
+      --radius-md:  8px;
+      --radius-lg:  12px;
+
+      --space-xs:   0.5rem;
+      --space-sm:   1rem;
+      --space-md:   2rem;
+      --space-lg:   4rem;
+      --space-xl:   6rem;
+    }
+
+    /* ── Reset & Base ───────────────────────────────────────── */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      padding: var(--space-md) var(--space-sm);
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    h1, h2, h3, h4, blockquote {
+      font-family: var(--font-serif);
+      font-weight: 400;
+      color: var(--text);
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+    a:hover { color: var(--accent-hover); }
+
+    /* ── Navigation ─────────────────────────────────────────── */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: var(--space-md);
+      border-bottom: 1px solid var(--border);
+      margin-bottom: var(--space-lg);
+    }
+    .brand {
+      font-family: var(--font-serif);
+      font-size: 1.5rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+    }
+    nav {
+      display: flex;
+      gap: var(--space-md);
+    }
+    nav button {
+      background: none;
+      border: none;
+      font-family: var(--font-sans);
+      font-size: 0.9rem;
+      color: var(--muted);
+      cursor: pointer;
+      padding: 0;
+      transition: color 0.2s ease;
+    }
+    nav button:hover, nav button.active-nav {
+      color: var(--accent);
+    }
+
+    /* ── Views (SPA logic) ──────────────────────────────────── */
+    .view {
+      display: none;
+      animation: fadeIn 0.5s ease forwards;
+    }
+    .view.active {
+      display: block;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Typography & Layout ────────────────────────────────── */
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      margin-bottom: var(--space-xs);
+      font-weight: 500;
+      display: block;
+    }
+
+    .hero {
+      margin-bottom: var(--space-xl);
+      text-align: center;
+    }
+    .hero h1 {
+      font-size: 3.2rem;
+      line-height: 1.1;
+      margin-bottom: var(--space-sm);
+    }
+    .hero-subtitle {
+      font-family: var(--font-serif);
+      font-size: 1.4rem;
+      font-style: italic;
+      color: var(--muted);
+      margin-bottom: var(--space-md);
+    }
+    .hero p.hero-desc {
+      font-size: 1.05rem;
+      color: var(--muted);
+      max-width: 600px;
+      margin: 0 auto var(--space-md) auto;
+    }
+    .hero-ctas {
+      display: flex;
+      gap: var(--space-sm);
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .text-block {
+      max-width: 680px;
+      margin: 0 auto var(--space-xl) auto;
+      text-align: center;
+    }
+    .text-block h2.section-title {
+      font-size: 2.2rem;
+      margin-bottom: var(--space-sm);
+      line-height: 1.2;
+    }
+    .text-block p {
+      font-size: 1.05rem;
+      color: var(--muted);
+      margin-bottom: var(--space-sm);
+    }
+
+    .btn {
+      display: inline-block;
+      background-color: var(--text);
+      color: var(--bg);
+      padding: 0.6rem 1.2rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      border: 1px solid var(--text);
+    }
+    .btn:hover {
+      background-color: var(--accent);
+      border-color: var(--accent);
+      color: var(--bg);
+    }
+    .btn-ghost {
+      background-color: transparent;
+      color: var(--text);
+    }
+    .btn-ghost:hover {
+      background-color: var(--surface-2);
+      color: var(--text);
+      border-color: var(--text);
+    }
+
+    /* ── Product Cards ──────────────────────────────────────── */
+    .product-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+      margin-bottom: var(--space-xl);
+    }
+    .product-card {
+      background-color: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: var(--space-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+    @media (min-width: 600px) {
+      .product-card {
+        flex-direction: row;
+        align-items: flex-start;
+        padding: var(--space-lg);
+        gap: var(--space-lg);
+      }
+    }
+    .product-meta {
+      flex: 1;
+    }
+    .product-meta h3 {
+      font-size: 1.6rem;
+      margin-bottom: 0.25rem;
+    }
+    .product-badge {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.70rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      border-radius: 999px;
+      padding: 0.24rem 0.5rem;
+      margin-bottom: var(--space-xs);
+      width: fit-content;
+    }
+    .product-price {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: var(--subtle);
+      margin-bottom: var(--space-sm);
+      display: block;
+    }
+    .product-desc {
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin-bottom: var(--space-md);
+    }
+
+    /* ── Feature Grid ───────────────────────────────────────── */
+    .feature-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-md);
+      margin-top: var(--space-lg);
+      text-align: left;
+    }
+    @media (min-width: 600px) {
+      .feature-grid { grid-template-columns: 1fr 1fr; }
+    }
+    .feature-card {
+      background: var(--surface);
+      padding: var(--space-md);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+    }
+    .feature-card h3 {
+      font-family: var(--font-sans);
+      font-size: 1rem;
+      font-weight: 500;
+      margin-bottom: var(--space-xs);
+      color: var(--text);
+    }
+    .feature-card p {
+      font-size: 0.95rem;
+      color: var(--muted);
+      margin-bottom: 0;
+    }
+
+    /* ── Growing the Oracle / Roadmap ───────────────────────── */
+    .roadmap-section {
+      background-color: var(--surface-2);
+      border-radius: var(--radius-lg);
+      padding: var(--space-lg);
+      margin-bottom: var(--space-xl);
+    }
+    .roadmap-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-lg);
+      margin-top: var(--space-md);
+    }
+    @media (min-width: 600px) {
+      .roadmap-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--space-md);
+      }
+    }
+    .roadmap-col h4 {
+      font-family: var(--font-mono);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-size: 0.75rem;
+      color: var(--text);
+      margin-bottom: var(--space-sm);
+    }
+    .roadmap-list {
+      list-style: none;
+    }
+    .roadmap-list li {
+      margin-bottom: 0.75rem;
+      font-size: 0.95rem;
+    }
+    .roadmap-list li strong {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: var(--text);
+      font-weight: 400;
+      margin-bottom: 0.15rem;
+    }
+    .roadmap-list li span {
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    /* ── Our Approach Typography ────────────────────────────── */
+    .approach-content {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+    .approach-content h2 {
+      font-size: 2.2rem;
+      margin-top: var(--space-xl);
+      margin-bottom: var(--space-sm);
+      line-height: 1.2;
+    }
+    .approach-content h2:first-child {
+      margin-top: 0;
+    }
+    .approach-content h3 {
+      font-family: var(--font-sans);
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent);
+      margin-bottom: var(--space-xs);
+    }
+    .approach-content p {
+      margin-bottom: var(--space-sm);
+      font-size: 1.05rem;
+      color: var(--muted);
+    }
+    .approach-content ul {
+      margin-bottom: var(--space-md);
+      margin-left: var(--space-md);
+      color: var(--muted);
+    }
+    .approach-content li {
+      margin-bottom: 0.5rem;
+    }
+
+    /* ── Demo Order Panel ───────────────────────────────────── */
+    .demo-panel {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      background: rgba(47, 58, 50, 0.42);
+      padding: var(--space-sm);
+      align-items: center;
+      justify-content: center;
+    }
+    .demo-panel.open { display: flex; }
+    .demo-card {
+      width: min(100%, 520px);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-lg);
+      box-shadow: 0 20px 70px rgba(47, 58, 50, 0.22);
+      position: relative;
+      animation: fadeIn 0.25s ease forwards;
+    }
+    .demo-card h2 {
+      font-size: 2rem;
+      line-height: 1.15;
+      margin-bottom: var(--space-xs);
+    }
+    .demo-card p {
+      color: var(--muted);
+      margin-bottom: var(--space-sm);
+    }
+    .demo-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      appearance: none;
+      background: transparent;
+      border: 0;
+      color: var(--muted);
+      font-size: 1.6rem;
+      line-height: 1;
+      cursor: pointer;
+    }
+    .demo-details {
+      margin: var(--space-md) 0;
+      padding: var(--space-sm);
+      background: var(--surface-2);
+      border-radius: var(--radius-sm);
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+    .demo-note {
+      font-family: var(--font-mono);
+      font-size: 0.75rem !important;
+      color: var(--subtle) !important;
+      margin-top: var(--space-md);
+    }
+
+    /* ── Footer ─────────────────────────────────────────────── 
+    footer {
+      text-align: center;
+      padding-top: var(--space-md);
+      border-top: 1px solid var(--border);
+      margin-top: var(--space-xl);
+    }
+    .footer-logo {
+      font-family: var(--font-serif);
+      font-size: 1.2rem;
+      margin-bottom: var(--space-xs);
+    }
+    .footer-copy {
+      color: var(--muted);
+      font-size: 0.85rem;
+      margin-bottom: var(--space-sm);
+      font-family: var(--font-mono);
+    }
+    .footer-links {
+      list-style: none;
+      display: flex;
+      justify-content: center;
+      gap: var(--space-sm);
+    }
+    .footer-links a {
+      font-size: 0.85rem;
+      color: var(--subtle);
+    }
+    .footer-links a:hover {
+      color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Header & Navigation ── -->
+  <header>
+    <div class="brand">Entangled Oracle</div>
+    <nav>
+      <button id="nav-home" class="active-nav" onclick="switchView('home')">The Platform</button>
+      <button id="nav-approach" onclick="switchView('approach')">Our Approach</button>
+    </nav>
+  </header>
+
+  <!-- ==========================================
+       VIEW: HOME (THE ECOSYSTEM)
+       ========================================== -->
+  <main id="view-home" class="view active">
+    
+    <section class="hero">
+      <span class="eyebrow">Entangled Oracle</span>
+      <h1>Symbolic software for<br><em>clearer patterns.</em></h1>
+      <p class="hero-subtitle">Astrology reports are the first public offering from a growing platform for symbolic and divinatory systems.</p>
+      <p class="hero-desc">Entangled Oracle develops thoughtfully engineered tools for astrology, rune casting, tarot, the I Ching, and future interpretive systems. Our work combines precise calculation, procedural software, authored editorial libraries, and a belief that mystery does not need to become obscurity.</p>
+      <div class="hero-ctas">
+        <a href="#reports" class="btn">Explore Astrology Reports</a>
+        <button class="btn btn-ghost" onclick="switchView('approach')">Our Approach</button>
+      </div>
+    </section>
+
+    <section class="text-block">
+      <span class="eyebrow">A Symbolic Systems Platform</span>
+      <h2 class="section-title">Astrology is the beginning, not the boundary.</h2>
+      <p>Entangled Oracle is Ksisti-Puck LLC’s symbolic systems division.</p>
+      <p>Its current flagship offering is a suite of astrology reports built from exact birth data, chart-led selection logic, and carefully authored interpretive writing.</p>
+      <p>Over time, the platform will expand into additional systems of symbolic practice: rune casting, tarot, the I Ching, and other tools for reflection, pattern recognition, and meaningful decision support.</p>
+      <p>The aim is not certainty. It is better orientation.</p>
+    </section>
+
+    <section id="reports" class="product-list">
+      <!-- Product: Personal Forecast -->
+      <article class="product-card">
+        <div class="product-meta">
+          <h3>The Personal Forecast</h3>
+          <span class="product-price">Procedural Report · $20</span>
+          <p class="product-desc">A highly specific, three-month transit analysis. Ideal for immediate orientation and navigating current atmospheric shifts in your life.</p>
+          <button class="btn" onclick="openOrderDemo('The Personal Forecast', '$20', 'A highly specific three-month transit analysis for immediate orientation.')">Select Report</button>
+        </div>
+      </article>
+
+      <!-- Product: Soul Ecosystem -->
+      <article class="product-card">
+        <div class="product-meta">
+          <h3>The Soul Ecosystem</h3>
+          <span class="product-price">Procedural Report · $25</span>
+          <p class="product-desc">A comprehensive architectural overview of your birth chart. Designed for deeper self-understanding, focusing on inherent patterns rather than deterministic fate.</p>
+          <button class="btn" onclick="openOrderDemo('The Soul Ecosystem', '$25', 'A comprehensive architectural overview of the birth chart and its inherent patterns.')">Select Report</button>
+        </div>
+      </article>
+
+      <!-- Product: Year Ahead -->
+      <article class="product-card">
+        <div class="product-meta">
+          <h3>The Year Ahead</h3>
+          <span class="product-price">Procedural Report · $45</span>
+          <p class="product-desc">A long-range view of the coming twelve months. Analyzes major planetary movements, retrogrades, and personal progressions to help you notice the timing shaping your year.</p>
+          <button class="btn" onclick="openOrderDemo('The Year Ahead', '$45', 'A long-range twelve-month timing report for major transits, retrogrades, and progressions.')">Select Report</button>
+        </div>
+      </article>
+
+      <!-- Product: Program Collaboration -->
+      <article class="product-card">
+        <div class="product-meta">
+          <span class="product-badge">Group Programs · Private Collaboration</span>
+          <h3>The Program Arc</h3>
+          <span class="product-price">Collaborative Offering · Scoped with program leaders</span>
+          <p class="product-desc">A field-specific symbolic support package developed with program and institute leaders. It begins with accessible group horoscopes written from a content pack tailored to the collaborative setting, then expands into an opt-in participant experience across the program’s full arc.</p>
+          <button class="btn" onclick="openOrderDemo('The Program Arc', 'Collaborative scope', 'A private B2B symbolic-support offering for group programs: field-specific weekly horoscopes, optional exact-time Personal Forecasts at the beginning, and Year Ahead reports as a graduation gift.')">Explore Collaboration</button>
+        </div>
+      </article>
+    </section>
+
+    <section class="roadmap-section" id="programs" style="background-color: var(--surface); border: 1px solid var(--border);">
+      <div style="text-align: center;">
+        <span class="eyebrow">For Programs & Institutes</span>
+        <h2 style="font-size: 2rem; margin-bottom: 0.5rem;">A symbolic companion for the full learning arc.</h2>
+        <p style="color: var(--muted); max-width: 660px; margin: 0 auto;">The Program Arc is a private collaboration format for group programs, developed in conversation with program and institute leaders. It is shaped around the field, the cadence of the cohort, and the care required by the setting.</p>
+      </div>
+
+      <div class="roadmap-grid">
+        <div class="roadmap-col">
+          <h4>01 · Arrival</h4>
+          <ul class="roadmap-list">
+            <li><strong>Personal Forecast</strong><span>Participants may opt in at the beginning of the program, including exact birth time where they choose to provide it.</span></li>
+          </ul>
+        </div>
+        <div class="roadmap-col">
+          <h4>02 · Continuity</h4>
+          <ul class="roadmap-list">
+            <li><strong>Weekly Horoscopes</strong><span>Accessible, field-specific content packs written for the collaboration and delivered across the program’s active weeks.</span></li>
+          </ul>
+        </div>
+        <div class="roadmap-col">
+          <h4>03 · Completion</h4>
+          <ul class="roadmap-list">
+            <li><strong>Year Ahead</strong><span>A long-form Year Ahead report offered as a graduation gift: a reflective threshold marker for the next chapter.</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <p style="color: var(--muted); font-size: 0.95rem; text-align: center; max-width: 650px; margin: 1.5rem auto 0;">
+        The individual reports remain personal and opt-in. The group layer is designed for orientation, reflection, and program rhythm—not assessment, prediction, or authority over participants’ choices.
+      </p>
+    </section>
+
+    <section class="text-block" style="max-width: 100%;">
+      <span class="eyebrow">Engineered With Care</span>
+      <h2 class="section-title">Wonder does not require obscurity.</h2>
+      <p style="max-width: 680px; margin: 0 auto;">Entangled Oracle is built around a simple premise: symbolism can remain rich, beautiful, and mysterious without becoming vague, deterministic, or difficult to understand.</p>
+      
+      <div class="feature-grid">
+        <div class="feature-card">
+          <h3>Precise astronomical calculation</h3>
+          <p>Astrology reports begin with real astronomical positions, house systems, aspects, and transit data—not generalized sign content.</p>
+        </div>
+        <div class="feature-card">
+          <h3>Procedural software pipelines</h3>
+          <p>The platform uses structured calculation and selection systems to determine which patterns, timing windows, and chart signatures deserve the greatest attention.</p>
+        </div>
+        <div class="feature-card">
+          <h3>Authored editorial libraries</h3>
+          <p>Report language is developed specifically for Entangled Oracle. It is organized through an authored interpretive system designed to remain nuanced, readable, and useful.</p>
+        </div>
+        <div class="feature-card">
+          <h3>No AI-generated report text</h3>
+          <p>Entangled Oracle does not use generative AI to write client reports. Reports are calculated and assembled through software logic, then composed from curated editorial libraries built specifically for the platform.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="text-block">
+      <span class="eyebrow">A Modern Procedural Tradition</span>
+      <h2 class="section-title">Built in conversation with the old engines.</h2>
+      <p>Entangled Oracle takes inspiration from the procedural astrology programs of the late 1990s and early 2000s: systems built around visible calculations, structured logic, and chart-specific output.</p>
+      <p>That lineage is being carried forward with contemporary software engineering, modern editorial standards, and accessibility principles designed for readers who want depth without unnecessary fog.</p>
+      <p>The result is neither a legacy astrology website nor an AI-generated reading.</p>
+      <p>It is a modern symbolic computing system with a visible technical foundation and a human-readable surface.</p>
+    </section>
+
+    <!-- Growing the Oracle / Roadmap -->
+    <section class="roadmap-section">
+      <div style="text-align: center;">
+        <span class="eyebrow">Growing the Oracle</span>
+        <h2 style="font-size: 2rem; margin-bottom: 0.5rem;">More systems are taking shape.</h2>
+      </div>
+      
+      <div class="roadmap-grid">
+        <div class="roadmap-col">
+          <h4>Available Now</h4>
+          <ul class="roadmap-list">
+            <li><strong>Astrology Reports</strong> <span>Natal analysis, seasonal forecasts, and long-form Year Ahead reports.</span></li>
+          </ul>
+        </div>
+        <div class="roadmap-col">
+          <h4>In Development</h4>
+          <ul class="roadmap-list">
+            <li><strong>Rune Casting</strong> <span>A freehand, position-aware Elder Futhark casting system built around procedural randomness and symbolic layout.</span></li>
+            <li><strong>Tarot</strong> <span>Algorithmic shuffling and position mapping.</span></li>
+          </ul>
+        </div>
+        <div class="roadmap-col">
+          <h4>Planned</h4>
+          <ul class="roadmap-list">
+            <li><strong>I Ching</strong> <span>Hexagram calculation and shifting line generation.</span></li>
+            <li><strong>Additional symbolic systems</strong> <span>Expanding the interpretive library.</span></li>
+          </ul>
+        </div>
+      </div>
+      
+      <p style="color: var(--muted); font-size: 0.95rem; text-align: center; max-width: 600px; margin: 1rem auto 0 auto;">
+        Each system will be developed with the same core commitments: computational integrity, authored interpretation, accessible language, and reflection over certainty.
+      </p>
+    </section>
+
+    <section class="text-block" style="margin-bottom: 0;">
+      <span class="eyebrow">Our Approach</span>
+      <h2 class="section-title">Mystery and clarity are not opposites.</h2>
+      <p>Entangled Oracle is built for people who want symbolic systems to be meaningful without becoming prescriptive, technically rigorous without becoming inaccessible, and visually beautiful without hiding how they work.</p>
+      <p style="margin-bottom: var(--space-md);">We believe a report, casting, or oracle tool should give you more language for your own reflection—not claim authority over your choices.</p>
+      <button class="btn" onclick="switchView('approach')">Read Our Approach</button>
+    </section>
+
+  </main>
+
+  <!-- ==========================================
+       VIEW: OUR APPROACH
+       ========================================== -->
+  <main id="view-approach" class="view">
+    
+    <div class="approach-content">
+      <div style="text-align: center; margin-bottom: var(--space-xl);">
+        <span class="eyebrow">Our Approach</span>
+        <h1 style="font-size: 3rem;">Philosophy & Engineering</h1>
+        <p style="color:var(--muted); font-size:1.1rem;">The thinking behind modern symbolic computing.</p>
+      </div>
+
+      <span class="eyebrow" style="margin-bottom:0;">Lineage & Craft</span>
+      <h2>Why procedural software?</h2>
+      <p>Entangled Oracle draws direct inspiration from the procedural astrology engines developed in the late 1990s and early 2000s. Those early systems were marvels of localized computation, turning raw ephemeris data into structured logic.</p>
+      <p>We studied their structure and rebuilt the idea using contemporary software engineering, rigorous editorial standards, and modern accessibility principles. This lineage provides historical context and firmly distinguishes our platform from both traditional "mystical" websites and modern AI-generated content.</p>
+
+      <span class="eyebrow" style="margin-bottom:0;">Computational Integrity</span>
+      <h2>Engineered, not generated.</h2>
+      <p>We believe in the deterministic beauty of code and mathematics. Our software pipelines operate on:</p>
+      <ul>
+        <li>Precise astronomical and systemic calculations.</li>
+        <li>Procedural generation based on hard logic.</li>
+        <li>Deterministic software pipelines.</li>
+        <li>Carefully authored, human-written editorial libraries.</li>
+      </ul>
+      <p><strong>There is no AI-generated report text on this platform.</strong> The outputs you receive feel intentionally engineered because they are. Every sentence has been written, considered, and mapped to specific mathematical triggers by a human being.</p>
+
+      <span class="eyebrow" style="margin-bottom:0;">Editorial Philosophy</span>
+      <h2>Wonder doesn't require obscurity.</h2>
+      <p>Mystery and clarity are not opposites. For too long, symbolic and divinatory traditions have relied on deliberately vague mysticism, deterministic language, or gatekeeping terminology to establish authority.</p>
+      <p>We take the opposite approach. Complex symbolism should remain understandable. We prioritize reflection over absolute certainty, designing our reports to clarify the questions you are already living rather than issuing definitive verdicts on your fate.</p>
+
+      <span class="eyebrow" style="margin-bottom:0;">Accessibility by Design</span>
+      <h2>Nuance without opacity.</h2>
+      <p>Entangled Oracle was founded by an AuDHD developer whose frustration with unnecessarily opaque writing shaped the project from the very beginning.</p>
+      <p>This is a foundational design philosophy: we believe symbolism can remain nuanced, beautiful, and deeply mysterious without ever becoming inaccessible. We write legibly so that you can spend your energy reflecting on the meaning, rather than decoding the grammar.</p>
+      
+      <div style="margin-top: var(--space-xl); padding-top: var(--space-md); border-top: 1px solid var(--border); text-align: center;">
+        <button class="btn btn-ghost" onclick="switchView('home')">Return to the Platform</button>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ── Demo Selection Panel ── -->
+  <div id="demo-panel" class="demo-panel" role="dialog" aria-modal="true" aria-labelledby="demo-title">
+    <div class="demo-card">
+      <button class="demo-close" aria-label="Close selection panel" onclick="closeOrderDemo()">×</button>
+      <span class="eyebrow">Demo Checkout Flow</span>
+      <h2 id="demo-title">Report selected</h2>
+      <p id="demo-price"></p>
+      <p id="demo-description"></p>
+      <div class="demo-details">
+        In the live site, individual reports would continue to a simple intake and payment flow: name, email, birth date, exact time and location when applicable, then delivery expectations. Program collaborations would instead begin with a private scope conversation about the setting, cohort cadence, content-pack needs, and opt-in participant flow.
+      </div>
+      <button class="btn" onclick="closeOrderDemo()">Return to the Platform</button>
+      <p class="demo-note">Prototype interaction only — no purchase or data collection is connected.</p>
+    </div>
+  </div>
+
+  <!-- ── Global Footer ── -->
+  <footer>
+    <p class="footer-copy" style="margin-bottom: var(--space-xs);">Entangled Oracle is a flagship product of Ksisti-Puck LLC.</p>
+    <p class="footer-copy">© 2026 Ksisti-Puck LLC · Entangled Oracle Suite</p>
+    <ul class="footer-links" style="margin-top: var(--space-sm);">
+      <li><a href="mailto:hello@entangledoracle.com">Contact</a></li>
+      <li><a href="#">Privacy & Policies</a></li>
+    </ul>
+  </footer>
+
+  <!-- ── SPA Router Script ── -->
+  <script>
+    function openOrderDemo(title, price, description) {
+      document.getElementById('demo-title').textContent = title;
+      document.getElementById('demo-price').textContent = 'Procedural Report · ' + price;
+      document.getElementById('demo-description').textContent = description;
+      document.getElementById('demo-panel').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeOrderDemo() {
+      document.getElementById('demo-panel').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') closeOrderDemo();
+    });
+
+    document.getElementById('demo-panel').addEventListener('click', (event) => {
+      if (event.target.id === 'demo-panel') closeOrderDemo();
+    });
+
+    function switchView(viewId) {
+      // Hide all views
+      document.querySelectorAll('.view').forEach(el => {
+        el.classList.remove('active');
+      });
+      // Show selected view
+      document.getElementById('view-' + viewId).classList.add('active');
+      
+      // Update nav styling
+      document.querySelectorAll('nav button').forEach(btn => {
+        btn.classList.remove('active-nav');
+      });
+      document.getElementById('nav-' + viewId).classList.add('active-nav');
+
+      // Scroll to top smoothly
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  </script>
+</body>
+</html>

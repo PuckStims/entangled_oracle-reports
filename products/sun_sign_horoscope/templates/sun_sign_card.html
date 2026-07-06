@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ sign }} · {{ iso_date }}</title>
+  <style>
+    :root {
+      --bg:        {{ palette.bg }};
+      --surface:   {{ palette.surface }};
+      --border:    {{ palette.border }};
+      --text:      {{ palette.text }};
+      --muted:     {{ palette.muted }};
+      /* Readable accent "ink" — palette-aware (see CARD_INK in sun_sign_engine). */
+      --accent:    {{ ink.accent }};
+      --head:      {{ ink.head }};
+      --gold:      {{ ink.gold }};
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { margin: 0; }
+    /* Facebook square post canvas. render_cards.py screenshots #card at 1080x1080. */
+    #card {
+      width: 1080px;
+      height: 1080px;
+      overflow: hidden;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Georgia', 'Times New Roman', serif;
+      padding: 52px 68px;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.42;
+    }
+    .brand {
+      font-size: 18px;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-align: center;
+    }
+    .sign-head { text-align: center; margin-top: 16px; }
+    .glyph {
+      font-size: 72px;
+      line-height: 1;
+      color: var(--accent);
+      /* Symbol fonts render zodiac glyphs monochrome (not as color emoji). */
+      font-family: 'Segoe UI Symbol', 'Noto Sans Symbols', 'Georgia', serif;
+    }
+    .sign-name {
+      font-size: 42px;
+      letter-spacing: 8px;
+      text-transform: uppercase;
+      color: var(--text);
+      margin-top: 6px;
+    }
+    .sign-dates { font-size: 19px; color: var(--muted); margin-top: 6px; letter-spacing: 2px; }
+    .date-line { font-size: 19px; color: var(--gold); margin-top: 4px; letter-spacing: 1px; }
+    hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+    .section { margin-bottom: 18px; }
+    .label {
+      font-size: 16px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .moon-line { font-size: 22px; color: var(--head); margin-bottom: 6px; }
+    .activation-head { font-size: 20px; color: var(--gold); margin-bottom: 6px; }
+    .body { font-size: 20px; color: var(--text); }
+    .ruler-name { font-size: 20px; color: var(--head); margin-bottom: 4px; }
+    footer {
+      margin-top: auto;
+      text-align: center;
+      font-size: 16px;
+      letter-spacing: 2px;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <div id="card">
+    <div class="brand">Entangled Oracle · Daily Horoscope</div>
+
+    <div class="sign-head">
+      <div class="glyph">{{ sign_glyph }}</div>
+      <div class="sign-name">{{ sign }}</div>
+      <div class="sign-dates">{{ sign_dates }}</div>
+      <div class="date-line">{{ display_date }}</div>
+    </div>
+
+    <hr>
+
+    <div class="section">
+      <div class="label">Today's Sky</div>
+      <div class="moon-line">{{ moon_phase }} in {{ moon_sign }}</div>
+      <div class="body">{{ todays_sky_block }}</div>
+    </div>
+
+    <div class="section">
+      <div class="label">Your Activation</div>
+      <div class="activation-head">{{ activation_planet }} moves through your {{ activation_house_name }}</div>
+      <div class="body">{{ activation_block }}</div>
+    </div>
+
+    <div class="section">
+      <div class="label">The Day's Ruler</div>
+      <div class="ruler-name">{{ day_ruler_name }}</div>
+      <div class="body">{{ day_ruler_block }}</div>
+    </div>
+
+    <footer>Ksisti-Puck LLC · entangled-oracle</footer>
+  </div>
+</body>
+</html>

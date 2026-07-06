@@ -88,7 +88,7 @@ class EstablishedNicheGovernancePhase3Tests(unittest.TestCase):
     def test_asteroid_can_be_available_but_report_ineligible_or_suppressed(self):
         payload = self._payload_with_specialists()
         core_result = evaluate_specialist_body(payload, "Kassandra", "horoscope")
-        expanded_result = evaluate_specialist_body(payload, "Kassandra", "asteroid_portrait")
+        expanded_result = evaluate_specialist_body(payload, "Kassandra", "soul_ecosystem")
 
         self.assertEqual(core_result["visibility_state"], "suppressed")
         self.assertIn("body_not_report_eligible", core_result["limitations"])
@@ -99,7 +99,7 @@ class EstablishedNicheGovernancePhase3Tests(unittest.TestCase):
         index_results = compute_all_indexes(payload)
 
         core_bundle = build_layered_report_bundle(payload, "horoscope", index_results=index_results)
-        niche_bundle = build_layered_report_bundle(payload, "asteroid_portrait", index_results=None, specialist_body_keys=["Kassandra"])
+        niche_bundle = build_layered_report_bundle(payload, "soul_ecosystem", index_results=None, specialist_body_keys=["Kassandra"])
         eo_bundle = build_layered_report_bundle(payload, "soul_ecosystem", index_results=index_results, specialist_body_keys=["Kassandra"])
 
         self.assertEqual(core_bundle["report_profile"], REPORT_PROFILE_CORE_STANDARD_ONLY)
@@ -116,7 +116,7 @@ class EstablishedNicheGovernancePhase3Tests(unittest.TestCase):
 
     def test_individual_asteroid_and_eo_formula_paths_remain_distinct(self):
         payload = self._payload_with_specialists()
-        individual = evaluate_specialist_body(payload, "Kassandra", "asteroid_portrait")
+        individual = evaluate_specialist_body(payload, "Kassandra", "soul_ecosystem")
         eo = compute_all_indexes(payload)["KVQ"]
 
         self.assertEqual(individual["method_status"], "established_niche")
@@ -147,12 +147,12 @@ class EstablishedNicheGovernancePhase3Tests(unittest.TestCase):
 
     def test_missing_data_birth_time_dependency_and_confidence_are_exposed(self):
         payload = self._payload_with_specialists(simple_mode=True)
-        lilith = evaluate_specialist_body(payload, "Lilith_Asteroid", "asteroid_portrait")
+        lilith = evaluate_specialist_body(payload, "Lilith_Asteroid", "soul_ecosystem")
 
         self.assertEqual(lilith["confidence_state"], "angle_dependent_unavailable")
         self.assertIn("angle_contacts_unavailable_without_exact_birth_time", lilith["limitations"])
 
-        missing = evaluate_specialist_body(build_payload(), "Lilith_Asteroid", "asteroid_portrait")
+        missing = evaluate_specialist_body(build_payload(), "Lilith_Asteroid", "soul_ecosystem")
         self.assertEqual(missing["visibility_state"], "suppressed")
         self.assertIn("body_missing_from_payload", missing["limitations"])
 

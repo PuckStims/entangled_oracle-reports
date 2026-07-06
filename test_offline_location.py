@@ -1,7 +1,12 @@
 import importlib
+import io
+import json
+import os
 import sys
+import tempfile
 import types
 import unittest
+from contextlib import redirect_stdout
 from datetime import timezone
 
 
@@ -150,7 +155,10 @@ def install_fake_swisseph() -> None:
     module.TRUE_NODE = 11
     module.MEAN_APOG = 12
 
-    def set_ephe_path(_path):
+    module.last_ephe_path = None
+
+    def set_ephe_path(path):
+        module.last_ephe_path = path
         return None
 
     def julday(year, month, day, decimal_hour):
@@ -171,10 +179,32 @@ def install_fake_swisseph() -> None:
     sys.modules["swisseph"] = module
 
 
+def install_fake_geopy() -> None:
+    geopy_module = types.ModuleType("geopy")
+    geocoders_module = types.ModuleType("geopy.geocoders")
+
+    class FakeLocation:
+        latitude = 40.6936
+        longitude = -89.5890
+
+    class Nominatim:
+        def __init__(self, *args, **kwargs):
+            pass
+
+        def geocode(self, _location_name):
+            return FakeLocation()
+
+    geocoders_module.Nominatim = Nominatim
+    geopy_module.geocoders = geocoders_module
+    sys.modules["geopy"] = geopy_module
+    sys.modules["geopy.geocoders"] = geocoders_module
+
+
 def clear_engine_modules() -> None:
     for module_name in [
         "engine.offline_place_resolver",
         "engine.natal_engine",
+        "ephemeris.backend_data",
     ]:
         sys.modules.pop(module_name, None)
 
@@ -239,6 +269,116 @@ class OfflineLocationTests(unittest.TestCase):
         )
         self.assertEqual(payload["user_profile"]["timezone"], "America/Chicago")
         self.assertEqual(payload["user_profile"]["resolved_location"], "Peoria, Illinois, United States")
+
+    def test_generate_payload_stdout_redacts_location_details(self):
+        natal_engine = importlib.import_module("engine.natal_engine")
+        natal_engine.ZoneInfo = lambda _name: timezone.utc
+        stdout = io.StringIO()
+
+        with redirect_stdout(stdout):
+            natal_engine.generate_payload(
+                {
+                    "name": "Puck",
+                    "date": "1992-03-21",
+                    "time": "08:11",
+                    "location": "Peoria, IL",
+                }
+            )
+
+        rendered = stdout.getvalue()
+        self.assertIn("[Engine] Resolving birth location...", rendered)
+        self.assertIn("[Engine] Location resolved: offline_geonamescache lookup succeeded.", rendered)
+        self.assertNotIn("Peoria", rendered)
+        self.assertNotIn("America/Chicago", rendered)
+        self.assertNotIn("40.6936", rendered)
+        self.assertNotIn("-89.589", rendered)
+
+    def test_backend_debug_helpers_redact_user_profile_by_default(self):
+        install_fake_geopy()
+        backend_data = importlib.import_module("ephemeris.backend_data")
+        payload = {
+            "user_profile": {
+                "querent_name": "Puck",
+                "queried_location": "Peoria, Illinois, United States",
+                "resolved_coordinates": {"latitude": 40.6936, "longitude": -89.5890},
+                "timezone": "America/Chicago",
+                "local_datetime": "1992-03-21T08:11:00-06:00",
+                "utc_datetime": "1992-03-21T14:11:00+00:00",
+                "julian_day": 2448703.0,
+            },
+            "angles": {},
+            "houses": {},
+            "standard_planets": {},
+            "custom_asteroids": {},
+            "aspects": [],
+        }
+
+        stdout = io.StringIO()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            debug_path = os.path.join(tmpdir, "backend_payload_debug.json")
+            with redirect_stdout(stdout):
+                backend_data.print_backend_chart_data(payload)
+                backend_data.save_backend_payload(payload, filename=debug_path)
+
+            with open(debug_path, "r", encoding="utf-8") as saved_file:
+                saved_payload = json.load(saved_file)
+
+        rendered = stdout.getvalue()
+        self.assertIn("[redacted]", rendered)
+        self.assertNotIn("Peoria, Illinois, United States", rendered)
+        self.assertNotIn("America/Chicago", rendered)
+        self.assertNotIn("40.6936", rendered)
+
+        saved_profile = saved_payload["user_profile"]
+        self.assertEqual(saved_profile["querent_name"], "[redacted]")
+        self.assertEqual(saved_profile["queried_location"], "[redacted]")
+        self.assertEqual(saved_profile["timezone"], "[redacted]")
+        self.assertEqual(saved_profile["local_datetime"], "[redacted]")
+        self.assertEqual(saved_profile["utc_datetime"], "[redacted]")
+        self.assertEqual(
+            saved_profile["resolved_coordinates"],
+            {"latitude": "[redacted]", "longitude": "[redacted]"},
+        )
+
+    def test_backend_generate_payload_stdout_redacts_location_details(self):
+        install_fake_geopy()
+        backend_data = importlib.import_module("ephemeris.backend_data")
+        backend_data.ZoneInfo = lambda _name: timezone.utc
+        stdout = io.StringIO()
+
+        with redirect_stdout(stdout):
+            backend_data.generate_payload(
+                {
+                    "date": "1992-03-21",
+                    "time": "08:11",
+                    "location": "Peoria, Illinois, United States",
+                    "simple_mode": False,
+                }
+            )
+
+        rendered = stdout.getvalue()
+        self.assertIn("[Engine] Resolving birth location...", rendered)
+        self.assertIn("[Engine] Geolocation success: lookup succeeded.", rendered)
+        self.assertNotIn("Peoria", rendered)
+        self.assertNotIn("America/Chicago", rendered)
+        self.assertNotIn("40.6936", rendered)
+
+    def test_backend_data_uses_repo_relative_ephemeris_path(self):
+        install_fake_geopy()
+        backend_data = importlib.import_module("ephemeris.backend_data")
+        fake_swe = sys.modules["swisseph"]
+
+        expected_path = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            "ephemeris",
+        )
+
+        self.assertEqual(backend_data.EPHE_PATH, expected_path)
+        self.assertEqual(
+            backend_data.PROJECT_ROOT,
+            os.path.dirname(os.path.abspath(__file__)),
+        )
+        self.assertEqual(fake_swe.last_ephe_path, expected_path)
 
 
 if __name__ == "__main__":

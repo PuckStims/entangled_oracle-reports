@@ -33,6 +33,10 @@ body.report-shell {
   font-family: var(--type-body);
   line-height: var(--line-body);
   text-rendering: optimizeLegibility;
+  --print-ink-strong: #111111;
+  --print-ink-muted: #555555;
+  --print-ink-soft: #888888;
+  --print-ink-faint: #aaaaaa;
 }
 
 .report-shell header,
@@ -91,6 +95,24 @@ body.report-shell {
     max-width: none !important;
     margin: 0 !important;
     padding: 0 !important;
+  }
+
+  body.report-shell[data-palette="vibrant"] {
+    --print-ink-strong: #17263d;
+    --print-ink-muted: #223654;
+    --print-ink-soft: #30486c;
+    --print-ink-faint: #3b587f;
+
+    /* Bulk of report copy (headings, paragraphs, table cells) is colored
+       via --text/--muted/--subtle directly, not the --print-ink-* tokens
+       above. Those three are the actual screen palette variables, so
+       overriding them here is what makes the majority of report text
+       (not just the handful of selectors already repointed to
+       --print-ink-*) dark on the printed/PDF page instead of staying at
+       the light vibrant-palette screen values. */
+    --text: #17263d;
+    --muted: #223654;
+    --subtle: #30486c;
   }
 
   .report-shell header,

@@ -57,9 +57,10 @@ Active report types:
 
 - `horoscope`
 - `personal_forecast`
+- `predictive_sandbox`
 - `soul_ecosystem`
+- `weekly_horoscope`
 - `year_ahead`
-- `asteroid_portrait`
 
 Each report type has:
 
@@ -82,6 +83,67 @@ The manifest records:
 - declared content inputs
 - template and formula fingerprints
 - trace summaries where available
+
+## Predictive Sandbox: current state and next direction
+
+`predictive_sandbox` is not a consumer report path. It is an
+engineering-first diagnostics surface for predictive work. The current
+runtime shape is:
+
+1. natal payload generation
+2. standard + proprietary index computation
+3. transit-derived predictive signal collection in
+   [engine/predictive_engine.py](C:/entangled_oracle/engine/predictive_engine.py)
+4. daily resonance series with baseline / residual decomposition
+5. localized window detection
+6. dev-facing render of those windows in the dedicated sandbox template
+
+The active formula version in code is `predictive_v0.2`. Its real
+implemented strengths are:
+
+- transit-derived signal scoring
+- target-aware predictive component routing
+- baseline/residual window segmentation
+- `leading_index`
+- `gradient`
+- split between slow structural signals and fast trigger signals
+
+Its deliberate limits are also important:
+
+- `coherence` is currently a placeholder field
+- `memory` is currently a placeholder field
+- the renderer's narrative preview is a thin dev aid, not a claim system
+- the sandbox currently reasons mostly from the transit engine rather
+  than a broader multi-clock predictive field
+
+### v0.3 architectural direction
+
+The next predictive expansion should stay engine-first. The current
+planning stance is:
+
+- normalize predictive evidence before adding prose complexity
+- make the engine multi-clock and lifecycle-aware before expanding
+  semantic/pathway theory
+- preserve the separation of `intensity`, `coherence`, `memory`, and
+  `gradient`
+- keep renderer meaning downstream of computed evidence
+
+The strongest near-term path is:
+
+1. normalize event taxonomy using method family vs event kind vs
+   independence group
+2. add bounded new clocks
+   lunations, eclipses, exact returns, Solar Arc sandbox, limited
+   secondary progressions sandbox
+3. implement an episode-based memory layer
+4. add target-sensitive operation typing
+5. add sandbox-only semantic field metrics
+   coherence, polarity, coalition, counterforce, complexity
+6. leave epistemic pathway topology structurally deferred until the
+   semantic registry and fixtures stabilize
+
+This direction treats predictive work as a layered computational system:
+signal mechanics first, semantic topology second, pathway theory later.
 
 ## Methodology and production stance
 

@@ -194,6 +194,7 @@ def compute_predictive_windows(
         signals = _collect_transit_signals(natal_payload, start_date, end_date, debug)
     except Exception as exc:
         debug["transit_signal_error"] = str(exc)
+        print(f"[Predictive] Transit signal collection failed (non-fatal, report continues with 0 signals): {exc}")
 
     # ── Phase 4a: Daily resonance series ──────────────────────
     daily_series: list[dict] = []
@@ -201,6 +202,7 @@ def compute_predictive_windows(
         daily_series = _build_daily_series(signals, start_date, end_date)
     except Exception as exc:
         debug["daily_series_error"] = str(exc)
+        print(f"[Predictive] Daily series build failed (non-fatal, report continues with 0 windows): {exc}")
 
     # ── Phase 4b: Window detection ─────────────────────────────
     windows: list[dict] = []
@@ -208,6 +210,7 @@ def compute_predictive_windows(
         windows = _detect_windows(daily_series, signals, index_results, debug)
     except Exception as exc:
         debug["window_detection_error"] = str(exc)
+        print(f"[Predictive] Window detection failed (non-fatal, report continues with 0 windows): {exc}")
 
     debug["signal_count"] = len(signals)
     debug["window_count"] = len(windows)

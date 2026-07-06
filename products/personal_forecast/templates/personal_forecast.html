@@ -407,6 +407,23 @@
       line-height: 1.7;
     }
 
+    /* ── Retrograde Climate Note ── */
+    .retrograde-climate {
+      margin-top: 20px;
+      padding: 16px 18px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.88rem;
+      line-height: 1.65;
+    }
+    .retrograde-climate .section-label { margin-bottom: 8px; }
+    .voc-meta {
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
     /* ── Footer ── */
     footer {
       text-align: center;
@@ -425,28 +442,29 @@
     /* ── Print ── */
     @media print {
       body { background: #fff; color: #111; padding: 24px; }
-      .report-title, .meta { color: #666; }
-      .section-label { color: #888; }
-      .theme-title { color: #111; }
-      .theme-action { color: #666; }
-      .timing-table th { color: #888; }
-      .timing-table td:first-child { color: #333; }
-      .timing-table td:last-child { color: #666; }
+      .report-title, .meta { color: var(--print-ink-muted); }
+      .section-label { color: var(--print-ink-soft); }
+      .theme-title { color: var(--print-ink-strong); }
+      .theme-action { color: var(--print-ink-muted); }
+      .timing-table th { color: var(--print-ink-soft); }
+      .timing-table td:first-child { color: var(--print-ink-muted); }
+      .timing-table td:last-child { color: var(--print-ink-muted); }
       .featured-section { background: #f5f5f5; border-color: #ccc; border-top-color: var(--ember); }
-      .featured-title { color: #333; }
-      .featured-action { color: #666; }
-      .featured-action strong { color: #888; }
+      .featured-title { color: var(--print-ink-muted); }
+      .featured-action { color: var(--print-ink-muted); }
+      .featured-action strong { color: var(--print-ink-soft); }
       .guidance-card { background: #f9f9f9; border-color: #ddd; }
-      .guidance-label { color: #888; }
+      .guidance-label { color: var(--print-ink-soft); }
       .timeline-track { display: none; }
-      .grounding { color: #999; border-top-color: #ddd; }
-      footer { color: #bbb; }
-      .time-status { border-color: #ccc; color: #888; }
+      .grounding { color: var(--print-ink-faint); border-top-color: #ddd; }
+      .retrograde-climate { background: #f9f9f9; border-color: #ddd; }
+      footer { color: var(--print-ink-faint); }
+      .time-status { border-color: #ccc; color: var(--print-ink-soft); }
       .mini-wheel-wrap { background: #fff; border-color: #ccc; }
-      .snapshot-ref-table th { color: #888; }
-      .snapshot-ref-table td:first-child { color: #333; }
-      .snapshot-ref-table td:last-child { color: #666; }
-      .chart-note-pf { color: #aaa; }
+      .snapshot-ref-table th { color: var(--print-ink-soft); }
+      .snapshot-ref-table td:first-child { color: var(--print-ink-muted); }
+      .snapshot-ref-table td:last-child { color: var(--print-ink-muted); }
+      .chart-note-pf { color: var(--print-ink-faint); }
     }
   </style>
 </head>
@@ -473,6 +491,9 @@
 
     {% if chart_wheel_svg %}
     <div class="mini-wheel-wrap">{{ chart_wheel_svg | safe }}</div>
+    {% if wheel_transit_retrograde_planets %}
+    <p class="chart-note-pf">The ringed placement{{ 's' if wheel_transit_retrograde_planets | length > 1 else '' }} ({{ wheel_transit_retrograde_planets | join(', ') }}) {{ 'are' if wheel_transit_retrograde_planets | length > 1 else 'is' }} currently retrograde by transit.</p>
+    {% endif %}
     {% endif %}
 
     {% if chart_wheel_data and chart_wheel_data.bodies %}
@@ -506,6 +527,21 @@
   <div class="opening">
     {{ opening_snapshot | default('Opening snapshot unavailable.') }}
   </div>
+
+  {% if retrograde_cluster_active and retrograde_cluster_block %}
+  <div class="retrograde-climate">
+    <div class="section-label">Current Retrograde Climate</div>
+    {{ retrograde_cluster_block }}
+  </div>
+  {% endif %}
+
+  {% if voc_next_active and voc_next_block %}
+  <div class="retrograde-climate">
+    <div class="section-label">Next Void-of-Course Moon</div>
+    <p class="voc-meta">Begins {{ voc_next_start_display }} - lasts about {{ voc_next_duration_hours | round(1) }} hours</p>
+    {{ voc_next_block }}
+  </div>
+  {% endif %}
 
   <hr>
 

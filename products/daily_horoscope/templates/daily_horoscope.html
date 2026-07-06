@@ -129,6 +129,16 @@
 
     /* ── Print Mode ───────────────────────────────── */
     @media print {
+      body[data-palette="vibrant"] {
+        /* .block (the actual Today's Sky / Activation / Day's Ruler /
+           Proprietary / Closing copy — i.e. almost the entire report)
+           is colored via --text, not the --print-ink-* tokens below.
+           Without this, it stays at the light vibrant screen color on
+           the printed white page. */
+        --text: #17263d;
+        --muted: #223654;
+        --subtle: #30486c;
+      }
       body {
         background: #fff;
         color: #111;
@@ -137,14 +147,14 @@
         font-size: 10pt;
       }
       header .name { color: #000; }
-      header .meta { color: #666; }
-      .moon-line { color: #333; }
-      .activation-header { color: #555; }
+      header .meta { color: var(--print-ink-muted); }
+      .moon-line { color: var(--print-ink-muted); }
+      .activation-header { color: var(--print-ink-muted); }
       .proprietary-card { background: #f9f9f9; border-color: #ccc; }
-      .proprietary-name { color: #444; }
-      .soft-sell { color: #888; }
-      .closing { color: #555; }
-      footer { color: #999; }
+      .proprietary-name { color: var(--print-ink-muted); }
+      .soft-sell { color: var(--print-ink-soft); }
+      .closing { color: var(--print-ink-muted); }
+      footer { color: var(--print-ink-faint); }
       hr { border-color: #ddd; }
     }
   </style>
@@ -200,7 +210,7 @@
   <div class="proprietary-card">
     <div class="proprietary-name">{{ activated_index_name }}</div>
     <div class="block">{{ proprietary_block }}</div>
-    <div class="soft-sell">Activation detected. Full context in your Asteroid Portrait.</div>
+    <div class="soft-sell">Activation detected. Full context in your Soul Ecosystem report.</div>
   </div>
   <br>
   {% endif %}

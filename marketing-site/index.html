@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Entangled Oracle — Astrological Reports</title>
+<meta name="description" content="Boutique astrology reports computed from real birth data, not guessed by a language model. Founding-era pricing, ending soon.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#07070B; --surface:#101018; --surface-2:#151522; --border:#242436;
+    --text:#E6E2DA; --muted:#8B8798; --subtle:#555266;
+    --accent:#00FFB2; --violet:#BF7FFF; --pink:#FF6BAE; --gold:#FFD000; --blue:#4D6AFF;
+    --serif: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+    --sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg); color:var(--text); font-family:var(--sans);
+    line-height:1.65; -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit; text-decoration:none;}
+  .wrap{max-width:1120px; margin:0 auto; padding:0 32px;}
+  section{padding:120px 0;}
+  h1,h2,h3{font-family:var(--serif); font-weight:500; line-height:1.15; letter-spacing:0.01em;}
+  .eyebrow{
+    font-size:12px; letter-spacing:0.22em; text-transform:uppercase; color:var(--accent);
+    font-weight:600; margin-bottom:18px; display:block;
+  }
+  .lede{color:var(--muted); font-size:18px; max-width:640px; line-height:1.75;}
+  .btn{
+    display:inline-flex; align-items:center; gap:10px; padding:15px 30px; border-radius:2px;
+    font-size:14px; letter-spacing:0.04em; font-weight:600; cursor:pointer; border:1px solid transparent;
+    transition:all .25s ease;
+  }
+  .btn-primary{background:var(--accent); color:#03140D;}
+  .btn-primary:hover{background:#33FFC2; transform:translateY(-1px);}
+  .btn-ghost{border-color:var(--border); color:var(--text);}
+  .btn-ghost:hover{border-color:var(--accent); color:var(--accent);}
+
+  /* ---- Nav ---- */
+  header{
+    position:sticky; top:0; z-index:50; background:rgba(7,7,11,0.85); backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--border);
+  }
+  nav.wrap{display:flex; align-items:center; justify-content:space-between; padding:20px 32px;}
+  .brand{display:flex; align-items:baseline; gap:10px;}
+  .brand-name{font-family:var(--serif); font-size:22px; letter-spacing:0.03em;}
+  .brand-sub{font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:var(--subtle); border-left:1px solid var(--border); padding-left:10px;}
+  .nav-links{display:flex; gap:36px; font-size:14px; color:var(--muted);}
+  .nav-links a:hover{color:var(--text);}
+  .nav-cta{display:flex; align-items:center; gap:20px;}
+  @media(max-width:760px){ .nav-links{display:none;} }
+
+  /* ---- Hero ---- */
+  .hero{padding:140px 0 100px; position:relative; overflow:hidden;}
+  .hero::before{
+    content:''; position:absolute; top:-200px; right:-200px; width:600px; height:600px;
+    background:radial-gradient(circle, rgba(0,255,178,0.08), transparent 70%);
+    pointer-events:none;
+  }
+  .hero h1{font-size:clamp(40px,6vw,68px); max-width:820px; margin-bottom:28px;}
+  .hero .lede{margin-bottom:40px; font-size:19px;}
+  .hero-cta{display:flex; gap:20px; align-items:center; flex-wrap:wrap;}
+
+  /* ---- Philosophy ---- */
+  .philosophy{border-top:1px solid var(--border);}
+  .philosophy h2{font-size:clamp(30px,4vw,44px); max-width:760px; margin-bottom:24px;}
+  .philosophy .lede{margin-bottom:56px;}
+  .feature-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--border); border:1px solid var(--border);}
+  .feature{background:var(--surface); padding:36px 32px;}
+  .feature h3{font-family:var(--sans); font-size:15px; font-weight:600; color:var(--accent); margin-bottom:10px; letter-spacing:0.01em;}
+  .feature p{font-size:14px; color:var(--muted); line-height:1.7;}
+  @media(max-width:760px){ .feature-grid{grid-template-columns:1fr;} }
+
+  /* ---- Reports ---- */
+  .reports{border-top:1px solid var(--border);}
+  .reports h2{font-size:clamp(30px,4vw,44px); max-width:760px; margin-bottom:56px;}
+  .report-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:24px;}
+  .report-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:4px; padding:36px;
+    border-top:3px solid var(--card-accent, var(--accent)); transition:transform .25s ease, border-color .25s ease;
+  }
+  .report-card:hover{transform:translateY(-4px); border-color:var(--card-accent, var(--accent));}
+  .report-card h3{font-family:var(--serif); font-size:26px; font-weight:500; margin-bottom:12px;}
+  .report-card p{font-size:15px; color:var(--muted); margin-bottom:22px; line-height:1.7;}
+  .report-price{font-size:13px; color:var(--subtle); letter-spacing:0.03em;}
+  .report-price strong{color:var(--text); font-size:15px;}
+  @media(max-width:760px){ .report-grid{grid-template-columns:1fr;} }
+
+  /* ---- Pricing ---- */
+  .pricing{border-top:1px solid var(--border); background:var(--surface);}
+  .pricing h2{font-size:clamp(30px,4vw,44px); max-width:760px; margin-bottom:24px;}
+  .pricing .lede{margin-bottom:56px; color:var(--muted);}
+  .price-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:24px;}
+  .price-card{background:var(--surface-2); border:1px solid var(--border); border-radius:4px; padding:32px; text-align:center;}
+  .price-card.featured{border-color:var(--accent); position:relative;}
+  .price-tag{font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:var(--accent); background:rgba(0,255,178,0.1); padding:4px 12px; border-radius:20px; display:inline-block; margin-bottom:18px;}
+  .price-card h3{font-size:15px; font-weight:600; font-family:var(--sans); margin-bottom:18px; color:var(--muted); letter-spacing:0.02em;}
+  .price-old{font-size:14px; color:var(--subtle); text-decoration:line-through; margin-bottom:2px;}
+  .price-new{font-family:var(--serif); font-size:44px; color:var(--text); margin-bottom:4px;}
+  .price-unit{font-size:13px; color:var(--subtle); margin-bottom:20px;}
+  .price-card ul{list-style:none; text-align:left; font-size:13px; color:var(--muted); display:flex; flex-direction:column; gap:10px;}
+  .price-card li::before{content:'—'; margin-right:8px; color:var(--subtle);}
+  @media(max-width:760px){ .price-grid{grid-template-columns:1fr;} }
+
+  /* ---- Waitlist ---- */
+  .waitlist{border-top:1px solid var(--border); text-align:center;}
+  .waitlist h2{font-size:clamp(32px,5vw,52px); max-width:680px; margin:0 auto 20px;}
+  .waitlist .lede{margin:0 auto 40px; text-align:center;}
+  .waitlist-form{display:flex; gap:12px; max-width:460px; margin:0 auto; flex-wrap:wrap; justify-content:center;}
+  .waitlist-form input{
+    flex:1; min-width:220px; background:var(--surface); border:1px solid var(--border); color:var(--text);
+    padding:15px 18px; border-radius:2px; font-size:14px; font-family:var(--sans);
+  }
+  .waitlist-form input:focus{outline:none; border-color:var(--accent);}
+  .waitlist-note{font-size:12px; color:var(--subtle); margin-top:16px;}
+
+  /* ---- Footer ---- */
+  footer{border-top:1px solid var(--border); padding:56px 0 40px;}
+  footer .wrap{display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:24px;}
+  footer .brand-name{font-size:18px;}
+  footer p{font-size:13px; color:var(--subtle); max-width:420px; line-height:1.7;}
+  footer .legal{font-size:12px; color:var(--subtle); margin-top:6px;}
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="wrap">
+    <div class="brand">
+      <span class="brand-name">Entangled Oracle</span>
+      <span class="brand-sub">Astrological Reports</span>
+    </div>
+    <div class="nav-links">
+      <a href="#philosophy">Philosophy</a>
+      <a href="#reports">Reports</a>
+      <a href="#pricing">Pricing</a>
+    </div>
+    <div class="nav-cta">
+      <a href="#order" class="btn btn-ghost">Order by email</a>
+    </div>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <span class="eyebrow">Entangled Oracle · Astrological Reports</span>
+    <h1>Real charts. Real words.<br>Nothing performed.</h1>
+    <p class="lede">
+      Boutique astrology reports built from your actual birth data — genuine Swiss Ephemeris
+      calculations, not a language model's best guess. We compute your chart the way professional
+      astrologers always have, then write about it like someone who meant every word.
+    </p>
+    <div class="hero-cta">
+      <a href="#order" class="btn btn-primary">Order by email</a>
+      <a href="#reports" class="btn btn-ghost">See what's inside ↓</a>
+    </div>
+  </div>
+</section>
+
+<section class="philosophy" id="philosophy">
+  <div class="wrap">
+    <span class="eyebrow">Why this is different</span>
+    <h2>We don't ask an AI what your chart means. We calculate it.</h2>
+    <p class="lede">
+      Most astrology apps today ask a language model to improvise something that sounds
+      astrological. We do the opposite. Every claim in an Entangled Oracle report traces back to
+      an actual planetary position — real transits, real Whole Sign houses, real aspects, computed
+      the way a working astrologer would, just faster. The writing is crafted with care. The
+      astrology underneath it is never invented.
+    </p>
+    <div class="feature-grid">
+      <div class="feature">
+        <h3>Computed, not guessed</h3>
+        <p>Every report runs on real ephemeris data specific to your exact birth date, time, and place — not a plausible-sounding average.</p>
+      </div>
+      <div class="feature">
+        <h3>Written, not templated</h3>
+        <p>No recycled sentences, no mad-libs. Genuinely distinct prose for a genuinely distinct chart, every time.</p>
+      </div>
+      <div class="feature">
+        <h3>Yours, not generic</h3>
+        <p>The report reflects the sky as it actually relates to you today — not a one-size sign-by-sign horoscope.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="reports" id="reports">
+  <div class="wrap">
+    <span class="eyebrow">Choose your report</span>
+    <h2>Four ways to actually understand your chart</h2>
+    <div class="report-grid">
+      <div class="report-card" style="--card-accent:#00FFB2">
+        <h3>Daily Horoscope</h3>
+        <p>A short daily read, tuned to whatever is genuinely active in your sky today — not a sign-wide guess.</p>
+        <div class="report-price">From <strong>$X</strong></div>
+        <a href="mailto:orders@entangledoracle.com?subject=Order%3A%20Daily%20Horoscope" class="btn btn-ghost" style="margin-top:18px; padding:10px 20px; font-size:13px;">Order this report</a>
+      </div>
+      <div class="report-card" style="--card-accent:#4D6AFF">
+        <h3>Personal Forecast</h3>
+        <p>A focused look at the weeks ahead, built entirely around your real transits and what they're actually doing.</p>
+        <div class="report-price"><strong>$20</strong></div>
+        <a href="mailto:orders@entangledoracle.com?subject=Order%3A%20Personal%20Forecast" class="btn btn-ghost" style="margin-top:18px; padding:10px 20px; font-size:13px;">Order this report</a>
+      </div>
+      <div class="report-card" style="--card-accent:#BF7FFF">
+        <h3>Soul Ecosystem</h3>
+        <p>A full portrait of your natal chart's proprietary interpretive layer — archetypes, indexes, and the pattern underneath them.</p>
+        <div class="report-price"><strong>$25</strong></div>
+        <a href="mailto:orders@entangledoracle.com?subject=Order%3A%20Soul%20Ecosystem" class="btn btn-ghost" style="margin-top:18px; padding:10px 20px; font-size:13px;">Order this report</a>
+      </div>
+      <div class="report-card" style="--card-accent:#FF6BAE">
+        <h3>Year Ahead</h3>
+        <p>The complete annual forecast — month by month, transit by transit, nothing smoothed over.</p>
+        <div class="report-price"><strong>$35</strong></div>
+        <a href="mailto:orders@entangledoracle.com?subject=Order%3A%20Year%20Ahead" class="btn btn-ghost" style="margin-top:18px; padding:10px 20px; font-size:13px;">Order this report</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="pricing" id="pricing">
+  <div class="wrap">
+    <span class="eyebrow">Founding-era pricing</span>
+    <h2>The lowest these reports will ever cost</h2>
+    <p class="lede">
+      Reports like these used to run into the hundreds of dollars — an astrologer, proprietary
+      software, and weeks of waiting. We built the entire computation pipeline ourselves, so we
+      could offer it without the markup that used to come with it. While Entangled Oracle is
+      small, so is the price. This is the founding rate, not a sale — as we grow, the price will too.
+      Every price above is what you'll actually pay today, no hidden tiers.
+    </p>
+  </div>
+</section>
+
+<section class="waitlist" id="order">
+  <div class="wrap">
+    <span class="eyebrow">How to order</span>
+    <h2>No account. Just an email.</h2>
+    <p class="lede">
+      Entangled Oracle Astrological Reports isn't a self-serve store yet — it's three honest steps,
+      answered by an actual person.
+    </p>
+    <div class="feature-grid" style="margin-bottom:48px;">
+      <div class="feature">
+        <h3>1. Email your order</h3>
+        <p>Tell us the report, your name, birth date, birth time (or "unknown"), and birth location. That's everything we need.</p>
+      </div>
+      <div class="feature">
+        <h3>2. We reply within 48 hours</h3>
+        <p>You'll get a confirmation and payment instructions — never longer than two days, usually much sooner.</p>
+      </div>
+      <div class="feature">
+        <h3>3. Report within 1 hour of payment</h3>
+        <p>Once payment clears, your finished report lands in your inbox within the hour. Computed fresh, every time.</p>
+      </div>
+    </div>
+    <a href="mailto:orders@entangledoracle.com?subject=Order%3A%20" class="btn btn-primary">Email us your order</a>
+    <p class="waitlist-note">orders@entangledoracle.com — replies within 48 hours, guaranteed.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <div class="brand-name" style="font-family:var(--serif)">Entangled Oracle</div>
+      <p>Astrological Reports is the first Entangled Oracle experience. More divination tools are on the way.</p>
+      <p class="legal">© 2026 Ksisti-Puck LLC. All charts computed, never invented.</p>
+    </div>
+    <div class="nav-links" style="flex-direction:column; align-items:flex-end; gap:10px;">
+      <a href="#philosophy">Philosophy</a>
+      <a href="#reports">Reports</a>
+      <a href="#pricing">Pricing</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

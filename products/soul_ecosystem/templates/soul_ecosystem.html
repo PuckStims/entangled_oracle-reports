@@ -516,18 +516,18 @@
       body { background: #fff; color: #111; padding: 18px 24px 24px; }
       header { margin-bottom: 30px; }
       .report-title, .meta, .section-label, .map-label,
-      .support-type { color: #777; }
-      .section-eyebrow { color: #777; }
-      .opening { color: #333; }
+      .support-type { color: var(--print-ink-muted); }
+      .section-eyebrow { color: var(--print-ink-muted); }
+      .opening { color: var(--print-ink-muted); }
       .map-card, .support-card, .integration { background: #f8f8f8; border-color: #ddd; }
-      .section-title, .map-title, .support-name { color: #111; }
-      .map-note, .grounding { color: #888; }
-      .time-status { border-color: #ccc; color: #777; }
-      .astro-index-label { color: #aaa; }
-      .astro-data { color: #aaa; font-size: 0.65rem; }
-      footer { color: #bbb; }
+      .section-title, .map-title, .support-name { color: var(--print-ink-strong); }
+      .map-note, .grounding { color: var(--print-ink-soft); }
+      .time-status { border-color: #ccc; color: var(--print-ink-muted); }
+      .astro-index-label { color: var(--print-ink-faint); }
+      .astro-data { color: var(--print-ink-faint); font-size: 0.65rem; }
+      footer { color: var(--print-ink-faint); }
       .chart-wheel-container { background: #f5f5f5; border-color: #ddd; }
-      .chart-wheel-label { color: #aaa; }
+      .chart-wheel-label { color: var(--print-ink-faint); }
       .chart-wheel-container {
         margin-top: 18px;
         page-break-inside: avoid;
@@ -582,6 +582,9 @@
   <div class="chart-wheel-container">
     {{ chart_wheel_svg | safe }}
     <div class="chart-wheel-label">Natal Chart - {{ house_system_label | default(house_system | default('Whole Sign')) }} Houses - {{ zodiac_label | default('Tropical') }} Zodiac</div>
+    {% if wheel_transit_retrograde_planets %}
+    <div class="chart-wheel-label">The ringed placement{{ 's' if wheel_transit_retrograde_planets | length > 1 else '' }} ({{ wheel_transit_retrograde_planets | join(', ') }}) {{ 'are' if wheel_transit_retrograde_planets | length > 1 else 'is' }} currently retrograde by transit</div>
+    {% endif %}
   </div>
   {% endif %}
 
@@ -632,8 +635,6 @@
           {% if dominant_depth.expression %}<div class="proprietary-depth-expression">{{ dominant_depth.expression }}</div>{% endif %}
           <div class="proprietary-depth-meta">
             {% if dominant_depth.activation %}<div><strong>Activation</strong>{{ dominant_depth.activation }}</div>{% endif %}
-            {% if dominant_depth.score %}<div><strong>Pattern score</strong>{{ "%.2f"|format(dominant_depth.score) }}</div>{% endif %}
-            {% if dominant_depth.activation_score %}<div><strong>Activation score</strong>{{ "%.2f"|format(dominant_depth.activation_score) }}</div>{% endif %}
             {% if dominant_depth.driver and (dominant_depth.driver.body or dominant_depth.driver.modality) %}
             <div><strong>Driver</strong>{{ dominant_depth.driver.body }}{% if dominant_depth.driver.modality %} - {{ dominant_depth.driver.modality }}{% endif %}</div>
             {% endif %}
@@ -663,8 +664,6 @@
           {% if secondary_depth.archetype %}<div class="proprietary-depth-archetype">{{ secondary_depth.archetype }}</div>{% endif %}
           {% if secondary_depth.expression %}<div class="proprietary-depth-expression">{{ secondary_depth.expression }}</div>{% endif %}
           <div class="proprietary-depth-meta">
-            {% if secondary_depth.score %}<div><strong>Pattern score</strong>{{ "%.2f"|format(secondary_depth.score) }}</div>{% endif %}
-            {% if secondary_depth.activation_score %}<div><strong>Activation score</strong>{{ "%.2f"|format(secondary_depth.activation_score) }}</div>{% endif %}
             {% if secondary_depth.driver and (secondary_depth.driver.body or secondary_depth.driver.modality) %}
             <div><strong>Driver</strong>{{ secondary_depth.driver.body }}{% if secondary_depth.driver.modality %} - {{ secondary_depth.driver.modality }}{% endif %}</div>
             {% endif %}
@@ -678,8 +677,6 @@
           {% if tertiary_depth.archetype %}<div class="proprietary-depth-archetype">{{ tertiary_depth.archetype }}</div>{% endif %}
           {% if tertiary_depth.expression %}<div class="proprietary-depth-expression">{{ tertiary_depth.expression }}</div>{% endif %}
           <div class="proprietary-depth-meta">
-            {% if tertiary_depth.score %}<div><strong>Pattern score</strong>{{ "%.2f"|format(tertiary_depth.score) }}</div>{% endif %}
-            {% if tertiary_depth.activation_score %}<div><strong>Activation score</strong>{{ "%.2f"|format(tertiary_depth.activation_score) }}</div>{% endif %}
             {% if tertiary_depth.driver and (tertiary_depth.driver.body or tertiary_depth.driver.modality) %}
             <div><strong>Driver</strong>{{ tertiary_depth.driver.body }}{% if tertiary_depth.driver.modality %} - {{ tertiary_depth.driver.modality }}{% endif %}</div>
             {% endif %}
@@ -957,7 +954,6 @@
       {% set is_sec = row.key == secondary_eas_dimension %}
     <div class="eas-rank-row {% if is_dom %}is-dominant{% elif is_sec %}is-secondary{% endif %}">
       <span class="eas-rank-name">{{ row.name }}</span>
-      <span class="eas-rank-score">{{ "%.1f"|format(row.score) }}</span>
       <span class="eas-rank-tier">{{ row.tier | lower }}</span>
     </div>
     {% endfor %}

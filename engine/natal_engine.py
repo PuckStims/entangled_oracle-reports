@@ -23,8 +23,17 @@ from engine.offline_place_resolver import (
     resolve_timezone,
 )
 
-from formulas.standard.confidence import EXACT_BIRTH_TIME, UNKNOWN_BIRTH_TIME
+from formulas.standard.confidence import (
+    APPROXIMATE_BIRTH_TIME,
+    EXACT_BIRTH_TIME,
+    UNKNOWN_BIRTH_TIME,
+)
 from formulas.standard.methodology_profiles import get_active_methodology_metadata
+
+
+class ChartCalculationError(ValueError):
+    """Raised when a valid birth location/time cannot be turned into a chart
+    (e.g. extreme polar latitudes where house-angle math is undefined)."""
 
 
 # ── Paths and Swiss Ephemeris Setup ─────────────────────────────
@@ -307,6 +316,21 @@ def _resolve_location(location_name: str) -> dict:
             raise offline_error
 
 
+def _is_nonexistent_local_time(naive_dt: datetime, timezone_name: str) -> bool:
+    """
+    Detects a "spring forward" DST-gap wall-clock time that never actually
+    occurred in the given zone (e.g. 2:30 AM on the day a zone jumps from
+    2:00 AM to 3:00 AM). zoneinfo silently resolves such times to a UTC
+    offset rather than raising, so we round-trip through UTC and back —
+    a gap time will not survive the round trip unchanged.
+    """
+    tz = ZoneInfo(timezone_name)
+    aware = naive_dt.replace(tzinfo=tz)
+    utc_dt = aware.astimezone(ZoneInfo("UTC"))
+    round_tripped = utc_dt.astimezone(tz).replace(tzinfo=None)
+    return round_tripped != naive_dt
+
+
 # ── Main Chart Generator ───────────────────────────────────────
 
 def generate_payload(birth_data: dict) -> dict:
@@ -351,7 +375,7 @@ def generate_payload(birth_data: dict) -> dict:
 
     # ── Resolve Location ───────────────────────────────────────
 
-    print(f"[Engine] Resolving coordinates for {location_name}...")
+    print("[Engine] Resolving birth location...")
 
     resolved_location = _resolve_location(location_name)
     latitude = resolved_location["latitude"]
@@ -360,20 +384,25 @@ def generate_payload(birth_data: dict) -> dict:
 
     print(
         "[Engine] Location resolved: "
-        f"{resolved_location['source']} | "
-        f"{timezone_name} | "
-        f"Lat {round(latitude, 4)}, "
-        f"Lon {round(longitude, 4)}"
+        f"{resolved_location['source']} lookup succeeded."
     )
 
     # ── Convert Local Birth Time to Julian Day ─────────────────
 
-    local_datetime = datetime.strptime(
+    naive_local_datetime = datetime.strptime(
         f"{date_string} {time_string}",
         "%Y-%m-%d %H:%M:%S",
-    ).replace(
-        tzinfo=ZoneInfo(timezone_name)
     )
+
+    if not is_simple_mode and _is_nonexistent_local_time(naive_local_datetime, timezone_name):
+        print(
+            "[Engine] Warning: Provided local birth time falls inside a DST "
+            "spring-forward gap for the resolved timezone. "
+            "Treating birth time as approximate rather than exact."
+        )
+        birth_time_state = APPROXIMATE_BIRTH_TIME
+
+    local_datetime = naive_local_datetime.replace(tzinfo=ZoneInfo(timezone_name))
 
     utc_datetime = local_datetime.astimezone(ZoneInfo("UTC"))
 
@@ -397,13 +426,24 @@ def generate_payload(birth_data: dict) -> dict:
     # Ascendant, Midheaven, Vertex, etc.
     #
     # We do NOT use Placidus cusps for house assignment.
-
-    _placidus_cusps, ascmc = swe.houses(
-        julian_day,
-        latitude,
-        longitude,
-        b"P",
-    )
+    #
+    # Placidus cusps are mathematically degenerate inside the polar
+    # circles (roughly beyond +/-66.5 deg latitude) and swe.houses can
+    # raise there. Since only ascmc (Ascendant/MC/Vertex) is used below,
+    # retry with Porphyry — a simple trisection system with no polar
+    # degeneracy — before giving up with a clear, catchable error.
+    try:
+        _cusps, ascmc = swe.houses(julian_day, latitude, longitude, b"P")
+    except swe.Error:
+        try:
+            _cusps, ascmc = swe.houses(julian_day, latitude, longitude, b"O")
+        except swe.Error as exc:
+            raise ChartCalculationError(
+                f"Could not calculate chart angles for this birth location "
+                f"(latitude {latitude}°). Extreme polar latitudes can fall "
+                f"outside what the house-angle calculation supports. "
+                f"Original error: {exc}"
+            ) from exc
 
     ascendant = ascmc[0]
     midheaven = ascmc[1]

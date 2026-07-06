@@ -219,6 +219,28 @@
       font-size: 0.78rem;
     }
 
+    .transit-climate-note {
+      margin-top: 20px;
+      padding: 16px 18px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.92rem;
+      line-height: 1.65;
+    }
+    .transit-climate-note .transit-climate-label {
+      margin: 0 0 8px;
+      color: var(--muted);
+      font-size: 0.62rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+    .transit-climate-note .transit-climate-meta {
+      font-size: 0.74rem;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
     .wheel-wrap {
       margin: 0 auto 28px;
       max-width: 480px;
@@ -691,151 +713,9 @@
       .chronology-note { display: none; }
     }
 
-    /* Year Ahead PDF print recovery.
-   Derived mechanically from the color values embedded in puck_year_ahead.pdf.
-   Replace the template's existing @media print block with this entire block.
-*/
-@media print {
-  :root { color-scheme: light; }
-
-  html,
-  body {
-    background: #ffffff;
-    color: #1a1a2e;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
-
-  aside { display: none; }
-  .layout { display: block; }
-  main { width: auto; max-width: none; margin: 0; padding: 0.45in; }
-
-  .name { color: #1a6b9a; }
-  .report-title,
-  h2,
-  h3 { color: #8b6200; }
-
-  .meta,
-  .eyebrow,
-  .snapshot-table th { color: #555570; }
-
-  .chart-note,
-  .card-kind,
-  .card-subtitle,
-  .timing-line,
-  .section-subtitle,
-  .lens-label,
-  .month-kicker,
-  .month-range,
-  .domains-label,
-  .chronology-note { color: #555555; }
-
-  .card-date { color: #8888a0; }
-  .section-header { border-color: #aaaaaa; }
-
-  .snapshot-table {
-    background: #ffffff;
-    border-color: #d0d0dc;
-    color: #1a1a2e;
-  }
-  .snapshot-table th {
-    background: #efeff5;
-    border-color: #d0d0dc;
-  }
-  .snapshot-table td {
-    background: #ffffff;
-    border-color: #d0d0dc;
-    color: #1a1a2e;
-  }
-
-  .overview,
-  .integration,
-  .month-opener {
-    background: #f7f7fa;
-    border-color: #d0d0dc;
-    color: #1a1a2e;
-  }
-  .overview,
-  .integration,
-  .month-opener { border-top-color: #1a6b9a; }
-  .month-opener::after { display: none; }
-
-  .event-card {
-    background: #f7f7fa;
-    border: 1px solid #d0d0dc;
-    border-left: 3px solid #1a6b9a;
-    color: #1a1a2e;
-  }
-  .event-card.flowing { border-left-color: #1a7a4a; }
-  .event-card.challenging { border-left-color: #8b5000; }
-  .event-card.eclipse { border-left-color: #7a1a8a; }
-  .event-card.ingress { border-left-color: #1a6b9a; }
-
-  .event-block,
-  .lens-block { color: #1a1a2e; }
-  .constellation-lens { border-top-color: #d0d0dc; }
-
-  .month-index,
-  .month-brief-label,
-  .chronology-divider,
-  .chronology-title,
-  .domain-chip b { color: #1a6b9a; }
-  .month-index { border-color: #1a6b9a; }
-  .month-heading { color: #8b6200; }
-
-  .month-snapshot {
-    background: #f6f4ff;
-    border-left-color: #5a3a9a;
-    color: #222222;
-  }
-
-  .domain-chip {
-    background: #ffffff;
-    border-color: #d0d0dc;
-    color: #111111;
-  }
-  .chronology-divider::before,
-  .chronology-divider::after { background: #d0d0dc; }
-
-  .wheel-wrap,
-  .chart-wheel-container,
-  .mini-wheel-wrap {
-    background: #ffffff;
-    border-color: #d0d0dc;
-  }
-
-  .empty-month,
-  .empty-landmarks { color: #555555; border-color: #d0d0dc; }
-  footer { color: #8888a0; }
-  .month-section {
-    break-before: auto;
-    page-break-before: auto;
-  }
-
-  .monthly-events {
-    display: block;
-  }
-
-  .event-card,
-  .constellation-lens {
-    break-inside: auto;
-    page-break-inside: auto;
-  }
-
-  .card-top,
-  .card-subtitle,
-  .timing-line,
-  .lens-label {
-    break-after: avoid;
-    page-break-after: avoid;
-  }
-
-  h3 {
-    break-after: avoid;
-    page-break-after: avoid;
-  }
-}
-
+    /* Print/PDF pagination and print-ink rules for this template are
+       consolidated into a single @media print block near the end of
+       this stylesheet (see "PRINT / PDF LAYOUT" below). */
 
     /* â”€â”€ Year Ahead v2: reader-first report architecture â”€â”€â”€â”€â”€ */
     :root { --faint: var(--subtle); --green: var(--color-growth); --amber: var(--ember); --eclipse: var(--purple); --surface-hi: var(--surface-2); }
@@ -1221,23 +1101,254 @@
     .notes-space .reflection-lines { height:180px; }
     @media (max-width: 800px) { .record-grid,.season-grid,.season-summary-grid,.month-guidance-grid,.month-guidance-layout,.characteristics-grid,.forecast-climate-list,.forecast-climate-pair,.climate-highlight-grid,.turning-guide-timeline { grid-template-columns:repeat(2,minmax(0,1fr)); } .integrity-panel,.characteristics-strip,.orientation-card-grid,.turning-guide-item-meta,.month-opening-flow,.month-opener-body,.arc-story-layout { grid-template-columns:1fr; } .arc-story-grid { grid-template-columns:1fr; } .orientation-notes { grid-template-columns:1fr; } .annual-rhythm-bands,.annual-rhythm-months { grid-template-columns:repeat(6,minmax(0,1fr)); } .annual-rhythm-band { grid-column:span 3; } .ledger-table, .structure-note-table { table-layout:auto; } }
     @media (max-width: 560px) { .record-grid,.reader-principles,.forecast-climate-list,.forecast-climate-pair,.season-grid,.appendix-grid,.reflection-grid,.season-summary-grid,.month-guidance-grid,.month-guidance-layout,.characteristics-grid,.turning-guide-item-meta,.climate-highlight-grid,.annual-rhythm-bands,.annual-rhythm-months,.turning-guide-timeline { grid-template-columns:1fr; } .reader-principles article:nth-child(odd) { border-right:0; } .orientation-layout { grid-template-columns:1fr; } .integrity-list { grid-template-columns:1fr; } .turning-guide-item-top,.turning-guide-month-head { grid-template-columns:1fr; } .climate-field-header { display:block; } .climate-field-status { margin-top:6px; text-align:left; white-space:normal; } .annual-rhythm-band { grid-column:auto; } .ledger-table, .structure-note-table { table-layout:auto; } }
-    @media print { .record-card,.integrity-panel,.reader-guide,.climate-card,.arc-story,.season-card,.appendix-grid article,.method-note,.reflection-grid article,.month-guidance-card,.ledger-month,.season-summary-card,.notes-space,.characteristic-card,.turning-guide-month,.turning-guide-item,.structure-note-section { break-inside:avoid; page-break-inside:avoid; } .section-opening { break-before:avoid; page-break-before:avoid; } }
-
-
-    /* â”€â”€ Print recovery for reader-first v2 structures â”€â”€â”€â”€â”€â”€â”€â”€â”€
-       Keeps the dark screen panels readable and lets long-form Year Arc
-       prose fragment naturally instead of reserving whole-page card boxes. */
+    /* ══════════════════════════════════════════════════════════════════
+       PRINT / PDF LAYOUT — single authoritative @media print block.
+       Consolidated from three previously overlapping blocks ("PDF print
+       recovery", "reader-first v2 print recovery", "Browser print") plus
+       one orphaned micro-rule. Where those blocks agreed, behavior is
+       preserved unchanged below. Where they genuinely contradicted each
+       other on break behavior, the conflict was resolved — not by source
+       order — using these rules:
+         - long-form prose and repeating chapters flow across pages naturally
+         - event cards split only when needed to avoid trailing blank space
+         - headings stay attached to their first line of content
+         - no element is forced onto a new page merely for being a generic
+           card or section
+         - hard page breaks are reserved for explicitly named chapter starts
+       All color, geometry, and typography values below reproduce what the
+       prior three blocks already rendered on the printed page — nothing
+       here changes the current palette, spacing scale, or card design. */
     @media print {
+
+      /* ── Page geometry ────────────────────────────────────────────── */
       @page {
         size: letter;
         margin: 0.6in 0.55in 0.7in;
       }
+      :root { color-scheme: light; }
 
+      /* ── Global flow rules ────────────────────────────────────────── */
+      html,
       body {
-        widows: 3;
-        orphans: 3;
+        background: #ffffff;
+        color: #1a1a2e;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      a { color: inherit; text-decoration: none; }
+
+      .layout { display: block; }
+      aside   { display: none !important; }
+      main    { width: 100%; padding: 0; }
+
+      /* Repeating chapters and long-form cards fragment naturally across
+         page boundaries instead of being pinned whole to one page — this
+         is what stops an oversized card from stranding whitespace behind
+         it and lets an event card split only when it doesn't fit. */
+      .month-section,
+      .monthly-events .event-card,
+      .constellation-lens {
+        break-inside: auto;
+        page-break-inside: auto;
+      }
+      .monthly-events { display: block; gap: 12px; }
+      .month-opening-flow { display: block; break-inside: auto; page-break-inside: auto; }
+
+      /* Card-grid density (Phase 1.5): reference/highlight grids default
+         to align-items: stretch, which pads a shorter sibling card up to
+         match its tallest row partner. In print that padding has no
+         content to fill it, so it reads as an empty box. Aligning to the
+         start of the row lets each card keep its own natural height. */
+      .characteristics-grid,
+      .characteristics-strip,
+      .reader-principles,
+      .season-summary-grid,
+      .climate-highlight-grid {
+        align-items: start;
       }
 
+      /* ── Intentional chapter / page starts ────────────────────────────
+         Hard breaks are reserved for these explicitly named structural
+         boundaries only. No top-level section and no monthly chapter is
+         forced onto a new page merely by virtue of being a section. */
+      #cycle-ledger,
+      #technical-appendix {
+        break-before: page;
+        page-break-before: always;
+      }
+
+      /* ── Protected indivisible units ──────────────────────────────────
+         Small, self-contained components that read poorly if split
+         mid-card. Headings stay attached to their first line of content;
+         event cards are deliberately excluded (see Global flow rules).
+         .reader-guide and .climate-field are also deliberately excluded
+         (Phase 1.5) — both wrap ordinary prose/reference content and were
+         being pushed whole to a new page, stranding blank space behind
+         them; they now fragment like any other long-form block while
+         their headings stay paired with their first line via the
+         break-after rules below. */
+      .month-opener,
+      .monthly-events .event-card:first-child,
+      .ledger-table-wrap,
+      .arc-story,
+      .shape-card,
+      .month-guidance-card,
+      .record-card,
+      .integrity-panel,
+      .climate-card,
+      .season-card,
+      .appendix-grid article,
+      .method-note,
+      .reflection-grid article,
+      .ledger-month,
+      .season-summary-card,
+      .notes-space,
+      .characteristic-card,
+      .turning-guide-month,
+      .turning-guide-item,
+      .structure-note-section,
+      .orientation-note,
+      .ledger-entry,
+      .chronology-divider {
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+
+      .card-top,
+      .card-subtitle,
+      .timing-line,
+      .lens-label,
+      .climate-field-header,
+      .climate-field-definition {
+        break-after: avoid;
+        page-break-after: avoid;
+      }
+      .section-header + *,
+      .forecast-climate-intro,
+      .month-opener-top,
+      .chronology-divider {
+        break-before: avoid;
+        page-break-before: avoid;
+      }
+      .chronology-divider { margin-top: 0; }
+
+      /* ── Table behavior ───────────────────────────────────────────── */
+      .ledger-table thead,
+      .structure-note-table thead {
+        display: table-header-group;
+      }
+      .ledger-table-wrap { overflow: visible; }
+      .ledger-table tr,
+      .structure-note-table tr {
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+      .ledger-table td,
+      .ledger-table th,
+      .structure-note-table td,
+      .structure-note-table th {
+        font-size: .79rem;
+        line-height: 1.5;
+      }
+
+      /* ── Color / print rendering rules ────────────────────────────────
+         Light-mode ink palette (matches the shared report_visual_system.css
+         --print-ink-* tokens) plus the per-component overrides already in
+         use across the template's older and newer ("v2") component sets. */
+      :root {
+        --bg:        #ffffff;
+        --surface:   #f7f7f7;
+        --surface-2: #efefef;
+        --border:    #cccccc;
+        --text:      #111111;
+        --muted:     var(--print-ink-muted);
+        --subtle:    var(--print-ink-soft);
+        --accent:    #1a6b54;
+        --purple:    #4a28a0;
+        --gold:      #7a5010;
+        --rose:      #902040;
+        --ember:     #903010;
+        --blue:      #1a4070;
+      }
+
+      .name { color: #1a6b9a; }
+      .report-title,
+      h2,
+      h3 { color: #8b6200; }
+
+      .meta,
+      .eyebrow,
+      .snapshot-table th,
+      .chart-note,
+      .card-kind,
+      .card-subtitle,
+      .timing-line,
+      .section-subtitle,
+      .lens-label,
+      .month-kicker,
+      .month-range,
+      .domains-label,
+      .chronology-note { color: var(--print-ink-muted); }
+
+      .card-date { color: var(--print-ink-soft); }
+      .section-header { border-color: #aaaaaa; }
+
+      .snapshot-table { background: #ffffff; border-color: #d0d0dc; color: #1a1a2e; }
+      .snapshot-table th { background: #efeff5; border-color: #d0d0dc; }
+      .snapshot-table td { background: #ffffff; border-color: #d0d0dc; color: #1a1a2e; }
+
+      .overview,
+      .integration,
+      .month-opener {
+        background: #f7f7fa;
+        border-color: #d0d0dc;
+        color: #1a1a2e;
+      }
+      .overview,
+      .integration,
+      .month-opener { border-top-color: #1a6b9a; }
+      .month-opener::after { display: none; }
+
+      .event-card {
+        padding: 17px 17px 18px;
+        background: #f7f7fa;
+        border: 1px solid #d0d0dc;
+        border-left: 3px solid #1a6b9a;
+        color: #1a1a2e;
+      }
+      .event-card.flowing { border-left-color: #1a7a4a; }
+      .event-card.challenging { border-left-color: #8b5000; }
+      .event-card.eclipse { border-left-color: #7a1a8a; }
+      .event-card.ingress { border-left-color: #1a6b9a; }
+
+      .event-block,
+      .lens-block { color: #1a1a2e; }
+      .constellation-lens { border-top-color: #d0d0dc; }
+
+      .month-index,
+      .month-brief-label,
+      .chronology-divider,
+      .chronology-title,
+      .domain-chip b { color: #1a6b9a; }
+      .month-index { border-color: #1a6b9a; }
+      .month-heading { color: #8b6200; }
+
+      .month-snapshot { background: #f6f4ff; border-left-color: #5a3a9a; color: #222222; }
+
+      .domain-chip { background: #ffffff; border-color: #d0d0dc; color: #111111; }
+      .chronology-divider::before,
+      .chronology-divider::after { background: #d0d0dc; }
+
+      .wheel-wrap,
+      .chart-wheel-container,
+      .mini-wheel-wrap { background: #ffffff; border-color: #d0d0dc; }
+
+      .empty-month,
+      .empty-landmarks { color: var(--print-ink-muted); border-color: #d0d0dc; }
+      footer { color: var(--print-ink-soft); }
+
+      /* v2 reader-first component set */
       .record-card,
       .shape-card,
       .characteristics-strip,
@@ -1251,7 +1362,6 @@
         border-color: #d0d0dc;
         color: #1a1a2e;
       }
-
       .record-card-primary { border-top-color: #1a6b9a; }
       .record-label,
       .record-detail,
@@ -1271,9 +1381,7 @@
       .turning-guide-item-meta span,
       .appendix-grid p,
       .method-note p,
-      .reflection-label {
-        color: #555570;
-      }
+      .reflection-label { color: var(--print-ink-muted); }
       .record-value,
       .characteristics-strip strong,
       .turning-guide-month-badge { color: #8b6200; }
@@ -1281,83 +1389,83 @@
       .climate-field-name { color: #8b6200; }
       .climate-field-status,
       .climate-field-definition,
-      .climate-field-evidence { color: #555570; }
+      .climate-field-evidence { color: var(--print-ink-muted); }
       .climate-field-body,
       .climate-field-evidence strong { color: #1a1a2e; }
-      .forecast-climate-pairs { gap: 14px; }
-      .forecast-climate-pair { grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
-      .forecast-climate-list { display:grid; grid-template-columns:1fr; gap:18px; }
+      /* Forecast Climate (focused review): fields flow one after another
+         (break-inside left natural since Phase 1.5) with room to breathe
+         between them, and the representative-cycles list is de-boxed to
+         a lightly divided reference list instead of a second nested
+         card — the title, tags, descriptor, and evidence lines above it
+         are unchanged. */
+      .forecast-climate-pairs { gap: var(--space-6); }
+      .forecast-climate-pair { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+      .forecast-climate-list { display: grid; grid-template-columns: 1fr; gap: 18px; }
       .climate-field {
-        display:block;
-        margin:0;
-        padding:16px 16px 0.14in;
-        background:#fbfaf7;
-        border-color:#d8d5e6;
+        display: block;
+        margin: 0;
+        padding: 16px 16px 0.14in;
+        background: #fbfaf7;
+        border-color: #d8d5e6;
         box-shadow: inset 0 1px 0 rgba(255,255,255,.8);
-        break-inside:avoid;
-        page-break-inside:avoid;
-      }
-      .climate-field-header,
-      .climate-field-definition {
-        break-after: avoid;
-        page-break-after: avoid;
       }
       .climate-field-meta span {
         background: #f1eef8;
-        color: #5e5b73;
+        color: var(--print-ink-muted);
         border: 1px solid #dfd9ef;
       }
       .climate-field-support {
-        margin-top: 16px;
-        padding: 12px 12px 0;
-        background: #f6f4fb;
-        border: 1px solid #e1dcef;
-        border-radius: 10px;
+        margin-top: 14px;
+        padding-top: 10px;
+        background: none;
+        border: 0;
+        border-top: 1px solid #e1dcef;
+        border-radius: 0;
       }
       .climate-field-support-item + .climate-field-support-item {
         padding-top: 8px;
         border-top: 1px dotted #d8d5e6;
       }
 
-      .reader-guide-intro {
-        background: #f7f7fa;
-        color: #1a1a2e;
-      }
+      .reader-guide-intro { background: #f7f7fa; color: #1a1a2e; }
       .reader-principles article { border-color: #d0d0dc; }
       .reader-principles h3 { color: #8b6200; }
 
       .archetypal-contract {
         background: #f7f7fa;
         border-left-color: #1a6b9a;
-        color: #555570;
+        color: var(--print-ink-muted);
       }
 
-      .arc-story-grid { grid-template-columns:1fr; gap:18px; }
+      /* Year Arcs (focused review): the section opener stays the chapter
+         start, but individual arcs no longer reserve a fixed tall box or
+         force the next arc onto a new page — each keeps its natural
+         height and a subtle rule (not a page break) separates one arc
+         from the next, so short arcs can share a page. */
+      .arc-story-grid { grid-template-columns: 1fr; gap: 18px; }
       .arc-story {
         background: #f7f7fa;
         border: 1px solid #d0d0dc;
         border-radius: 12px;
-        min-height: 8.15in;
+        min-height: 0;
         display: flex;
         flex-direction: column;
         justify-content: flex-start;
-        break-inside: avoid;
-        page-break-inside: avoid;
       }
       .arc-story + .arc-story {
-        break-before: page;
-        page-break-before: always;
+        break-before: auto;
+        page-break-before: auto;
       }
-      .arc-story-kicker { border-top-color: #1a6b9a; color: #555570; }
+      .arc-story-kicker { border-top-color: #1a6b9a; color: var(--print-ink-muted); }
       .arc-story.flowing .arc-story-kicker { border-top-color: #1a7a4a; }
       .arc-story.challenging .arc-story-kicker { border-top-color: #8b5000; }
       .arc-story-subtitle,
       .arc-story-duration,
-      .arc-story-lens strong { color: #555570; }
+      .arc-story-lens strong { color: var(--print-ink-muted); }
       .arc-story-body,
       .arc-story-lens p { color: #1a1a2e; }
       .arc-story-layout {
-        min-height: 100%;
+        min-height: 0;
         grid-template-columns: 1fr;
         gap: 18px;
         align-content: start;
@@ -1369,12 +1477,8 @@
         border: 1px solid #ddd7ea;
         border-radius: 12px;
       }
-      .arc-story-side-card {
-        background: #fffdfa;
-        border-color: #ddd7ea;
-        box-shadow: none;
-      }
-      .arc-story-side-card span { color: #5e5b73; }
+      .arc-story-side-card { background: #fffdfa; border-color: #ddd7ea; box-shadow: none; }
+      .arc-story-side-card span { color: var(--print-ink-muted); }
       .arc-story-side-card strong,
       .arc-story-side-card p { color: #2b2840; }
 
@@ -1395,22 +1499,11 @@
         background: #f7f7fa;
         border-color: #d0d0dc;
       }
-      .annual-rhythm-pill { background:#f2f2f7; color:#555570; }
+      .annual-rhythm-pill { background: #f2f2f7; color: var(--print-ink-muted); }
       .orientation-card-grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: 12px; }
-      .shape-card {
-        display: block;
-        margin: 0;
-        break-inside: avoid;
-        page-break-inside: avoid;
-      }
-      .orientation-notes {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 12px;
-      }
-      .orientation-theme-card {
-        margin-top: 0;
-      }
+      .shape-card { display: block; margin: 0; }
+      .orientation-notes { display: grid; grid-template-columns: 1fr; gap: 12px; }
+      .orientation-theme-card { margin-top: 0; }
       .orientation-note span,
       .season-summary-card p,
       .season-summary-meta span,
@@ -1421,135 +1514,22 @@
       .ledger-method-note,
       .ledger-table th,
       .ledger-field-note p,
-      .structure-note-table th {
-        color: #555570;
-      }
+      .structure-note-table th { color: var(--print-ink-muted); }
       .orientation-note strong,
       .season-summary-meta strong,
       .turning-guide-item-meta strong,
       .timing-window-item strong,
       .ledger-table td,
-      .structure-note-table td {
-        color: #1a1a2e;
-      }
-      .month-section {
-        break-inside: auto;
-        page-break-inside: auto;
-      }
-      .section-header + *,
-      .forecast-climate-intro,
-      .month-opener-top,
-      .chronology-divider {
-        break-before: avoid;
-        page-break-before: avoid;
-      }
-      .month-opening-flow { display:block; break-inside:auto; page-break-inside:auto; }
+      .structure-note-table td { color: #1a1a2e; }
+
       .month-opener-body { grid-template-columns: 1.18fr .82fr; gap: 14px; }
       .month-opener-aside-card { background: #ffffff; }
-      .month-guidance-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin-top:14px; }
-      .month-guidance-layout { grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin-top:14px; }
-      .month-guidance-card {
-        margin: 0;
-        break-inside: avoid;
-        page-break-inside: avoid;
-      }
-      .month-opener,
-      .chronology-divider,
-      .monthly-events .event-card:first-child,
-      .ledger-table-wrap {
-        break-inside: avoid;
-        page-break-inside: avoid;
-      }
-
-      .chronology-divider {
-        margin-top: 0;
-        break-before: page;
-        page-break-before: always;
-      }
-
-      .event-card {
-        padding: 17px 17px 18px;
-        break-inside: avoid;
-        page-break-inside: avoid;
-      }
-
-      .monthly-events { gap: 12px; }
+      .month-guidance-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 14px; }
+      .month-guidance-layout { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 14px; }
+      .month-guidance-card { margin: 0; }
 
       .turning-guide-timeline { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
       .turning-guide-month { padding: 16px; }
-
-      .ledger-table thead,
-      .structure-note-table thead {
-        display: table-header-group;
-      }
-
-      .ledger-table-wrap { overflow: visible; }
-
-      .ledger-table tr,
-      .structure-note-table tr {
-        break-inside: avoid;
-        page-break-inside: avoid;
-      }
-
-      .ledger-table td,
-      .ledger-table th,
-      .structure-note-table td,
-      .structure-note-table th {
-        font-size: .79rem;
-        line-height: 1.5;
-      }
-
-      #cycle-ledger,
-      #technical-appendix {
-        break-before: page;
-        page-break-before: always;
-      }
-
-      .section-note { margin-top: 12px; }
-    }
-
-    /* ── Browser print ─────────────────────────────────────────── */
-    @media print {
-      /* Light-mode palette override */
-      :root {
-        --bg:        #ffffff;
-        --surface:   #f7f7f7;
-        --surface-2: #efefef;
-        --border:    #cccccc;
-        --text:      #111111;
-        --muted:     #555555;
-        --subtle:    #888888;
-        --accent:    #1a6b54;
-        --purple:    #4a28a0;
-        --gold:      #7a5010;
-        --rose:      #902040;
-        --ember:     #903010;
-        --blue:      #1a4070;
-      }
-
-      /* Layout: collapse sidebar, give main full width */
-      .layout { display: block; }
-      aside   { display: none !important; }
-      main    { width: 100%; padding: 0; }
-
-      /* Strip screen-only chrome */
-      body { background: #fff; }
-      a    { color: inherit; text-decoration: none; }
-
-      /* Page-break control */
-      .section              { break-before: page; }
-      .section:first-of-type { break-before: avoid; }
-      .month-section        { break-before: page; }
-      .ledger-month         { break-inside: avoid; }
-      .arc-story,
-      .climate-field,
-      .quarter-card,
-      .turning-guide-month,
-      .ledger-entry,
-      .orientation-note     { break-inside: avoid; }
-
-      /* Ensure backgrounds and colors print */
-      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     }
 
   </style>
@@ -1637,6 +1617,9 @@
 
         {% if chart_wheel_svg %}
         <div class="wheel-wrap">{{ chart_wheel_svg | safe }}</div>
+        {% if wheel_transit_retrograde_planets %}
+        <p class="chart-note">The ringed placement{{ 's' if wheel_transit_retrograde_planets | length > 1 else '' }} ({{ wheel_transit_retrograde_planets | join(', ') }}) {{ 'are' if wheel_transit_retrograde_planets | length > 1 else 'is' }} currently retrograde by transit.</p>
+        {% endif %}
         {% endif %}
 
         <table class="snapshot-table">
@@ -1656,6 +1639,21 @@
           {{ zodiac_label | default('Tropical') }} zodiac reference. Planetary sign positions remain usable; angle and house features are withheld without exact birth time.
           {% endif %}
         </p>
+
+        {% if retrograde_cluster_active and retrograde_cluster_block %}
+        <div class="transit-climate-note">
+          <p class="transit-climate-label">Current Retrograde Climate</p>
+          {{ retrograde_cluster_block }}
+        </div>
+        {% endif %}
+
+        {% if voc_next_active and voc_next_block %}
+        <div class="transit-climate-note">
+          <p class="transit-climate-label">Next Void-of-Course Moon</p>
+          <p class="transit-climate-meta">Begins {{ voc_next_start_display }} - lasts about {{ voc_next_duration_hours | round(1) }} hours</p>
+          {{ voc_next_block }}
+        </div>
+        {% endif %}
 
         <div class="characteristics-strip">
           <div><span>Chart characteristics</span><strong>Reference-led</strong></div>
@@ -2353,7 +2351,7 @@
           {% endif %}
           <article><h3>Forecast shape</h3><p>A structural label describing how concentration is distributed across the year's existing monthly intensity pattern.</p></article>
         </div>
-        <div class="method-note"><h3>Method note</h3><p>This forecast is calculated with the Swiss Ephemeris using the {{ methodology_label | default('Tropical zodiac + Whole Sign houses') }} methodology. The report draws on natal transits, Whole Sign house ingresses, planetary stations, and eclipses that contact selected natal targets. It does not claim to predict one fixed future; it maps changing symbolic conditions, timing concentrations, and recurring developmental patterns.</p><p>{{ raw_cycle_ledger.status_method_note if raw_cycle_ledger and raw_cycle_ledger.status_method_note else 'Interim display statuses use conventional event-structure signals and are not the finalized Entangled Oracle weighting model.' }}</p></div>
+        <div class="method-note"><h3>Method note</h3><p>This forecast is calculated with the Swiss Ephemeris using the {{ methodology_label | default('Tropical zodiac + Whole Sign houses') }} methodology. The report draws on natal transits, Whole Sign house ingresses, planetary stations, and eclipses that contact selected natal targets. It does not claim to predict one fixed future; it maps changing symbolic conditions, timing concentrations, and recurring developmental patterns.</p>{% if raw_cycle_ledger and raw_cycle_ledger.status_method_note %}<p>{{ raw_cycle_ledger.status_method_note }}</p>{% endif %}</div>
       </section>
 
       <!-- XIII. YEAR INTEGRATION -->

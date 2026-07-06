@@ -363,15 +363,6 @@ def resolve_all(
     variables["nge_secondary_body"] = secondary_body_key.title() if secondary_body_key else ""
     variables["nge_secondary_facet"] = secondary_facet
 
-    # Legacy Magnetic Frequency variables.
-    magnetic = _record(index_results.get("MAGNETIC"))
-    variables["magnetic_score"] = _numeric(magnetic.get("score", 0.0))
-    variables["magnetic_tier"] = magnetic.get("tier", "SUBTLE")
-    variables["magnetic_archetype"] = magnetic.get("archetype", "")
-    variables["magnetic_framing"] = magnetic.get("framing", "COMBINED")
-    variables["magnetic_deprecated"] = bool(magnetic.get("deprecated", False))
-    variables["magnetic_successor"] = magnetic.get("successor", "NGE")
-
     # AHL is an ancillary signal, not one of the six EAS primary dimensions.
     ahl = _record(index_results.get("AHL"))
     variables["ahl_score"] = _numeric(ahl.get("score", 0.0))
@@ -390,19 +381,9 @@ def resolve_all(
         "",
     )
 
-    # Legacy portrait order: includes MAGNETIC until its template is migrated.
-    from formulas.proprietary_indexes import (
-        get_dimension_order,
-        get_eas_dimension_order,
-    )
+    from formulas.proprietary_indexes import get_eas_dimension_order
 
-    dimension_order = get_dimension_order(index_results)
     eas_dimension_order = get_eas_dimension_order(index_results)
-
-    variables["dimension_order"] = dimension_order
-    variables["dominant_dimension"] = (
-        dimension_order[0] if dimension_order else ""
-    )
 
     variables["eas_dimension_order"] = eas_dimension_order
     variables["dominant_eas_dimension"] = (
@@ -549,7 +530,12 @@ def resolve_all(
     # gracefully so non-horoscope reports are unaffected.
     try:
         import swisseph as _swe
-        from datetime import timezone as _tz
+        from datetime import timezone as _tz, timedelta as _timedelta
+        from engine.transit_engine import (
+            _whole_sign_house,
+            compute_daily_activation_transits,
+            scan_stations,
+        )
 
         _now_utc = datetime.now(_tz.utc)
         _jd = _swe.julday(
@@ -578,12 +564,68 @@ def resolve_all(
             name for threshold, name in _PHASE_NAMES if _phase_angle < threshold
         )
 
-        # Daily activation — transiting Moon in Whole Sign natal houses.
-        # The Moon is the fastest body and the natural daily timer.
         _asc_lon = variables.get("ascendant_longitude", 0.0)
-        _activation_house = int((_moon_lon - _asc_lon) % 360 // 30) + 1
 
-        variables["activation_planet"]      = "Moon"
+        # ── Today's Activation — priority chain ──────────────────────
+        #
+        # 1. A planet stationing (retrograde/direct) today outranks
+        #    everything else — stations are rare, specifically-dated
+        #    events, not a background condition.
+        # 2. Failing that, the highest-scoring same-day transit-to-natal
+        #    contact across every planet but the Moon
+        #    (compute_daily_activation_transits — its own tight, speed-
+        #    graduated orbs, sized for "true today" rather than reusing
+        #    Year Ahead's week/month-scale orbs; see that function's
+        #    docstring for why the naive version of this failed an
+        #    empirical sweep).
+        # 3. Failing that, fall back to the Moon's current Whole Sign
+        #    house — the steady daily baseline that's always available,
+        #    since the Moon changes house every ~2.5 days.
+        #
+        # House number always uses _whole_sign_house() (sign-based), the
+        # same formula the rest of the engine uses for Whole Sign houses
+        # elsewhere (ingresses, eclipses). The house number previously
+        # computed here used a degree-offset-from-Ascendant formula, which
+        # is Equal House, not Whole Sign, and gave a different (incorrect)
+        # answer whenever the Ascendant wasn't near 0 degrees of its sign.
+        _BODY_IDS = {
+            "Sun": _swe.SUN, "Moon": _swe.MOON, "Mercury": _swe.MERCURY,
+            "Venus": _swe.VENUS, "Mars": _swe.MARS, "Jupiter": _swe.JUPITER,
+            "Saturn": _swe.SATURN, "Uranus": _swe.URANUS,
+            "Neptune": _swe.NEPTUNE, "Pluto": _swe.PLUTO,
+        }
+
+        def _live_longitude(planet_name):
+            return _swe.calc_ut(_jd, _BODY_IDS[planet_name])[0][0]
+
+        _winner_planet = "Moon"
+        _winner_longitude = _moon_lon
+
+        try:
+            _today_start = _now_utc.replace(hour=0, minute=0, second=0, microsecond=0)
+            _today_end = _today_start + _timedelta(days=1)
+            _stations_today = scan_stations(payload, _today_start, _today_end)
+        except Exception:
+            _stations_today = []
+
+        if _stations_today:
+            _stations_today.sort(key=lambda e: e["score"], reverse=True)
+            _winner_planet = _stations_today[0]["transit_planet"]
+            _winner_longitude = _live_longitude(_winner_planet)
+        else:
+            try:
+                _candidates = compute_daily_activation_transits(payload, _now_utc)
+            except Exception:
+                _candidates = []
+
+            if _candidates:
+                _candidates.sort(key=lambda e: e["score"], reverse=True)
+                _winner_planet = _candidates[0]["transit_planet"]
+                _winner_longitude = _live_longitude(_winner_planet)
+
+        _activation_house = _whole_sign_house(_winner_longitude, _asc_lon)
+
+        variables["activation_planet"]       = _winner_planet
         variables["activation_house_number"] = _activation_house
         variables["natal_house_name"]        = get_house_domain(_activation_house)
 

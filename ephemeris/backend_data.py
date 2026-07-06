@@ -1,21 +1,37 @@
+import os
 import swisseph as swe
 from geopy.geocoders import Nominatim
 from datetime import datetime
 from zoneinfo import ZoneInfo
 from timezonefinder import TimezoneFinder
+from copy import deepcopy
 import json
 
 # ============================================================
 # CONFIG
 # ============================================================
 
-EPHE_PATH = r"C:\entangled_oracle\ephemeris"
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+EPHE_PATH = os.path.join(PROJECT_ROOT, "ephemeris")
 swe.set_ephe_path(EPHE_PATH)
 
 FLAGS = swe.FLG_SWIEPH | swe.FLG_SPEED
 
 geolocator = Nominatim(user_agent="entangled_oracle_engine")
 tf = TimezoneFinder()
+
+SENSITIVE_USER_PROFILE_KEYS = {
+    "name",
+    "querent_name",
+    "birth_date",
+    "birth_time",
+    "queried_location",
+    "resolved_location",
+    "generation_location",
+    "timezone",
+    "local_datetime",
+    "utc_datetime",
+}
 
 STANDARD_PLANETS = {
     swe.SUN: "Sun",
@@ -183,7 +199,7 @@ def generate_payload(birth_data: dict) -> dict:
     if len(time_str.split(":")) == 2:
         time_str += ":00"
 
-    print(f"[Engine] Resolving coordinates for {location_name}...")
+    print("[Engine] Resolving birth location...")
     location_data = geolocator.geocode(location_name)
 
     if not location_data:
@@ -194,10 +210,7 @@ def generate_payload(birth_data: dict) -> dict:
 
     timezone_name = tf.timezone_at(lng=lon, lat=lat) or "UTC"
 
-    print(
-        f"[Engine] Geolocation success: {timezone_name} | "
-        f"Lat {round(lat, 4)}, Lon {round(lon, 4)}"
-    )
+    print("[Engine] Geolocation success: lookup succeeded.")
 
     local_dt = datetime.strptime(
         f"{date_str} {time_str}",
@@ -355,20 +368,46 @@ def test_asteroid_availability(julian_day):
             print(f"❌ {name:14} | SWE ID {swe_id:<6} | {e}")
 
 
-def print_backend_chart_data(payload: dict):
+def _redact_user_profile(user_profile: dict) -> dict:
+    redacted = {}
+    for key, value in user_profile.items():
+        if key == "resolved_coordinates" and isinstance(value, dict):
+            redacted[key] = {
+                "latitude": "[redacted]",
+                "longitude": "[redacted]",
+            }
+            continue
+        if key in SENSITIVE_USER_PROFILE_KEYS:
+            redacted[key] = "[redacted]"
+            continue
+        redacted[key] = value
+    return redacted
+
+
+def _sanitize_payload_for_debug(payload: dict) -> dict:
+    sanitized = deepcopy(payload)
+    user_profile = sanitized.get("user_profile")
+    if isinstance(user_profile, dict):
+        sanitized["user_profile"] = _redact_user_profile(user_profile)
+    return sanitized
+
+
+def print_backend_chart_data(payload: dict, *, redact_user_profile: bool = True):
+    payload_to_print = _sanitize_payload_for_debug(payload) if redact_user_profile else payload
+
     print("\n================ USER PROFILE ================")
-    print(json.dumps(payload["user_profile"], indent=2))
+    print(json.dumps(payload_to_print["user_profile"], indent=2))
 
     print("\n================ ANGLES ================")
-    for name, data in payload["angles"].items():
+    for name, data in payload_to_print["angles"].items():
         print(f"{name:12} | {data['formatted']:18} | {data['longitude']}")
 
     print("\n================ HOUSES ================")
-    for name, data in payload["houses"].items():
+    for name, data in payload_to_print["houses"].items():
         print(f"{name:8} | {data['formatted']:18} | {data['longitude']}")
 
     print("\n================ STANDARD PLANETS ================")
-    for name, data in payload["standard_planets"].items():
+    for name, data in payload_to_print["standard_planets"].items():
         rx = "Rx" if data["retrograde"] else "Direct"
         print(
             f"{name:12} | {data['formatted']:18} | "
@@ -376,7 +415,7 @@ def print_backend_chart_data(payload: dict):
         )
 
     print("\n================ CUSTOM ASTEROIDS ================")
-    for name, data in payload["custom_asteroids"].items():
+    for name, data in payload_to_print["custom_asteroids"].items():
         if data.get("error"):
             print(f"{name:14} | FAILED | {data['message']}")
             continue
@@ -388,18 +427,25 @@ def print_backend_chart_data(payload: dict):
         )
 
     print("\n================ ASPECTS ================")
-    for asp in payload["aspects"]:
+    for asp in payload_to_print["aspects"]:
         print(
             f"{asp['body_1']:14} {asp['aspect']:12} {asp['body_2']:14} "
             f"| Orb {asp['orb']:5} | Angle {asp['angle']}"
         )
 
 
-def save_backend_payload(payload: dict, filename="backend_payload_debug.json"):
+def save_backend_payload(
+    payload: dict,
+    filename="backend_payload_debug.json",
+    *,
+    redact_user_profile: bool = True,
+):
+    payload_to_write = _sanitize_payload_for_debug(payload) if redact_user_profile else payload
     with open(filename, "w", encoding="utf-8") as f:
-        json.dump(payload, f, indent=2, ensure_ascii=False)
+        json.dump(payload_to_write, f, indent=2, ensure_ascii=False)
 
-    print(f"\nSaved backend payload to: {filename}")
+    label = "sanitized backend payload" if redact_user_profile else "backend payload"
+    print(f"\nSaved {label} to: {filename}")
 
 
 # ============================================================

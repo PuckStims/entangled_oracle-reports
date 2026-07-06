@@ -163,7 +163,7 @@ def select_tier_block(report_type: str, block_file: str,
     Tries: archetype + tier, then archetype + 'fallback', then 'subtle'.
 
     Usage:
-        select_tier_block("asteroid_portrait", "foresight_pattern",
+        select_tier_block("soul_ecosystem", "foresight_pattern",
                           "Vindicated Oracle", "DOMINANT")
     """
     # Normalize tier to lowercase for JSON keys

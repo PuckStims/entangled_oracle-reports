@@ -43,7 +43,6 @@ class Phase8QualityAssuranceTests(unittest.TestCase):
                 "Soul Ecosystem",
                 "Horoscope",
                 "Simple DOB-only Horoscope",
-                "Asteroid Portrait",
             },
         )
 

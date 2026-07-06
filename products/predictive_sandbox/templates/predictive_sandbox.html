@@ -104,6 +104,59 @@
     .sb-card-value.warn { color: var(--ember); }
     .sb-card-value.none { color: var(--muted); }
 
+    /* ── Predictions preview ──────────────────── */
+    .sb-predictions-note {
+      color: var(--muted);
+      font-size: 11px;
+      font-style: italic;
+      margin-bottom: 16px;
+    }
+    .sb-prediction-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: 4px;
+      padding: 18px 22px;
+      margin-bottom: 16px;
+    }
+    .sb-prediction-dates {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+    .sb-prediction-dates .peak { color: var(--gold); font-weight: bold; }
+    .sb-prediction-title {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 17px;
+      font-weight: bold;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+    .sb-prediction-body {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 13.5px;
+      line-height: 1.7;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+    .sb-prediction-action {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 13px;
+      font-style: italic;
+      color: var(--blue);
+      border-top: 1px solid var(--border);
+      padding-top: 10px;
+    }
+    .sb-prediction-tags {
+      margin-top: 10px;
+      font-size: 10.5px;
+      color: var(--muted);
+      font-family: "Courier New", monospace;
+    }
+    .sb-prediction-tags span { margin-right: 14px; }
+
     /* ── Debug block ──────────────────────────── */
     .sb-debug {
       background: var(--surface);
@@ -209,6 +262,7 @@
 <!-- Nav -->
 <nav class="sb-nav">
   <a href="#summary">Summary</a>
+  <a href="#predictions">Predictions</a>
   <a href="#debug">Debug</a>
   <a href="#windows">Windows</a>
   <a href="#signals">Signals</a>
@@ -255,6 +309,38 @@
       <div class="sb-card-value" style="font-size:14px;">{{ palette_name }}</div>
     </div>
   </div>
+</div>
+
+<!-- ── Predictions Preview ──────────────────────── -->
+<div id="predictions" class="sb-section">
+  <div class="sb-section-title">Predictions Preview ({{ predictions | length }})</div>
+  <div class="sb-predictions-note">
+    Narrative synthesis of the windows below, via products/predictive_sandbox/blocks/predictive_window_blocks.json
+    (leading_index → gradient). Dev/QA preview only — validates that engine output resolves to a
+    coherent read before any consumer-facing wiring is considered.
+  </div>
+
+  {% if predictions %}
+  {% for p in predictions %}
+  <div class="sb-prediction-card">
+    <div class="sb-prediction-dates">
+      {{ p.start_date }} → <span class="peak">{{ p.peak_date }}</span> → {{ p.end_date }}
+      &nbsp;·&nbsp; {{ p.dimension_label }} ({{ p.dimension }}) &nbsp;·&nbsp; {{ p.gradient }}
+      &nbsp;·&nbsp; intensity {{ "%.2f" | format(p.total_intensity) }}
+    </div>
+    <div class="sb-prediction-title">{{ p.title }}</div>
+    <div class="sb-prediction-body">{{ p.body }}</div>
+    <div class="sb-prediction-action">{{ p.action }}</div>
+    {% if p.interpretive_tags %}
+    <div class="sb-prediction-tags">
+      {% for tag in p.interpretive_tags %}<span>#{{ tag }}</span>{% endfor %}
+    </div>
+    {% endif %}
+  </div>
+  {% endfor %}
+  {% else %}
+  <div class="sb-empty">No windows detected — no predictions to synthesize. Check debug section for errors.</div>
+  {% endif %}
 </div>
 
 <!-- ── Debug ──────────────────────────────────── -->

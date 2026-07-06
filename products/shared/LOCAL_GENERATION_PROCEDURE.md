@@ -51,7 +51,6 @@ Active report types:
 - `year_ahead`
 - `personal_forecast`
 - `soul_ecosystem`
-- `asteroid_portrait`
 
 Use `--simple` only for DOB-only horoscope generation.
 
@@ -74,7 +73,7 @@ Use `--content-pack` for forecast-style report voices:
 Current operational rule:
 
 - `year_ahead` and `personal_forecast` may use either content pack.
-- `horoscope`, `soul_ecosystem`, and `asteroid_portrait` use their report-local content libraries and should keep the default unless a controlled test specifically requires otherwise.
+- `horoscope` and `soul_ecosystem` use their report-local content libraries and should keep the default unless a controlled test specifically requires otherwise.
 
 ## Generation Command
 

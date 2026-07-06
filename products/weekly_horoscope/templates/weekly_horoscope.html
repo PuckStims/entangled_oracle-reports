@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weekly Horoscope · {{ querent_name }}</title>
+  <style>
+    :root {
+      --bg:        {{ palette.bg }};
+      --surface:   {{ palette.surface }};
+      --surface-2: {{ palette.surface_2 }};
+      --border:    {{ palette.border }};
+      --text:      {{ palette.text }};
+      --muted:     {{ palette.muted }};
+      --subtle:    {{ palette.subtle }};
+      --accent:    {{ palette.accent }};
+      --purple:    {{ palette.purple }};
+      --gold:      {{ palette.gold }};
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Georgia', serif;
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 40px 24px 60px;
+      line-height: 1.75;
+    }
+    header { text-align: center; margin-bottom: 36px; }
+    header .name {
+      font-size: 1.6rem;
+      color: var(--accent);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+    header .meta {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 6px;
+      letter-spacing: 1px;
+    }
+    hr { border: none; border-top: 1px solid var(--border); margin: 28px 0; }
+    .section { margin-bottom: 28px; }
+    .section-label {
+      font-size: 0.68rem;
+      color: var(--muted);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .moment {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--purple);
+      border-radius: 6px;
+      padding: 14px 18px;
+      margin-bottom: 12px;
+    }
+    .moment-when {
+      font-size: 0.78rem;
+      color: var(--gold);
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+    }
+    .moment-what {
+      font-size: 0.95rem;
+      color: var(--text);
+    }
+    .moment-meta {
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+    .empty-state {
+      font-size: 0.85rem;
+      color: var(--muted);
+      font-style: italic;
+    }
+    footer {
+      text-align: center;
+      font-size: 0.68rem;
+      color: #444;
+      margin-top: 48px;
+      letter-spacing: 1px;
+    }
+  </style>
+</head>
+<body data-palette="{{ palette_name | default('vibrant') }}">
+
+  <header>
+    <div class="name">{{ querent_name }}</div>
+    <div class="meta">{{ week_start_display }} &ndash; {{ week_end_display }}</div>
+    <div class="meta" style="margin-top:4px;">Weekly Horoscope · Entangled Oracle</div>
+    {% if simple_mode %}
+    <div class="meta" style="margin-top:4px;">Simple mode &mdash; birth time not provided</div>
+    {% endif %}
+  </header>
+
+  <!-- Your Week's Timeline -->
+  <div class="section">
+    <div class="section-label">Your Week's Timeline</div>
+    {% if weekly_timeline %}
+      {% for moment in weekly_timeline %}
+      <div class="moment">
+        <div class="moment-when">{{ moment.day_label }}{% if moment.time_label %} · {{ moment.time_label }}{% endif %}</div>
+        <div class="moment-what">{{ moment.transit_planet }} {{ moment.aspect }} {{ moment.natal_target_display or ('your ' ~ moment.natal_target) }}</div>
+        <div class="moment-meta">House {{ moment.natal_house }} · {{ moment.aspect_character }}</div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <div class="empty-state">No standout moments detected for this week.</div>
+    {% endif %}
+  </div>
+
+  <footer>
+    Entangled Oracle · Ksisti-Puck LLC<br>
+    Generated {{ generation_date }}
+  </footer>
+
+</body>
+</html>
