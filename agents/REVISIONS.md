@@ -5,6 +5,34 @@ Newest entry on top. See `agents/README.md` for the convention.
 
 ---
 
+## 2026-07-07 - Phase 2 sidecar body-classification blocker fixed (Codex / GPT-5)
+
+**Context:** Before Phase 3 implementation, Claude flagged
+`PHASE2_SIDECAR_BODY_CLASSIFICATION_FINDING.md` as a hard blocker:
+the Phase 2 sidecar writer classified any body outside the known
+planet/node/angle lists as `"asteroid"`, which would corrupt eclipse
+labels such as `Solar`/`Lunar`, calculated points such as `Lilith_BML`,
+and Phase 3's all-asteroid accounting.
+
+**Fix:** `engine/predictive_sidecar.py` now derives asteroid identity
+from the actual `payload["custom_asteroids"]` key set. Unknown labels
+remain `"unknown"`, `Lilith_BML` is treated as a calculated point, and
+real custom asteroid keys still receive asteroid participants,
+asteroid specificity, diagnostics counts, and sidecar surface
+visibility. The sidecar contract version was bumped to `phase0.1.1`
+while individual `ForecastEvent` and `PredictiveSignal` object schema
+versions remain `phase0.1.0`, matching the refreshed phase0 contracts.
+
+**Verification:** all of the following passed:
+
+```powershell
+python -m py_compile engine\predictive_sidecar.py tests\test_phase2_predictive_sidecar.py
+python -m unittest tests.test_phase2_predictive_sidecar
+$env:PYTHONPATH='C:\entangled_oracle\.venv\Lib\site-packages'; python -m unittest tests.test_phase1_client_forecast_adequacy tests.test_phase2_predictive_sidecar
+```
+
+---
+
 ## 2026-07-07 - Phase 3 asteroid registry review, before Codex implementation: phase0.1.0 -> phase0.1.1 (Claude / Sonnet 5)
 
 **Context:** Ahead of handing Codex the Phase 3 prompt, the operator

@@ -283,6 +283,26 @@ def generate_report(
 
     print(f"[Done] Report saved: {os.path.basename(output_path)}")
     print(f"[Done] Manifest saved: {os.path.basename(manifest_path)}")
+
+    if report_type in ("year_ahead", "personal_forecast", "predictive_sandbox"):
+        try:
+            from engine.predictive_sidecar import write_predictive_sidecar_for_report
+            sidecar_path = write_predictive_sidecar_for_report(
+                output_path=output_path,
+                report_type=report_type,
+                birth_data=birth_data,
+                payload=payload,
+                predictive_results=predictive_results,
+                report_start=report_start,
+                report_end=report_end,
+                engine_command=" ".join(sys.argv),
+            )
+            print(f"[Done] Predictive sidecar saved: {os.path.basename(sidecar_path)}")
+            if _stdout_report_paths_enabled():
+                print(f"[Done] Predictive sidecar path: {sidecar_path}")
+        except Exception as sidecar_error:
+            print(f"[PredictiveSidecar] Skipped (non-fatal): {sidecar_error}")
+
     if _stdout_report_paths_enabled():
         print(f"[Done] Report path: {output_path}")
         print(f"[Done] Manifest path: {manifest_path}")
