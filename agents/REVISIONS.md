@@ -5,6 +5,24 @@ Newest entry on top. See `agents/README.md` for the convention.
 
 ---
 
+## 2026-07-08 - Phase 5 method-charter review, before Codex implementation: phase0.1.1 -> phase0.1.2 (Claude / Sonnet 5)
+
+**Context:** Ahead of Codex's Phase 5 (Solar Arc + Secondary
+Progressions), Claude's method-charter review found C2 and C3 both
+state a blanket orb/aspect policy without flagging that asteroid
+contacts should defer to the registry's tighter per-tier values
+instead (anchor tier: same 1.0° orb but conjunction-only for Solar
+Arc; 0.5° orb, tighter than the 1.0° body-to-body ceiling, for
+Progressions). Without that note, an implementer could reasonably
+apply the wider blanket rule to asteroids too, understating the
+intended precision bar for asteroid-based predictive claims. Fixed
+in both C2 §5 and C3 §5 with a one-line precedence rule pointing at
+`phase0/02_asteroid_predictive_registry.json`.
+
+**Files changed:** `phase0/03_method_charters.md`.
+
+---
+
 ## 2026-07-08 - Phase 4 method-charter review, before Codex implementation: phase0.1.0 -> phase0.1.1 (Claude / Sonnet 5)
 
 **Context:** Ahead of the operator prompting Codex for Phase 4 (Returns

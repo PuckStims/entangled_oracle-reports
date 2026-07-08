@@ -2,8 +2,8 @@
 
 Program: [EO_PREDICTIVE_ARCHITECTURE_PROGRAM.md](../EO_PREDICTIVE_ARCHITECTURE_PROGRAM.md)
 Status: charter (Phase 0, operator-approved). No implementation permitted until sign-off.
-Version: `phase0.1.1`
-Date: 2026-07-07 (patched same day, before Phase 4 implementation began, per Phase 4 Claude method-charter review: fixed a load-bearing gap in C1 Returns, C4 Annual Profections, and C5b Zodiacal Releasing where none specified a value for `phase0/01_predictive_object_schemas.md` §2's hard `orb`/`distance`/`phase` requirement — every emitted event from these three charters would otherwise have been rejected as malformed by the sidecar writer. Also clarified the C1 Return-chapter vs. `ChapterState` layering, the C1 secondary-body independence-group fallback, and the C4 time-lord ruler lookup table's zodiacal-order framing. See `phase0.1.0` → `phase0.1.1` diff in `agents/REVISIONS.md`.
+Version: `phase0.1.2`
+Date: 2026-07-08 (patched again, before Phase 5 implementation began, per Phase 5 Claude method-charter review: clarified that C2 Solar Arc's and C3 Progressions' blanket orb/aspect policies are a ceiling for planet/angle contacts only — asteroid-source contacts always defer to the registry's tighter per-tier `orb_policy_by_clock`/`allowed_aspects_by_clock` values instead, by deliberate design, not by omission. 2026-07-07 patch, before Phase 4: fixed a load-bearing gap in C1 Returns, C4 Annual Profections, and C5b Zodiacal Releasing where none specified a value for `phase0/01_predictive_object_schemas.md` §2's hard `orb`/`distance`/`phase` requirement — every emitted event from these three charters would otherwise have been rejected as malformed by the sidecar writer. Also clarified the C1 Return-chapter vs. `ChapterState` layering, the C1 secondary-body independence-group fallback, and the C4 time-lord ruler lookup table's zodiacal-order framing. See `agents/REVISIONS.md` for both diffs.
 
 One charter per active clock family or planned clock family. Each charter specifies the exact answer to twelve required questions:
 
@@ -133,6 +133,7 @@ Charters are ordered by build sequence per the program (Phase 4 → Phase 6).
 - Solar Arc orb: **1.0° maximum**, tighter than transit orbs because Solar Arc is a symbolic uniform-motion technique with high precision expectations.
 - Applicable aspects: `Conjunction`, `Sextile`, `Square`, `Trine`, `Opposition`. Minor aspects deferred.
 - Event window: entry when `orb ≤ 1.0`; exact when `orb ≤ 0.05`; exit when `orb > 1.0` on the outgoing side.
+- **This 1.0° / five-aspect policy is the ceiling for planet/angle contacts. Asteroid-source or asteroid-target contacts always defer to `phase0/02_asteroid_predictive_registry.json`'s `orb_policy_by_clock.solar_arc` and `allowed_aspects_by_clock.solar_arc` for the relevant tier instead** (anchor tier: 1.0° orb, conjunction-only — narrower on aspect, same on orb). This is a deliberate design choice: asteroid-based predictive claims carry a higher precision bar than planet/angle contacts, not an inconsistency to reconcile toward the wider blanket rule.
 
 ### 6. Output shape
 
@@ -211,6 +212,7 @@ Charters are ordered by build sequence per the program (Phase 4 → Phase 6).
 - **1.0° maximum** for progressed body → natal body contacts.
 - **0.5° maximum** for contacts involving progressed or natal angles.
 - Applicable aspects: `Conjunction`, `Square`, `Trine`, `Opposition`, `Sextile`.
+- **These are the ceiling for planet/angle contacts. Asteroid-source contacts always defer to `phase0/02_asteroid_predictive_registry.json`'s `orb_policy_by_clock.progression` and `allowed_aspects_by_clock.progression` for the relevant tier instead** (anchor tier: 0.5° orb, conjunction-only — tighter than the 1.0° body-to-body ceiling, matching the angle-involving precision level, deliberately). Same design rationale as C2 §5: asteroid claims carry a higher precision bar, not an inconsistency.
 
 ### 6. Output shape
 
