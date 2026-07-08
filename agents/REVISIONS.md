@@ -5,6 +5,60 @@ Newest entry on top. See `agents/README.md` for the convention.
 
 ---
 
+## 2026-07-08 - Phase 9b report-integration live-verification (Claude / Sonnet 5)
+
+**Context:** Standard post-Codex verification of Phase 9b — the one
+authorized report-facing slice in this program. Read every changed file
+(`generate.py`, both templates, the sidecar addition, all four `phase0/`
+version bumps) before running anything, then ran the full regression
+suite, then independently generated real Year Ahead and Personal Forecast
+reports and inspected the rendered HTML directly, not just Codex's own
+closeout claims.
+
+**What was checked and confirmed correct:**
+
+- `generate.py` builds `predictive_sidecar_payload` once in memory (via
+  `build_predictive_sidecar()`) and both the template context and the
+  written `.eo_predictive.json` (via the new
+  `write_predictive_sidecar_payload()`) consume that same object — no
+  duplicated scoring logic, no re-parsing the written file, exactly as
+  Phase 9b's charter required.
+- `_build_predictive_report_surface()` / `_format_predictive_chapter()` /
+  `_format_predictive_candidate()` read `chapter_summary_score`,
+  `coherence`, `counterforce`, `complexity`, `confidence`, and full
+  `component_scores` straight from the sidecar's own `ChapterState` /
+  `MicroCandidate` objects — confirmed no new, separately-invented display
+  score exists anywhere in this diff.
+- `_build_predictive_report_surface` is called from exactly two places
+  (`_build_personal_forecast_context`, `_build_year_ahead_context`) —
+  confirmed by grep that Daily Horoscope, Weekly Horoscope, Soul
+  Ecosystem, and `predictive_sandbox` context builders do not call it at
+  all, matching the "Year Ahead and Personal Forecast only" scope.
+- Generated a real Year Ahead report and a real Personal Forecast report
+  independently (not reusing Codex's `tmp/` output) and read the rendered
+  HTML directly: both contain the "Predictive / experimental" labeled
+  section and the required hedged language ("not a settled prediction or
+  an outcome claim," "not a promise of an external event"), with the
+  component-score detail block present and populated (not collapsed
+  away). Cross-checked one specific rendered card against that same
+  report's own sidecar rather than trusting the render alone: the first
+  Personal Forecast candidate card ("Research-flagged window - Aug 28,
+  2026," convergence score `0.7401`) matches sidecar candidate
+  `cand_04db68ba` (`peak_at: 2026-08-28`, `convergence_score: 0.7401`)
+  exactly — confirming the template is reading real per-candidate sidecar
+  data, not a placeholder or a value common to every card (`0.7401`
+  recurs across several distinct candidates in this sidecar, so this
+  also confirmed it wasn't a coincidental match).
+- Confirmed the `phase0/01`, `02`, `03`, `04` version bumps are pure
+  `report_surface_visibility` documentation updates consistent with the
+  2026-07-08 operator decision — no new fields, no new methods, no
+  scoring-rule changes hiding inside the visibility-language edits.
+
+**No bugs found this pass.** Full phase 1-9b regression suite (60 tests)
+passes.
+
+---
+
 ## 2026-07-08 - Phase 9 harness live-verification, plus a leftover six-day-cap charter bug found and fixed (Claude / Sonnet 5)
 
 **Context:** Standard post-Codex verification of the Phase 9 validation
@@ -62,6 +116,73 @@ ledgers are never written during normal report generation, matching
 §1's "outcomes live outside the generation artifact."
 
 **Verification:** Full phase 1-9 regression suite (58 tests) passes.
+
+---
+
+## 2026-07-08 - Phase 9b report integration implementation (Codex / GPT-5)
+
+**Context:** Operator asked Codex to implement Phase 9b after Phase 9's
+validation harness landed. This is the one authorized report-facing slice
+in the predictive architecture program: expose already-built
+`ChapterState` / `MicroCandidate` evidence in Year Ahead and Personal
+Forecast, framed as predictive/experimental, while preserving the Phase 9
+validation harness as the outcome-tracking layer.
+
+**What changed:**
+
+- Updated generation flow so `build_predictive_sidecar()` runs once before
+  report context rendering for Year Ahead, Personal Forecast, and
+  Predictive Sandbox. The resulting in-memory sidecar feeds templates and
+  is then written unchanged after HTML render, keeping rendered modules and
+  `.eo_predictive.json` synchronized without re-parsing the written file.
+- Added `write_predictive_sidecar_payload()` in
+  `engine/predictive_sidecar.py` for writing the already-built sidecar.
+- Added `generate.py` Phase 9b report-surface formatting:
+  - Year Ahead receives chapter cards only;
+  - Personal Forecast receives chapter cards plus research-flagged
+    candidate-window cards;
+  - component score details remain present in expandable detail data;
+  - visible prose uses "flags," "research prompt," "observation," and
+    "not a settled prediction/outcome claim" framing.
+- Added additive template sections:
+  - `products/year_ahead/templates/active/year_ahead.html`: Predictive /
+    experimental chapter module after Forecast Climate.
+  - `products/personal_forecast/templates/personal_forecast.html`:
+    Predictive / Experimental Layer with chapters and candidate windows.
+- Updated Phase 0 report-surface visibility contracts:
+  `phase0/01_predictive_object_schemas.md` `phase0.1.2 -> phase0.1.3`,
+  `phase0/02_asteroid_predictive_registry.json`
+  `phase0.1.1 -> phase0.1.2`,
+  `phase0/03_method_charters.md` `phase0.1.3 -> phase0.1.4`, and
+  `phase0/04_convergence_and_candidate_protocol.md`
+  `phase0.1.2 -> phase0.1.3`.
+- Added `tests/test_phase9b_report_surface.py` for report-type gating and
+  component-score retention.
+- Updated the Phase 3 asteroid registry test for the intentional
+  `phase0.1.2` registry version bump.
+
+**Verification:**
+
+- `python -m py_compile generate.py engine\predictive_sidecar.py tests\test_phase9b_report_surface.py`
+- `$env:PYTHONPATH='C:\entangled_oracle\.venv\Lib\site-packages'; python -m unittest tests.test_phase9b_report_surface`
+- `$env:PYTHONPATH='C:\entangled_oracle\.venv\Lib\site-packages'; python -m unittest tests.test_phase2_predictive_sidecar tests.test_phase3_asteroid_predictive_activation tests.test_phase4_returns_profections tests.test_phase5_solar_arc_progressions tests.test_phase6_lots_zodiacal_releasing tests.test_phase7_natal_promise_convergence tests.test_phase8_candidates tests.test_phase9_validation_harness tests.test_phase9b_report_surface`
+- Real Year Ahead run:
+  `python .\generate.py year_ahead --name "Phase Nine B" --date 1990-01-01 --time 12:00 --location "Peoria, Illinois, USA" --report-date 2026-01-01 --output-dir tmp\phase9b_real --output-filename phase9b_year.html --no-browser`
+- Real Personal Forecast run:
+  `python .\generate.py personal_forecast --name "Phase Nine B" --date 1990-01-01 --time 12:00 --location "Peoria, Illinois, USA" --report-date 2026-01-01 --output-dir tmp\phase9b_real --output-filename phase9b_personal.html --no-browser`
+- Rendered HTML inspection confirmed:
+  - Year Ahead contains "Predictive / experimental layer," "Emerging
+    Chapters Flagged by the Research Engine," and "not a settled
+    prediction or an outcome claim."
+  - Personal Forecast contains "Predictive / Experimental Layer,"
+    "Research-flagged window," "Component detail," and "not a promise of
+    an external event."
+
+**Boundary notes:** Phase 9b does not touch Daily Horoscope, Weekly
+Horoscope, or Soul Ecosystem prose. It does not add methods, retune
+scores, read rendered HTML as validation input, or present candidates as
+settled predictions. Candidate cards are restricted to Personal Forecast;
+Year Ahead surfaces chapters only.
 
 ---
 

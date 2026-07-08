@@ -79,6 +79,13 @@ def write_predictive_sidecar_for_report(
     return sidecar_path
 
 
+def write_predictive_sidecar_payload(*, output_path: str, sidecar: dict) -> str:
+    """Write an already-built predictive sidecar next to the rendered report."""
+    sidecar_path = _sidecar_path_for_output(output_path)
+    write_json(sidecar_path, _json_safe(sidecar))
+    return sidecar_path
+
+
 def build_predictive_sidecar(
     *,
     report_type: str,

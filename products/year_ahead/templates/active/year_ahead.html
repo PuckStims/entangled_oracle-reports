@@ -929,6 +929,90 @@
       font-size: .76rem;
       line-height: 1.55;
     }
+    .predictive-research-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .predictive-research-card {
+      padding: 18px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--surface);
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+    .predictive-research-kicker {
+      margin: 0 0 8px;
+      color: var(--muted);
+      font-size: .61rem;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+    }
+    .predictive-research-card h3 {
+      margin: 0 0 10px;
+      color: var(--text);
+      font-size: 1rem;
+      line-height: 1.4;
+    }
+    .predictive-research-card p {
+      margin: 0 0 12px;
+      color: var(--text);
+      font-size: .84rem;
+      line-height: 1.65;
+    }
+    .predictive-research-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 10px 0;
+    }
+    .predictive-research-meta span {
+      padding: 4px 8px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      color: var(--muted);
+      font-size: .59rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      line-height: 1.35;
+    }
+    .predictive-research-details {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: .75rem;
+    }
+    .predictive-research-details summary {
+      cursor: pointer;
+      color: var(--accent);
+      font-size: .59rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+    .predictive-research-scores {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 7px;
+      margin-top: 10px;
+    }
+    .predictive-research-scores div {
+      padding-top: 7px;
+      border-top: 1px dotted var(--border);
+    }
+    .predictive-research-scores span {
+      display: block;
+      color: var(--muted);
+      font-size: .56rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .predictive-research-scores strong {
+      display: block;
+      margin-top: 4px;
+      color: var(--text);
+      font-size: .78rem;
+      font-weight: normal;
+    }
     .section-note { margin:14px 2px 0; color:var(--muted); font-size:.76rem; font-style:italic; }
     .arc-story-grid { display:grid; grid-template-columns:1fr; gap:20px; align-items:start; padding-top:2px; }
     .arc-story {
@@ -1099,8 +1183,8 @@
     .notes-space { margin-top:18px; padding:18px; border:1px solid var(--border); border-radius:10px; background:var(--surface); }
     .notes-space h3 { margin:0 0 10px; font-size:.95rem; }
     .notes-space .reflection-lines { height:180px; }
-    @media (max-width: 800px) { .record-grid,.season-grid,.season-summary-grid,.month-guidance-grid,.month-guidance-layout,.characteristics-grid,.forecast-climate-list,.forecast-climate-pair,.climate-highlight-grid,.turning-guide-timeline { grid-template-columns:repeat(2,minmax(0,1fr)); } .integrity-panel,.characteristics-strip,.orientation-card-grid,.turning-guide-item-meta,.month-opening-flow,.month-opener-body,.arc-story-layout { grid-template-columns:1fr; } .arc-story-grid { grid-template-columns:1fr; } .orientation-notes { grid-template-columns:1fr; } .annual-rhythm-bands,.annual-rhythm-months { grid-template-columns:repeat(6,minmax(0,1fr)); } .annual-rhythm-band { grid-column:span 3; } .ledger-table, .structure-note-table { table-layout:auto; } }
-    @media (max-width: 560px) { .record-grid,.reader-principles,.forecast-climate-list,.forecast-climate-pair,.season-grid,.appendix-grid,.reflection-grid,.season-summary-grid,.month-guidance-grid,.month-guidance-layout,.characteristics-grid,.turning-guide-item-meta,.climate-highlight-grid,.annual-rhythm-bands,.annual-rhythm-months,.turning-guide-timeline { grid-template-columns:1fr; } .reader-principles article:nth-child(odd) { border-right:0; } .orientation-layout { grid-template-columns:1fr; } .integrity-list { grid-template-columns:1fr; } .turning-guide-item-top,.turning-guide-month-head { grid-template-columns:1fr; } .climate-field-header { display:block; } .climate-field-status { margin-top:6px; text-align:left; white-space:normal; } .annual-rhythm-band { grid-column:auto; } .ledger-table, .structure-note-table { table-layout:auto; } }
+    @media (max-width: 800px) { .record-grid,.season-grid,.season-summary-grid,.month-guidance-grid,.month-guidance-layout,.characteristics-grid,.forecast-climate-list,.forecast-climate-pair,.climate-highlight-grid,.predictive-research-grid,.turning-guide-timeline { grid-template-columns:repeat(2,minmax(0,1fr)); } .integrity-panel,.characteristics-strip,.orientation-card-grid,.turning-guide-item-meta,.month-opening-flow,.month-opener-body,.arc-story-layout { grid-template-columns:1fr; } .arc-story-grid { grid-template-columns:1fr; } .orientation-notes { grid-template-columns:1fr; } .annual-rhythm-bands,.annual-rhythm-months { grid-template-columns:repeat(6,minmax(0,1fr)); } .annual-rhythm-band { grid-column:span 3; } .ledger-table, .structure-note-table { table-layout:auto; } }
+    @media (max-width: 560px) { .record-grid,.reader-principles,.forecast-climate-list,.forecast-climate-pair,.season-grid,.appendix-grid,.reflection-grid,.season-summary-grid,.month-guidance-grid,.month-guidance-layout,.characteristics-grid,.turning-guide-item-meta,.climate-highlight-grid,.predictive-research-grid,.annual-rhythm-bands,.annual-rhythm-months,.turning-guide-timeline { grid-template-columns:1fr; } .reader-principles article:nth-child(odd) { border-right:0; } .orientation-layout { grid-template-columns:1fr; } .integrity-list { grid-template-columns:1fr; } .turning-guide-item-top,.turning-guide-month-head { grid-template-columns:1fr; } .climate-field-header { display:block; } .climate-field-status { margin-top:6px; text-align:left; white-space:normal; } .annual-rhythm-band { grid-column:auto; } .ledger-table, .structure-note-table { table-layout:auto; } }
     /* ══════════════════════════════════════════════════════════════════
        PRINT / PDF LAYOUT — single authoritative @media print block.
        Consolidated from three previously overlapping blocks ("PDF print
@@ -1905,6 +1989,42 @@
         </div>
         <p class="section-note">These field qualities organize the recurring conditions already visible across the report's retained annual event set.</p>
       </section>
+
+      {% if predictive_report_surface and predictive_report_surface.enabled and predictive_report_surface.chapters %}
+      <section class="section" id="predictive-research-layer">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">Predictive / experimental layer</p>
+            <h2>Emerging Chapters Flagged by the Research Engine</h2>
+            <p class="section-subtitle">Coherent timing patterns drawn from the same sidecar evidence used for validation, shown as research signals rather than settled outcomes.</p>
+          </div>
+        </div>
+        <p class="forecast-climate-intro">{{ predictive_report_surface.framing }}</p>
+        <div class="predictive-research-grid">
+          {% for chapter in predictive_report_surface.chapters %}
+          <article class="predictive-research-card">
+            <p class="predictive-research-kicker">{{ chapter.window_label }}</p>
+            <h3>{{ chapter.title }}</h3>
+            <p>{{ chapter.summary }}</p>
+            <div class="predictive-research-meta">
+              {% for domain in chapter.domains[:2] %}<span>{{ domain }}</span>{% endfor %}
+              {% for clock in chapter.active_long_clocks[:2] %}<span>{{ clock }}</span>{% endfor %}
+              <span>{{ chapter.contributing_signal_count }} signal{{ 's' if chapter.contributing_signal_count != 1 else '' }}</span>
+            </div>
+            <details class="predictive-research-details">
+              <summary>Component detail</summary>
+              <div class="predictive-research-scores">
+                {% for key, value in chapter.component_scores.items() %}
+                <div><span>{{ key | replace('_', ' ') }}</span><strong>{{ value }}</strong></div>
+                {% endfor %}
+              </div>
+            </details>
+          </article>
+          {% endfor %}
+        </div>
+        <p class="section-note">These chapters are exposed now under the Phase 9b decision and are tracked alongside the Phase 9 validation harness.</p>
+      </section>
+      {% endif %}
 
       <!-- VII. YEAR ARCS -->
       <section class="section" id="year-arcs">

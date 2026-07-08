@@ -2,7 +2,7 @@
 
 Program: [EO_PREDICTIVE_ARCHITECTURE_PROGRAM.md](../EO_PREDICTIVE_ARCHITECTURE_PROGRAM.md)
 Status: charter (Phase 0, operator-approved). No implementation permitted until sign-off.
-Version: `phase0.1.3`
+Version: `phase0.1.4`
 Date: 2026-07-08 (patched again, before Phase 5 implementation began, per Phase 5 Claude method-charter review: clarified that C2 Solar Arc's and C3 Progressions' blanket orb/aspect policies are a ceiling for planet/angle contacts only — asteroid-source contacts always defer to the registry's tighter per-tier `orb_policy_by_clock`/`allowed_aspects_by_clock` values instead, by deliberate design, not by omission. 2026-07-07 patch, before Phase 4: fixed a load-bearing gap in C1 Returns, C4 Annual Profections, and C5b Zodiacal Releasing where none specified a value for `phase0/01_predictive_object_schemas.md` §2's hard `orb`/`distance`/`phase` requirement — every emitted event from these three charters would otherwise have been rejected as malformed by the sidecar writer. Also clarified the C1 Return-chapter vs. `ChapterState` layering, the C1 secondary-body independence-group fallback, and the C4 time-lord ruler lookup table's zodiacal-order framing. See `agents/REVISIONS.md` for both diffs. Patched again 2026-07-08: this file's "Phase 10 may promote..." notes (C1 solar-return chapter, C4 annual profection) are superseded — operator decision folded that promotion into Phase 9b, see `EO_UPGRADE_PHASES_1_9_AGENT_PROMPTS.md` and `04_convergence_and_candidate_protocol.md` §10.
 
 One charter per active clock family or planned clock family. Each charter specifies the exact answer to twelve required questions:
@@ -90,8 +90,8 @@ Charters are ordered by build sequence per the program (Phase 4 → Phase 6).
 
 ### 11. Report-surface policy
 
-- Phase 4: `[internal_rd, predictive_sandbox]` only.
-- Phase 10 may promote solar-return chapter to `year_ahead_appendix` under explicit governance approval.
+- Phase 4 baseline: `[internal_rd, predictive_sandbox]`.
+- Under the 2026-07-08 Phase 9b operator decision, return-derived ChapterState evidence may contribute to `year_ahead_appendix` and `personal_forecast_context` when framed as predictive/experimental content.
 
 ### 12. Validation rule
 
@@ -317,8 +317,8 @@ Charters are ordered by build sequence per the program (Phase 4 → Phase 6).
 
 ### 11. Report-surface policy
 
-- Phase 4: `[internal_rd, predictive_sandbox]`.
-- Phase 10 may promote annual profection to Year Ahead as a "yearly focus" module.
+- Phase 4 baseline: `[internal_rd, predictive_sandbox]`.
+- Under the 2026-07-08 Phase 9b operator decision, annual profection and time-lord ChapterState evidence may contribute to `year_ahead_appendix` and `personal_forecast_context` when framed as predictive/experimental content.
 
 ### 12. Validation rule
 

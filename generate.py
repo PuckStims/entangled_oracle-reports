@@ -243,6 +243,22 @@ def generate_report(
         except Exception as _pe_err:
             print(f"[Predictive] Skipped (non-fatal): {_pe_err}")
     variables["predictive_results"] = predictive_results
+    predictive_sidecar_payload = None
+    if report_type in ("year_ahead", "personal_forecast", "predictive_sandbox"):
+        try:
+            from engine.predictive_sidecar import build_predictive_sidecar
+            predictive_sidecar_payload = build_predictive_sidecar(
+                report_type=report_type,
+                birth_data=birth_data,
+                payload=payload,
+                predictive_results=predictive_results,
+                report_start=report_start,
+                report_end=report_end,
+                engine_command=" ".join(sys.argv),
+            )
+        except Exception as _psc_err:
+            print(f"[PredictiveSidecar] Preview skipped (non-fatal): {_psc_err}")
+    variables["predictive_sidecar"] = predictive_sidecar_payload or {}
 
     _log_verbose("[Blocks] Selecting...")
     context = build_report_context(
@@ -286,17 +302,23 @@ def generate_report(
 
     if report_type in ("year_ahead", "personal_forecast", "predictive_sandbox"):
         try:
-            from engine.predictive_sidecar import write_predictive_sidecar_for_report
-            sidecar_path = write_predictive_sidecar_for_report(
-                output_path=output_path,
-                report_type=report_type,
-                birth_data=birth_data,
-                payload=payload,
-                predictive_results=predictive_results,
-                report_start=report_start,
-                report_end=report_end,
-                engine_command=" ".join(sys.argv),
-            )
+            from engine.predictive_sidecar import write_predictive_sidecar_for_report, write_predictive_sidecar_payload
+            if predictive_sidecar_payload:
+                sidecar_path = write_predictive_sidecar_payload(
+                    output_path=output_path,
+                    sidecar=predictive_sidecar_payload,
+                )
+            else:
+                sidecar_path = write_predictive_sidecar_for_report(
+                    output_path=output_path,
+                    report_type=report_type,
+                    birth_data=birth_data,
+                    payload=payload,
+                    predictive_results=predictive_results,
+                    report_start=report_start,
+                    report_end=report_end,
+                    engine_command=" ".join(sys.argv),
+                )
             print(f"[Done] Predictive sidecar saved: {os.path.basename(sidecar_path)}")
             if _stdout_report_paths_enabled():
                 print(f"[Done] Predictive sidecar path: {sidecar_path}")
@@ -382,6 +404,169 @@ def build_report_context(
             "house_system": ctx.get("house_system", ""),
         }
     return ctx
+
+
+def _build_predictive_report_surface(sidecar: dict, report_type: str, *, max_chapters: int = 4, max_candidates: int = 4) -> dict:
+    """Prepare Phase 9b report-facing cards from already-built sidecar evidence."""
+    if not isinstance(sidecar, dict):
+        sidecar = {}
+    chapters = [
+        _format_predictive_chapter(chapter)
+        for chapter in (sidecar.get("chapters") or [])
+        if isinstance(chapter, dict)
+    ]
+    chapters = [chapter for chapter in chapters if chapter]
+    chapters.sort(
+        key=lambda item: (
+            -float(item.get("chapter_summary_score", 0.0) or 0.0),
+            item.get("start_at", ""),
+            item.get("chapter_id", ""),
+        )
+    )
+    candidates = []
+    if report_type == "personal_forecast":
+        candidates = [
+            _format_predictive_candidate(candidate)
+            for candidate in (sidecar.get("candidates") or [])
+            if isinstance(candidate, dict)
+        ]
+        candidates = [candidate for candidate in candidates if candidate]
+        candidates.sort(
+            key=lambda item: (
+                item.get("peak_at", ""),
+                -float(item.get("convergence_score", 0.0) or 0.0),
+                item.get("candidate_id", ""),
+            )
+        )
+    return {
+        "enabled": bool(chapters or candidates),
+        "report_type": report_type,
+        "label": "Predictive / experimental",
+        "framing": (
+            "This section surfaces the system's research layer for this report. "
+            "It flags coherent timing patterns for observation and later validation; "
+            "it is not a settled prediction or an outcome claim."
+        ),
+        "chapters": chapters[:max_chapters],
+        "candidates": candidates[:max_candidates],
+        "chapter_count": len(chapters),
+        "candidate_count": len(candidates),
+        "sidecar_report_run_id": (sidecar.get("report_run") or {}).get("report_run_id", ""),
+    }
+
+
+def _format_predictive_chapter(chapter: dict) -> dict:
+    chapter_id = str(chapter.get("chapter_id") or "")
+    start_at = _date_label_from_iso(chapter.get("start_at"))
+    end_at = _date_label_from_iso(chapter.get("end_at"))
+    domains = _display_list(chapter.get("domain_keys"), fallback=["forecast field"])
+    topics = _display_list(chapter.get("topic_keys"), fallback=["active pattern"])
+    clocks = _display_list(chapter.get("active_long_clocks"), fallback=[chapter.get("chapter_kind", "chapter")])
+    score = _rounded_display(chapter.get("chapter_summary_score", chapter.get("coherence", 0.0)))
+    return {
+        "chapter_id": chapter_id,
+        "title": _chapter_title(chapter, domains, clocks),
+        "window_label": _window_label(start_at, end_at),
+        "chapter_kind": _humanize_token(chapter.get("chapter_kind", "chapter")),
+        "domains": domains,
+        "topics": topics,
+        "active_long_clocks": clocks,
+        "summary": (
+            f"The research layer flags this as a coherent chapter around {', '.join(domains[:2])}. "
+            f"Its supporting clocks include {', '.join(clocks[:3])}, and its topic trail centers on {', '.join(topics[:3])}."
+        ),
+        "component_scores": {
+            "coherence": _rounded_display(chapter.get("coherence")),
+            "counterforce": _rounded_display(chapter.get("counterforce")),
+            "complexity": _rounded_display(chapter.get("complexity")),
+            "confidence": _rounded_display(chapter.get("confidence")),
+            "chapter_summary_score": score,
+        },
+        "birth_time_dependency": str(chapter.get("birth_time_dependency") or "none"),
+        "contributing_signal_count": len(chapter.get("contributing_signal_ids") or []),
+        "report_surface_visibility": chapter.get("report_surface_visibility") or [],
+        "raw": chapter,
+    }
+
+
+def _format_predictive_candidate(candidate: dict) -> dict:
+    candidate_id = str(candidate.get("candidate_id") or "")
+    start_at = _date_label_from_iso(candidate.get("start_at"))
+    peak_at = _date_label_from_iso(candidate.get("peak_at"))
+    end_at = _date_label_from_iso(candidate.get("end_at"))
+    domains = _display_list(candidate.get("candidate_domain"), fallback=["forecast field"])
+    topics = _display_list(candidate.get("candidate_topic_keys"), fallback=["active pattern"])
+    families = _display_list(candidate.get("independent_method_families"), fallback=["method family"])
+    component_scores = candidate.get("component_scores") if isinstance(candidate.get("component_scores"), dict) else {}
+    return {
+        "candidate_id": candidate_id,
+        "title": f"Flagged window around {peak_at or start_at or 'this period'}",
+        "window_label": _window_label(start_at, end_at),
+        "peak_label": peak_at,
+        "domains": domains,
+        "topics": topics,
+        "independent_method_families": families,
+        "summary": (
+            f"The system flags this window for observation around {', '.join(domains[:2])}. "
+            f"It is supported by {len(families)} independent {'method family' if len(families) == 1 else 'method families'} "
+            f"and should be treated as a research prompt, not a promise of an external event."
+        ),
+        "convergence_score": _rounded_display(candidate.get("convergence_score")),
+        "counterforce": _rounded_display(candidate.get("counterforce")),
+        "complexity": _rounded_display(candidate.get("complexity")),
+        "confidence": _rounded_display(candidate.get("confidence")),
+        "component_scores": {
+            str(key): _rounded_display(value)
+            for key, value in component_scores.items()
+        },
+        "birth_time_dependency": str(candidate.get("birth_time_dependency") or "none"),
+        "candidate_status": str(candidate.get("candidate_status") or ""),
+        "pre_registered_at": _date_label_from_iso(candidate.get("pre_registered_at")),
+        "report_surface_visibility": candidate.get("report_surface_visibility") or [],
+        "raw": candidate,
+    }
+
+
+def _chapter_title(chapter: dict, domains: list[str], clocks: list[str]) -> str:
+    kind = _humanize_token(chapter.get("chapter_kind", "chapter"))
+    domain = domains[0] if domains else "forecast field"
+    clock = clocks[0] if clocks else "timing layer"
+    return f"{kind}: {domain} through {clock}"
+
+
+def _display_list(value, *, fallback: list[str] | None = None) -> list[str]:
+    fallback = fallback or []
+    if not isinstance(value, list):
+        return fallback
+    items = [_humanize_token(item) for item in value if str(item)]
+    return items or fallback
+
+
+def _humanize_token(value) -> str:
+    text = str(value or "").replace("_", " ").strip()
+    return text[:1].upper() + text[1:] if text else ""
+
+
+def _date_label_from_iso(value) -> str:
+    if not value:
+        return ""
+    try:
+        return datetime.fromisoformat(str(value).replace("Z", "+00:00")).strftime("%b %d, %Y")
+    except ValueError:
+        return str(value)[:10]
+
+
+def _window_label(start_at: str, end_at: str) -> str:
+    if start_at and end_at and start_at != end_at:
+        return f"{start_at} - {end_at}"
+    return start_at or end_at or "Window pending"
+
+
+def _rounded_display(value) -> float:
+    try:
+        return round(float(value), 4)
+    except (TypeError, ValueError):
+        return 0.0
 
 
 THEME_LABELS = {
@@ -1091,6 +1276,10 @@ def _build_personal_forecast_context(
         "palette_name":        _pf_palette_name,
         "palette":             _pf_palette,
         "predictive_results":  variables.get("predictive_results", {}),
+        "predictive_report_surface": _build_predictive_report_surface(
+            variables.get("predictive_sidecar", {}),
+            "personal_forecast",
+        ),
         "retrograde_cluster_active":  retrograde_cluster_active,
         "retrograde_cluster_tier":    retrograde_cluster_tier,
         "retrograde_cluster_planets": retrograde_cluster_planets,
@@ -7757,6 +7946,10 @@ def _build_year_ahead_context(
         "palette_name":       __ya_palette_name,
         "palette":            __ya_palette,
         "predictive_results": variables.get("predictive_results", {}),
+        "predictive_report_surface": _build_predictive_report_surface(
+            variables.get("predictive_sidecar", {}),
+            "year_ahead",
+        ),
         "report_version":     "Year Ahead v2.0",
         "show_landmark_visuals": SHOW_LANDMARK_VISUALS,
         "show_forecast_shape_visuals": SHOW_FORECAST_SHAPE_VISUALS,

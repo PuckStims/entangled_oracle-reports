@@ -17,7 +17,7 @@ class TestAsteroidPolicyRegistry(unittest.TestCase):
     def test_registry_loads_exactly_34_required_asteroids(self):
         policy = load_asteroid_policy()
 
-        self.assertEqual(policy.policy_version, "phase0.1.1")
+        self.assertEqual(policy.policy_version, "phase0.1.2")
         self.assertEqual(policy.asteroid_count, REQUIRED_ASTEROID_COUNT)
         self.assertEqual(len(set(policy.asteroid_names)), REQUIRED_ASTEROID_COUNT)
         self.assertIn("Kassandra", policy.asteroid_names)

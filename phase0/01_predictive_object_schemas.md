@@ -2,7 +2,7 @@
 
 Program: [EO_PREDICTIVE_ARCHITECTURE_PROGRAM.md](../EO_PREDICTIVE_ARCHITECTURE_PROGRAM.md)
 Status: charter (Phase 0, operator-approved). Contracts. No implementation.
-Version: `phase0.1.2`
+Version: `phase0.1.3`
 Date: 2026-07-07 (patched same day, before Phase 2 implementation began, per Phase 2 Claude contract-conformance review: added `NatalPromiseAnchor.natal_lots` and `TimeLordPeriod.report_surface_visibility` — see `phase0.1.0` → `phase0.1.1` diff in `agents/REVISIONS.md`). Patched again 2026-07-08: every "Phase 10" promotion gate below is superseded — operator decision folded that promotion into Phase 9b, see `EO_UPGRADE_PHASES_1_9_AGENT_PROMPTS.md` and `04_convergence_and_candidate_protocol.md` §10.
 
 Every predictive object below is defined at the field level: name, type, cardinality, semantics, and provenance rule. Every implementation in Phases 1–8 builds against these contracts. When a scanner cannot supply a required field it must record why in `calculation_trace.missing_fields`, not silently drop it.
@@ -105,7 +105,7 @@ The shared evidence-grade object every predictive clock emits. Transit engine ev
 
 - Every event carries **at least one** of `orb`, `distance`, or `phase`. An event with none of these is malformed and must be rejected by the sidecar writer.
 - `event_id` is deterministic given `(source_body, target_body, aspect_or_variant, peak_at, method_family)` inside a report run. Regenerating the same report produces the same IDs.
-- `activation_route = transit_to_asteroid` sets `report_surface_visibility` to a default of `[internal_rd, predictive_sandbox, soul_ecosystem]` — never `year_ahead` or `personal_forecast` unless a Phase 10 policy explicitly promotes it.
+- `activation_route = transit_to_asteroid` sets `report_surface_visibility` to a default of `[internal_rd, predictive_sandbox, soul_ecosystem]`; under the 2026-07-08 Phase 9b operator decision, sidecar-derived ChapterState and MicroCandidate report modules may surface asteroid-participating evidence in `year_ahead_appendix`, `personal_forecast_context`, or `discrete_candidate_surface` where that report type explicitly supports it.
 - The predictive engine must never *invent* fields beyond this schema. If an operation profile or semantic diagnostic is desired, it belongs on `PredictiveSignal` (§3), not on `ForecastEvent`.
 
 ---
@@ -192,7 +192,7 @@ A broad period generated from long clocks and sustained transit structures. Neve
 | `confidence_components` | `{str: float}` | 1 | |
 | `birth_time_dependency` | `str` | 1 | `none` / `soft` / `hard`. |
 | `chapter_summary_score` | `float` | 1 | Composite in `[0.0, 1.0]`. Non-opaque per component list above. |
-| `report_surface_visibility` | `[str]` | 0..n | Default `[internal_rd, predictive_sandbox]`. Year Ahead promotion is Phase 10. |
+| `report_surface_visibility` | `[str]` | 0..n | Default `[internal_rd, predictive_sandbox]`; under the 2026-07-08 Phase 9b operator decision, `year_ahead_appendix` and `personal_forecast_context` may consume ChapterState evidence when rendered as predictive/experimental content. |
 | `provenance` | `{...}` | 1 | Chapter-builder version, emission timestamp. |
 
 ### Rules
@@ -236,7 +236,7 @@ A narrow, prospectively generated candidate object for discrete-event research. 
 | `candidate_status` | `str` | 1 | One of: `pre_registered`, `active`, `expired`, `withheld`, `voided`. `pre_registered` is the state when the sidecar is first written. `voided` requires a documented reason (e.g. calculation error corrected). |
 | `pre_registered_at` | `datetime` | 1 | Sidecar-write timestamp for this candidate. This is *the* clock for the "no post-hoc shrinking" rule: the outcome ledger may not accept an outcome dated before `pre_registered_at`. |
 | `alternative_evidence` | `[str]` | 0..n | Signal or event IDs that were considered but did not enter the qualifying set. Retained for review. |
-| `report_surface_visibility` | `[str]` | 0..n | Default `[internal_rd]`. Phase 10 gates any promotion beyond that. |
+| `report_surface_visibility` | `[str]` | 0..n | Default `[internal_rd]`; under the 2026-07-08 Phase 9b operator decision, `personal_forecast_context` / `discrete_candidate_surface` may consume MicroCandidate evidence when rendered as predictive/experimental content. |
 | `provenance` | `{...}` | 1 | Candidate-builder version, emission timestamp. |
 
 ### Rules (hard)
@@ -275,7 +275,7 @@ Shared contract for profection years, zodiacal-releasing L1–L4 periods, and ot
 | `confidence` | `float` | 1 | |
 | `confidence_components` | `{str: float}` | 1 | |
 | `birth_time_dependency` | `str` | 1 | `none` for whole-sign profection; `hard` for degree-precise; `soft` for lot-based ZR. |
-| `report_surface_visibility` | `[str]` | 0..n | Same subset as `ForecastEvent.report_surface_visibility`. Default `[internal_rd, predictive_sandbox]`. Gates, per period, whether e.g. "current profected year" or "current ZR period" may surface in `year_ahead_appendix` — a decision the profections charter (`03_method_charters.md` §C4) explicitly anticipates for Phase 10 but which had no field to record until this addition. |
+| `report_surface_visibility` | `[str]` | 0..n | Same subset as `ForecastEvent.report_surface_visibility`. Default `[internal_rd, predictive_sandbox]`; under the 2026-07-08 Phase 9b operator decision, this field can also gate whether e.g. "current profected year" or "current ZR period" contributes to `year_ahead_appendix` / `personal_forecast_context` predictive modules. |
 | `formula_version` | `str` | 1 | |
 | `policy_version` | `str` | 1 | |
 | `provenance` | `{...}` | 1 | |
@@ -415,6 +415,6 @@ The adapter recommended in the Phase 0 → Phase 1 handoff is `formulas/report_s
 Added post-sign-off, same day, before Phase 2 implementation began (Phase 2 Claude contract-conformance review per `EO_UPGRADE_PHASES_1_9_AGENT_PROMPTS.md`):
 
 - `NatalPromiseAnchor.natal_lots` (§1) — no field previously existed to reference a chart's computed Lot positions from an anchor, unlike `natal_bodies`/`natal_asteroids`.
-- `TimeLordPeriod.report_surface_visibility` (§6) — every sibling evidence object had this field for client/report gating; `TimeLordPeriod` did not, despite the profections charter (`03_method_charters.md` §C4) anticipating a Phase 10 Year Ahead promotion decision this field is needed to gate.
+- `TimeLordPeriod.report_surface_visibility` (§6) — every sibling evidence object had this field for client/report gating; `TimeLordPeriod` did not, despite the profections charter (`03_method_charters.md` §C4) anticipating a report-surface promotion decision this field is needed to gate.
 
 Both fields default to safe values (`natal_lots` empty until Phase 6; `report_surface_visibility` defaulting to `[internal_rd, predictive_sandbox]`), so this patch does not change behavior for Phases 2–5 — it only closes a gap Phase 6 would otherwise have hit with nowhere defined to put required data.

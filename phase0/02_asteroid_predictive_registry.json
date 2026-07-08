@@ -1,9 +1,9 @@
 {
   "registry_metadata": {
-    "policy_version": "phase0.1.1",
+    "policy_version": "phase0.1.2",
     "generated_at": "2026-07-07",
-    "patched_at": "2026-07-07",
-    "patch_note": "phase0.1.0 -> phase0.1.1, Phase 3 Claude registry review before Codex implementation: (1) source_eligibility_override for Sirene and Themis changed from free-text condition strings to a structured {allowed_aspects, restricted_targets} shape so the policy API can do a direct membership check instead of parsing prose; (2) added forecast_event_normalization_guidance for proprietary-transit method_variant; see agents/REVISIONS.md for full diff.",
+    "patched_at": "2026-07-08",
+    "patch_note": "phase0.1.1 -> phase0.1.2, Phase 9b report-surface visibility update: asteroid-participating evidence may be consumed by Year Ahead / Personal Forecast predictive modules only through sidecar-derived ChapterState or MicroCandidate objects, framed as predictive/experimental content per agents/REVISIONS.md and EO_UPGRADE_PHASES_1_9_AGENT_PROMPTS.md.",
     "program_document": "EO_PREDICTIVE_ARCHITECTURE_PROGRAM.md",
     "narrative_companion": "phase0/02_asteroid_predictive_registry.md",
     "governing_rules": [
@@ -67,7 +67,7 @@
       "rulership_participation": false,
       "transit_speed_source_constraints": "actual_daily_motion_no_retrograde_orb_widening",
       "confidence_method_maturity_default": 0.75,
-      "report_surface_permissions": ["internal_rd", "predictive_sandbox", "soul_ecosystem"],
+      "report_surface_permissions": ["internal_rd", "predictive_sandbox", "soul_ecosystem", "year_ahead_appendix", "personal_forecast_context", "discrete_candidate_surface"],
       "validation_category": "primary_asteroid"
     },
     "elevated": {
@@ -111,7 +111,7 @@
       "rulership_participation": false,
       "transit_speed_source_constraints": "actual_daily_motion_no_retrograde_orb_widening",
       "confidence_method_maturity_default": 0.75,
-      "report_surface_permissions": ["internal_rd", "predictive_sandbox", "soul_ecosystem"],
+      "report_surface_permissions": ["internal_rd", "predictive_sandbox", "soul_ecosystem", "year_ahead_appendix", "personal_forecast_context", "discrete_candidate_surface"],
       "validation_category": "elevated_asteroid"
     },
     "contextual": {
@@ -155,7 +155,7 @@
       "rulership_participation": false,
       "transit_speed_source_constraints": "actual_daily_motion_no_retrograde_orb_widening",
       "confidence_method_maturity_default": 0.75,
-      "report_surface_permissions": ["internal_rd", "predictive_sandbox", "soul_ecosystem"],
+      "report_surface_permissions": ["internal_rd", "predictive_sandbox", "soul_ecosystem", "year_ahead_appendix", "personal_forecast_context", "discrete_candidate_surface"],
       "validation_category": "contextual_asteroid"
     }
   },

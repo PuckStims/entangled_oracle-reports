@@ -217,6 +217,103 @@
     .timing-table td:last-child { color: var(--muted); font-style: italic; font-size: 0.82rem; }
 
     /* ── Featured Transit ── */
+    .predictive-research-section {
+      margin-bottom: 8px;
+      padding: 28px;
+      border: 1px solid var(--border);
+      border-top: 2px solid var(--accent);
+      border-radius: 8px;
+      background: var(--surface);
+    }
+    .predictive-research-section .section-label { color: var(--accent); }
+    .predictive-research-note {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 0.86rem;
+      line-height: 1.65;
+    }
+    .predictive-card-list { display: grid; gap: 14px; }
+    .predictive-card {
+      padding: 16px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: rgba(255,255,255,0.03);
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+    .predictive-card-kicker {
+      color: var(--muted);
+      font-size: 0.58rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .predictive-card h3 {
+      margin: 0 0 8px;
+      color: var(--text);
+      font-size: 1rem;
+      font-weight: normal;
+      line-height: 1.4;
+    }
+    .predictive-card p {
+      margin: 0 0 10px;
+      color: var(--text);
+      font-size: 0.86rem;
+      line-height: 1.6;
+    }
+    .predictive-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin: 10px 0;
+    }
+    .predictive-meta span {
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 3px 7px;
+      color: var(--muted);
+      font-size: 0.58rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      line-height: 1.35;
+    }
+    .predictive-details {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 0.76rem;
+    }
+    .predictive-details summary {
+      cursor: pointer;
+      color: var(--accent);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      font-size: 0.58rem;
+    }
+    .predictive-score-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+      margin-top: 9px;
+    }
+    .predictive-score-grid div {
+      border-top: 1px dotted var(--border);
+      padding-top: 6px;
+    }
+    .predictive-score-grid span {
+      display: block;
+      color: var(--subtle);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-size: 0.54rem;
+    }
+    .predictive-score-grid strong {
+      display: block;
+      color: var(--text);
+      font-weight: normal;
+      font-size: 0.78rem;
+      margin-top: 3px;
+    }
+
     .featured-section {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -626,6 +723,69 @@
   <hr>
 
   <!-- ── Featured Transit ── -->
+  {% if predictive_report_surface and predictive_report_surface.enabled %}
+  <div class="predictive-research-section" id="predictive-research-layer">
+    <div class="section-label">Predictive / Experimental Layer</div>
+    <p class="predictive-research-note">{{ predictive_report_surface.framing }}</p>
+
+    {% if predictive_report_surface.chapters %}
+    <div class="predictive-card-list">
+      {% for chapter in predictive_report_surface.chapters %}
+      <article class="predictive-card">
+        <div class="predictive-card-kicker">Emerging chapter - {{ chapter.window_label }}</div>
+        <h3>{{ chapter.title }}</h3>
+        <p>{{ chapter.summary }}</p>
+        <div class="predictive-meta">
+          {% for domain in chapter.domains[:2] %}<span>{{ domain }}</span>{% endfor %}
+          {% for clock in chapter.active_long_clocks[:2] %}<span>{{ clock }}</span>{% endfor %}
+          <span>{{ chapter.contributing_signal_count }} signal{{ 's' if chapter.contributing_signal_count != 1 else '' }}</span>
+        </div>
+        <details class="predictive-details">
+          <summary>Component detail</summary>
+          <div class="predictive-score-grid">
+            {% for key, value in chapter.component_scores.items() %}
+            <div><span>{{ key | replace('_', ' ') }}</span><strong>{{ value }}</strong></div>
+            {% endfor %}
+          </div>
+        </details>
+      </article>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if predictive_report_surface.candidates %}
+    <div class="predictive-card-list" style="margin-top: 16px;">
+      {% for candidate in predictive_report_surface.candidates %}
+      <article class="predictive-card">
+        <div class="predictive-card-kicker">Research-flagged window - {{ candidate.window_label }}</div>
+        <h3>{{ candidate.title }}</h3>
+        <p>{{ candidate.summary }}</p>
+        <div class="predictive-meta">
+          {% for domain in candidate.domains[:2] %}<span>{{ domain }}</span>{% endfor %}
+          {% for family in candidate.independent_method_families[:2] %}<span>{{ family }}</span>{% endfor %}
+          {% if candidate.candidate_status %}<span>{{ candidate.candidate_status | replace('_', ' ') }}</span>{% endif %}
+        </div>
+        <details class="predictive-details">
+          <summary>Component detail</summary>
+          <div class="predictive-score-grid">
+            <div><span>Convergence score</span><strong>{{ candidate.convergence_score }}</strong></div>
+            <div><span>Counterforce</span><strong>{{ candidate.counterforce }}</strong></div>
+            <div><span>Complexity</span><strong>{{ candidate.complexity }}</strong></div>
+            <div><span>Confidence</span><strong>{{ candidate.confidence }}</strong></div>
+            {% for key, value in candidate.component_scores.items() %}
+            <div><span>{{ key | replace('_', ' ') }}</span><strong>{{ value }}</strong></div>
+            {% endfor %}
+          </div>
+        </details>
+      </article>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+
+  <hr>
+  {% endif %}
+
   <div class="featured-section">
     <div class="section-label">Turning Point</div>
     {% if featured_event %}
