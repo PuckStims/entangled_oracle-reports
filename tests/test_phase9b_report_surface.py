@@ -31,10 +31,20 @@ class TestPhase9bReportSurface(unittest.TestCase):
         candidate = surface["candidates"][0]
         # summary now routes through selectors.block_selector.select_block()
         # keyed on (candidate_domain[0], independent_method_families[0]) against
-        # products/personal_forecast/blocks/shared/predictive_candidates.json --
-        # unfilled scaffold leaves surface their [TODO] marker visibly rather
-        # than being filtered, per the operator's batch-testing workflow.
-        self.assertIn("identity domain, led by transit_family", candidate["summary"])
+        # products/personal_forecast/blocks/shared/predictive_candidates.json.
+        # Content is filled in now (not the scaffold's [TODO] placeholder), so
+        # assert real-content behavior rather than pinning to specific prose:
+        # non-empty, not an unfilled/missing-block marker, and not the
+        # generic top-level fallback string (confirms the (identity,
+        # transit_family) leaf itself resolved, not just some fallback).
+        summary = candidate["summary"]
+        self.assertTrue(summary)
+        self.assertFalse(summary.startswith("[TODO"))
+        self.assertFalse(summary.startswith("[BLOCK NOT FOUND"))
+        self.assertFalse(summary.startswith("[MISSING BLOCK FILE"))
+        from selectors.block_selector import select_block
+        top_level_fallback = select_block("personal_forecast", "predictive_candidates", "fallback")
+        self.assertNotEqual(summary, top_level_fallback)
         self.assertEqual(candidate["component_scores"]["topic_coherence"], 0.8)
         self.assertEqual(candidate["component_scores"]["method_family_diversity"], 0.67)
 

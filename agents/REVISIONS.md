@@ -5,6 +5,45 @@ Newest entry on top. See `agents/README.md` for the convention.
 
 ---
 
+## 2026-07-08 - Phase 9b predictive-content blocks filled in (operator content pass, Claude verification)
+
+**Context:** Operator wrote real prose into all three Phase 9b scaffold
+files (prioritizing coverage over polish, as stated), replacing every
+`[TODO]` placeholder. Verified the result rather than taking the file
+count on faith.
+
+**Verified:**
+
+- All three files remain valid JSON with the original scaffold shape
+  intact (94/94/159 leaves counting `_note`/`_version`, i.e. 92/92/157
+  content leaves as scaffolded) — `0` `[TODO]` markers remaining in any
+  of the three files.
+- Spot-read several leaves directly (not just grepped): consistently
+  second person, consistently carries the required hedged/research
+  framing ("The system flags...", "research signal", "not a settled
+  claim"/"not a fixed outcome"), right in the target word-count range.
+- Live-generated a real Year Ahead and a real Personal Forecast report:
+  rendered HTML shows `0` `[TODO]`, `0` `[BLOCK NOT FOUND]`, `0`
+  `[MISSING BLOCK FILE]` markers. Read the actual rendered chapter card
+  and candidate card text directly and confirmed it's real, on-topic,
+  correctly routed prose (e.g. the Personal Forecast candidate card
+  correctly used the `communication`/`lunation_family`+`progression_family`
+  leaning content for a window whose real independent method families
+  were lunation/progression-led).
+- Fixed `tests/test_phase9b_report_surface.py`'s candidate assertion a
+  second time — it had been pinned to the scaffold's literal `[TODO]`
+  string in the previous entry, which broke now that real content exists
+  (expected and correct: the test was over-fit to a temporary state).
+  Rewrote it to assert real-content *behavior* instead of exact prose:
+  non-empty, not a `[TODO]`/`[BLOCK NOT FOUND]`/`[MISSING BLOCK FILE]`
+  marker, and not equal to the block file's top-level generic fallback
+  (confirming the specific `(identity, transit_family)` leaf itself
+  resolved, not just some fallback catching a miss).
+
+**Verification:** Full phase 1-9b regression suite (60 tests) passes.
+
+---
+
 ## 2026-07-08 - Phase 9b predictive-content blocks wired live, TODOs surface unfiltered by design (Claude / Sonnet 5)
 
 **Context:** Immediately following the scaffold above, operator confirmed
