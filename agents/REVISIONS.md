@@ -59,6 +59,61 @@ across all three charters so the convention doesn't fragment.
 
 ---
 
+## 2026-07-08 - Phase 4 returns and annual profections evidence foundation (Codex / GPT-5)
+
+**Context:** Initiated Phase 4 from the live post-Phase-3 worktree. The
+implementation followed `EO_UPGRADE_PHASES_1_9_AGENT_PROMPTS.md`, the C1
+Returns and C4 Annual Profections charters in
+`phase0/03_method_charters.md`, the `ForecastEvent` and `TimeLordPeriod`
+contracts in `phase0/01_predictive_object_schemas.md`, and the program's
+Phase 4 requirement that returns/profections become internal evidence rather
+than client prose.
+
+**Returns:** Added `engine/returns.py`, an event-level return scanner for
+Solar, Lunar, Jupiter, and Saturn returns. It uses Swiss Ephemeris when
+available, bisection to the chartered `0.01` degree tolerance, body-specific
+scan steps/windows, and emits return scanner events with
+`activation_route = "return_moment"`, body-specific return variants, exact
+timestamps, confidence components, and `[internal_rd, predictive_sandbox]`
+visibility. Return-chart interpretation is still deferred.
+
+**Annual profections:** Added `engine/profections.py`, a whole-sign annual
+profection period builder. It computes profected house, profected sign,
+traditional domicile time lord, activated house topics, and a
+`TimeLordPeriod` record with `system = "annual_profection"`,
+`level = "year"`, `birth_time_dependency = "none"`, lord natal state, weight
+modifier, confidence components, and `[internal_rd, predictive_sandbox]`
+visibility. When the Ascendant sign is unavailable, it refuses to compute
+rather than inventing a profection.
+
+**Integration:** Updated `engine/predictive_engine.py` so return moments are
+adapted into `RETURN` predictive signals and annual profections are exported
+as `time_lord_periods`. Updated `engine/predictive_sidecar.py` so return
+metadata, exact instants, explicit report-surface visibility, Phase 4 scanner
+provenance, and `TimeLordPeriod` records are written into
+`.eo_predictive.json`. No report templates or client prose were changed.
+
+**Tests:** Added `tests/test_phase4_returns_profections.py` covering exact
+return bisection with mocked longitude math, monotonic lunar return sequence,
+annual profection house/sign/lord cycling, refusal without Ascendant sign, and
+predictive-engine/sidecar export.
+
+**Verification:** all of the following passed:
+
+```powershell
+python -m py_compile engine\returns.py engine\profections.py engine\predictive_engine.py engine\predictive_sidecar.py tests\test_phase4_returns_profections.py
+python -m unittest tests.test_phase4_returns_profections tests.test_phase3_asteroid_predictive_activation tests.test_phase2_predictive_sidecar
+$env:PYTHONPATH='C:\entangled_oracle\.venv\Lib\site-packages'; python -m unittest tests.test_predictive_engine tests.test_phase2_predictive_sidecar tests.test_phase3_asteroid_predictive_activation tests.test_phase4_returns_profections
+```
+
+The no-venv focused test pass logs non-fatal return-scanner skips because
+`swisseph` is unavailable to that Python; the venv-backed pass exercises live
+Swiss Ephemeris imports. The broader predictive run still prints the
+pre-existing sandbox-template `signal_count` traceback during one test path,
+but completes `OK (skipped=1)`.
+
+---
+
 ## 2026-07-08 - Phase 3 all-34 asteroid predictive activation foundation (Codex / GPT-5)
 
 **Context:** After both parallel Phase 2 lanes completed and the Phase 2

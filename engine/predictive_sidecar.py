@@ -140,7 +140,7 @@ def build_predictive_sidecar(
         "raw_events": raw_events,
         "predictive_signals": predictive_signals,
         "daily_series": daily_series,
-        "time_lord_periods": [],
+        "time_lord_periods": _json_safe(predictive_results.get("time_lord_periods", [])),
         "chapters": [],
         "candidates": [],
         "rejected_candidates": [],
@@ -160,6 +160,8 @@ def build_predictive_sidecar(
                 "scan_eclipses": "current_runtime",
                 "scan_lunations": "current_runtime",
                 "scan_proprietary_forecast_windows": _proprietary_scanner_state(predictive_results),
+                "scan_return_moments": _debug_scanner_state(predictive_results, "return_signal_count", "wired_phase4"),
+                "annual_profections": _debug_scanner_state(predictive_results, "annual_profection_period_count", "wired_phase4"),
             },
             "sidecar_writer_version": SIDECAR_WRITER_VERSION,
             "sidecar_written_at": _iso_datetime(generated_at),
@@ -202,7 +204,7 @@ def _forecast_event_from_signal(signal: dict, index: int, emitted_at: datetime, 
         "start_at": _iso_datetime(start_at),
         "peak_at": _iso_datetime(peak_at),
         "end_at": _iso_datetime(end_at),
-        "exact_at": [],
+        "exact_at": [_iso_datetime(_signal_datetime(value)) for value in signal.get("exact_dates", []) if _signal_datetime(value)],
         "orb": orb,
         "distance": None,
         "phase": phase,
@@ -216,7 +218,7 @@ def _forecast_event_from_signal(signal: dict, index: int, emitted_at: datetime, 
             "method_multiplier": 1.0,
             "asteroid_specificity": 1.0 if _is_asteroid_participant(source_body, target_body, asteroid_names) else 0.0,
         },
-        "temporal_precision": _temporal_precision(start_at, peak_at, end_at),
+        "temporal_precision": str(signal.get("temporal_precision") or "") or _temporal_precision(start_at, peak_at, end_at),
         "independence_group": str(signal.get("independence_group") or "transit_family"),
         "activation_route": str(signal.get("activation_route") or "transit_to_body"),
         "asteroid_participants": _asteroid_participants(source_body, target_body, asteroid_names),
@@ -229,6 +231,7 @@ def _forecast_event_from_signal(signal: dict, index: int, emitted_at: datetime, 
             "allowed_orb": signal.get("allowed_orb"),
             "missing_fields": missing_fields,
             "asteroid_policy": signal.get("asteroid_policy") or {},
+            "method_trace": signal.get("calculation_trace") or {},
             "notes": "Phase 2 adapts current predictive signals into ForecastEvent shape; raw scanner-event retention deepens in later phases.",
         },
         "report_surface_visibility": _signal_report_surface_visibility(signal, source_body, target_body, asteroid_names),
@@ -493,6 +496,9 @@ def _method_code(method_family: str) -> str:
 
 
 def _signal_role(signal: dict) -> str:
+    explicit = str(signal.get("clock_role") or "").strip()
+    if explicit:
+        return explicit
     source_body = signal.get("source_body")
     if source_body in _STRUCTURAL_BODIES:
         return "chapter_evidence"
@@ -503,6 +509,9 @@ def _signal_role(signal: dict) -> str:
 
 
 def _clock_role_for_signal(signal: dict) -> str:
+    explicit = str(signal.get("clock_role") or "").strip()
+    if explicit:
+        return explicit
     role = _signal_role(signal)
     if role == "chapter_evidence":
         return "chapter"
@@ -565,6 +574,9 @@ def _signal_report_surface_visibility(signal: dict, source_body: str, target_bod
     surfaces = _string_list(policy.get("report_surface_visibility"))
     if surfaces:
         return surfaces
+    surfaces = _string_list(signal.get("report_surface_visibility"))
+    if surfaces:
+        return surfaces
     return _report_surface_visibility(source_body, target_body, asteroid_names)
 
 
@@ -577,6 +589,13 @@ def _string_list(value: Any) -> list[str]:
 def _proprietary_scanner_state(predictive_results: dict) -> str:
     debug = predictive_results.get("debug") if isinstance(predictive_results.get("debug"), dict) else {}
     return str(debug.get("scan_proprietary_forecast_windows") or "rd_gate_disabled")
+
+
+def _debug_scanner_state(predictive_results: dict, count_key: str, wired_label: str) -> str:
+    debug = predictive_results.get("debug") if isinstance(predictive_results.get("debug"), dict) else {}
+    if count_key in debug:
+        return f"{wired_label}:{int(debug.get(count_key) or 0)}"
+    return "not_run"
 
 
 def _asteroid_registry_summary() -> dict:

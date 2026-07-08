@@ -321,6 +321,26 @@ def compute_predictive_windows(
         debug["proprietary_asteroid_rd_enabled"] = False
         debug["scan_proprietary_forecast_windows"] = "rd_gate_disabled"
 
+    try:
+        return_signals = _collect_return_signals(
+            natal_payload,
+            start_date,
+            end_date,
+            debug,
+            start_index=len(signals),
+        )
+        signals.extend(return_signals)
+    except Exception as exc:
+        debug["return_signal_error"] = str(exc)
+        print(f"[Predictive] Return signal collection failed (non-fatal): {exc}")
+
+    time_lord_periods: list[dict] = []
+    try:
+        time_lord_periods = _collect_time_lord_periods(natal_payload, start_date, end_date, debug)
+    except Exception as exc:
+        debug["time_lord_period_error"] = str(exc)
+        print(f"[Predictive] Time-lord period collection failed (non-fatal): {exc}")
+
     # ── Phase 4a: Daily resonance series ──────────────────────
     daily_series: list[dict] = []
     try:
@@ -347,6 +367,7 @@ def compute_predictive_windows(
         "windows":         windows,
         "daily_series":    daily_series,
         "signals":         signals,
+        "time_lord_periods": time_lord_periods,
         "debug":           debug,
     }
 
@@ -435,6 +456,40 @@ def _collect_proprietary_asteroid_signals(
     return signals
 
 
+def _collect_return_signals(
+    natal_payload: dict,
+    start_date: datetime,
+    end_date: datetime,
+    debug: dict,
+    *,
+    start_index: int = 0,
+) -> list[dict]:
+    from engine.returns import scan_return_events
+
+    events = scan_return_events(natal_payload, start_date, end_date)
+    debug["return_event_count"] = len(events)
+    signals: list[dict] = []
+    for offset, event in enumerate(events):
+        signal = _event_to_signal(event, start_index + offset, birth_time_status="exact")
+        if signal is not None:
+            signals.append(signal)
+    debug["return_signal_count"] = len(signals)
+    return signals
+
+
+def _collect_time_lord_periods(
+    natal_payload: dict,
+    start_date: datetime,
+    end_date: datetime,
+    debug: dict,
+) -> list[dict]:
+    from engine.profections import annual_profection_periods
+
+    periods = annual_profection_periods(natal_payload, start_date, end_date)
+    debug["annual_profection_period_count"] = len(periods)
+    return periods
+
+
 def _event_to_signal(event: dict, index: int, birth_time_status: str = "unknown") -> dict | None:
     """
     Converts one transit engine event dict to a PredictiveSignal node.
@@ -483,8 +538,8 @@ def _event_to_signal(event: dict, index: int, birth_time_status: str = "unknown"
 
     method_family = _normalize_method_family(event_type)
     event_kind = _normalize_event_kind(event_type, event)
-    independence_group = _independence_group_for_family(method_family)
-    activation_route = _activation_route_for_signal(method_family, event_kind, target_body)
+    independence_group = str(event.get("independence_group") or _independence_group_for_family(method_family))
+    activation_route = str(event.get("activation_route") or _activation_route_for_signal(method_family, event_kind, target_body))
 
     signal = {
         "signal_id":         f"sig_{event_type[:3]}_{index:04d}",
@@ -513,6 +568,15 @@ def _event_to_signal(event: dict, index: int, birth_time_status: str = "unknown"
         "start_date":        _to_date(start_dt),
         "peak_date":         _to_date(peak_dt),
         "end_date":          _to_date(end_dt),
+        "clock_role":        str(event.get("clock_role") or ""),
+        "temporal_precision": str(event.get("temporal_precision") or ""),
+        "exact_dates":       [_to_date(dt) for dt in event.get("exact_datetimes", []) if isinstance(dt, datetime)],
+        "report_surface_visibility": event.get("report_surface_visibility") or [],
+        "calculation_trace": {
+            "natal_longitude": event.get("natal_longitude"),
+            "formula_version": event.get("formula_version"),
+            "policy_version": event.get("policy_version"),
+        },
     }
     operation_profile, operation_basis, dominant_operation = _compute_signal_operation_profile(signal)
     epistemic_confidence, confidence_components, confidence_state, angle_eligibility = _compute_signal_epistemic_confidence(
@@ -523,8 +587,8 @@ def _event_to_signal(event: dict, index: int, birth_time_status: str = "unknown"
         "operation_profile": operation_profile,
         "operation_basis": operation_basis,
         "dominant_operation": dominant_operation,
-        "epistemic_confidence": epistemic_confidence,
-        "confidence_components": confidence_components,
+        "epistemic_confidence": _safe_float(event.get("confidence"), epistemic_confidence),
+        "confidence_components": event.get("confidence_components") or confidence_components,
         "confidence_state": confidence_state,
         "angle_eligibility": angle_eligibility,
     })
@@ -1097,7 +1161,7 @@ def _normalize_event_kind(event_type: str, event: dict) -> str:
     if event_type == "eclipse":
         return "ECLIPSE"
     if event_type == "return":
-        return "EXACT_RETURN"
+        return str(event.get("method_variant") or "exact_return")
     if event_type == "lunation":
         subtype = str(event.get("lunation_type") or "").strip().upper()
         return subtype or "LUNATION"
@@ -1136,7 +1200,7 @@ def _activation_route_for_signal(method_family: str, event_kind: str, target_bod
         return "lunation_to_body"
 
     if method_family == "RETURN":
-        return "exact_return_to_body"
+        return "return_moment"
 
     if method_family == "PROGRESSION":
         if target_body in _ANGLE_TARGETS:
