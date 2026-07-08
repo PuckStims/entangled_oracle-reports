@@ -5,6 +5,68 @@ Newest entry on top. See `agents/README.md` for the convention.
 
 ---
 
+## 2026-07-07 - Phase 3 asteroid registry review, before Codex implementation: phase0.1.0 -> phase0.1.1 (Claude / Sonnet 5)
+
+**Context:** Ahead of handing Codex the Phase 3 prompt, the operator
+asked Claude to do its Phase 3 registry review now (per
+`EO_UPGRADE_PHASES_1_9_AGENT_PROMPTS.md`'s Claude ownership: "asteroid
+policy review and missing-field queue") rather than after Codex starts
+coding from `phase0/02_asteroid_predictive_registry.json`, mirroring
+the Phase 2 pattern that already caught two real gaps before
+implementation began.
+
+**Three findings, all patched, both registry files bumped `phase0.1.0`
+-> `phase0.1.1`:**
+
+1. **Unstructured source-eligibility overrides.** Sirene and Themis
+   each had a `source_eligibility_override.transit` value that was a
+   free-text condition string (e.g.
+   `"conjunction_only_when_aspecting_angle_or_Venus"`) with no defined
+   grammar. A registry-driven policy API needs something directly
+   checkable, not prose to parse. Fixed: both now use a structured
+   `{allowed_aspects: [...], restricted_targets: [...]}` shape --
+   Sirene restricted to angles + Venus, Themis restricted to Destinn
+   only -- so the policy API can do a plain membership check.
+2. **Undocumented `method_variant` for proprietary-transit events.**
+   `phase0/01_predictive_object_schemas.md`'s `ForecastEvent.method_family`
+   already has a dedicated `PROPRIETARY_TRANSIT` value, but nothing
+   specified what `method_variant` those events should carry, and
+   `phase0/03_method_charters.md` has no chartered section for
+   proprietary asteroid transits (it covers C1-C6; this is Workstream
+   B territory, never given its own charter number). Added
+   `forecast_event_normalization_guidance` to the registry: use the
+   lowercase formula_group name (`disruption` / `sovereignty` /
+   `catalyst`) as `method_variant`, `PROPRIETARY_TRANSIT` as
+   `method_family`, `proprietary_transit_family` as
+   `independence_group`. Flagged as a stopgap worth promoting to a
+   real charter section later if the asteroid-transit method grows
+   beyond the three existing formula groups.
+3. **Stale field-path reference.** The narrative doc's "ephemeris
+   resilience" rule pointed to `debug.asteroids_ephemeris_missing`,
+   which does not exist in `phase0/06_sidecar_and_export_contract.md`
+   -- the real field is `asteroid_diagnostics.ephemeris_missing`.
+   Confirmed via Codex's live Phase 2 sidecar output, which already
+   implements the correct path (and surfaced a real observed case:
+   `Anubis`'s ephemeris file is unavailable in this local environment).
+   Fixed the reference and clarified that a per-chart ephemeris
+   failure is not a "silent disappearance" violation of the registry's
+   own rule -- the asteroid is declared and its absence is explicit
+   and traceable, not scanner oversight.
+
+**Also confirmed, not a gap:** the Phase 2 body-classification finding
+(`PHASE2_SIDECAR_BODY_CLASSIFICATION_FINDING.md`) is directly enabling
+for Phase 3, not just blocking it -- the recommended fix (check
+`payload["custom_asteroids"].keys()` instead of guessing "asteroid" by
+exclusion) is exactly what Phase 3 needs to correctly classify all 34
+asteroids as sources/targets, not just the 8 already wired in
+`scan_proprietary_forecast_windows()`. Should land before Phase 3
+implementation begins.
+
+**Files changed:** `phase0/02_asteroid_predictive_registry.json`,
+`phase0/02_asteroid_predictive_registry.md`.
+
+---
+
 ## 2026-07-07 - Phase 2 contract-conformance patch: phase0.1.0 -> phase0.1.1 (Claude / Sonnet 5)
 
 **Context:** Immediately after operator sign-off on `phase0/`, Claude

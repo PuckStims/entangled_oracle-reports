@@ -1,7 +1,9 @@
 {
   "registry_metadata": {
-    "policy_version": "phase0.1.0",
+    "policy_version": "phase0.1.1",
     "generated_at": "2026-07-07",
+    "patched_at": "2026-07-07",
+    "patch_note": "phase0.1.0 -> phase0.1.1, Phase 3 Claude registry review before Codex implementation: (1) source_eligibility_override for Sirene and Themis changed from free-text condition strings to a structured {allowed_aspects, restricted_targets} shape so the policy API can do a direct membership check instead of parsing prose; (2) added forecast_event_normalization_guidance for proprietary-transit method_variant; see agents/REVISIONS.md for full diff.",
     "program_document": "EO_PREDICTIVE_ARCHITECTURE_PROGRAM.md",
     "narrative_companion": "phase0/02_asteroid_predictive_registry.md",
     "governing_rules": [
@@ -11,6 +13,11 @@
       "governance_registry_visibility_is_authoritative_this_registry_operates_within_it",
       "anchor_tier_preserves_existing_scan_proprietary_forecast_windows_baseline"
     ],
+    "forecast_event_normalization_guidance": {
+      "method_family": "PROPRIETARY_TRANSIT (per phase0/01_predictive_object_schemas.md ForecastEvent.method_family) for every event scan_proprietary_forecast_windows() produces, regardless of formula_group.",
+      "method_variant": "Use the lowercase formula_group name as method_variant -- 'disruption', 'sovereignty', or 'catalyst' -- so events remain traceable to their originating formula group without inventing a new taxonomy. Not yet formally chartered in phase0/03_method_charters.md (that file covers C1-C6; proprietary asteroid transits are Workstream B territory in EO_PREDICTIVE_ARCHITECTURE_PROGRAM.md, not a numbered method charter). This guidance is a stopgap so Phase 3 doesn't stall on an undocumented field -- worth promoting to a real charter section later if the asteroid-transit method grows beyond the three existing formula groups.",
+      "independence_group": "proprietary_transit_family (per phase0/01_predictive_object_schemas.md section 9), which collapses with transit_family when source_body and target_body both match an existing transit_family event -- see that section's composite dedup rule before wiring convergence in later phases."
+    },
     "asteroid_count": 34,
     "tier_counts": {
       "anchor": 8,
@@ -291,8 +298,13 @@
       "topic_keys": ["voice", "attraction", "allure"],
       "domain_keys": ["creativity", "partnership"],
       "proprietary_index_links": ["NGE"],
-      "source_eligibility_override": {"transit": "conjunction_only_when_aspecting_angle_or_Venus"},
-      "notes": "Elevated for topic distinctness; light source use for angle/Venus contacts."
+      "source_eligibility_override": {
+        "transit": {
+          "allowed_aspects": ["Conjunction"],
+          "restricted_targets": ["ASC", "Ascendant", "MC", "Midheaven", "DSC", "Descendant", "IC", "Imum_Coeli", "Venus"]
+        }
+      },
+      "notes": "Elevated for topic distinctness; light source use for angle/Venus contacts. restricted_targets is the authoritative eligibility list for the policy API -- a Sirene transit to any target outside this list is not source-eligible regardless of aspect or orb."
     },
     {
       "asteroid_name": "Aphrodite",
@@ -320,8 +332,13 @@
       "topic_keys": ["natural_law", "right_order", "oath"],
       "domain_keys": ["partnership", "work", "meaning"],
       "proprietary_index_links": ["RWI", "NGE"],
-      "source_eligibility_override": {"transit": "conjunction_only_when_aspecting_Destinn"},
-      "notes": "Already source-active via proprietary_indexes.py:919 Themis-to-Destinn CATALYST pathway; preserved."
+      "source_eligibility_override": {
+        "transit": {
+          "allowed_aspects": ["Conjunction"],
+          "restricted_targets": ["Destinn"]
+        }
+      },
+      "notes": "Already source-active via proprietary_indexes.py:919 Themis-to-Destinn CATALYST pathway; preserved. restricted_targets is the authoritative eligibility list for the policy API -- a Themis transit to any target other than Destinn is not source-eligible regardless of aspect or orb."
     },
     {
       "asteroid_name": "Mnemosyne",

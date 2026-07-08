@@ -2,9 +2,9 @@
 
 Program: [EO_PREDICTIVE_ARCHITECTURE_PROGRAM.md](../EO_PREDICTIVE_ARCHITECTURE_PROGRAM.md)
 Machine-readable companion: [02_asteroid_predictive_registry.json](./02_asteroid_predictive_registry.json)
-Status: charter (Phase 0). Policy. No implementation.
-Version: `phase0.1.0`
-Date: 2026-07-07
+Status: charter (Phase 0, operator-approved). Policy. No implementation.
+Version: `phase0.1.1`
+Date: 2026-07-07 (patched same day, before Phase 3 implementation began, per Phase 3 Claude registry review: structured the Sirene/Themis source-eligibility overrides and fixed a field-path reference — see `phase0.1.0` → `phase0.1.1` diff in `agents/REVISIONS.md`)
 
 ## Purpose
 
@@ -47,7 +47,7 @@ Members: **Sirene, Aphrodite, Apollo, Themis, Mnemosyne, Sophia, Hekate, Circe, 
 Default policy:
 
 - **Target eligibility:** yes for `transit`, `return`, `lunation`, `eclipse`, `profection-anchor`, `ZR-anchor`. Deferred for `progression` and `solar_arc` at Phase 5 launch — may be promoted per-asteroid after validation cycles.
-- **Source eligibility:** conjunction-only transit source *when* the asteroid is explicitly named in an index-driver role (Apollo → RWI, Themis → RWI, Sirene → NGE, etc.). Otherwise no source eligibility. This means most elevated asteroids appear as targets, not as transit sources, matching the mainstream astrological convention that asteroids-as-transit-sources are used sparingly.
+- **Source eligibility:** conjunction-only transit source *when* the asteroid is explicitly named in an index-driver role (Apollo → RWI, Themis → RWI, Sirene → NGE, etc.). Otherwise no source eligibility. This means most elevated asteroids appear as targets, not as transit sources, matching the mainstream astrological convention that asteroids-as-transit-sources are used sparingly. Where an asteroid's source eligibility is narrower than "any target" (currently Sirene and Themis), the machine-readable registry's `source_eligibility_override.transit` carries a structured `{allowed_aspects, restricted_targets}` shape rather than a free-text condition — the policy API should treat `restricted_targets` as the authoritative eligibility list, not attempt to parse a description.
 - **Allowed aspects:** `Conjunction`, `Square`, `Opposition` (hard aspects) for transit at Phase 2 launch. `Conjunction` only for lunation/eclipse. Flowing aspects (`Trine`, `Sextile`) deferred to a later revision.
 - **Orb by clock:** transit `1.5°`, lunation/eclipse `1.5°`, return `n/a`.
 - **Relevance weight:** `0.65` for all elevated by default; may be tuned per asteroid based on index-driver participation.
@@ -78,7 +78,7 @@ Default policy:
 - **Transit-speed / source constraints.** When an asteroid is source-eligible, transit-source events use the asteroid's actual daily motion at the transit moment. Retrograde asteroid contacts are permitted; multi-pass cycles are handled by the shared cycle-merging logic in the transit engine. **No orb widening is granted for asteroid retrogrades** because their daily motion is small and the cycle merger already collapses same-contact windows within 120 days.
 - **Confidence modifiers.** Every asteroid contact carries a `method_maturity` component of `0.75` at Phase 2 launch (asteroids as forecast participants are a newer capability than transits to planets). This may be revised upward per asteroid after fixture-supported validation.
 - **Report-surface visibility.** All 34 asteroids share the same default `[internal_rd, predictive_sandbox, soul_ecosystem]` visibility. Governance registry policy is authoritative for consumer-facing report surfaces.
-- **Ephemeris resilience.** When an asteroid's ephemeris file is unavailable and its natal position is stored as a string error (`"Calculation failed: ..."` in `custom_asteroids`), the registry classifies it as `ephemeris_missing` and no forecast events are emitted for it. This must appear in the sidecar's `debug.asteroids_ephemeris_missing` list.
+- **Ephemeris resilience.** When an asteroid's ephemeris file is unavailable and its natal position is stored as a string error (`"Calculation failed: ..."` in `custom_asteroids`), the registry classifies it as `ephemeris_missing` and no forecast events are emitted for it. This must appear in the sidecar's `asteroid_diagnostics.ephemeris_missing` list (`phase0/06_sidecar_and_export_contract.md` §2.15 — corrected here from an earlier draft that referenced a nonexistent `debug.asteroids_ephemeris_missing` path; Codex's live Phase 2 sidecar writer already implements the correct path and was used to confirm it, including a real observed case where `Anubis`'s ephemeris file was unavailable in the local environment). A per-chart ephemeris failure is not a "silent disappearance" violation of this registry's own rule — the asteroid is declared and its absence for that specific chart is explicit and traceable, not scanner oversight.
 
 ## Per-asteroid rationale (34 records)
 
