@@ -360,6 +360,19 @@ def compute_predictive_windows(
         debug["progression_signal_error"] = str(exc)
         print(f"[Predictive] Progression signal collection failed (non-fatal): {exc}")
 
+    try:
+        lots_signals = _collect_zr_signals(
+            natal_payload,
+            start_date,
+            end_date,
+            debug,
+            start_index=len(signals),
+        )
+        signals.extend(lots_signals)
+    except Exception as exc:
+        debug["zodiacal_releasing_signal_error"] = str(exc)
+        print(f"[Predictive] Zodiacal Releasing signal collection failed (non-fatal): {exc}")
+
     time_lord_periods: list[dict] = []
     try:
         time_lord_periods = _collect_time_lord_periods(natal_payload, start_date, end_date, debug)
@@ -513,7 +526,44 @@ def _collect_time_lord_periods(
 
     periods = annual_profection_periods(natal_payload, start_date, end_date)
     debug["annual_profection_period_count"] = len(periods)
+
+    try:
+        from engine.zodiacal_releasing import zodiacal_releasing_periods
+
+        fortune_periods = zodiacal_releasing_periods(natal_payload, start_date, end_date, lot_name="Fortune")
+        spirit_periods = zodiacal_releasing_periods(natal_payload, start_date, end_date, lot_name="Spirit")
+        debug["zr_fortune_period_count"] = len(fortune_periods)
+        debug["zr_spirit_period_count"] = len(spirit_periods)
+        periods = periods + fortune_periods + spirit_periods
+    except Exception as exc:
+        debug["zr_period_error"] = str(exc)
+        print(f"[Predictive] Zodiacal Releasing period collection failed (non-fatal): {exc}")
+
     return periods
+
+
+def _collect_zr_signals(
+    natal_payload: dict,
+    start_date: datetime,
+    end_date: datetime,
+    debug: dict,
+    *,
+    start_index: int = 0,
+) -> list[dict]:
+    from engine.zodiacal_releasing import zodiacal_releasing_events
+
+    fortune_events = zodiacal_releasing_events(natal_payload, start_date, end_date, lot_name="Fortune")
+    spirit_events = zodiacal_releasing_events(natal_payload, start_date, end_date, lot_name="Spirit")
+    events = fortune_events + spirit_events
+    debug["zr_event_count"] = len(events)
+
+    signals: list[dict] = []
+    for offset, event in enumerate(events):
+        signal = _event_to_signal(event, start_index + offset, birth_time_status=_predictive_birth_time_status(natal_payload))
+        if signal is not None:
+            signals.append(signal)
+    debug["zr_signal_count"] = len(signals)
+    return signals
 
 
 def _collect_solar_arc_signals(

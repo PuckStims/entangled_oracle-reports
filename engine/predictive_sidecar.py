@@ -164,6 +164,8 @@ def build_predictive_sidecar(
                 "annual_profections": _debug_scanner_state(predictive_results, "annual_profection_period_count", "wired_phase4"),
                 "scan_solar_arc": _debug_scanner_state(predictive_results, "solar_arc_signal_count", "wired_phase5"),
                 "scan_secondary_progressions": _debug_scanner_state(predictive_results, "progression_signal_count", "wired_phase5"),
+                "compute_lots": _debug_scanner_state(predictive_results, "zr_signal_count", "wired_phase6"),
+                "zodiacal_releasing": _debug_scanner_state(predictive_results, "zr_signal_count", "wired_phase6"),
             },
             "sidecar_writer_version": SIDECAR_WRITER_VERSION,
             "sidecar_written_at": _iso_datetime(generated_at),
@@ -378,7 +380,7 @@ def _natal_snapshot(payload: dict, birth_data: dict, natal_snapshot_id: str) -> 
         },
         "angles": payload.get("angles") or {},
         "houses": payload.get("houses") or {},
-        "lots": payload.get("lots") or {},
+        "lots": _computed_lots(payload),
         "standard_planets": payload.get("standard_planets") or {},
         "custom_asteroids": payload.get("custom_asteroids") or {},
         "aspects": payload.get("aspects") or [],
@@ -598,6 +600,15 @@ def _debug_scanner_state(predictive_results: dict, count_key: str, wired_label: 
     if count_key in debug:
         return f"{wired_label}:{int(debug.get(count_key) or 0)}"
     return "not_run"
+
+
+def _computed_lots(payload: dict) -> dict:
+    try:
+        from engine.lots import compute_lots
+
+        return compute_lots(payload)
+    except Exception:
+        return {}
 
 
 def _asteroid_registry_summary() -> dict:

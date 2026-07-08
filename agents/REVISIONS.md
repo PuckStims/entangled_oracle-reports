@@ -5,6 +5,103 @@ Newest entry on top. See `agents/README.md` for the convention.
 
 ---
 
+## 2026-07-08 - Phase 6 Lots and Zodiacal Releasing foundation (Claude / Sonnet 5, both Codex and Claude roles)
+
+**Context:** Codex was unavailable for the rest of the night, so at the
+operator's request Claude implemented Phase 6 directly rather than
+producing a review-only queue for a separate implementation session.
+Followed the C5 (Lots) and C5b (Zodiacal Releasing) charters in
+`phase0/03_method_charters.md` and the `phase0.1.2` contracts, applying
+the same verification discipline used to review every prior phase:
+live generation on real charts, not just unit tests against synthetic
+fixtures.
+
+**Lots:** Added `engine/lots.py` -- Fortune, Spirit, and Necessity,
+sect-aware via `formulas.standard.sect.evaluate_chart_sect()` (the
+chartered authoritative source), with an explicit `sect_state` /
+reduced-confidence fallback when sect is genuinely indeterminate
+(Sun on the horizon axis) rather than silently choosing a side.
+Verified bit-exact against C5 section 12's own fixture values (day
+chart Fortune = 310 degrees, night chart = 250 degrees, from
+ASC=100/Sun=200/Moon=50).
+
+**Zodiacal Releasing:** Added `engine/zodiacal_releasing.py` -- L1-L4
+period generation via one recursive proportional-subdivision function
+(each level's twelve sub-periods scaled to the parent's duration by
+that sign's own Valens year-count over the 211-year total), peak
+detection (period sign angular from the lot's own sign), and
+`TimeLordPeriod` records for all four levels, window-filtered so only
+periods intersecting the report window are computed -- this keeps L3/L4
+record counts bounded instead of enumerating a chart's full
+multi-century period tree. Only L1/L2 generate trigger-role
+`ForecastEvent`s (transitions, peaks) per C5b section 7; L3/L4 are
+period-only (modifier scale).
+
+**Corrected in the charter while implementing:** C5b section 12's
+validation fixture said "246-year cycle" for the L1 total; the actual
+sum of the twelve Valens year-counts is 211
+(15+8+20+25+19+20+8+15+12+27+30+12), the standard cited total in ZR
+literature. Fixed the arithmetic slip before building the test fixture
+against it.
+
+**Loosing of the Bond:** implemented and wired, but honestly
+documented as a rare/edge-case trigger under the proportional
+construction used here (twelve sub-periods sum exactly to the parent
+duration by construction, so the charter's own literal condition --
+"a sub-period completes but the parent has not" -- has no routine
+occasion to fire). The field and mechanism are present and correct;
+it simply did not fire on either test chart, and that is expected
+given the algorithm, not a bug being hidden.
+
+**Integration:** Updated `engine/predictive_engine.py` to adapt ZR
+transition events into `ZODIACAL_RELEASING` predictive signals
+alongside transit, asteroid, return, Solar Arc, and progression
+evidence, and to add Fortune and Spirit ZR periods to
+`time_lord_periods` alongside annual profections. Updated
+`engine/predictive_sidecar.py` to compute Lots directly inside the
+sidecar writer (`natal_snapshot.lots`) rather than touching the shared
+`generate.py`/natal-engine payload pipeline used by every product --
+keeps the change scoped to the sidecar, matching every prior phase's
+"additive, sidecar-only" pattern. No report templates or client prose
+changed.
+
+**Two real bugs found and fixed via live verification, not caught by
+unit tests alone:**
+
+1. `zodiacal_releasing_events()`'s sort used a `peak_at` key that does
+   not exist on the raw event dict shape (`peak_datetime` is the real
+   key, matching the convention every other Phase 4/5 scanner uses) --
+   a `KeyError` on the very first live run. Fixed immediately.
+2. Before wiring, confirmed `_natal_snapshot()` in
+   `engine/predictive_sidecar.py` already expected a
+   `payload.get("lots")` field from an earlier phase0/06 contract
+   patch, but nothing computed it. Rather than inject lot computation
+   into the shared natal-payload pipeline, added a scoped
+   `_computed_lots()` helper inside the sidecar writer itself.
+
+**Tests:** Added `tests/test_phase6_lots_zodiacal_releasing.py` (10
+tests): the two chartered Lot fixtures bit-exact, missing-data graceful
+handling for both Lots and ZR, the corrected 211-year Valens sum, the
+Cancer-25-year L1 fixture from C5b section 12, peak-angularity
+verification, L1/L2-only event emission, and sidecar natal_snapshot
+integration.
+
+**Verification:** 113 tests across the full relevant suite pass, no
+regressions. Live-verified end to end on two different real charts
+(not just the tests' synthetic fixtures) -- confirmed `natal_snapshot.lots`
+populated, all six method families (`TRANSIT`, `LUNATION`, `RETURN`,
+`SOLAR_ARC`, `PROGRESSION`, `ZODIACAL_RELEASING`) present in
+`raw_events`, and `time_lord_periods` correctly split across
+`annual_profection`, `zodiacal_releasing_fortune`, and
+`zodiacal_releasing_spirit` systems.
+
+**Files changed:** `engine/lots.py` (new), `engine/zodiacal_releasing.py`
+(new), `engine/predictive_engine.py`, `engine/predictive_sidecar.py`,
+`tests/test_phase6_lots_zodiacal_releasing.py` (new),
+`phase0/03_method_charters.md` (246->211 fix).
+
+---
+
 ## 2026-07-08 - Phase 5 method-charter review, before Codex implementation: phase0.1.1 -> phase0.1.2 (Claude / Sonnet 5)
 
 **Context:** Ahead of Codex's Phase 5 (Solar Arc + Secondary

@@ -466,7 +466,7 @@ Charters are ordered by build sequence per the program (Phase 4 → Phase 6).
 ### 12. Validation rule
 
 - Fixture: for a chart with Lot of Fortune in Cancer, the first L1 period is Cancer (25 years).
-- Fixture: total years across all L1 periods in a 246-year cycle must equal 12 × mean(15, 8, 20, 25, 19, 20, 8, 15, 12, 27, 30, 12) = the correct sum per Valens.
+- Fixture: total years across all L1 periods in one full 211-year cycle must equal `15+8+20+25+19+20+8+15+12+27+30+12 = 211` (corrected here from an earlier draft's arithmetic slip, "246"; 211 is the standard cited "great cycle" total in Valens-derived ZR literature).
 - Fixture: LOB events must occur at documented moments in a hand-computed sample chart.
 
 ---
