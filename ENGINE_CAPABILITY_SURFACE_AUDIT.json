@@ -1,0 +1,167 @@
+[
+  {
+    "capability": "transit_cycle_events",
+    "status": "Fully surfaced",
+    "calculation_location": ["engine/transit_engine.py:1452-1578", "engine/transit_engine.py:1396-1438"],
+    "consumers": ["engine/transit_engine.py:2267-2343", "generate.py:737-1048", "generate.py:7236-7722", "engine/predictive_engine.py:336-459"],
+    "output_locations": ["products/year_ahead/templates/active/year_ahead.html:2187-2310", "products/personal_forecast/templates/personal_forecast.html:588-609"],
+    "loss_points": ["generate.py:3444-3525 manifest omits raw event records"],
+    "confidence": "high",
+    "evidence": ["compute_year_ahead_events returns transits and all_events", "raw cycle ledger preserves report-safe cycle fields"],
+    "notes": "Transit cycles are operationally used and visible, but raw validation-grade event data is not exported."
+  },
+  {
+    "capability": "predictive_signal_strength",
+    "status": "Engine-only",
+    "calculation_location": ["engine/predictive_engine.py:366-459"],
+    "consumers": ["engine/predictive_engine.py:464-521", "engine/predictive_engine.py:555-689", "generate.py:7827-7973"],
+    "output_locations": ["products/predictive_sandbox/templates/predictive_sandbox.html"],
+    "loss_points": ["Year Ahead and Personal Forecast pass predictive_results but do not render signal evidence"],
+    "confidence": "high",
+    "evidence": ["signal_strength is stored on every signal", "signals are returned in compute_predictive_windows"],
+    "notes": "Used internally for daily series and windows; not client-facing."
+  },
+  {
+    "capability": "daily_baseline_residual_series",
+    "status": "Partially wired",
+    "calculation_location": ["engine/predictive_engine.py:464-521"],
+    "consumers": ["engine/predictive_engine.py:555-689", "generate.py:7932-7942"],
+    "output_locations": ["products/predictive_sandbox/templates/predictive_sandbox.html"],
+    "loss_points": ["Per-day contributing signal IDs are not stored in daily_series"],
+    "confidence": "high",
+    "evidence": ["daily rows include raw_score, smooth_score, baseline_score, residual_score, structural_raw, trigger_raw"],
+    "notes": "Detector-critical and sandbox-visible; not validation-complete because contributor provenance is omitted."
+  },
+  {
+    "capability": "prominence_based_window_detection",
+    "status": "Partially wired",
+    "calculation_location": ["engine/predictive_engine.py:555-689", "engine/predictive_engine.py:710-760"],
+    "consumers": ["generate.py:7827-7973"],
+    "output_locations": ["products/predictive_sandbox/templates/predictive_sandbox.html:426-520"],
+    "loss_points": ["Rejected peak indices and rejected prominences are not preserved"],
+    "confidence": "high",
+    "evidence": ["Prominence filters qualified residual peaks before windows are built"],
+    "notes": "Actually used by detector, not merely displayed."
+  },
+  {
+    "capability": "structural_vs_trigger_split",
+    "status": "Partially wired",
+    "calculation_location": ["engine/predictive_engine.py:486-504", "engine/predictive_engine.py:629-674"],
+    "consumers": ["engine/predictive_engine.py:555-689", "generate.py:7890-7942"],
+    "output_locations": ["products/predictive_sandbox/templates/predictive_sandbox.html:486-514"],
+    "loss_points": ["Consumer reports do not interpret structural/trigger split", "daily rows do not preserve contributing signal IDs"],
+    "confidence": "high",
+    "evidence": ["structural_raw and trigger_raw are daily fields; windows keep slow and fast signal ID lists"],
+    "notes": "Supports trigger-versus-background analysis in sandbox only."
+  },
+  {
+    "capability": "window_semantic_metrics",
+    "status": "Partially wired",
+    "calculation_location": ["engine/predictive_engine.py:998-1228"],
+    "consumers": ["engine/predictive_engine.py:649-687", "generate.py:7890-7924"],
+    "output_locations": ["products/predictive_sandbox/templates/predictive_sandbox.html:441-480"],
+    "loss_points": ["Consumer reports do not use predictive semantic metrics"],
+    "confidence": "high",
+    "evidence": ["coherence, semantic_profile, dominant_operation, semantic_state, polarity, coalition, counterforce, complexity are stored on windows"],
+    "notes": "Routed into sandbox narrative preview and table, not broader report prose."
+  },
+  {
+    "capability": "epistemic_confidence",
+    "status": "Partially wired",
+    "calculation_location": ["engine/predictive_engine.py:1025-1114"],
+    "consumers": ["engine/predictive_engine.py:445-458", "engine/predictive_engine.py:1137-1143", "generate.py:7845-7869"],
+    "output_locations": ["products/predictive_sandbox/templates/predictive_sandbox.html"],
+    "loss_points": ["Not used to filter windows or explain consumer-facing confidence"],
+    "confidence": "high",
+    "evidence": ["confidence components and angle eligibility are stored and forwarded"],
+    "notes": "Useful validation scaffold but not a surfaced claim in consumer outputs."
+  },
+  {
+    "capability": "episode_memory_fsm",
+    "status": "Partially wired",
+    "calculation_location": ["engine/predictive_engine.py:1231-1398"],
+    "consumers": ["engine/predictive_engine.py:649-687", "generate.py:7890-7924"],
+    "output_locations": ["products/predictive_sandbox/templates/predictive_sandbox.html"],
+    "loss_points": ["Does not affect segmentation or consumer outputs"],
+    "confidence": "high",
+    "evidence": ["memory_state includes activation_key, episode counts, pass_state, lifecycle_route"],
+    "notes": "Computed and visible in sandbox diagnostics."
+  },
+  {
+    "capability": "year_ahead_monthly_arc_score",
+    "status": "Fully surfaced",
+    "calculation_location": ["generate.py:3026-3070", "generate.py:7426-7514"],
+    "consumers": ["generate.py:3168", "generate.py:7612-7617", "products/year_ahead/templates/active/year_ahead.html:1725-1752"],
+    "output_locations": ["products/year_ahead/templates/active/year_ahead.html"],
+    "loss_points": ["Raw event contribution details are not exported in manifest"],
+    "confidence": "high",
+    "evidence": ["months store arc_score, arc_percent, arc_label, arc_bar"],
+    "notes": "This is ordinary Year Ahead scoring, distinct from predictive sandbox windows."
+  },
+  {
+    "capability": "raw_cycle_ledger",
+    "status": "Fully surfaced",
+    "calculation_location": ["generate.py:5563-5714"],
+    "consumers": ["generate.py:7624-7628", "products/year_ahead/templates/active/year_ahead.html:2187-2310"],
+    "output_locations": ["products/year_ahead/templates/active/year_ahead.html"],
+    "loss_points": ["Intentionally excludes debug-only internals and full raw record state"],
+    "confidence": "high",
+    "evidence": ["Ledger contract preserves merged transit-cycle records and contacts when available"],
+    "notes": "Report-safe technical provenance is surfaced."
+  },
+  {
+    "capability": "predictive_results_in_consumer_reports",
+    "status": "Pipeline-dropped",
+    "calculation_location": ["generate.py:224-245", "engine/predictive_engine.py:264-331"],
+    "consumers": ["generate.py:737-1048", "generate.py:7236-7722"],
+    "output_locations": [],
+    "loss_points": ["Context includes predictive_results but templates do not render predictive windows or evidence"],
+    "confidence": "high",
+    "evidence": ["personal forecast context returns predictive_results", "year ahead context returns predictive_results", "templates contain no predictive_results rendering"],
+    "notes": "Calculated for consumer report types but not made visible."
+  },
+  {
+    "capability": "predictive_validation_export",
+    "status": "Pipeline-dropped",
+    "calculation_location": ["engine/predictive_engine.py:264-331", "generate.py:3444-3525"],
+    "consumers": ["tools/extract_sandbox_ledger.py:6-110"],
+    "output_locations": ["Rendered sandbox HTML only"],
+    "loss_points": ["Manifest omits predictive_results", "CSV tool scrapes HTML instead of raw engine output"],
+    "confidence": "high",
+    "evidence": ["Manifest writer contains version and trace metadata but no predictive evidence fields"],
+    "notes": "Validation-ready raw export is not first-class."
+  },
+  {
+    "capability": "returns_solar_arc_progressions",
+    "status": "Configuration-only",
+    "calculation_location": ["engine/predictive_engine.py:121-128", "engine/predictive_engine.py:175-181", "engine/predictive_engine.py:876-965"],
+    "consumers": [],
+    "output_locations": [],
+    "loss_points": ["No normal scanner feeding return/progression/solar_arc event types found"],
+    "confidence": "high",
+    "evidence": ["Search found taxonomy hooks but no compute_year_ahead_events scanner for these clocks"],
+    "notes": "Do not claim as implemented predictive clocks."
+  },
+  {
+    "capability": "profections_time_lords_zodiacal_releasing",
+    "status": "Configuration-only",
+    "calculation_location": [],
+    "consumers": [],
+    "output_locations": [],
+    "loss_points": ["No executable implementation found in inspected normal path"],
+    "confidence": "medium",
+    "evidence": ["Search did not find normal implementation references"],
+    "notes": "Absent from current predictive/report pipeline evidence."
+  },
+  {
+    "capability": "legacy_convergence_detector",
+    "status": "Dead / unreachable",
+    "calculation_location": ["generate.py:6842-6966"],
+    "consumers": [],
+    "output_locations": [],
+    "loss_points": ["Superseded by active _detect_and_frame_convergences"],
+    "confidence": "medium",
+    "evidence": ["Function name includes legacy_dead; active detector is separately defined and called"],
+    "notes": "Do not remove based on this audit alone; only classified as apparently unreachable."
+  }
+]
