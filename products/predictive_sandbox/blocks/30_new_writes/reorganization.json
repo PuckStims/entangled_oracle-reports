@@ -1,0 +1,62 @@
+{
+  "_note": "Predictive Sandbox R&D content. Family: reorganization. Texture: systems, schedules, or structures being rearranged, sorted out, or codified. Not chaotic; highly practical. Routes on dominant_operation / semantic_state / lifecycle_route.",
+  "family": "reorganization",
+  "entries": [
+    {
+      "id": "reo_constructive_sorting",
+      "scope": "window",
+      "family": "reorganization",
+      "mode": "practical",
+      "conditions": {
+        "dominant_operation": ["construct"],
+        "semantic_state": ["mixed"]
+      },
+      "title": "Constructing Order from Mixed Signals",
+      "body": "The dominant pressure is to build or organize, but the underlying conditions are still mixed. This usually looks like sorting through a backlog, putting disparate pieces into a single framework, or forcing a schedule to accommodate competing demands. It is productive, but requires active management.",
+      "tags": ["sandbox", "predictive", "practical", "reorganization", "construct"],
+      "notes": "dominant_operation == construct with semantic_state == mixed: active building in an environment that is not inherently cohesive yet."
+    },
+    {
+      "id": "reo_structural_modulation",
+      "scope": "window",
+      "family": "reorganization",
+      "mode": "institutional",
+      "conditions": {
+        "dominant_operation": ["modulate"],
+        "semantic_state": ["reinforcing"]
+      },
+      "title": "A Cohesive Shift in Baseline Norms",
+      "body": "The signals here agree on modifying the rules of engagement. Because the semantic state is reinforcing, this is likely a formalized or agreed-upon shift rather than a contested one—a policy update, a structural reorganization, or a deliberate change in pacing that everyone accepts as necessary.",
+      "tags": ["sandbox", "predictive", "institutional", "reorganization", "modulate"],
+      "notes": "dominant_operation == modulate with semantic_state == reinforcing: smooth, systemic adjustment."
+    },
+    {
+      "id": "reo_culminating_reorder",
+      "scope": "window",
+      "family": "reorganization",
+      "mode": "material",
+      "conditions": {
+        "lifecycle_route": ["culminating"],
+        "dominant_operation": ["construct"]
+      },
+      "title": "Finalizing the New Framework",
+      "body": "The pressure to build and arrange has reached its ceiling. This is the culmination of a longer structuring process. Rather than starting a new system from scratch, the immediate task is locking down the final configuration of whatever has been under construction.",
+      "tags": ["sandbox", "predictive", "material", "reorganization", "culminating"],
+      "notes": "lifecycle_route == culminating paired with construct."
+    },
+    {
+      "id": "reo_frictional_restructure",
+      "scope": "window",
+      "family": "reorganization",
+      "mode": "interpersonal",
+      "conditions": {
+        "dominant_operation": ["modulate"],
+        "semantic_state": ["frictional"]
+      },
+      "title": "Adjusting Under Friction",
+      "body": "The active signals demand an adjustment or reallocation, but the conditions are frictional. The pieces don't want to fit easily. Expect pushback on proposed changes, requiring compromise or extended negotiation to settle on the new arrangement.",
+      "tags": ["sandbox", "predictive", "interpersonal", "reorganization", "modulate"],
+      "notes": "modulate combined with frictional: changes are happening but not smoothly."
+    }
+  ]
+}

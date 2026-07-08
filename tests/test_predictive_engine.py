@@ -1,6 +1,6 @@
 """
 tests/test_predictive_engine.py
-Lightweight smoke tests for the predictive engine (predictive_v0.2).
+Lightweight smoke tests for the predictive engine (predictive_v0.3.1).
 
 Design constraints:
   - No Swiss Ephemeris required. The transit engine call inside the predictive
@@ -28,6 +28,8 @@ from engine.predictive_engine import (
     _event_to_signal,
     _build_daily_series,
     _detect_windows,
+    calculate_exit_orb,
+    compute_next_phase_state,
     _leading_index,
     _find_local_maxima,
     _compute_peak_prominence,
@@ -105,7 +107,7 @@ class TestPredictiveEngineContract(unittest.TestCase):
                     "windows", "daily_series", "signals", "debug"}
         self.assertTrue(expected.issubset(result.keys()),
                         f"Missing contract keys: {expected - result.keys()}")
-        self.assertEqual(result["formula_version"], "predictive_v0.2")
+        self.assertEqual(result["formula_version"], "predictive_v0.3.1")
 
     def test_3_empty_index_results(self):
         """Engine handles empty index_results without crashing."""
@@ -163,9 +165,21 @@ class TestSignalExtraction(unittest.TestCase):
             "aspect", "orb", "allowed_orb", "exactness",
             "event_weight", "target_relevance", "trigger_strength",
             "start_date", "peak_date", "end_date",
+            "event_kind", "independence_group", "activation_route",
+            "dominant_operation", "operation_profile", "operation_basis",
+            "epistemic_confidence", "confidence_components",
+            "confidence_state", "angle_eligibility",
         }
         self.assertTrue(required.issubset(sig.keys()),
                         f"Missing signal fields: {required - sig.keys()}")
+
+    def test_method_normalization_fields(self):
+        """Transit events normalize to a family/group/route tuple."""
+        sig = _event_to_signal(_FAKE_TRANSIT_EVENT, 0)
+        self.assertEqual(sig["method_family"], "TRANSIT")
+        self.assertEqual(sig["event_kind"], "ASPECT")
+        self.assertEqual(sig["independence_group"], "transit_clock")
+        self.assertEqual(sig["activation_route"], "transit_to_body")
 
     def test_trigger_strength_formula(self):
         """TriggerStrength = Exactness × EventWeight × TargetRelevance."""
@@ -198,6 +212,57 @@ class TestSignalExtraction(unittest.TestCase):
         self.assertIsInstance(sig["start_date"], date)
         self.assertIsInstance(sig["peak_date"],  date)
         self.assertIsInstance(sig["end_date"],   date)
+
+    def test_operation_profile_is_target_sensitive(self):
+        """Changing the natal target should materially change the operation vector."""
+        body_sig = _event_to_signal({**_FAKE_TRANSIT_EVENT, "natal_target": "Sun"}, 0, birth_time_status="exact")
+        angle_sig = _event_to_signal({**_FAKE_TRANSIT_EVENT, "natal_target": "ASC"}, 0, birth_time_status="exact")
+        self.assertNotEqual(body_sig["operation_profile"], angle_sig["operation_profile"])
+        self.assertNotEqual(body_sig["operation_basis"]["target_substrate"], angle_sig["operation_basis"]["target_substrate"])
+
+    def test_aspect_bias_changes_operation_profile(self):
+        """Aspect geometry should bias the operation profile before any coherence math exists."""
+        trine_sig = _event_to_signal({**_FAKE_TRANSIT_EVENT, "aspect": "Trine"}, 0, birth_time_status="exact")
+        square_sig = _event_to_signal({**_FAKE_TRANSIT_EVENT, "aspect": "Square"}, 0, birth_time_status="exact")
+        self.assertNotEqual(trine_sig["operation_profile"], square_sig["operation_profile"])
+        self.assertEqual(trine_sig["operation_basis"]["aspect_family"], "TRINE")
+        self.assertEqual(square_sig["operation_basis"]["aspect_family"], "SQUARE")
+
+    def test_angle_confidence_is_withheld_without_exact_birth_time(self):
+        """Angle-target epistemic scaffolding must fail gracefully when birth time is unknown."""
+        angle_sig = _event_to_signal({**_FAKE_TRANSIT_EVENT, "natal_target": "ASC"}, 0, birth_time_status="unknown")
+        self.assertEqual(angle_sig["angle_eligibility"], "withheld_without_exact_birth_time")
+        self.assertEqual(angle_sig["confidence_state"], "withheld_angle_target")
+        self.assertEqual(angle_sig["epistemic_confidence"], 0.0)
+
+    def test_non_angle_signal_keeps_nonzero_confidence_when_birth_time_is_approximate(self):
+        """Non-angle targets may remain inspectable under reduced confidence."""
+        sig = _event_to_signal({**_FAKE_TRANSIT_EVENT, "natal_target": "Sun"}, 0, birth_time_status="approximate")
+        self.assertEqual(sig["angle_eligibility"], "eligible")
+        self.assertGreater(sig["epistemic_confidence"], 0.0)
+        self.assertIn(sig["confidence_state"], {"provisional", "supported", "weak"})
+
+    def test_interval_aware_confidence(self):
+        """exact vs approximate vs withheld angle cases produce materially different confidence behavior."""
+        event = {**_FAKE_TRANSIT_EVENT, "natal_target": "Ascendant", "allowed_orb": 3.0, "exactness": 1.0}
+        
+        exact_sig = _event_to_signal(event, 0, birth_time_status="exact")
+        approx_sig = _event_to_signal(event, 0, birth_time_status="approximate")
+        unknown_sig = _event_to_signal(event, 0, birth_time_status="unknown")
+        
+        self.assertGreater(exact_sig["epistemic_confidence"], approx_sig["epistemic_confidence"])
+        self.assertGreater(approx_sig["epistemic_confidence"], unknown_sig["epistemic_confidence"])
+        self.assertIn("interval_sampled_uncertainty", str(unknown_sig["confidence_components"].get("sampling_state")))
+
+    def test_confidence_degradation_does_not_silently_reduce_intensity(self):
+        """confidence degradation does not silently reduce `intensity`."""
+        event = {**_FAKE_TRANSIT_EVENT, "natal_target": "Ascendant", "allowed_orb": 3.0, "exactness": 1.0}
+        exact_sig = _event_to_signal(event, 0, birth_time_status="exact")
+        approx_sig = _event_to_signal(event, 0, birth_time_status="approximate")
+        
+        # Their trigger strength and event weight should remain identical, decoupled from confidence
+        self.assertEqual(exact_sig["trigger_strength"], approx_sig["trigger_strength"])
+        self.assertEqual(exact_sig["event_weight"], approx_sig["event_weight"])
 
 
 class TestDailySeries(unittest.TestCase):
@@ -251,7 +316,7 @@ class TestWindowDetection(unittest.TestCase):
 
     def _make_series(self, scores: list[float], start_iso="2026-01-01"):
         """
-        Build a daily series with all v0.2 fields.
+        Build a daily series with all required predictive fields.
         Uses baseline=0 so residual=smooth=scores, making these tests
         equivalent to direct peak-detection on the supplied score pattern.
         """
@@ -305,13 +370,128 @@ class TestWindowDetection(unittest.TestCase):
         self.assertTrue(v02_required.issubset(w.keys()),
                         f"Missing v0.2 fields: {v02_required - w.keys()}")
 
-    def test_coherence_memory_are_none(self):
-        """coherence and memory are None placeholders in this phase."""
+    def test_coherence_memory_are_none_without_signals(self):
+        """Without active signals, coherence and memory stay unfilled."""
         scores = [0.0] * 2 + [0.3, 0.5, 0.4] + [0.0] * 2
         series = self._make_series(scores)
         windows = _detect_windows(series, [], {})
         self.assertIsNone(windows[0]["coherence"])
         self.assertIsNone(windows[0]["memory"])
+
+    def test_memory_fields_populate_with_active_signal(self):
+        """A live signal produces numeric memory plus lifecycle metadata."""
+        scores = [0.0] * 3 + [0.2, 0.4, 0.5, 0.4, 0.2] + [0.0] * 3
+        series = self._make_series(scores)
+        sig = _event_to_signal({
+            **_FAKE_TRANSIT_EVENT,
+            "transit_planet": "Saturn",
+            "natal_target": "Sun",
+            "aspect": "Conjunction",
+            "peak_orb": 1.2,
+            "entry_datetime": datetime(2026, 1, 2, tzinfo=timezone.utc),
+            "peak_datetime": datetime(2026, 1, 5, tzinfo=timezone.utc),
+            "leave_datetime": datetime(2026, 1, 9, tzinfo=timezone.utc),
+        }, 0, birth_time_status="exact")
+        windows = _detect_windows(series, [sig], {})
+        self.assertEqual(len(windows), 1)
+        self.assertIsNotNone(windows[0]["memory"])
+        self.assertGreater(windows[0]["memory"], 0.0)
+        self.assertEqual(windows[0]["pass_state"], "APPROACH")
+        self.assertEqual(windows[0]["lifecycle_route"], "active")
+        self.assertTrue(windows[0]["activation_key"])
+        self.assertIn("component_charge", windows[0]["memory_state"])
+        self.assertEqual(windows[0]["coherence"], 1.0)
+        self.assertEqual(windows[0]["semantic_state"], "reinforcing")
+        self.assertTrue(windows[0]["semantic_profile"])
+        self.assertTrue(windows[0]["dominant_operation"])
+        self.assertTrue(any(tag.startswith("op_") for tag in windows[0]["interpretive_tags"]))
+
+    def test_window_coherence_detects_conflicting_pressures(self):
+        """Different dominant operations should reduce window coherence audibly."""
+        scores = [0.0] * 3 + [0.3, 0.5, 0.4] + [0.0] * 3
+        series = self._make_series(scores)
+        sig_a = _event_to_signal({
+            **_FAKE_TRANSIT_EVENT,
+            "transit_planet": "Saturn",
+            "natal_target": "Sun",
+            "aspect": "Trine",
+            "entry_datetime": datetime(2026, 1, 2, tzinfo=timezone.utc),
+            "peak_datetime": datetime(2026, 1, 5, tzinfo=timezone.utc),
+            "leave_datetime": datetime(2026, 1, 8, tzinfo=timezone.utc),
+        }, 0, birth_time_status="exact")
+        sig_b = _event_to_signal({
+            **_FAKE_TRANSIT_EVENT,
+            "transit_planet": "Neptune",
+            "natal_target": "Moon",
+            "aspect": "Conjunction",
+            "peak_orb": 0.5,
+            "entry_datetime": datetime(2026, 1, 3, tzinfo=timezone.utc),
+            "peak_datetime": datetime(2026, 1, 5, tzinfo=timezone.utc),
+            "leave_datetime": datetime(2026, 1, 7, tzinfo=timezone.utc),
+        }, 1, birth_time_status="exact")
+        windows = _detect_windows(series, [sig_a, sig_b], {})
+        self.assertEqual(len(windows), 1)
+        self.assertLess(windows[0]["coherence"], 0.75)
+        self.assertEqual(windows[0]["semantic_state"], "opposed")
+        self.assertGreaterEqual(windows[0]["semantic_diagnostics"]["conflicting_pairs"], 1)
+        
+    def test_polarity_and_counterforce_cases(self):
+        """polarity/counterforce cases do not collapse into generic 'mixed' behavior."""
+        scores = [0.0] * 3 + [0.3, 0.5, 0.4] + [0.0] * 3
+        series = self._make_series(scores)
+        sig_a = _event_to_signal({
+            **_FAKE_TRANSIT_EVENT,
+            "transit_planet": "Saturn",
+            "natal_target": "Sun",
+            "aspect": "Trine",  # Constructive
+            "entry_datetime": datetime(2026, 1, 2, tzinfo=timezone.utc),
+            "peak_datetime": datetime(2026, 1, 5, tzinfo=timezone.utc),
+            "leave_datetime": datetime(2026, 1, 8, tzinfo=timezone.utc),
+        }, 0, birth_time_status="exact")
+        sig_b = _event_to_signal({
+            **_FAKE_TRANSIT_EVENT,
+            "transit_planet": "Uranus",
+            "natal_target": "Moon",
+            "aspect": "Square",  # Dissolving
+            "entry_datetime": datetime(2026, 1, 3, tzinfo=timezone.utc),
+            "peak_datetime": datetime(2026, 1, 5, tzinfo=timezone.utc),
+            "leave_datetime": datetime(2026, 1, 7, tzinfo=timezone.utc),
+        }, 1, birth_time_status="exact")
+        windows = _detect_windows(series, [sig_a, sig_b], {})
+        
+        diag = windows[0]["semantic_diagnostics"]
+        self.assertGreater(diag["polarity"], 0.0)
+        self.assertGreater(diag["counterforce"], 0.0)
+        self.assertEqual(windows[0]["semantic_state"], "opposed")
+
+    def test_window_coherence_rewards_same_direction_reinforcement(self):
+        """Compatible dominant operations should keep coherence high."""
+        scores = [0.0] * 3 + [0.3, 0.5, 0.4] + [0.0] * 3
+        series = self._make_series(scores)
+        sig_a = _event_to_signal({
+            **_FAKE_TRANSIT_EVENT,
+            "transit_planet": "Saturn",
+            "natal_target": "Sun",
+            "aspect": "Trine",
+            "entry_datetime": datetime(2026, 1, 2, tzinfo=timezone.utc),
+            "peak_datetime": datetime(2026, 1, 5, tzinfo=timezone.utc),
+            "leave_datetime": datetime(2026, 1, 8, tzinfo=timezone.utc),
+        }, 0, birth_time_status="exact")
+        sig_b = _event_to_signal({
+            **_FAKE_TRANSIT_EVENT,
+            "transit_planet": "Jupiter",
+            "natal_target": "Moon",
+            "aspect": "Conjunction",
+            "peak_orb": 0.8,
+            "entry_datetime": datetime(2026, 1, 3, tzinfo=timezone.utc),
+            "peak_datetime": datetime(2026, 1, 5, tzinfo=timezone.utc),
+            "leave_datetime": datetime(2026, 1, 7, tzinfo=timezone.utc),
+        }, 1, birth_time_status="exact")
+        windows = _detect_windows(series, [sig_a, sig_b], {})
+        self.assertEqual(len(windows), 1)
+        self.assertGreaterEqual(windows[0]["coherence"], 0.75)
+        self.assertEqual(windows[0]["semantic_state"], "reinforcing")
+        self.assertGreaterEqual(windows[0]["semantic_diagnostics"]["compatible_pairs"], 1)
 
     def test_two_separate_windows(self):
         """
@@ -351,6 +531,77 @@ class TestWindowDetection(unittest.TestCase):
         windows = _detect_windows(series, [], {})
         ids = [w["window_id"] for w in windows]
         self.assertEqual(len(ids), len(set(ids)))
+
+
+class TestPredictivePhaseFSM(unittest.TestCase):
+    """Finite state machine fixtures for predictive episode continuity."""
+
+    def test_calculate_exit_orb_expands_entry_orb(self):
+        """Exit orb should always be slightly larger than enter orb."""
+        self.assertAlmostEqual(calculate_exit_orb(2.0), 2.16, places=2)
+        self.assertAlmostEqual(calculate_exit_orb(0.0), 0.10, places=2)
+
+    def test_fsm_cannot_regress_to_prelude_from_approach(self):
+        """Inside the hysteresis band, APPROACH cannot flicker back to PRELUDE."""
+        next_state = compute_next_phase_state(
+            current_state="APPROACH",
+            current_orb=2.05,
+            enter_orb=2.0,
+            is_retrograde=False,
+            prior_exact_hit=False,
+        )
+        self.assertEqual(next_state, "APPROACH")
+
+    def test_fsm_hysteresis_band_maintains_state(self):
+        """Small orb oscillations inside the exit band should preserve continuity."""
+        state = compute_next_phase_state(
+            current_state="PRELUDE",
+            current_orb=1.99,
+            enter_orb=2.0,
+            is_retrograde=False,
+            prior_exact_hit=False,
+        )
+        self.assertEqual(state, "APPROACH")
+
+        state = compute_next_phase_state(
+            current_state=state,
+            current_orb=2.05,
+            enter_orb=2.0,
+            is_retrograde=False,
+            prior_exact_hit=False,
+        )
+        self.assertEqual(state, "APPROACH")
+
+    def test_fsm_retrograde_review_requires_prior_exact_hit(self):
+        """Retrograde review is illegal before an exact contact has happened."""
+        next_state = compute_next_phase_state(
+            current_state="APPROACH",
+            current_orb=1.3,
+            enter_orb=2.0,
+            is_retrograde=True,
+            prior_exact_hit=False,
+        )
+        self.assertEqual(next_state, "APPROACH")
+
+    def test_fsm_residual_field_only_reachable_after_resolution_or_aftermath(self):
+        """Aborted approaches leaving orb do not fabricate a residual field."""
+        next_state = compute_next_phase_state(
+            current_state="APPROACH",
+            current_orb=2.3,
+            enter_orb=2.0,
+            is_retrograde=False,
+            prior_exact_hit=False,
+        )
+        self.assertEqual(next_state, "PRELUDE")
+
+        resolved_state = compute_next_phase_state(
+            current_state="AFTERMATH",
+            current_orb=2.3,
+            enter_orb=2.0,
+            is_retrograde=False,
+            prior_exact_hit=True,
+        )
+        self.assertEqual(resolved_state, "RESIDUAL_FIELD")
 
 
 class TestRegistry(unittest.TestCase):
@@ -545,7 +796,7 @@ class TestWindowDetectionRegression(unittest.TestCase):
         baseline: list[float],
         start_iso: str = "2019-01-01",
     ) -> list[dict]:
-        """Build a series with all v0.2 fields from explicit smooth/baseline arrays."""
+        """Build a series with all required predictive fields from explicit smooth/baseline arrays."""
         import datetime as _dt
         start = date.fromisoformat(start_iso)
         return [
@@ -744,8 +995,8 @@ class TestWindowDetectionRegression(unittest.TestCase):
         # ── Regression assertions ──────────────────────────────
 
         # 1. Formula version updated
-        self.assertEqual(result["formula_version"], "predictive_v0.2",
-            "Formula version must be predictive_v0.2.")
+        self.assertEqual(result["formula_version"], "predictive_v0.3.1",
+            "Formula version must be predictive_v0.3.1.")
 
         # 2. Not a single mega-window
         self.assertNotEqual(len(windows), 1,
@@ -794,7 +1045,7 @@ class TestSandboxEndToEnd(unittest.TestCase):
 
     No ephemeris required: these tests construct a known-good context dict
     manually and verify that:
-      (a) _build_predictive_sandbox_context forwards all v0.2 window fields
+      (a) _build_predictive_sandbox_context forwards all required window fields
       (b) render_template("predictive_sandbox", ctx) returns the dedicated
           template HTML — not the generic fallback
       (c) The rendered HTML contains every required section header and field name
@@ -806,7 +1057,7 @@ class TestSandboxEndToEnd(unittest.TestCase):
     # ── Shared minimal predictive_results fixture ──────────────
 
     _FAKE_PREDICTIVE_RESULTS = {
-        "formula_version": "predictive_v0.2",
+        "formula_version": "predictive_v0.3.1",
         "start_date": "2019-01-01",
         "end_date":   "2019-12-31",
         "windows": [
@@ -825,15 +1076,53 @@ class TestSandboxEndToEnd(unittest.TestCase):
                 "active_slow_chapter_signals": ["sig_sat_0001"],
                 "active_fast_trigger_signals": ["sig_mar_0042"],
                 "active_signals":              ["sig_sat_0001", "sig_mar_0042"],
-                "coherence":                   None,
-                "memory":                      None,
+                "coherence":                   0.82,
+                "semantic_profile": {
+                    "stabilize": 0.34,
+                    "amplify": 0.12,
+                    "activate": 0.16,
+                    "disrupt": 0.11,
+                    "dissolve": 0.08,
+                    "reveal": 0.19,
+                },
+                "dominant_operation":          "stabilize",
+                "semantic_state":              "reinforcing",
+                "semantic_diagnostics": {
+                    "participating_signal_count": 2,
+                    "pair_count": 1,
+                    "compatible_pairs": 1,
+                    "conflicting_pairs": 0,
+                    "average_signal_confidence": 0.84,
+                    "polarity": 0.0,
+                    "coalition": 0.5,
+                    "counterforce": 0.0,
+                    "complexity": 0.0,
+                },
+                "memory":                      0.7242,
+                "memory_state": {
+                    "activation_key": "transit_clock:TRANSIT:ASPECT:Saturn:Sun:Conjunction:transit_to_body",
+                    "first_seen_date": "2019-03-15",
+                    "episode_count": 1,
+                    "prior_episode_count": 0,
+                    "current_episode_id": "transit_clock:TRANSIT:ASPECT:Saturn:Sun:Conjunction:transit_to_body:episode_01",
+                    "pass_state": "APPROACH",
+                    "component_charge": 0.7242,
+                    "lifecycle_route": "active",
+                    "formula_version": "predictive_v0.3.1",
+                },
+                "activation_key":               "transit_clock:TRANSIT:ASPECT:Saturn:Sun:Conjunction:transit_to_body",
+                "pass_state":                   "APPROACH",
+                "lifecycle_route":              "active",
                 "interpretive_tags":           [],
             }
         ],
         "signals": [
             {
                 "signal_id":        "sig_sat_0001",
-                "method_family":    "transit",
+                "method_family":    "TRANSIT",
+                "event_kind":       "ASPECT",
+                "independence_group": "transit_clock",
+                "activation_route": "transit_to_body",
                 "source_body":      "Saturn",
                 "target_body":      "Sun",
                 "aspect":           "Conjunction",
@@ -843,6 +1132,31 @@ class TestSandboxEndToEnd(unittest.TestCase):
                 "event_weight":     0.85,
                 "target_relevance": 0.90,
                 "trigger_strength": 0.56025,
+                "dominant_operation": "stabilize",
+                "operation_profile": {
+                    "stabilize": 0.52,
+                    "amplify": 0.07,
+                    "activate": 0.12,
+                    "disrupt": 0.13,
+                    "dissolve": 0.07,
+                    "reveal": 0.23,
+                },
+                "operation_basis": {
+                    "source_profile": "Saturn",
+                    "target_substrate": "luminary",
+                    "aspect_family": "CONJUNCTION",
+                    "method_behavior": "TRANSIT",
+                },
+                "epistemic_confidence": 0.88,
+                "confidence_components": {
+                    "availability_gate": 1.0,
+                    "record_integrity": 1.0,
+                    "calculation_integrity": 1.0,
+                    "relation_robustness": 0.88,
+                    "sampling_state": "exactness_proxy_scaffold",
+                },
+                "confidence_state": "supported",
+                "angle_eligibility": "eligible",
                 "start_date":       date(2019, 1, 1),
                 "peak_date":        date(2019, 3, 15),
                 "end_date":         date(2019, 6, 30),
@@ -899,11 +1213,11 @@ class TestSandboxEndToEnd(unittest.TestCase):
             "simple_mode":    False,
         }
 
-    # ── 1. Context builder forwards all v0.2 fields ────────────
+    # 1. Context builder forwards required predictive window fields
 
-    def test_context_builder_window_v02_fields(self):
+    def test_context_builder_window_v03_fields(self):
         """
-        _build_predictive_sandbox_context must forward every v0.2 window field.
+        _build_predictive_sandbox_context must forward every required window field.
         Missing fields are what caused the 'dict has no attribute' Jinja error.
         """
         sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -927,7 +1241,7 @@ class TestSandboxEndToEnd(unittest.TestCase):
         self.assertEqual(len(ctx["windows"]), 1)
 
         w = ctx["windows"][0]
-        v02_required = {
+        required_window_fields = {
             "local_peak_intensity",
             "structural_field_intensity",
             "total_intensity",
@@ -935,15 +1249,24 @@ class TestSandboxEndToEnd(unittest.TestCase):
             "active_slow_chapter_signals",
             "active_fast_trigger_signals",
         }
-        missing = v02_required - w.keys()
+        missing = required_window_fields - w.keys()
         self.assertFalse(
             missing,
-            f"Context builder dropped these v0.2 window fields: {missing}\n"
-            "This causes a Jinja2 AttributeError → silent fallback to generic renderer."
+            f"Context builder dropped these required window fields: {missing}\n"
+            "This causes a Jinja2 AttributeError and a silent fallback to the generic renderer."
         )
+        self.assertIn("memory_state", w)
+        self.assertIn("pass_state", w)
+        self.assertIn("lifecycle_route", w)
+        self.assertEqual(w["pass_state"], "APPROACH")
+        self.assertIn("semantic_profile", w)
+        self.assertIn("dominant_operation", w)
+        self.assertIn("semantic_state", w)
+        self.assertIn("semantic_diagnostics", w)
+        self.assertEqual(w["semantic_state"], "reinforcing")
 
-    def test_context_builder_daily_series_v02_fields(self):
-        """Daily series entries must include all v0.2 fields."""
+    def test_context_builder_daily_series_v03_fields(self):
+        """Daily series entries must include all required predictive fields."""
         sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
         from generate import _build_predictive_sandbox_context
         from datetime import timezone
@@ -963,6 +1286,35 @@ class TestSandboxEndToEnd(unittest.TestCase):
         for field in ("baseline_score", "residual_score", "structural_raw", "trigger_raw"):
             self.assertIn(field, d,
                 f"daily_series entry missing '{field}' — template will raise AttributeError.")
+
+    def test_context_builder_forwards_signal_v031_fields(self):
+        """Signal-level semantic scaffolding must survive context building untouched."""
+        sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        from generate import _build_predictive_sandbox_context
+        from datetime import timezone
+
+        start = datetime(2019, 1,  1, tzinfo=timezone.utc)
+        end   = datetime(2019, 12, 31, tzinfo=timezone.utc)
+
+        ctx = _build_predictive_sandbox_context(
+            variables=self._make_variables(),
+            index_results={},
+            payload=self._make_payload(),
+            report_start=start,
+            report_end=end,
+        )
+        self.assertEqual(len(ctx["signals"]), 1)
+        sig = ctx["signals"][0]
+        for field in (
+            "dominant_operation",
+            "operation_profile",
+            "operation_basis",
+            "epistemic_confidence",
+            "confidence_components",
+            "confidence_state",
+            "angle_eligibility",
+        ):
+            self.assertIn(field, sig, f"context builder dropped signal field '{field}'")
 
     # ── 2. Template renders with dedicated layout ───────────────
 
@@ -1085,9 +1437,188 @@ class TestSandboxEndToEnd(unittest.TestCase):
 
 # ── Manual debug runner ────────────────────────────────────────
 
+from unittest.mock import patch
+from engine.transit_engine import scan_lunations
+
+class TestLunationClockFamily(unittest.TestCase):
+    @patch("engine.transit_engine._find_lunations")
+    def test_eclipse_suppresses_duplicate_lunation(self, mock_find_lunations):
+        """eclipse suppresses duplicate plain lunation vote for the same event"""
+        eclipse_date = datetime(2026, 8, 12, tzinfo=timezone.utc)
+        mock_find_lunations.return_value = [
+            (eclipse_date, 15.0, "NEW_MOON")
+        ]
+
+        natal_payload = {
+            "angles": {"Ascendant": {"longitude": 15.0}},
+            "standard_planets": {"Moon": {"longitude": 15.0, "house": 1}},
+        }
+
+        eclipse_events = [{
+            "event_type": "eclipse",
+            "eclipse_type": "Solar",
+            "peak_date": "August 12, 2026",
+        }]
+
+        lunations = scan_lunations(
+            natal_payload,
+            start_date=eclipse_date,
+            end_date=eclipse_date,
+            eclipse_events=eclipse_events
+        )
+        self.assertEqual(len(lunations), 0, "Duplicate lunation was not suppressed")
+
+    @patch("engine.transit_engine._find_lunations")
+    def test_second_clock_family_does_not_break_anti_double_counting(self, mock_find_lunations):
+        """a second clock family does not break anti-double-counting rules"""
+        lunation_date = datetime(2026, 8, 26, tzinfo=timezone.utc)
+        mock_find_lunations.return_value = [
+            (lunation_date, 15.0, "FULL_MOON")
+        ]
+
+        natal_payload = {
+            "angles": {"Ascendant": {"longitude": 15.0}},
+            "standard_planets": {"Moon": {"longitude": 15.0, "house": 1}},
+        }
+
+        eclipse_events = [{
+            "event_type": "eclipse",
+            "eclipse_type": "Solar",
+            "peak_date": "August 12, 2026",
+        }]
+
+        lunations = scan_lunations(
+            natal_payload,
+            start_date=lunation_date,
+            end_date=lunation_date,
+            eclipse_events=eclipse_events
+        )
+        self.assertEqual(len(lunations), 2, "Valid lunation on different date was suppressed")
+
+class TestSandboxJSONLibrary(unittest.TestCase):
+    _WINDOW_ROUTING_KEYS = {
+        "window_id",
+        "start_date",
+        "peak_date",
+        "end_date",
+        "local_peak_intensity",
+        "structural_field_intensity",
+        "total_intensity",
+        "intensity",
+        "prominence",
+        "gradient",
+        "leading_index",
+        "active_slow_chapter_signals",
+        "active_fast_trigger_signals",
+        "active_signals",
+        "active_signal_count",
+        "coherence",
+        "semantic_profile",
+        "dominant_operation",
+        "semantic_state",
+        "semantic_diagnostics",
+        "memory",
+        "memory_state",
+        "activation_key",
+        "pass_state",
+        "lifecycle_route",
+        "method_family",
+        "interpretive_tags",
+    }
+
+    def test_schema_validation_and_skip(self):
+        """Test safe fallback behavior when no block matches."""
+        sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        from generate import _predictive_window_narrative
+
+        res = _predictive_window_narrative({"leading_index": "foo", "gradient": "bar"}, [])
+        self.assertEqual(res["title"], "An Unclassified Window")
+        self.assertEqual(res["dimension"], "foo")
+
+    def test_strong_condition_override(self):
+        """Test that a block with more conditions overrides a weaker block."""
+        sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        from generate import _predictive_window_narrative
+
+        blocks = [
+            {
+                "id": "weak",
+                "title": "Weak Block",
+                "conditions": {"semantic_state": ["reinforcing"]}
+            },
+            {
+                "id": "strong",
+                "title": "Strong Block",
+                "conditions": {"semantic_state": ["reinforcing"], "gradient": ["rising"]}
+            }
+        ]
+
+        # Match only the weak condition
+        res1 = _predictive_window_narrative({"semantic_state": "reinforcing", "gradient": "plateau"}, blocks)
+        self.assertEqual(res1["dimension"], "weak")
+
+        # Match the strong condition (2 conditions > 1 condition)
+        res2 = _predictive_window_narrative({"semantic_state": "reinforcing", "gradient": "rising"}, blocks)
+        self.assertEqual(res2["dimension"], "strong")
+
+    def test_real_blocks_directory_loads_new_writes(self):
+        """Test that the real blocks directory loads and contains entries from 30_new_writes."""
+        sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        from generate import _load_predictive_window_blocks
+
+        blocks = _load_predictive_window_blocks()
+        self.assertGreater(len(blocks), 0)
+
+        # Check that we found one of the new blocks from 30_new_writes
+        # (e.g. ps_frictional_plateau from pressure_system.json)
+        found_new_write = any(b.get("id") == "ps_frictional_plateau" for b in blocks)
+        self.assertTrue(found_new_write, "Could not find 'ps_frictional_plateau' from 30_new_writes in loaded blocks")
+
+    def test_real_blocks_meet_minimum_schema_and_route_on_window_fields(self):
+        """Active block files must parse to the scaffold schema and route on exposed window keys."""
+        sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        from generate import _load_predictive_window_blocks
+
+        required = {"id", "scope", "family", "mode", "conditions", "title", "body", "tags", "notes"}
+        blocks = _load_predictive_window_blocks()
+        self.assertGreater(len(blocks), 0)
+
+        for block in blocks:
+            with self.subTest(block_id=block.get("id", "<missing>")):
+                self.assertTrue(required.issubset(block.keys()))
+                self.assertIsInstance(block["conditions"], dict)
+                unknown_keys = set(block["conditions"]) - self._WINDOW_ROUTING_KEYS
+                self.assertFalse(
+                    unknown_keys,
+                    f"Block {block.get('id')} routes on non-window keys: {sorted(unknown_keys)}"
+                )
+
+    def test_method_family_condition_can_match_window_context(self):
+        """method_family-gated blocks are reachable once window context forwards that field."""
+        sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        from generate import _predictive_window_narrative
+
+        blocks = [
+            {
+                "id": "return_exactness",
+                "family": "threshold_event",
+                "title": "Return Exactness",
+                "body": "",
+                "notes": "",
+                "conditions": {"method_family": ["RETURN"], "pass_state": ["EXACTNESS"]},
+            }
+        ]
+
+        res = _predictive_window_narrative(
+            {"method_family": "RETURN", "pass_state": "EXACTNESS", "gradient": "plateau"},
+            blocks,
+        )
+        self.assertEqual(res["dimension"], "return_exactness")
+
+
 if __name__ == "__main__":
     print("=" * 60)
-    print("Predictive Engine Tests (predictive_v0.2)")
+    print("Predictive Engine Tests (predictive_v0.3.1)")
     print("=" * 60)
     loader = unittest.TestLoader()
     suite  = unittest.TestSuite()
@@ -1096,11 +1627,14 @@ if __name__ == "__main__":
         TestSignalExtraction,
         TestDailySeries,
         TestWindowDetection,
+        TestPredictivePhaseFSM,
         TestRegistry,
         TestProminenceHelpers,
         TestDailySeriesV02,
         TestWindowDetectionRegression,
         TestSandboxEndToEnd,
+        TestLunationClockFamily,
+        TestSandboxJSONLibrary,
     ]:
         suite.addTests(loader.loadTestsFromTestCase(cls))
     runner = unittest.TextTestRunner(verbosity=2)

@@ -1,0 +1,21 @@
+{
+  "id": "legacy_catalyst_releasing",
+  "scope": "window",
+  "family": "legacy_conversion",
+  "mode": "situational",
+  "conditions": {
+    "leading_index": [
+      "CATALYST"
+    ],
+    "gradient": [
+      "releasing"
+    ]
+  },
+  "title": "The Ripple Reaches Its Edge",
+  "body": "The reach of an earlier action is settling. What was going to travel has largely arrived where it was going, and the pull to keep amplifying it is easing.\nAction: Assess the actual reach of what you set in motion before deciding whether it is worth a second push.",
+  "tags": [
+    "legacy",
+    "needs_adaptation"
+  ],
+  "notes": "Converted from predictive_window_blocks.json. Routes on legacy leading_index."
+}

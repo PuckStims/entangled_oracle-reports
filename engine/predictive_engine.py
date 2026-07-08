@@ -1,6 +1,6 @@
 """
 engine/predictive_engine.py — Entangled Oracle Predictive Engine
-Formula version: predictive_v0.2
+Formula version: predictive_v0.3.1
 
 Architecture notes:
   - Phases 1–4 live here: skeleton, signal extraction, registry, window detection.
@@ -20,12 +20,31 @@ v0.2 changes (window detection redesign):
   - Windows expose local_peak_intensity, structural_field_intensity, total_intensity,
     prominence, active_slow_chapter_signals, active_fast_trigger_signals.
   - Daily series exposes baseline_score and residual_score for diagnostics.
+
+v0.3 changes (method normalization + memory):
+  - Predictive signals normalize method_family vs event_kind vs
+    independence_group vs activation_route.
+  - Windows now compute episode-based memory charge when active signals
+    are present instead of leaving the field empty.
+  - Windows expose pass_state, lifecycle_route, memory_state, and
+    activation_key as sandbox diagnostics.
+
+v0.3.1 changes (semantic atomic layer scaffolding):
+  - Predictive signals now carry bounded operation profiles.
+  - Aspect geometry biases those operation vectors without computing
+    higher-order coherence yet.
+  - Signals also carry epistemic confidence scaffolding, including
+    angle-eligibility gating and explicit confidence components.
 """
 
 from __future__ import annotations
 
+import math
 from datetime import datetime, timedelta, timezone, date
 from typing import Any
+
+
+_PREDICTIVE_FORMULA_VERSION = "predictive_v0.3.1"
 
 
 # ── Phase 2: Signal source configuration ──────────────────────
@@ -90,6 +109,92 @@ _DEFAULT_RELEVANCE = 0.60
 # Their activation spans months to years and form the baseline field rather
 # than constituting discrete predictive windows on their own.
 _STRUCTURAL_BODIES: frozenset[str] = frozenset({"Saturn", "Uranus", "Neptune", "Pluto"})
+
+_ANGLE_TARGETS: frozenset[str] = frozenset({
+    "ASC", "Ascendant",
+    "MC", "Midheaven",
+    "IC", "Imum Coeli",
+    "DSC", "Descendant",
+    "Vertex",
+})
+
+_METHOD_WEIGHT_BY_GROUP: dict[str, float] = {
+    "transit_clock": 1.00,
+    "lunar_phase_clock": 0.92,
+    "return_clock": 0.88,
+    "progression_clock": 0.94,
+    "solar_arc_clock": 0.96,
+    "unknown_clock": 0.80,
+}
+
+_OPERATION_AXES: tuple[str, ...] = (
+    "stabilize",
+    "amplify",
+    "activate",
+    "disrupt",
+    "dissolve",
+    "reveal",
+)
+
+_SOURCE_OPERATION_BASE: dict[str, dict[str, float]] = {
+    "Saturn":  {"stabilize": 0.92, "amplify": 0.12, "activate": 0.18, "disrupt": 0.28, "dissolve": 0.12, "reveal": 0.44},
+    "Uranus":  {"stabilize": 0.12, "amplify": 0.30, "activate": 0.74, "disrupt": 0.94, "dissolve": 0.18, "reveal": 0.48},
+    "Neptune": {"stabilize": 0.10, "amplify": 0.32, "activate": 0.20, "disrupt": 0.18, "dissolve": 0.96, "reveal": 0.54},
+    "Pluto":   {"stabilize": 0.22, "amplify": 0.34, "activate": 0.26, "disrupt": 0.68, "dissolve": 0.58, "reveal": 0.90},
+    "Jupiter": {"stabilize": 0.30, "amplify": 0.96, "activate": 0.42, "disrupt": 0.16, "dissolve": 0.10, "reveal": 0.38},
+    "Mars":    {"stabilize": 0.10, "amplify": 0.28, "activate": 0.96, "disrupt": 0.62, "dissolve": 0.08, "reveal": 0.26},
+}
+_DEFAULT_SOURCE_OPERATION_BASE = {
+    "stabilize": 0.22,
+    "amplify": 0.22,
+    "activate": 0.22,
+    "disrupt": 0.22,
+    "dissolve": 0.22,
+    "reveal": 0.22,
+}
+
+_TARGET_SUBSTRATE_BIAS: dict[str, dict[str, float]] = {
+    "angle": {"stabilize": -0.05, "amplify": 0.10, "activate": 0.25, "disrupt": 0.08, "dissolve": -0.05, "reveal": 0.20},
+    "luminary": {"stabilize": 0.05, "amplify": 0.10, "activate": 0.10, "disrupt": 0.00, "dissolve": 0.05, "reveal": 0.16},
+    "personal": {"stabilize": 0.00, "amplify": 0.05, "activate": 0.14, "disrupt": 0.05, "dissolve": 0.00, "reveal": 0.08},
+    "social_outer": {"stabilize": 0.08, "amplify": 0.00, "activate": -0.02, "disrupt": 0.08, "dissolve": 0.04, "reveal": 0.10},
+    "specialist": {"stabilize": -0.04, "amplify": 0.06, "activate": 0.08, "disrupt": 0.10, "dissolve": 0.08, "reveal": 0.24},
+    "house": {"stabilize": 0.02, "amplify": 0.00, "activate": 0.06, "disrupt": 0.02, "dissolve": 0.00, "reveal": 0.02},
+    "generic": {"stabilize": 0.00, "amplify": 0.00, "activate": 0.00, "disrupt": 0.00, "dissolve": 0.00, "reveal": 0.00},
+}
+
+_ASPECT_OPERATION_BIAS: dict[str, dict[str, float]] = {
+    "CONJUNCTION": {"stabilize": 0.08, "amplify": 0.12, "activate": 0.16, "disrupt": 0.02, "dissolve": 0.02, "reveal": 0.10},
+    "TRINE": {"stabilize": 0.16, "amplify": 0.10, "activate": 0.04, "disrupt": -0.14, "dissolve": -0.06, "reveal": 0.02},
+    "SEXTILE": {"stabilize": 0.08, "amplify": 0.08, "activate": 0.06, "disrupt": -0.08, "dissolve": -0.04, "reveal": 0.02},
+    "SQUARE": {"stabilize": -0.18, "amplify": 0.04, "activate": 0.10, "disrupt": 0.22, "dissolve": 0.06, "reveal": 0.08},
+    "OPPOSITION": {"stabilize": -0.12, "amplify": 0.06, "activate": 0.10, "disrupt": 0.18, "dissolve": 0.08, "reveal": 0.12},
+    "GENERIC": {"stabilize": 0.00, "amplify": 0.00, "activate": 0.00, "disrupt": 0.00, "dissolve": 0.00, "reveal": 0.00},
+}
+
+_METHOD_OPERATION_MULTIPLIER: dict[str, dict[str, float]] = {
+    "TRANSIT": {"stabilize": 1.00, "amplify": 1.00, "activate": 1.00, "disrupt": 1.00, "dissolve": 1.00, "reveal": 1.00},
+    "LUNATION": {"stabilize": 0.92, "amplify": 1.06, "activate": 0.96, "disrupt": 0.96, "dissolve": 1.06, "reveal": 1.02},
+    "RETURN": {"stabilize": 1.02, "amplify": 0.98, "activate": 0.94, "disrupt": 0.92, "dissolve": 0.94, "reveal": 1.06},
+    "PROGRESSION": {"stabilize": 0.96, "amplify": 0.96, "activate": 0.90, "disrupt": 0.90, "dissolve": 1.04, "reveal": 1.08},
+    "SOLAR_ARC": {"stabilize": 0.98, "amplify": 0.96, "activate": 0.94, "disrupt": 0.96, "dissolve": 0.96, "reveal": 1.06},
+    "UNKNOWN": {"stabilize": 1.00, "amplify": 1.00, "activate": 1.00, "disrupt": 1.00, "dissolve": 1.00, "reveal": 1.00},
+}
+
+_CONSTRUCTIVE_OPERATIONS: frozenset[str] = frozenset({"stabilize", "amplify", "activate"})
+_DISSOLVING_OPERATIONS: frozenset[str] = frozenset({"disrupt", "dissolve"})
+
+_MEMORY_DECAY_YEARS = 1.5
+_FSM_EXACTNESS_THRESHOLD = 0.5
+ALLOWED_STATES: frozenset[str] = frozenset({
+    "PRELUDE",
+    "APPROACH",
+    "EXACTNESS",
+    "AFTERMATH",
+    "RETROGRADE_REVIEW",
+    "RESOLUTION",
+    "RESIDUAL_FIELD",
+})
 
 
 # ── Phase 3: Predictive Component Registry ────────────────────
@@ -174,7 +279,7 @@ def compute_predictive_windows(
     Returns the Phase 1/v0.2 contract shape regardless of sub-phase failures:
 
         {
-            "formula_version": "predictive_v0.2",
+            "formula_version": _PREDICTIVE_FORMULA_VERSION,
             "start_date":      "YYYY-MM-DD",
             "end_date":        "YYYY-MM-DD",
             "windows":         [...],
@@ -216,7 +321,7 @@ def compute_predictive_windows(
     debug["window_count"] = len(windows)
 
     return {
-        "formula_version": "predictive_v0.2",
+        "formula_version": _PREDICTIVE_FORMULA_VERSION,
         "start_date":      _fmt_date(start_date),
         "end_date":        _fmt_date(end_date),
         "windows":         windows,
@@ -248,23 +353,24 @@ def _collect_transit_signals(
     all_events = timeline.get("all_events", [])
     debug["raw_event_count"] = len(all_events)
 
+    birth_time_status = _predictive_birth_time_status(natal_payload)
     signals = []
     for i, event in enumerate(all_events):
-        sig = _event_to_signal(event, i)
+        sig = _event_to_signal(event, i, birth_time_status=birth_time_status)
         if sig is not None:
             signals.append(sig)
 
     return signals
 
 
-def _event_to_signal(event: dict, index: int) -> dict | None:
+def _event_to_signal(event: dict, index: int, birth_time_status: str = "unknown") -> dict | None:
     """
     Converts one transit engine event dict to a PredictiveSignal node.
 
     Returns None when the event lacks the minimum data needed to score
     (e.g., a station event with no natal target and no peak datetime).
     """
-    event_type    = event.get("event_type", "transit")
+    event_type    = str(event.get("event_type", "transit") or "transit").strip().lower()
     source_body   = str(event.get("transit_planet") or event.get("planet") or "")
     target_body   = str(event.get("natal_target") or event.get("house_number") or "")
     aspect        = str(event.get("aspect") or event.get("aspect_name") or "")
@@ -303,9 +409,18 @@ def _event_to_signal(event: dict, index: int) -> dict | None:
     if end_dt is None:
         end_dt = peak_dt
 
-    return {
+    method_family = _normalize_method_family(event_type)
+    event_kind = _normalize_event_kind(event_type, event)
+    independence_group = _independence_group_for_family(method_family)
+    activation_route = _activation_route_for_signal(method_family, event_kind, target_body)
+
+    signal = {
         "signal_id":         f"sig_{event_type[:3]}_{index:04d}",
-        "method_family":     event_type,
+        "method_family":     method_family,
+        "event_kind":        event_kind,
+        "independence_group": independence_group,
+        "activation_route":  activation_route,
+        "source_event_type": event_type,
         "source_body":       source_body,
         "target_body":       target_body,
         "aspect":            aspect,
@@ -320,10 +435,28 @@ def _event_to_signal(event: dict, index: int) -> dict | None:
         "theme_convergence": round(theme_convergence, 5),
         "routing_state":     str(event.get("routing_state") or "").strip(),
         "pass_sequence":     str(event.get("pass_sequence") or "").strip(),
+        "cycle_id":          str(event.get("cycle_id") or "").strip(),
+        "contact_count":     int(event.get("contact_count", 0) or 0),
+        "multiple_exact_passes": bool(event.get("multiple_exact_passes")),
         "start_date":        _to_date(start_dt),
         "peak_date":         _to_date(peak_dt),
         "end_date":          _to_date(end_dt),
     }
+    operation_profile, operation_basis, dominant_operation = _compute_signal_operation_profile(signal)
+    epistemic_confidence, confidence_components, confidence_state, angle_eligibility = _compute_signal_epistemic_confidence(
+        signal,
+        birth_time_status=birth_time_status,
+    )
+    signal.update({
+        "operation_profile": operation_profile,
+        "operation_basis": operation_basis,
+        "dominant_operation": dominant_operation,
+        "epistemic_confidence": epistemic_confidence,
+        "confidence_components": confidence_components,
+        "confidence_state": confidence_state,
+        "angle_eligibility": angle_eligibility,
+    })
+    return signal
 
 
 # ── Phase 4a: Daily resonance series ──────────────────────────
@@ -513,6 +646,14 @@ def _detect_windows(
         else:
             gradient = "plateau"
 
+        memory_charge, memory_state = _window_memory(active_sigs, signals, peak_d, gradient)
+        coherence, semantic_profile, dominant_operation, semantic_state, semantic_diagnostics = _window_semantic_metrics(active_sigs)
+        interpretive_tags = []
+        if semantic_state:
+            interpretive_tags.append(f"semantic_{semantic_state}")
+        if dominant_operation:
+            interpretive_tags.append(f"op_{dominant_operation}")
+
         windows.append({
             "window_id":                    f"pw_{w_idx + 1:03d}",
             "start_date":                   start_d.isoformat(),
@@ -531,10 +672,18 @@ def _detect_windows(
             "active_signals":               [s["signal_id"] for s in active_sigs],
             "active_slow_chapter_signals":  [s["signal_id"] for s in slow_sigs],
             "active_fast_trigger_signals":  [s["signal_id"] for s in trigger_sigs],
-            # Phase 2+ placeholders
-            "coherence":                    None,
-            "memory":                       None,
-            "interpretive_tags":            [],
+            # Phase 3+ diagnostics
+            "coherence":                    coherence,
+            "semantic_profile":             semantic_profile,
+            "dominant_operation":           dominant_operation,
+            "semantic_state":               semantic_state,
+            "semantic_diagnostics":         semantic_diagnostics,
+            "memory":                       memory_charge,
+            "memory_state":                 memory_state,
+            "activation_key":               memory_state.get("activation_key", ""),
+            "pass_state":                   memory_state.get("pass_state", ""),
+            "lifecycle_route":              memory_state.get("lifecycle_route", ""),
+            "interpretive_tags":            interpretive_tags,
         })
 
     return windows
@@ -722,6 +871,531 @@ def _leading_index(active_sigs: list[dict], index_results: dict) -> str:
         return max(ranked, key=lambda kv: kv[1])[0]
 
     return "KVQ"
+
+
+def _normalize_method_family(event_type: str) -> str:
+    if event_type in {"transit", "station", "ingress", "proprietary_transit"}:
+        return "TRANSIT"
+    if event_type in {"eclipse", "lunation", "new_moon", "full_moon"}:
+        return "LUNATION"
+    if event_type == "return":
+        return "RETURN"
+    if event_type == "progression":
+        return "PROGRESSION"
+    if event_type == "solar_arc":
+        return "SOLAR_ARC"
+    return event_type.upper() if event_type else "UNKNOWN"
+
+
+def _predictive_birth_time_status(natal_payload: dict) -> str:
+    user_profile = natal_payload.get("user_profile") or {}
+    if bool(natal_payload.get("simple_mode") or user_profile.get("simple_mode")):
+        return "unknown"
+
+    raw_state = str(
+        user_profile.get("birth_time_state")
+        or user_profile.get("birth_time_confidence")
+        or natal_payload.get("birth_time_state")
+        or ""
+    ).strip().lower()
+    if "approx" in raw_state:
+        return "approximate"
+    if "unknown" in raw_state:
+        return "unknown"
+    return "exact"
+
+
+def _normalize_event_kind(event_type: str, event: dict) -> str:
+    if event_type == "transit":
+        return "ASPECT"
+    if event_type == "station":
+        return "STATION"
+    if event_type == "ingress":
+        return "INGRESS"
+    if event_type == "eclipse":
+        return "ECLIPSE"
+    if event_type == "return":
+        return "EXACT_RETURN"
+    if event_type == "lunation":
+        subtype = str(event.get("lunation_type") or "").strip().upper()
+        return subtype or "LUNATION"
+    return event_type.upper() if event_type else "UNKNOWN"
+
+
+def _independence_group_for_family(method_family: str) -> str:
+    return {
+        "TRANSIT": "transit_clock",
+        "LUNATION": "lunar_phase_clock",
+        "RETURN": "return_clock",
+        "PROGRESSION": "progression_clock",
+        "SOLAR_ARC": "solar_arc_clock",
+    }.get(method_family, "unknown_clock")
+
+
+def _activation_route_for_signal(method_family: str, event_kind: str, target_body: str) -> str:
+    if method_family == "TRANSIT":
+        if event_kind == "STATION":
+            return "stationary_transit"
+        if event_kind == "INGRESS":
+            return "ingress_to_house"
+        if target_body in _ANGLE_TARGETS:
+            return "transit_to_angle"
+        if target_body.isdigit():
+            return "house_context"
+        return "transit_to_body"
+
+    if method_family == "LUNATION":
+        if target_body in _ANGLE_TARGETS:
+            return "lunation_to_angle"
+        return "lunation_to_body"
+
+    if method_family == "RETURN":
+        return "exact_return_to_body"
+
+    if method_family == "PROGRESSION":
+        if target_body in _ANGLE_TARGETS:
+            return "progression_to_angle"
+        return "progression_to_body"
+
+    if method_family == "SOLAR_ARC":
+        if target_body in _ANGLE_TARGETS:
+            return "solar_arc_to_angle"
+        return "solar_arc_to_body"
+
+    return "unspecified_route"
+
+
+def apply_signed_bias(base: float, bias: float, influence: float = 0.35) -> float:
+    """Apply bounded bias without letting an operation axis leave [0, 1]."""
+    safe_base = min(1.0, max(0.0, base))
+    safe_bias = min(1.0, max(-1.0, bias))
+    if safe_bias >= 0:
+        return safe_base + influence * safe_bias * (1.0 - safe_base)
+    return safe_base + influence * safe_bias * safe_base
+
+
+def _target_substrate(target_body: str) -> str:
+    if target_body in _ANGLE_TARGETS:
+        return "angle"
+    if target_body in {"Sun", "Moon"}:
+        return "luminary"
+    if target_body in {"Mercury", "Venus", "Mars"}:
+        return "personal"
+    if target_body in {"Jupiter", "Saturn", "Uranus", "Neptune", "Pluto", "Chiron"}:
+        return "social_outer"
+    if target_body.isdigit():
+        return "house"
+    if target_body in {"Kassandra", "Aletheia", "Destinn", "Karma", "Kaali", "Medea", "Hermes", "Chaos", "North_Node", "Lilith_BML", "Vertex"}:
+        return "specialist"
+    return "generic"
+
+
+def _aspect_family(aspect: str) -> str:
+    label = str(aspect or "").strip().upper()
+    return label if label in _ASPECT_OPERATION_BIAS else "GENERIC"
+
+
+def _compute_signal_operation_profile(signal: dict) -> tuple[dict[str, float], dict[str, str], str]:
+    base_profile = _SOURCE_OPERATION_BASE.get(signal.get("source_body", ""), _DEFAULT_SOURCE_OPERATION_BASE)
+    target_class = _target_substrate(str(signal.get("target_body") or ""))
+    target_bias = _TARGET_SUBSTRATE_BIAS.get(target_class, _TARGET_SUBSTRATE_BIAS["generic"])
+    aspect_family = _aspect_family(str(signal.get("aspect") or ""))
+    aspect_bias = _ASPECT_OPERATION_BIAS.get(aspect_family, _ASPECT_OPERATION_BIAS["GENERIC"])
+    method_family = str(signal.get("method_family") or "UNKNOWN")
+    method_multiplier = _METHOD_OPERATION_MULTIPLIER.get(method_family, _METHOD_OPERATION_MULTIPLIER["UNKNOWN"])
+    magnitude = float(signal.get("signal_strength", signal.get("trigger_strength", 0.0)) or 0.0)
+
+    operation_profile: dict[str, float] = {}
+    for op in _OPERATION_AXES:
+        biased = apply_signed_bias(float(base_profile.get(op, 0.0)), float(aspect_bias.get(op, 0.0)))
+        biased = apply_signed_bias(biased, float(target_bias.get(op, 0.0)), influence=0.28)
+        weighted = magnitude * biased * float(method_multiplier.get(op, 1.0))
+        operation_profile[op] = round(weighted, 5)
+
+    dominant_operation = max(operation_profile, key=operation_profile.get) if operation_profile else ""
+    operation_basis = {
+        "source_profile": str(signal.get("source_body") or "generic"),
+        "target_substrate": target_class,
+        "aspect_family": aspect_family,
+        "method_behavior": method_family,
+    }
+    return operation_profile, operation_basis, dominant_operation
+
+
+def compute_epistemic_confidence(
+    availability_gate: float,
+    record_integrity: float,
+    calculation_integrity: float,
+    relation_robustness: float,
+) -> float:
+    """Bounded scaffold for whether a predictive edge is trustworthy enough to inspect."""
+    safe = lambda value: min(1.0, max(0.0, float(value)))
+    return round(safe(availability_gate) * safe(record_integrity) * safe(calculation_integrity) * safe(relation_robustness), 4)
+
+
+def _simulate_target_uncertainty(target_body: str, birth_time_status: str, allowed_orb: float) -> tuple[float, str]:
+    """
+    Provisional sampling heuristic for natal-address uncertainty.
+    Estimates whether a signal's required orb window is larger than the 
+    positional uncertainty of its target.
+    """
+    if birth_time_status == "exact":
+        return 1.0, "exact_target_known"
+        
+    uncertainty_hours = 1.0 if birth_time_status == "approximate" else 24.0
+    
+    if target_body in _ANGLE_TARGETS:
+        shift_per_hour = 15.0
+    elif target_body == "Moon":
+        shift_per_hour = 0.55
+    else:
+        shift_per_hour = 0.05  # Sun, etc.
+        
+    positional_uncertainty = shift_per_hour * uncertainty_hours
+    
+    # If the target could be anywhere in a 15-degree band, but the orb is 3 degrees,
+    # the robustness of the transit claim is severely degraded.
+    # We use a simple ratio of (aspect band) / (uncertainty band), capped at 1.0.
+    aspect_band = max(0.1, allowed_orb * 2.0)
+    
+    if positional_uncertainty <= aspect_band * 0.25:
+        return 1.0, "uncertainty_negligible"
+        
+    robustness = aspect_band / positional_uncertainty
+    return float(max(0.0, min(1.0, robustness))), "interval_sampled_uncertainty"
+
+
+def _compute_signal_epistemic_confidence(signal: dict, birth_time_status: str) -> tuple[float, dict[str, float | str], str, str]:
+    target_body = str(signal.get("target_body") or "")
+    is_angle_target = target_body in _ANGLE_TARGETS
+    exactness = min(1.0, max(0.0, float(signal.get("exactness", 0.0) or 0.0)))
+    allowed_orb = float(signal.get("allowed_orb", 3.0) or 3.0)
+
+    if is_angle_target and birth_time_status == "unknown":
+        availability_gate = 0.0
+        angle_eligibility = "withheld_without_exact_birth_time"
+    else:
+        availability_gate = 1.0
+        angle_eligibility = "eligible"
+
+    record_integrity = {
+        "exact": 1.0,
+        "approximate": 0.78,
+        "unknown": 0.64,
+    }.get(birth_time_status, 0.64)
+    calculation_integrity = 1.0 if str(signal.get("method_family") or "") in {"TRANSIT", "LUNATION", "RETURN", "PROGRESSION", "SOLAR_ARC"} else 0.90
+    
+    uncertainty_modifier, sampling_state = _simulate_target_uncertainty(target_body, birth_time_status, allowed_orb)
+    relation_robustness = round(min(1.0, 0.55 + exactness * 0.45) * uncertainty_modifier, 4)
+    
+    confidence = compute_epistemic_confidence(
+        availability_gate=availability_gate,
+        record_integrity=record_integrity,
+        calculation_integrity=calculation_integrity,
+        relation_robustness=relation_robustness,
+    )
+
+    if availability_gate == 0.0:
+        confidence_state = "withheld_angle_target"
+    elif confidence >= 0.85:
+        confidence_state = "supported"
+    elif confidence >= 0.60:
+        confidence_state = "provisional"
+    else:
+        confidence_state = "weak"
+
+    components: dict[str, float | str] = {
+        "availability_gate": availability_gate,
+        "record_integrity": record_integrity,
+        "calculation_integrity": calculation_integrity,
+        "relation_robustness": relation_robustness,
+        "sampling_state": sampling_state,
+    }
+    return confidence, components, confidence_state, angle_eligibility
+
+
+def _operation_compatibility(op_a: str, op_b: str) -> float:
+    if not op_a or not op_b:
+        return 0.50
+    if op_a == op_b:
+        return 1.0
+    if op_a == "reveal" or op_b == "reveal":
+        counterpart = op_b if op_a == "reveal" else op_a
+        return 0.72 if counterpart in _CONSTRUCTIVE_OPERATIONS else 0.58
+    if op_a in _CONSTRUCTIVE_OPERATIONS and op_b in _CONSTRUCTIVE_OPERATIONS:
+        return 0.82
+    if op_a in _DISSOLVING_OPERATIONS and op_b in _DISSOLVING_OPERATIONS:
+        return 0.74
+    return 0.24
+
+
+def _window_semantic_metrics(active_sigs: list[dict]) -> tuple[float | None, dict[str, float], str, str, dict[str, Any]]:
+    semantic_sigs = [sig for sig in active_sigs if isinstance(sig.get("operation_profile"), dict) and sig.get("operation_profile")]
+    if not semantic_sigs:
+        return None, {}, "", "", {}
+
+    profile_totals = {op: 0.0 for op in _OPERATION_AXES}
+    confidence_sum = 0.0
+    for sig in semantic_sigs:
+        for op in _OPERATION_AXES:
+            profile_totals[op] += float((sig.get("operation_profile") or {}).get(op, 0.0) or 0.0)
+        confidence_sum += float(sig.get("epistemic_confidence", 0.0) or 0.0)
+
+    dominant_operation = max(profile_totals, key=profile_totals.get) if profile_totals else ""
+    total_mass = sum(profile_totals.values())
+    semantic_profile = {
+        op: round((value / total_mass), 5) if total_mass > 0 else 0.0
+        for op, value in profile_totals.items()
+    }
+
+    if len(semantic_sigs) == 1:
+        coherence = 1.0
+        compatible_pairs = 0
+        conflicting_pairs = 0
+        pair_count = 0
+    else:
+        compatibility_sum = 0.0
+        weight_sum = 0.0
+        compatible_pairs = 0
+        conflicting_pairs = 0
+        pair_count = 0
+        for idx, sig_a in enumerate(semantic_sigs):
+            for sig_b in semantic_sigs[idx + 1:]:
+                op_a = str(sig_a.get("dominant_operation") or "")
+                op_b = str(sig_b.get("dominant_operation") or "")
+                compatibility = _operation_compatibility(op_a, op_b)
+                weight = max(
+                    0.0001,
+                    float(sig_a.get("signal_strength", sig_a.get("trigger_strength", 0.0)) or 0.0)
+                    * float(sig_b.get("signal_strength", sig_b.get("trigger_strength", 0.0)) or 0.0),
+                )
+                compatibility_sum += compatibility * weight
+                weight_sum += weight
+                pair_count += 1
+                if compatibility >= 0.65:
+                    compatible_pairs += 1
+                elif compatibility <= 0.35:
+                    conflicting_pairs += 1
+        coherence = round((compatibility_sum / weight_sum), 4) if weight_sum > 0 else 0.5
+
+    constructive_mass = sum(profile_totals.get(op, 0.0) for op in _CONSTRUCTIVE_OPERATIONS)
+    dissolving_mass = sum(profile_totals.get(op, 0.0) for op in _DISSOLVING_OPERATIONS)
+    
+    if total_mass > 0:
+        polarity = round((2.0 * min(constructive_mass, dissolving_mass)) / total_mass, 4)
+    else:
+        polarity = 0.0
+        
+    if dominant_operation in _CONSTRUCTIVE_OPERATIONS:
+        coalition = constructive_mass
+        counterforce = dissolving_mass
+    elif dominant_operation in _DISSOLVING_OPERATIONS:
+        coalition = dissolving_mass
+        counterforce = constructive_mass
+    else:
+        coalition = profile_totals.get(dominant_operation, 0.0)
+        counterforce = total_mass - coalition
+        
+    coalition_ratio = round(coalition / total_mass, 4) if total_mass > 0 else 0.0
+    counterforce_ratio = round(counterforce / total_mass, 4) if total_mass > 0 else 0.0
+    
+    complexity = 0.0
+    for p in semantic_profile.values():
+        if p > 0:
+            complexity -= p * math.log(p)
+    complexity = round(complexity, 4)
+
+    if polarity >= 0.60 or counterforce_ratio >= 0.40:
+        semantic_state = "opposed"
+    elif coherence >= 0.75 and counterforce_ratio < 0.20:
+        semantic_state = "reinforcing"
+    elif coherence < 0.45:
+        semantic_state = "frictional"
+    else:
+        semantic_state = "mixed"
+
+    diagnostics = {
+        "participating_signal_count": len(semantic_sigs),
+        "pair_count": pair_count,
+        "compatible_pairs": compatible_pairs,
+        "conflicting_pairs": conflicting_pairs,
+        "average_signal_confidence": round(confidence_sum / len(semantic_sigs), 4),
+        "polarity": polarity,
+        "coalition": coalition_ratio,
+        "counterforce": counterforce_ratio,
+        "complexity": complexity,
+    }
+    return coherence, semantic_profile, dominant_operation, semantic_state, diagnostics
+
+
+def _episode_activation_key(signal: dict) -> str:
+    return ":".join(
+        (
+            str(signal.get("independence_group") or ""),
+            str(signal.get("method_family") or ""),
+            str(signal.get("event_kind") or ""),
+            str(signal.get("source_body") or ""),
+            str(signal.get("target_body") or ""),
+            str(signal.get("aspect") or ""),
+            str(signal.get("activation_route") or ""),
+        )
+    )
+
+
+def calculate_exit_orb(enter_orb: float) -> float:
+    """Hysteresis constraint: exit orb is always slightly larger than entry orb."""
+    safe_enter_orb = max(0.0, enter_orb)
+    return safe_enter_orb + max(0.10, safe_enter_orb * 0.08)
+
+
+def compute_next_phase_state(
+    current_state: str,
+    current_orb: float,
+    enter_orb: float,
+    is_retrograde: bool,
+    prior_exact_hit: bool,
+    exactness_threshold: float = _FSM_EXACTNESS_THRESHOLD,
+) -> str:
+    """
+    Strict Finite State Machine for transit-like predictive episodes.
+
+    Once a signal breaches APPROACH, it cannot flicker back to PRELUDE while
+    still inside the hysteresis band. Residual field is only reachable after a
+    post-exactness state has been achieved.
+    """
+    state = (current_state or "PRELUDE").upper()
+    if state not in ALLOWED_STATES:
+        state = "PRELUDE"
+
+    safe_orb = max(0.0, current_orb)
+    safe_enter_orb = max(0.0, enter_orb)
+    safe_exactness = max(0.0, exactness_threshold)
+    exit_orb = calculate_exit_orb(safe_enter_orb)
+
+    if safe_orb > exit_orb:
+        if state in {"RESOLUTION", "AFTERMATH", "RESIDUAL_FIELD"}:
+            return "RESIDUAL_FIELD"
+        return "PRELUDE"
+
+    if safe_orb <= safe_exactness:
+        return "EXACTNESS"
+
+    if safe_orb <= safe_enter_orb and state == "PRELUDE":
+        return "APPROACH"
+
+    if state == "EXACTNESS" and safe_orb > safe_exactness:
+        return "AFTERMATH"
+
+    if is_retrograde and prior_exact_hit and safe_orb <= exit_orb:
+        return "RETROGRADE_REVIEW"
+
+    if not is_retrograde and prior_exact_hit and state in {"AFTERMATH", "RETROGRADE_REVIEW"}:
+        return "RESOLUTION"
+
+    return state
+
+
+def _signal_is_retrograde(signal: dict, position: int, total: int) -> bool:
+    """Infer whether a historical pass should be treated as retrograde."""
+    explicit = signal.get("is_retrograde", signal.get("retrograde"))
+    if explicit is not None:
+        return bool(explicit)
+
+    routing_state = str(signal.get("routing_state") or "").strip().lower()
+    if "retro" in routing_state:
+        return True
+
+    pass_sequence = str(signal.get("pass_sequence") or "").strip().lower()
+    if pass_sequence == "retrograde_three_pass":
+        return total >= 3 and position == 1
+
+    return False
+
+
+def _phase_state_for_history(history: list[dict]) -> str:
+    """Resolve the current phase state by replaying signal history chronologically."""
+    state = "PRELUDE"
+    prior_exact_hit = False
+
+    for idx, sig in enumerate(history):
+        current_orb = _safe_float(sig.get("orb"), _safe_float(sig.get("peak_orb"), _safe_float(sig.get("allowed_orb"), 0.0)))
+        enter_orb = _safe_float(sig.get("allowed_orb"), max(current_orb, 0.0))
+        state = compute_next_phase_state(
+            current_state=state,
+            current_orb=current_orb,
+            enter_orb=enter_orb,
+            is_retrograde=_signal_is_retrograde(sig, idx, len(history)),
+            prior_exact_hit=prior_exact_hit,
+        )
+        if state == "EXACTNESS":
+            prior_exact_hit = True
+
+    return state
+
+
+def _lifecycle_route(memory_charge: float, prior_episode_count: int, gradient: str) -> str:
+    if memory_charge < 0.35 and prior_episode_count == 0 and gradient == "rising":
+        return "emergent"
+    if prior_episode_count > 0 and gradient == "rising":
+        return "reactivation"
+    if memory_charge >= 0.75 and gradient == "plateau":
+        return "culminating"
+    if memory_charge >= 0.55 and gradient == "releasing":
+        return "integrative"
+    if memory_charge >= 0.35 and gradient == "releasing":
+        return "residual"
+    return "active"
+
+
+def _window_memory(
+    active_sigs: list[dict],
+    all_signals: list[dict],
+    peak_date: date,
+    gradient: str,
+) -> tuple[float | None, dict[str, Any]]:
+    if not active_sigs:
+        return None, {}
+
+    anchor = max(
+        active_sigs,
+        key=lambda sig: (
+            sig.get("signal_strength", sig.get("trigger_strength", 0.0)),
+            sig.get("trigger_strength", 0.0),
+        ),
+    )
+    activation_key = _episode_activation_key(anchor)
+    related = [
+        sig for sig in all_signals
+        if _episode_activation_key(sig) == activation_key
+    ]
+    related.sort(key=lambda sig: (sig.get("peak_date", date.min), sig.get("signal_id", "")))
+
+    history = [sig for sig in related if sig.get("peak_date", date.min) <= peak_date]
+    prior_episode_count = max(0, len(history) - 1)
+    method_weight = _METHOD_WEIGHT_BY_GROUP.get(anchor.get("independence_group", ""), 0.80)
+
+    charge = 0.0
+    for sig in history:
+        event_peak = sig.get("peak_date", peak_date)
+        age_years = max(0.0, (peak_date - event_peak).days / 365.25)
+        episode_strength = float(sig.get("signal_strength", sig.get("trigger_strength", 0.0)) or 0.0)
+        charge += episode_strength * method_weight * math.exp(-age_years / _MEMORY_DECAY_YEARS)
+
+    memory_charge = round(min(1.0, charge), 4)
+    pass_state = _phase_state_for_history(history)
+    lifecycle_route = _lifecycle_route(memory_charge, prior_episode_count, gradient)
+
+    return memory_charge, {
+        "activation_key": activation_key,
+        "first_seen_date": history[0]["peak_date"].isoformat() if history else "",
+        "episode_count": len(related),
+        "prior_episode_count": prior_episode_count,
+        "current_episode_id": f"{activation_key}:episode_{len(history):02d}" if history else "",
+        "pass_state": pass_state,
+        "component_charge": memory_charge,
+        "lifecycle_route": lifecycle_route,
+        "formula_version": _PREDICTIVE_FORMULA_VERSION,
+    }
 
 
 # ── Utilities ──────────────────────────────────────────────────

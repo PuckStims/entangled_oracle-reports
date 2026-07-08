@@ -1,0 +1,15 @@
+{
+  "id": "ps_reserve_reactivates",
+  "scope": "window",
+  "family": "pressure_system",
+  "mode": "material",
+  "conditions": {
+    "dominant_operation": ["activate"],
+    "gradient": ["rising"],
+    "semantic_state": ["reinforcing"]
+  },
+  "title": "A Restricted Reserve Comes Back Online",
+  "body": "Activation is the dominant operation here, and the signals agree with each other rather than pulling apart \u2014 a capacity or resource that had been sitting unused or restricted is becoming available again, and the trend is still climbing. This reads as material or operational: budget, staffing, equipment, or standing authority that had been held back is now back in active use.",
+  "tags": ["sandbox", "predictive", "material", "pressure_system", "activate", "adapted"],
+  "notes": "Adapted from legacy_dfis_rising.json (predictive_window_blocks.json, DFIS/rising). Original routed on the retired leading_index dimension (DFIS = 'Power Current') and framed the content as personal-authority reclamation ('self-protection', 'your own authority') \u2014 identity/therapeutic language this lane is meant to avoid. Kept: the underlying 'held-back capacity becomes active' structure, and the rising-gradient timing. Rewrote: conditions now route on real engine fields (dominant_operation=activate, semantic_state=reinforcing, gradient=rising) instead of the leading_index enum, and the prose was recast as a material/operational texture with no reference to identity, self-protection, or authority. Re-filed from legacy_conversion into the real pressure_system family since 'a restricted reserve becoming active again' is a pressure/capacity read, not a timing or threshold one."
+}

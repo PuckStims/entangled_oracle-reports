@@ -19,6 +19,7 @@ output/
 tmp/
 pdf_debug_pre/
 pdfs/
+audit_output/
 
 # Logs and temporary files
 *.log

@@ -1,0 +1,63 @@
+{
+  "_note": "Predictive Sandbox R&D content. Family: opportunity. Texture: openings, frictionless movement, available resources, and clearance to proceed. Routes heavily on semantic_state=reinforcing, dominant_operation=construct/activate.",
+  "family": "opportunity",
+  "entries": [
+    {
+      "id": "opp_rising_clearance",
+      "scope": "window",
+      "family": "opportunity",
+      "mode": "situational",
+      "conditions": {
+        "semantic_state": ["reinforcing"],
+        "gradient": ["rising"],
+        "dominant_operation": ["activate"]
+      },
+      "title": "The Lane Opens Up",
+      "body": "The signals here are activating and reinforcing each other as the charge climbs. This is the texture of green lights: systems unlocking, approvals coming through, and obstacles clearing out. It is a highly favorable window for initiating movement.",
+      "tags": ["sandbox", "predictive", "situational", "opportunity", "activate"],
+      "notes": "reinforcing + rising + activate: the cleanest signal for 'go'."
+    },
+    {
+      "id": "opp_constructive_alignment",
+      "scope": "window",
+      "family": "opportunity",
+      "mode": "material",
+      "conditions": {
+        "semantic_state": ["reinforcing"],
+        "dominant_operation": ["construct"]
+      },
+      "title": "Resources Align for Building",
+      "body": "The operation is constructive, and the state is reinforcing. This goes beyond mere clearance—it means the necessary resources, logistics, and material support are actively lining up to help you build. It is an excellent time for establishing durable structures.",
+      "tags": ["sandbox", "predictive", "material", "opportunity", "construct"],
+      "notes": "reinforcing + construct: highly productive material alignment."
+    },
+    {
+      "id": "opp_unexpected_opening",
+      "scope": "window",
+      "family": "opportunity",
+      "mode": "environmental",
+      "conditions": {
+        "semantic_state": ["reinforcing"],
+        "lifecycle_route": ["emergent"]
+      },
+      "title": "A Sudden Favorable Shift",
+      "body": "Because this is an emergent window, this alignment of favorable signals is completely new. It is an opportunity that was not on the table during any prior cycle. You are entering fresh territory with a distinct tailwind.",
+      "tags": ["sandbox", "predictive", "environmental", "opportunity", "emergent"],
+      "notes": "reinforcing + emergent: new, unpredicted advantage."
+    },
+    {
+      "id": "opp_resolving_advantage",
+      "scope": "window",
+      "family": "opportunity",
+      "mode": "institutional",
+      "conditions": {
+        "semantic_state": ["reinforcing"],
+        "pass_state": ["RESOLUTION"]
+      },
+      "title": "A Favorable Clause is Locked In",
+      "body": "The opportunity here is not fleeting; it has reached formal resolution. An advantageous contract is signed, a supportive policy is enacted, or a beneficial agreement is finalized on paper. The opening is officially secured.",
+      "tags": ["sandbox", "predictive", "institutional", "opportunity", "resolution"],
+      "notes": "reinforcing + RESOLUTION: the locking-in of a benefit."
+    }
+  ]
+}

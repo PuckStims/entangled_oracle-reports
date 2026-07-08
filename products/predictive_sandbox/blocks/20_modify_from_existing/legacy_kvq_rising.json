@@ -1,0 +1,21 @@
+{
+  "id": "legacy_kvq_rising",
+  "scope": "window",
+  "family": "legacy_conversion",
+  "mode": "situational",
+  "conditions": {
+    "leading_index": [
+      "KVQ"
+    ],
+    "gradient": [
+      "rising"
+    ]
+  },
+  "title": "A Hunch Starts Asking to Be Tested",
+  "body": "Something you have sensed but not yet confirmed is gathering weight. Small pieces of evidence are starting to line up in one direction, and the pull to act on a hunch before it is fully proven is growing stronger.\nAction: Write down what you suspect now, before it is confirmed, so you can see clearly what you knew and when.",
+  "tags": [
+    "legacy",
+    "needs_adaptation"
+  ],
+  "notes": "Converted from predictive_window_blocks.json. Routes on legacy leading_index."
+}

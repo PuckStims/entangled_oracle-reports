@@ -7733,43 +7733,94 @@ def _fmt_sandbox_date(d) -> str:
     return str(d)
 
 
-_PREDICTIVE_SANDBOX_BLOCK_PATH = os.path.join(
-    PRODUCTS_DIR, "predictive_sandbox", "blocks", "predictive_window_blocks.json"
-)
-
-
 @lru_cache(maxsize=1)
-def _load_predictive_window_blocks() -> dict:
+def _load_predictive_window_blocks() -> list:
     """Loads and caches the Predictive Sandbox narrative synthesis library."""
-    with open(_PREDICTIVE_SANDBOX_BLOCK_PATH, "r", encoding="utf-8") as handle:
-        return json.load(handle)
+    blocks_dir = os.path.join(PRODUCTS_DIR, "predictive_sandbox", "blocks")
+    # Sandbox-native content registers before legacy conversions so it wins
+    # ties in _predictive_window_narrative() (score comparison is strict
+    # `>`, so whichever block is appended first keeps a tied score).
+    active_folders = ["30_new_writes", "10_copy_entirely", "20_modify_from_existing"]
+
+    registry = []
+
+    for folder in active_folders:
+        folder_path = os.path.join(blocks_dir, folder)
+        if not os.path.isdir(folder_path):
+            continue
+        for filename in os.listdir(folder_path):
+            if filename.endswith(".json"):
+                with open(os.path.join(folder_path, filename), "r", encoding="utf-8") as handle:
+                    try:
+                        data = json.load(handle)
+                    except json.JSONDecodeError:
+                        continue
+
+                    if isinstance(data, dict):
+                        if "entries" in data and isinstance(data["entries"], list):
+                            entries_list = data["entries"]
+                        else:
+                            entries_list = [data]
+
+                        for entry in entries_list:
+                            if isinstance(entry, dict) and "id" in entry and "conditions" in entry and isinstance(entry["conditions"], dict):
+                                registry.append(entry)
+                    elif isinstance(data, list):
+                        for entry in data:
+                            if isinstance(entry, dict) and "id" in entry and "conditions" in entry and isinstance(entry["conditions"], dict):
+                                registry.append(entry)
+
+    return registry
 
 
-def _predictive_window_narrative(window: dict, blocks: dict) -> dict:
+def _predictive_window_narrative(window: dict, blocks: list) -> dict:
     """
-    Synthesizes a dev-facing narrative card for a single predictive window,
-    keyed by leading_index -> gradient. Mirrors the fallback hierarchy
-    selectors/block_selector.py uses elsewhere: an unrecognized dimension
-    falls back to the 'fallback' dimension, and an unrecognized gradient
-    falls back to the 'fallback' gradient within whatever dimension matched.
-    This is a preview aid for validating the predictive engine's output —
-    it is not consumer-facing content.
+    Synthesizes a dev-facing narrative card for a single predictive window.
+    Routes by matching the computed window fields against block 'conditions'.
+    Favors blocks with more specific (higher count) matching conditions.
     """
-    dimension = window.get("leading_index") or "fallback"
-    gradient = window.get("gradient") or "fallback"
+    best_match = None
+    best_score = -1
 
-    dim_blocks = blocks.get(dimension) or blocks["fallback"]
-    card = dim_blocks.get(gradient) or blocks["fallback"].get(gradient) or blocks["fallback"]["fallback"]
+    for block in blocks:
+        conditions = block.get("conditions", {})
+        if not conditions:
+            # Blocks with no conditions match anything but score 0
+            score = 0
+        else:
+            match = True
+            for key, allowed_values in conditions.items():
+                window_val = window.get(key)
+                if window_val not in allowed_values:
+                    match = False
+                    break
 
-    dimension_label = blocks.get("dimension_labels", {}).get(dimension, dimension)
+            if not match:
+                continue
+
+            score = len(conditions)
+
+        if score > best_score:
+            best_score = score
+            best_match = block
+
+    if not best_match:
+        return {
+            "dimension":       window.get("leading_index", "fallback"),
+            "dimension_label": "Unclassified",
+            "gradient":        window.get("gradient", "fallback"),
+            "title":           "An Unclassified Window",
+            "body":            "This window registered on the predictive engine's timeline but did not resolve to a specific narrative block. Treat it as a placeholder for engine tuning rather than a finished read.",
+            "action":          "Flag this window for review — it likely indicates a gap in the registry rather than a real absence of signal.",
+        }
 
     return {
-        "dimension":       dimension,
-        "dimension_label": dimension_label,
-        "gradient":        gradient,
-        "title":           card.get("title", ""),
-        "body":            card.get("body", ""),
-        "action":          card.get("action", ""),
+        "dimension":       best_match.get("id", "fallback"),
+        "dimension_label": best_match.get("family", "fallback"),
+        "gradient":        window.get("gradient", "fallback"),
+        "title":           best_match.get("title", ""),
+        "body":            best_match.get("body", ""),
+        "action":          best_match.get("notes", ""),
     }
 
 
@@ -7805,16 +7856,37 @@ def _build_predictive_sandbox_context(
             "event_weight":     round(float(sig.get("event_weight") or 0), 4),
             "target_relevance": round(float(sig.get("target_relevance") or 0), 4),
             "trigger_strength": round(float(sig.get("trigger_strength") or 0), 4),
+            "epistemic_confidence": round(float(sig.get("epistemic_confidence") or 0), 4),
+            "confidence_components": sig.get("confidence_components") or {},
+            "confidence_state": sig.get("confidence_state", ""),
+            "angle_eligibility": sig.get("angle_eligibility", ""),
+            "dominant_operation": sig.get("dominant_operation", ""),
+            "operation_profile": sig.get("operation_profile") or {},
+            "operation_basis": sig.get("operation_basis") or {},
             "start_date":       _fmt_sandbox_date(sig.get("start_date")),
             "peak_date":        _fmt_sandbox_date(sig.get("peak_date")),
             "end_date":         _fmt_sandbox_date(sig.get("end_date")),
         })
     signals.sort(key=lambda s: s["peak_date"])
 
+    # method_family is a signal-level field only — the engine's window dicts
+    # never carry it directly (see engine/predictive_engine.py _detect_windows).
+    # Derive a representative value per window from its active signals so
+    # blocks conditioned on method_family (per taxonomy_notes.md's routing
+    # guidance) have a real field to match against.
+    _signal_method_family = {s["signal_id"]: s["method_family"] for s in signals if s["signal_id"]}
+
     window_blocks = _load_predictive_window_blocks()
 
     windows = []
     for win in raw.get("windows", []):
+        window_method_family = ""
+        for _sig_id in (win.get("active_signals") or []):
+            _mf = _signal_method_family.get(_sig_id)
+            if _mf:
+                window_method_family = _mf
+                break
+
         window_entry = {
             "window_id":                   win.get("window_id", ""),
             "start_date":                  win.get("start_date", ""),
@@ -7837,7 +7909,16 @@ def _build_predictive_sandbox_context(
             "active_signal_count":         len(win.get("active_signals") or []),
             # Phase 2+ placeholders ──────────────────────────────────
             "coherence":                   win.get("coherence"),
+            "semantic_profile":            win.get("semantic_profile") or {},
+            "dominant_operation":          win.get("dominant_operation", ""),
+            "semantic_state":              win.get("semantic_state", ""),
+            "semantic_diagnostics":        win.get("semantic_diagnostics") or {},
             "memory":                      win.get("memory"),
+            "memory_state":                win.get("memory_state") or {},
+            "activation_key":              win.get("activation_key", ""),
+            "pass_state":                  win.get("pass_state", ""),
+            "lifecycle_route":             win.get("lifecycle_route", ""),
+            "method_family":               window_method_family,
             "interpretive_tags":           win.get("interpretive_tags") or [],
         }
         window_entry["narrative"] = _predictive_window_narrative(window_entry, window_blocks)

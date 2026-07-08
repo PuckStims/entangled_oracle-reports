@@ -1,0 +1,21 @@
+{
+  "id": "legacy_kvq_plateau",
+  "scope": "window",
+  "family": "legacy_conversion",
+  "mode": "situational",
+  "conditions": {
+    "leading_index": [
+      "KVQ"
+    ],
+    "gradient": [
+      "plateau"
+    ]
+  },
+  "title": "A Pattern Holds Steady Long Enough to Read",
+  "body": "The signal you have been tracking is neither fading nor intensifying right now \u2014 it is simply staying visible. This is the part of the cycle where the pattern is easiest to study calmly, without the pressure of a closing window.\nAction: Use this steadier stretch to test your read against real outcomes rather than reacting to every new data point.",
+  "tags": [
+    "legacy",
+    "needs_adaptation"
+  ],
+  "notes": "Converted from predictive_window_blocks.json. Routes on legacy leading_index."
+}

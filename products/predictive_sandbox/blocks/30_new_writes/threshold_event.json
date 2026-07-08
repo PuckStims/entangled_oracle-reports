@@ -1,0 +1,88 @@
+{
+  "_note": "Predictive Sandbox R&D content. Family: threshold_event. Texture: crossing points where something moves from not-yet-active to active, or from active to formally closed. Routes on pass_state / dominant_operation / lifecycle_route / method_family. Distinct from timing_shift: timing_shift covers the interval's overall motion (opening, resuming, closing); threshold_event covers the specific moment of crossing a line.",
+  "family": "threshold_event",
+  "entries": [
+    {
+      "id": "te_activation_exactness",
+      "scope": "window",
+      "family": "threshold_event",
+      "mode": "threshold",
+      "conditions": {
+        "dominant_operation": ["activate"],
+        "pass_state": ["EXACTNESS"]
+      },
+      "title": "Contact Crosses Into Exact Range",
+      "body": "The dominant operation across this window's signals is activation, and the orb has closed to its tightest recorded range at the same time. This is the specific moment something goes live rather than the buildup toward it — whatever this window addresses stops being latent and starts being current.",
+      "tags": ["sandbox", "predictive", "threshold", "threshold_event", "activate"],
+      "notes": "dominant_operation == activate combined with pass_state == EXACTNESS: the strongest available signal that a threshold is being crossed now, not approached."
+    },
+    {
+      "id": "te_reveal_threshold",
+      "scope": "window",
+      "family": "threshold_event",
+      "mode": "situational",
+      "conditions": {
+        "dominant_operation": ["reveal"],
+        "gradient": ["rising", "plateau"]
+      },
+      "title": "Something Crosses Into View",
+      "body": "Reveal is the dominant operation in this window, and the charge is still building or holding rather than already fading. Information, terms, or conditions that were previously out of view are becoming checkable — not necessarily dramatic, but no longer deniable or assumed.",
+      "tags": ["sandbox", "predictive", "situational", "threshold_event", "reveal"],
+      "notes": "dominant_operation == reveal is its own operation class in _SOURCE_OPERATION_BASE, separate from the constructive/dissolving split — kept here as a distinct exposure-crossing texture rather than folded into pressure_system."
+    },
+    {
+      "id": "te_emergent_first_contact",
+      "scope": "window",
+      "family": "threshold_event",
+      "mode": "environmental",
+      "conditions": {
+        "lifecycle_route": ["emergent"],
+        "pass_state": ["APPROACH", "EXACTNESS"]
+      },
+      "title": "A First Contact With No Precedent",
+      "body": "There is no prior episode on record for this activation, and the window is already at or near its closest orb. Whatever conditions this touches are meeting this particular pressure for the first time — there is no established response pattern to fall back on, only whatever gets built now.",
+      "tags": ["sandbox", "predictive", "environmental", "threshold_event", "emergent"],
+      "notes": "lifecycle_route == emergent requires zero prior episodes; pairing with APPROACH/EXACTNESS marks the specific crossing rather than the whole emergent window."
+    },
+    {
+      "id": "te_aftermath_threshold",
+      "scope": "window",
+      "family": "threshold_event",
+      "mode": "practical",
+      "conditions": {
+        "pass_state": ["AFTERMATH"]
+      },
+      "title": "The Line Is Already Behind It",
+      "body": "The exact crossing has already happened and the orb is now widening back out. Whatever this window set off cannot be un-set; the practical task is handling what follows, not deciding whether to let it happen. Treat this as consequence-management, not a decision point.",
+      "tags": ["sandbox", "predictive", "practical", "threshold_event", "aftermath"],
+      "notes": "pass_state == AFTERMATH is only reached from EXACTNESS per compute_next_phase_state() — the exact hit is confirmed to have already occurred."
+    },
+    {
+      "id": "te_resolution_close",
+      "scope": "window",
+      "family": "threshold_event",
+      "mode": "institutional",
+      "conditions": {
+        "pass_state": ["RESOLUTION"]
+      },
+      "title": "A Formal Close Registers",
+      "body": "This window has reached a recognized endpoint rather than a lingering aftermath — the kind of close that gets recorded: a decision finalized, a term completed, a status changed on paper. Whatever comes next belongs to a new window, not this one.",
+      "tags": ["sandbox", "predictive", "institutional", "threshold_event", "resolution"],
+      "notes": "pass_state == RESOLUTION is one of the ALLOWED_STATES reachable in the FSM's post-exactness branch. Kept distinct from AFTERMATH (still-settling) and RESIDUAL_FIELD (background only)."
+    },
+    {
+      "id": "te_return_marker",
+      "scope": "window",
+      "family": "threshold_event",
+      "mode": "material",
+      "conditions": {
+        "method_family": ["RETURN"],
+        "pass_state": ["EXACTNESS"]
+      },
+      "title": "A Cycle Returns to Its Marker",
+      "body": "This crossing comes from a return-type method rather than an ordinary transit, and it is hitting its exact degree now. This kind of threshold tends to show up in concrete, recurring terms — a renewal date, an anniversary condition, a recurring deadline — rather than as a one-off circumstance.",
+      "tags": ["sandbox", "predictive", "material", "threshold_event", "return"],
+      "notes": "method_family == RETURN is a distinct clock family from TRANSIT per _independence_group_for_family(); keep this entry gated so it only fires for genuine return-type signals, not transits misread as returns."
+    }
+  ]
+}

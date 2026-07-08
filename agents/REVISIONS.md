@@ -5,6 +5,334 @@ Newest entry on top. See `agents/README.md` for the convention.
 
 ---
 
+## 2026-07-06 - Predictive Sandbox heavy audit and targeted repair pass (Codex / GPT-5)
+
+**Context:** The user asked for a heavy code audit and repair pass over
+`predictive_sandbox`, explicitly excluding the full activation pipeline
+because the local environment is unstable. The pass focused on source
+truth: engine mechanics, sandbox routing, tests, JSON library shape, and
+agent-note accuracy.
+
+**Audit ledger:**
+
+- **confirmed:** method normalization, episode memory, FSM / hysteresis
+  lifecycle fields, signal operation profiles, target-sensitive aspect
+  bias, and sandbox context forwarding are present in code.
+- **confirmed:** window semantic diagnostics now include coherence plus
+  bounded `polarity`, `coalition`, `counterforce`, and `complexity`.
+- **confirmed:** qualified lunation scanning exists and is wired with
+  eclipse duplicate suppression.
+- **confirmed:** the sandbox JSON library now loads from the flat
+  `products/predictive_sandbox/blocks/` registry rather than the deleted
+  `predictive_window_blocks.json` file.
+- **partial:** confidence is not full interval sampling yet.
+  `relation_robustness` still includes an exactness-derived term, with
+  target uncertainty applied as a modifier.
+- **partial:** sandbox-native content wins eligible ties, but content
+  coverage is still uneven and legacy converted blocks remain a valid
+  fallback.
+- **not implemented:** exact returns, Solar Arc, progressions, Relay
+  Gate, Structural Shear, and pathway topology.
+
+**What changed in code and tests:**
+
+- Removed the stale `_PREDICTIVE_SANDBOX_BLOCK_PATH` constant from
+  [generate.py](C:/entangled_oracle/generate.py); the single JSON file it
+  referenced has been deleted and is no longer the active loader path.
+- Added `TestLunationClockFamily` and the previously omitted
+  `TestPredictivePhaseFSM` to the manual
+  [tests/test_predictive_engine.py](C:/entangled_oracle/tests/test_predictive_engine.py)
+  runner so direct file execution matches normal unittest discovery more
+  closely.
+- Added JSON-library guard tests requiring active blocks to meet the
+  minimum schema and route only on fields exposed by sandbox window
+  context.
+- Added a direct `method_family` routing test so
+  method-family-conditioned blocks cannot silently become unreachable
+  again.
+
+**What changed in source-of-truth docs:**
+
+- [ARCHITECTURE.md](C:/entangled_oracle/ARCHITECTURE.md) now describes
+  polarity / coalition / counterforce / complexity and qualified
+  lunations as current implemented mechanics, while preserving the
+  warning that full interval-sampled confidence is not implemented yet.
+- [agents/PLANNED_UPDATES.md](C:/entangled_oracle/agents/PLANNED_UPDATES.md)
+  now has a current audit ledger and no longer treats landed lunation and
+  semantic diagnostic work as future-only.
+
+**Boundary preserved:** no dependency installs, no activation-pipeline
+audit, no Relay / Shear / topology expansion, and no content rewrite
+based only on observed PDF symptoms.
+
+**Verification:** the default `python` still does not see the repo
+packages directly, and the `.venv` executable is blocked with
+`Access is denied` from this sandbox. Using the default Python with
+`PYTHONPATH=C:\entangled_oracle\.venv\Lib\site-packages`, both focused
+paths passed:
+
+- `python -m unittest tests.test_predictive_engine`
+- `python tests\test_predictive_engine.py`
+
+Result: `76` tests run, `OK`, `1` skipped.
+
+## 2026-07-06 - Predictive Sandbox testing-resumption notes synced in agents files (Codex / GPT-5)
+
+**Context:** After the `v0.3.1` signal-level and window-level semantic
+passes landed, the user asked what the cleanest next steps would be to
+get `predictive_sandbox` upgraded enough to resume meaningful testing,
+then asked for the relevant `agents/` files to be brought fully up to
+date.
+
+**What actually changed in the repo this pass:** agent notes only. No
+runtime code, templates, engine logic, or tests were modified. The
+update landed in:
+
+- [agents/REVISIONS.md](C:/entangled_oracle/agents/REVISIONS.md)
+- [agents/PLANNED_UPDATES.md](C:/entangled_oracle/agents/PLANNED_UPDATES.md)
+
+**What was clarified for source-of-truth planning:**
+
+- the most direct next move for testing-readiness is still
+  **interval-aware epistemic robustness first**
+- after that, the next bounded testing-value layer is additional window
+  semantics:
+  `polarity`, `coalition`, `counterforce`, `complexity`
+- only after those are stable should the sandbox widen into an added
+  method family such as lunations/eclipses
+- relay / shear / topology remain explicitly deferred until those prior
+  layers are fixture-supported
+
+**Why this matters:** the sandbox now has enough structure that the
+remaining question is no longer "what should predictive work become in
+the abstract?" but "what is the smallest next engine addition that makes
+testing honest again?" This note locks in that answer so a later session
+does not skip from fresh semantic scaffolding straight into topology or
+macro-method sprawl.
+
+## 2026-07-06 - Predictive Sandbox v0.3.1 second slice implemented: window-level semantic aggregation (Codex / GPT-5)
+
+**Context:** After the first `v0.3.1` pass added bounded signal-level
+operation profiles and confidence scaffolding, the user asked to keep
+going. The next honest slice was to aggregate those signal semantics at
+the window layer without jumping to new clocks, relay logic, Structural
+Shear, or topology.
+
+**What actually changed in code:**
+
+- [engine/predictive_engine.py](C:/entangled_oracle/engine/predictive_engine.py)
+- [generate.py](C:/entangled_oracle/generate.py)
+- [tests/test_predictive_engine.py](C:/entangled_oracle/tests/test_predictive_engine.py)
+- [ARCHITECTURE.md](C:/entangled_oracle/ARCHITECTURE.md)
+- [agents/PLANNED_UPDATES.md](C:/entangled_oracle/agents/PLANNED_UPDATES.md)
+
+**What this second slice now concretely includes:**
+
+- Window-level semantic aggregation from the existing per-signal
+  `operation_profile` fields.
+- A real engine-derived `coherence` value for windows when semantic
+  signals are present, instead of a placeholder.
+- Window-level:
+  `semantic_profile`, `dominant_operation`, `semantic_state`, and
+  `semantic_diagnostics`.
+- Compatibility scoring that stays bounded and auditable: it compares
+  declared dominant operations rather than downstream prose.
+- Interpretive tags now reflect semantic state and dominant operation,
+  but remain derived from engine evidence rather than invented by the
+  renderer.
+
+**What was deliberately *not* implemented yet:**
+
+- interval-sampled epistemic robustness
+- macro-method additions like lunations, returns, Solar Arc, or
+  progressions
+- coalition / counterforce / complexity metrics
+- Relay Gate / Target Continuity
+- Structural Shear
+- pathway topology
+
+That boundary was kept on purpose. This pass aggregates the semantic
+signals already present; it does not widen the theoretical scope.
+
+**Tests and verification:** focused predictive coverage was extended to
+include:
+
+- single-signal coherence population
+- low-coherence conflicting-pressure fixtures
+- high-coherence reinforcing fixtures
+- sandbox-context forwarding of the new window semantic fields
+
+Verified locally with:
+
+- `python -m unittest tests.test_predictive_engine`
+
+Result at closeout:
+
+- `66` tests run
+- `OK`
+- `4` skips
+
+The same non-fatal local Codex-environment warnings remained for missing
+`swisseph` and `jinja2`; the focused predictive suite still passed
+cleanly.
+
+**Why this matters:** the predictive sandbox now has its first real
+window-level semantic metric, and `coherence` finally means something
+computed from operation structure rather than from placeholder nulls or
+future intent. That is a meaningful step forward, while still staying
+inside the user’s rule not to outrun auditable mechanics with semantic
+theory.
+
+## 2026-07-06 - Predictive Sandbox v0.3.1 first slice implemented: operation vectors + confidence scaffolding (Codex / GPT-5)
+
+**Context:** The user asked to continue `predictive_sandbox` from the
+newly completed `v0.3` core, but with a strict rule: do not outrun
+auditable mechanics with semantic theory. The requested order was
+explicit: implement the semantic atomic layer first, prioritizing
+Aspect Bias Operator, target-sensitive operation vectors, and epistemic
+confidence scaffolding, while continuing to defer relay, shear,
+topology, and renderer inflation.
+
+**What actually changed in code:**
+
+- [engine/predictive_engine.py](C:/entangled_oracle/engine/predictive_engine.py)
+- [generate.py](C:/entangled_oracle/generate.py)
+- [tests/test_predictive_engine.py](C:/entangled_oracle/tests/test_predictive_engine.py)
+- [ARCHITECTURE.md](C:/entangled_oracle/ARCHITECTURE.md)
+- [agents/PLANNED_UPDATES.md](C:/entangled_oracle/agents/PLANNED_UPDATES.md)
+
+**What `predictive_v0.3.1` now concretely includes:**
+
+- A bounded signal-level semantic atomic layer with explicit operation
+  axes:
+  `stabilize`, `amplify`, `activate`, `disrupt`, `dissolve`, `reveal`
+- Source-body operation bases for the currently active predictive
+  bodies, rather than free-form semantic tagging.
+- Target-sensitive substrate shaping so the same source/aspect/method
+  can produce a materially different operation profile depending on the
+  natal target class.
+- Aspect Bias Operator mechanics that bias operation mass by aspect
+  geometry before any coherence or coalition math is attempted.
+- Method-behavior multipliers kept light and explicit; this stays a
+  bounded per-signal profile, not a narrative system.
+- Epistemic confidence scaffolding at the signal level:
+  `epistemic_confidence`, `confidence_components`,
+  `confidence_state`, and `angle_eligibility`.
+- Exact-birth-time gating for angle-sensitive signals so they fail
+  gracefully instead of pretending equal confidence.
+- Sandbox context forwarding of the new signal diagnostics without
+  upgrading the renderer into a broader interpretive layer.
+
+**What was deliberately *not* implemented yet:**
+
+- window-level coherence math
+- coalition / counterforce metrics
+- Relay Gate / Target Continuity
+- Structural Shear
+- pathway topology
+- interval-sampled confidence robustness
+- expanded sandbox prose or report-grade renderer logic
+
+That was intentional. The slice stops at auditable signal semantics and
+confidence edges.
+
+**Tests and verification:** focused predictive coverage was extended to
+include:
+
+- target-sensitive operation-profile non-regression fixtures
+- aspect-bias profile differentiation fixtures
+- angle-confidence withholding fixtures for reduced birth-time states
+- sandbox-context forwarding fixtures for the new signal fields
+
+Verified locally with:
+
+- `python -m unittest tests.test_predictive_engine`
+
+**Why this matters:** `predictive_sandbox` now has a real first semantic
+atomic layer rather than empty placeholders, but it still stays inside
+the user’s requested guardrail. The engine can express *how* a signal is
+acting and *how trustworthy* that edge is without claiming higher-order
+coherence, relay, or topology that have not been fixture-supported yet.
+
+## 2026-07-06 - Predictive Sandbox v0.3 core implemented: method normalization, episode memory, and FSM hysteresis (Codex / GPT-5)
+
+**Context:** After the earlier planning-only pass for `predictive_sandbox`,
+the user explicitly asked to move from architecture into implementation,
+while still keeping the work engine-first and auditably bounded. The
+governing constraint remained the same: make the predictive engine more
+multi-clock and lifecycle-aware **without** letting semantic/pathway
+theory outrun trustworthy mechanics.
+
+**What actually changed in code:**
+
+- [engine/predictive_engine.py](C:/entangled_oracle/engine/predictive_engine.py)
+- [generate.py](C:/entangled_oracle/generate.py)
+- [tests/test_predictive_engine.py](C:/entangled_oracle/tests/test_predictive_engine.py)
+
+**What `predictive_v0.3` now concretely includes:**
+
+- Predictive signal normalization into:
+  `method_family`, `event_kind`, `independence_group`, and
+  `activation_route`.
+- A memory layer that is episode-based rather than duration-in-orb based.
+- Window-level memory diagnostics:
+  `memory`, `memory_state`, `activation_key`, `pass_state`,
+  `lifecycle_route`.
+- A real finite state machine for phase continuity, including hysteresis
+  via an expanded exit orb. `pass_state` is no longer inferred from a
+  peak-position gradient alone; it is replayed chronologically per
+  activation route/history.
+- New FSM states carried by sandbox windows:
+  `PRELUDE`, `APPROACH`, `EXACTNESS`, `AFTERMATH`,
+  `RETROGRADE_REVIEW`, `RESOLUTION`, `RESIDUAL_FIELD`.
+- Context-builder forwarding of the new signal/window diagnostics into
+  the predictive sandbox render context.
+
+**What was deliberately *not* implemented yet:**
+
+- real coherence / polarity / coalition / counterforce math
+- operation-vector semantics / Aspect Bias Operator
+- target continuity / Relay Gate
+- Structural Shear
+- interval-sampled epistemic confidence
+- active pathway topology
+- renderer redesign or report-grade interpretive expansion
+
+That deferral was intentional. The session explicitly prioritized
+load-bearing timing mechanics before topology and semantic theory.
+
+**Tests and verification:** focused predictive-engine coverage was
+extended to include:
+
+- method normalization fixtures
+- numeric memory population fixtures
+- FSM hysteresis / non-regression fixtures:
+  no flicker back to `PRELUDE`, retrograde review requires prior exact
+  hit, residual field requires post-exactness routing
+
+Verified locally with:
+
+- `python -m unittest tests.test_predictive_engine`
+
+Result at closeout:
+
+- `59` tests run
+- `OK`
+- `4` skips
+
+The Codex runtime still emitted non-fatal warnings for missing
+`swisseph` and `jinja2`, but the user clarified those are locally
+installed outside the Codex environment and the focused suite still
+passed cleanly.
+
+**Why this matters:** this closes the original `v0.3` upgrading goal in
+an honest way. The predictive sandbox is no longer just transit windows
+with louder labels; it now has normalized evidence categories, episode
+memory, and lifecycle continuity enforced by state transitions instead of
+gradient guesswork.
+
+---
+
 ## 2026-07-06 - Predictive Sandbox v0.3 planning update: engine-first, render-constrained (Codex / GPT-5)
 
 **Context:** The user asked to push the `predictive_sandbox` lane forward,

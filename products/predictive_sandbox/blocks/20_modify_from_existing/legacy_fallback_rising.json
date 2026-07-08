@@ -1,0 +1,21 @@
+{
+  "id": "legacy_fallback_rising",
+  "scope": "window",
+  "family": "legacy_conversion",
+  "mode": "situational",
+  "conditions": {
+    "leading_index": [
+      "fallback"
+    ],
+    "gradient": [
+      "rising"
+    ]
+  },
+  "title": "A Pattern Is Building",
+  "body": "An active signal is gathering strength in this window. The specific dimension driving it sits outside the five named registries, but the shape is still readable: something is intensifying and asking for attention.\nAction: Track what is building here even without a named category for it yet.",
+  "tags": [
+    "legacy",
+    "needs_adaptation"
+  ],
+  "notes": "Converted from predictive_window_blocks.json. Routes on legacy leading_index."
+}

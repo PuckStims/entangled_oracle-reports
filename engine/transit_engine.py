@@ -2129,9 +2129,141 @@ def scan_eclipses(
     return events
 
 
+def _find_lunations(start_jd: float, end_jd: float) -> list[tuple[datetime, float, str]]:
+    """Returns (peak_datetime, longitude, lunation_type) for New and Full Moons in the window."""
+    lunations = []
+    cursor = start_jd
+    
+    def _phase_diff(jd: float) -> float:
+        sun_lon = swe.calc_ut(jd, swe.SUN, CALC_FLAGS)[0][0]
+        moon_lon = swe.calc_ut(jd, swe.MOON, CALC_FLAGS)[0][0]
+        return (moon_lon - sun_lon) % 360.0
+
+    while cursor <= end_jd:
+        diff1 = _phase_diff(cursor)
+        diff2 = _phase_diff(cursor + 1.0)
+        
+        # New Moon (crossing 0/360)
+        if diff1 > 340 and diff2 < 20:
+            left, right = cursor, cursor + 1.0
+            for _ in range(15):
+                mid = (left + right) / 2.0
+                if _phase_diff(mid) > 180:
+                    left = mid
+                else:
+                    right = mid
+            exact_jd = (left + right) / 2.0
+            lon = swe.calc_ut(exact_jd, swe.SUN, CALC_FLAGS)[0][0]
+            lunations.append((_datetime_from_julian_day(exact_jd), float(lon), "NEW_MOON"))
+            
+        # Full Moon (crossing 180)
+        if diff1 < 180 and diff2 > 180:
+            left, right = cursor, cursor + 1.0
+            for _ in range(15):
+                mid = (left + right) / 2.0
+                if _phase_diff(mid) < 180:
+                    left = mid
+                else:
+                    right = mid
+            exact_jd = (left + right) / 2.0
+            lon = swe.calc_ut(exact_jd, swe.MOON, CALC_FLAGS)[0][0]
+            lunations.append((_datetime_from_julian_day(exact_jd), float(lon), "FULL_MOON"))
+            
+        cursor += 1.0
+        
+    return lunations
+
+def scan_lunations(
+    natal_payload: dict,
+    start_date: datetime | None = None,
+    end_date: datetime | None = None,
+    activation_profile: dict | None = None,
+    eclipse_events: list[dict] | None = None,
+) -> list[dict]:
+    """Finds new/full moons and records closer natal contacts when present, filtering out eclipses."""
+    report_start = _ensure_utc(start_date)
+    report_end = _ensure_utc(end_date) if end_date else _add_year_window(report_start)
+    targets = _natal_targets(natal_payload)
+    activation_profile = activation_profile or build_forecast_activation_profile(natal_payload)
+
+    ascendant = natal_payload.get("angles", {}).get("Ascendant", {})
+    asc_longitude = ascendant.get("longitude") if isinstance(ascendant, dict) else None
+
+    events: list[dict] = []
+    start_jd = _julian_day(report_start)
+    end_jd = _julian_day(report_end)
+    
+    eclipse_dates = set()
+    if eclipse_events:
+        for e in eclipse_events:
+            eclipse_dates.add(e.get("peak_date"))
+
+    for lunation_datetime, lunation_longitude, lunation_type in _find_lunations(start_jd, end_jd):
+        if _format_event_date(lunation_datetime) in eclipse_dates:
+            continue
+            
+        sign_index = int(lunation_longitude // 30)
+        degree = lunation_longitude % 30
+        lunation_house = (
+            _whole_sign_house(lunation_longitude, float(asc_longitude))
+            if isinstance(asc_longitude, (int, float))
+            else 0
+        )
+
+        matches: list[tuple[str, dict, float]] = []
+        for target_name, target in targets.items():
+            if target_name not in ECLIPSE_TARGET_KEYS:
+                continue
+            distance = _angle_difference(lunation_longitude, target["longitude"])
+            if distance <= 2.0:
+                matches.append((target_name, target, distance))
+
+        if not matches:
+            continue
+
+        for target_name, target, distance in matches:
+            score = min(1.0, 0.44 + ((2.0 - distance) / 2.0) * 0.20)
+            label, bar = _intensity_label(score)
+            event = {
+                "event_type": "lunation",
+                "lunation_type": lunation_type,
+                "eclipse_sign": ZODIAC_SIGNS[sign_index],
+                "lunation_sign": ZODIAC_SIGNS[sign_index],
+                "eclipse_degree": round(degree, 2),
+                "lunation_degree": round(degree, 2),
+                "eclipse_longitude": round(lunation_longitude, 4),
+                "lunation_longitude": round(lunation_longitude, 4),
+                "transit_planet": "Moon",
+                "natal_target": target_name,
+                "natal_target_key": ECLIPSE_TARGET_KEYS[target_name],
+                "natal_target_display": _target_display(target_name, target),
+                "natal_house": target["house"],
+                "whole_sign_house": lunation_house or target["house"],
+                "natal_contact": target_name,
+                "natal_contact_house": target["house"],
+                "distance_to_natal_target": round(distance, 3),
+                "entry_datetime": lunation_datetime,
+                "peak_datetime": lunation_datetime,
+                "leave_datetime": None,
+                "entry_date": _format_event_date(lunation_datetime),
+                "peak_date": _format_event_date(lunation_datetime),
+                "leave_date": "",
+                "duration_days": 0.0,
+                "raw_score": round(score, 4),
+                "combined_intensity_score": round(score, 4),
+                "score": round(score, 4),
+                "intensity_label": label,
+                "intensity_bar": bar,
+                "priority": "B",
+                "peak_month": (lunation_datetime.year, lunation_datetime.month),
+            }
+            events.append(enrich_forecast_event(event, activation_profile))
+
+    events.sort(key=lambda event: event["peak_datetime"])
+    return events
+
+
 # ── Public Year-Ahead API ──────────────────────────────────────
-
-
 def compute_year_ahead_events(
     natal_payload: dict,
     start_date: datetime | None = None,
@@ -2175,6 +2307,13 @@ def compute_year_ahead_events(
         report_end,
         activation_profile,
     )
+    lunation_events = scan_lunations(
+        natal_payload,
+        report_start,
+        report_end,
+        activation_profile,
+        eclipse_events=eclipse_events,
+    )
 
     transit_events, ingress_events, station_events, eclipse_events = link_related_forecast_events(
         transit_events,
@@ -2184,7 +2323,7 @@ def compute_year_ahead_events(
         activation_profile,
     )
 
-    all_events = transit_events + ingress_events + station_events + eclipse_events
+    all_events = transit_events + ingress_events + station_events + eclipse_events + lunation_events
     all_events.sort(
         key=lambda event: (
             event["peak_datetime"],
@@ -2199,5 +2338,6 @@ def compute_year_ahead_events(
         "ingresses": ingress_events,
         "stations": station_events,
         "eclipses": eclipse_events,
+        "lunations": lunation_events,
         "all_events": all_events,
     }

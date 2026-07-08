@@ -1,0 +1,21 @@
+{
+  "id": "legacy_catalyst_plateau",
+  "scope": "window",
+  "family": "legacy_conversion",
+  "mode": "situational",
+  "conditions": {
+    "leading_index": [
+      "CATALYST"
+    ],
+    "gradient": [
+      "plateau"
+    ]
+  },
+  "title": "Reach Holds at a Steady Radius",
+  "body": "The influence set in motion earlier is neither expanding nor contracting right now \u2014 it has found its current radius. This is a good stretch for maintaining visibility rather than forcing further spread.\nAction: Reinforce the connections already in motion instead of starting something new to compete for attention.",
+  "tags": [
+    "legacy",
+    "needs_adaptation"
+  ],
+  "notes": "Converted from predictive_window_blocks.json. Routes on legacy leading_index."
+}

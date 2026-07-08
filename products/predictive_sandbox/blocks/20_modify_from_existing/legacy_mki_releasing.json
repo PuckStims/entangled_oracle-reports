@@ -1,0 +1,21 @@
+{
+  "id": "legacy_mki_releasing",
+  "scope": "window",
+  "family": "legacy_conversion",
+  "mode": "situational",
+  "conditions": {
+    "leading_index": [
+      "MKI"
+    ],
+    "gradient": [
+      "releasing"
+    ]
+  },
+  "title": "A Chapter of Learning Closes",
+  "body": "The active pull toward this particular knowledge is easing. What was being absorbed or refined has largely settled into something usable, and the intensity of the learning curve is coming down.\nAction: Archive what this stretch taught you in a form you can find again later.",
+  "tags": [
+    "legacy",
+    "needs_adaptation"
+  ],
+  "notes": "Converted from predictive_window_blocks.json. Routes on legacy leading_index."
+}

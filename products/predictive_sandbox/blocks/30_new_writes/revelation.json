@@ -1,0 +1,62 @@
+{
+  "_note": "Predictive Sandbox R&D content. Family: revelation. Texture: information surfacing, exposure, clarity arriving, or undeniable facts coming into view. Routes heavily on dominant_operation=reveal, gradient, and pass_state.",
+  "family": "revelation",
+  "entries": [
+    {
+      "id": "rev_rising_exposure",
+      "scope": "window",
+      "family": "revelation",
+      "mode": "atmospheric",
+      "conditions": {
+        "dominant_operation": ["reveal"],
+        "gradient": ["rising"]
+      },
+      "title": "Information Begins to Surface",
+      "body": "The dominant operation is revelation, and the charge is actively building. Something previously obscured, unsaid, or ignored is starting to demand attention. This is the phase where clues or partial data become impossible to dismiss, but the full picture may not be visible yet.",
+      "tags": ["sandbox", "predictive", "atmospheric", "revelation", "rising"],
+      "notes": "reveal + rising gradient: the buildup of exposure."
+    },
+    {
+      "id": "rev_exact_clarity",
+      "scope": "window",
+      "family": "revelation",
+      "mode": "situational",
+      "conditions": {
+        "dominant_operation": ["reveal"],
+        "pass_state": ["EXACTNESS"]
+      },
+      "title": "The Undeniable Fact Drops",
+      "body": "The operation is revelation, and the timing is at its most exact. This marks the moment the missing piece of information formally arrives, a long-held assumption is disproven, or an unstated condition is forced into the open. The time for guessing is over.",
+      "tags": ["sandbox", "predictive", "situational", "revelation", "exactness"],
+      "notes": "reveal + EXACTNESS: the sharp point of exposure."
+    },
+    {
+      "id": "rev_aftermath_integration",
+      "scope": "window",
+      "family": "revelation",
+      "mode": "practical",
+      "conditions": {
+        "dominant_operation": ["reveal"],
+        "pass_state": ["AFTERMATH"]
+      },
+      "title": "Operating on the New Information",
+      "body": "The reveal has already happened. The remaining task is not discovering the truth, but dealing with its consequences. The exactness is behind you; the focus now shifts entirely to practical integration and figuring out what the new facts change about the plan.",
+      "tags": ["sandbox", "predictive", "practical", "revelation", "aftermath"],
+      "notes": "reveal + AFTERMATH: post-exposure consequence management."
+    },
+    {
+      "id": "rev_frictional_truth",
+      "scope": "window",
+      "family": "revelation",
+      "mode": "interpersonal",
+      "conditions": {
+        "dominant_operation": ["reveal"],
+        "semantic_state": ["frictional"]
+      },
+      "title": "An Uncomfortable Clarity",
+      "body": "The information surfacing here does not easily fit into the existing framework. The signals are frictional, meaning the new facts actively grate against established expectations or require difficult conversations to process. Clarity is achieved, but it isn't comfortable.",
+      "tags": ["sandbox", "predictive", "interpersonal", "revelation", "frictional"],
+      "notes": "reveal + frictional: unwelcome or difficult clarity."
+    }
+  ]
+}

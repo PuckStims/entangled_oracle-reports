@@ -1,0 +1,21 @@
+{
+  "id": "legacy_kvq_releasing",
+  "scope": "window",
+  "family": "legacy_conversion",
+  "mode": "situational",
+  "conditions": {
+    "leading_index": [
+      "KVQ"
+    ],
+    "gradient": [
+      "releasing"
+    ]
+  },
+  "title": "The Evidence Comes In, One Way or the Other",
+  "body": "The hunch that was building is resolving. Whatever you suspected is now either confirmed by events or quietly disproven, and the charge that came with not knowing starts to loosen either way.\nAction: Note what actually happened next to what you predicted \u2014 this is the record that sharpens the next read.",
+  "tags": [
+    "legacy",
+    "needs_adaptation"
+  ],
+  "notes": "Converted from predictive_window_blocks.json. Routes on legacy leading_index."
+}

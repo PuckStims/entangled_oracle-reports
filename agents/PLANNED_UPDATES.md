@@ -5,19 +5,35 @@ item to `REVISIONS.md` when it is actually finished.
 
 ---
 
-## Predictive Sandbox v0.3 - engine-first expansion plan (2026-07-06)
+## Predictive Sandbox - next slices after v0.3.1 window semantic aggregation (2026-07-06)
 
-The current `predictive_sandbox` lane is real, runnable, and useful for
-diagnostics, but it is still `predictive_v0.2`: transit-derived signals,
-baseline/residual window segmentation, one `leading_index`, one
-`gradient`, and placeholder `coherence` / `memory` fields. The user's
-next-phase goal is now explicit: make the engine meaningfully
-multi-clock and lifecycle-aware **without** letting semantic theory
-outrun auditable signal mechanics.
+`predictive_v0.3` core and the first bounded `predictive_v0.3.1`
+semantic scaffold are now materially implemented in code. The
+predictive sandbox no longer consists only of transit-derived windows
+with placeholders; it now includes:
 
-This means the next expansion should not start with renderer prose or
-JSON-routing proliferation. It should start by making the engine itself
-smarter, while preserving several invariants:
+- normalized predictive evidence:
+  `method_family`, `event_kind`, `independence_group`,
+  `activation_route`
+- episode-based memory
+- window diagnostics:
+  `memory_state`, `activation_key`, `pass_state`, `lifecycle_route`
+- FSM / hysteresis phase continuity replacing gradient-only pass-state
+  inference
+- signal-level operation profiles with aspect bias and target-sensitive
+  substrate shaping
+- signal-level confidence scaffolding:
+  `epistemic_confidence`, `confidence_components`,
+  `confidence_state`, `angle_eligibility`
+- window-level semantic aggregation:
+  `coherence`, `semantic_profile`, `dominant_operation`,
+  `semantic_state`, `semantic_diagnostics`
+
+The user's governing goal remains unchanged: make the engine
+meaningfully multi-clock and lifecycle-aware **without** letting
+semantic theory outrun auditable signal mechanics.
+
+The same invariants still apply:
 
 - `intensity`, `coherence`, `memory`, and `gradient` remain separate
   fields; none is allowed to silently collapse into another.
@@ -30,108 +46,152 @@ smarter, while preserving several invariants:
 - Renderers remain downstream of computed evidence; they do not invent
   meaning absent from the engine.
 
-### Short pre-render constraints (lock these before implementation)
+### Current audit ledger after 2026-07-06 heavy pass
 
-1. Render must not merge `intensity`, `coherence`, `memory`, and
-   `gradient` into one visual "overall meaning" score.
-2. Sandbox-only classifications such as `Convergent`, `Crucible`,
-   `Braided`, and `Echo` are allowed later, but only when visibly marked
-   as sandbox/provisional and accompanied by evidence.
-3. Raw evidence, formula versioning, and route traceability must remain
-   visible somewhere in sandbox output even after the renderer gets more
-   ambitious.
-4. Chorus displays must respect `independence_group`, not just event
-   count, so a transit + its station + its ingress do not look like three
-   independent clocks agreeing.
+This ledger reconciles code reality with prior handoffs:
 
-### Method normalization decision (do this before scoring grows)
+- **confirmed:** normalized predictive evidence is produced and forwarded:
+  `method_family`, `event_kind`, `independence_group`, and
+  `activation_route`.
+- **confirmed:** episode memory and FSM / hysteresis lifecycle fields are
+  active on sandbox windows.
+- **confirmed:** bounded signal operation profiles and target-sensitive
+  aspect bias are active.
+- **partial:** epistemic confidence exists, and target uncertainty now
+  modifies it, but `relation_robustness` still includes an exactness
+  proxy. Do not describe this as full interval-sampled robustness yet.
+- **confirmed:** window semantic diagnostics now include
+  `coherence`, `semantic_profile`, `dominant_operation`,
+  `semantic_state`, plus `polarity`, `coalition`, `counterforce`, and
+  `complexity`.
+- **confirmed:** qualified lunations are present as a stress-test clock
+  and suppress duplicate plain lunation events when an eclipse exists on
+  the same peak date.
+- **confirmed:** the sandbox JSON library has moved from the deleted
+  single `predictive_window_blocks.json` file to the flat
+  `products/predictive_sandbox/blocks/` folder registry.
+- **partial:** new-write routing is active, but content coverage is still
+  uneven; legacy converted blocks remain reachable and should not be
+  treated as accidental by default.
+- **not implemented:** exact returns, Solar Arc, progressions, Relay
+  Gate, Structural Shear, and pathway topology.
 
-Do **not** let every forecast-event subtype become its own predictive
-`method_family`, or the engine will manufacture chorus through taxonomy
-rather than genuine independence.
+### Completed in v0.3 core
 
-Normalize predictive evidence with four fields:
+1. **Method normalization groundwork**
+   Predictive evidence now carries family / kind / independence / route
+   distinctions rather than one loose event label.
+2. **Episode-based memory**
+   Memory is no longer a placeholder when active signals are present.
+3. **Lifecycle continuity**
+   A real FSM now governs predictive phase continuity using hysteresis.
+4. **Expanded fixtures**
+   Focused tests now cover normalization, memory population, and phase
+   non-regression behavior.
 
-- `method_family`
-- `event_kind`
-- `independence_group`
-- `activation_route`
+### In bounds next
 
-Initial target taxonomy:
-
-- `TRANSIT` family
-  `ASPECT`, `STATION`, `INGRESS`
-  `independence_group = transit_clock`
-- `LUNATION` family
-  `NEW_MOON`, `FULL_MOON`
-  `independence_group = lunar_phase_clock`
-- `ECLIPSE` remains active but must suppress a duplicate plain-lunation
-  chorus vote for the same astronomical event.
-- `RETURN` family
-  `EXACT_RETURN`
-  `independence_group = return_clock`
-- `PROGRESSION` family
-  sandbox macro only for now
-  `independence_group = progression_clock`
-- `SOLAR_ARC` family
-  sandbox macro only for now
-  `independence_group = solar_arc_clock`
-- proprietary asteroid/component triggering is an `activation_route`,
-  not its own timing clock
-
-### In bounds now
-
-1. **Lunations and eclipses**
-   Add them as real predictive families, but only when they have a natal
-   or component-level address. Do not emit a generic monthly moon event
-   that lacks a qualified target or registered component activation.
-2. **Exact returns**
+1. **Interval-aware epistemic robustness**
+   The confidence scaffold exists now, but `relation_robustness` is
+   still partly exactness-derived. Replace it with real interval-aware
+   support only when the sampling contract is explicit and
+   fixture-backed.
+2. **Semantic diagnostic calibration**
+   Polarity / coalition / counterforce / complexity are now present.
+   The next honest layer is calibration against real output
+   distributions and fixtures, not adding topology.
+3. **Lunation hardening**
+   Qualified lunations are now present. Keep hardening target
+   qualification, eclipse suppression, and fixture coverage before
+   adding another clock family.
+4. **Exact returns**
    Start with event-level return hits, not full return-chart
    interpretation. Solar return, lunar return, Jupiter return, and
    Saturn return are the clearest first candidates.
-3. **Solar Arc sandbox macro**
+5. **Solar Arc sandbox macro**
    Add as a deterministic macro clock with one declared convention only;
    do not mix arc conventions in the same formula version.
-4. **Limited secondary progressions sandbox**
+6. **Limited secondary progressions sandbox**
    Start narrower than Solar Arc: Sun, Moon, ASC, and MC first, with
    exact-time gating for angles.
-5. **Episode-based memory**
-   First activation vs recurrence, retrograde pass state, cumulative
-   charge, and integration/aftermath are explicitly in bounds now.
-6. **Target-sensitive operation typing**
-   Highest-value conceptual expansion. Same source/aspect/method must be
-   capable of materially different operation profiles when the natal
-   substrate changes.
-7. **Semantic coalition/counterforce sandbox**
-   Allowed after operation typing exists. Keep sandbox-only until the
-   registry and fixtures stabilize.
+7. **JSON content coverage**
+   Fill real observed combinations that still fall back to legacy
+   converted blocks, but keep prose downstream of engine fields.
+
+### Cleanest path to resume meaningful testing
+
+If the near-term goal is not "expand the theory" but "get the sandbox
+upgraded enough that testing is worth resuming in a more serious way,"
+the cleanest order is:
+
+1. **Replace the confidence proxy first.**
+   `epistemic_confidence` is now structurally useful, but
+   `relation_robustness` is still a scaffold derived from exactness.
+   Before broader predictive testing resumes, this should become a real
+   interval-aware measure so exact / approximate / withheld angle cases
+   are not pretending to be the same class of evidence.
+2. **Then calibrate bounded window semantics.**
+   With `coherence`, `polarity`, `coalition`, `counterforce`, and
+   `complexity` now live, the next testing-relevant work is checking
+   threshold behavior against varied charts and fixtures.
+3. **Only then add another clock family.**
+   Qualified lunations already exist as the current stress-test clock.
+   The next family should wait until confidence and semantic diagnostics
+   are stable under fixtures.
+
+The important sequencing principle: resume testing on a sandbox that has
+honest confidence behavior and stable window semantics first, then use
+new clocks to stress those mechanics, not the other way around.
+
+### Testing-readiness threshold
+
+The sandbox should be treated as meaningfully ready to resume broader
+testing when all of the following are true:
+
+1. exact vs approximate vs withheld angle cases produce materially
+   different confidence behavior under fixtures
+2. window semantics are stable enough that reinforcing vs frictional
+   states do not drift unpredictably under small signal changes
+3. anti-double-counting rules remain intact when a second method family
+   is introduced
+4. high-polarity or conflicting windows do not silently downgrade
+   intensity just because semantics become more complex
+5. the renderer remains downstream of engine evidence rather than
+   inventing extra meaning
 
 ### Explicitly defer
 
 1. Full return-chart interpretation and relocated-return logic.
 2. Report-eligible Solar Arc / progression claims.
-3. Epistemic pathway topology as active computation.
-4. Primary directions, harmonics, time lords, asteroid seasons,
+3. Target continuity / Relay Gate as active engine computation until
+   operation vectors and epistemic edges are trustworthy.
+4. Structural Shear as active classification until
+   `same_macro_field`, semantic similarity, and continuity are all
+   fixture-supported.
+5. Epistemic pathway topology as active computation.
+6. Primary directions, harmonics, time lords, asteroid seasons,
    electional timing, synastry prediction, and pathway-throughput style
    claims.
 
 Pathway topology may remain present structurally as a deferred stub, but
 the active engine should not calculate it yet.
 
-### Recommended build order for `predictive_v0.3`
+### Recommended build order after `v0.3` core
 
-1. Normalize all forecast evidence into a common predictive-event layer.
-2. Add `independence_group` and enforce anti-double-counting chorus.
-3. Add lunation/eclipse and exact-return event extraction.
-4. Add Solar Arc and limited secondary progressions as sandbox macro
-   methods.
-5. Build the activation-episode ledger, pass-state model, charge decay,
-   and lifecycle route classifier.
-6. Add target-sensitive operation profiles using:
+1. Add target-sensitive operation profiles using:
    source force + target substrate + aspect geometry + method temporal
    behavior + pair bridge.
-7. Add sandbox semantic metrics:
-   coherence, polarity, coalition, counterforce, complexity.
+2. Replace the confidence scaffold's exactness-derived robustness with
+   real interval robustness when the supporting mechanics are ready.
+3. Harden qualified lunation / eclipse anti-double-counting fixtures and
+   JSON routing coverage.
+4. Add exact-return event extraction.
+5. Add Solar Arc and limited secondary progressions as sandbox macro
+   methods.
+6. Calibrate existing semantic metrics:
+   polarity, coalition, counterforce, complexity.
+7. Only then add topology diagnostics such as Relay eligibility or
+   Structural Shear.
 8. Leave pathway topology structurally present but inactive.
 
 ### Memory model to preserve
@@ -190,9 +250,91 @@ independent predictive targets in this phase.
 ### Sequence reminder
 
 The repo should get more structurally intelligent before it gets more
-metaphysically ambitious. `predictive_v0.3` should first become
-multi-clock, lifecycle-aware, and target-sensitive; renderer style and
-broader pathway theory can follow once those mechanics survive fixtures.
+metaphysically ambitious. `predictive_v0.3` core and the first
+`v0.3.1` semantic scaffold are now meaningfully cleaner and more
+auditable; the next move is still bounded engine rigor, not renderer
+inflation and not macro-topology claims.
+
+### Predictive Sandbox JSON library - scaffold-first content lane
+
+The user opened a separate R&D lane for a real `predictive_sandbox`
+JSON library that should support more varied predictive expression than
+the main EO product voice. This lane is intentionally sandbox-native and
+should not assume the astro-psych center of gravity used elsewhere in
+the repo.
+
+Working direction:
+
+1. **Scaffold first, content second.**
+   Lock the block schema and folder structure before writing large
+   amounts of prose.
+2. **Sort content into three buckets early.**
+   - copy entirely
+   - modify from existing EO material
+   - new writes
+3. **Treat the library as prediction-behavior content, not as a therapy
+   library.**
+   Favor event texture, situational change, pressure, disruption,
+   threshold crossings, opportunity, aftermath, atmosphere, and public /
+   practical variation.
+4. **Keep prose downstream of engine evidence.**
+   JSON entries should route from computed sandbox fields such as
+   `semantic_state`, `dominant_operation`, `gradient`,
+   `lifecycle_route`, `pass_state`, `method_family`, and existing
+   semantic diagnostics when those diagnostics are explicitly forwarded.
+   The prose library must not silently invent predictive logic that the
+   engine has not computed.
+
+Recommended first-pass taxonomy:
+
+- `timing_shift`
+- `threshold_event`
+- `pressure_system`
+- `reorganization`
+- `revelation`
+- `disruption`
+- `collision`
+- `opportunity`
+- `aftermath`
+- `background_field`
+
+Recommended expression modes:
+
+- `situational`
+- `interpersonal`
+- `practical`
+- `environmental`
+- `institutional`
+- `material`
+- `threshold`
+- `atmospheric`
+
+Recommended initial folder structure under
+`products/predictive_sandbox/blocks/`:
+
+- `00_scaffold/`
+- `10_copy_entirely/`
+- `20_modify_from_existing/`
+- `30_new_writes/`
+- `90_archive/`
+
+Minimum schema fields to standardize first:
+
+- `id`
+- `scope`
+- `family`
+- `mode`
+- `conditions`
+- `title`
+- `body`
+- `tags`
+- `notes`
+
+The point of this lane is not to make sandbox text sound "less EO" just
+for novelty. The point is to make it varied, predictive, and auditable
+enough for R&D without collapsing back into the mainline product voice
+before the sandbox has proven what kinds of predictive expression it
+actually needs.
 
 ---
 

@@ -315,8 +315,8 @@
 <div id="predictions" class="sb-section">
   <div class="sb-section-title">Predictions Preview ({{ predictions | length }})</div>
   <div class="sb-predictions-note">
-    Narrative synthesis of the windows below, via products/predictive_sandbox/blocks/predictive_window_blocks.json
-    (leading_index → gradient). Dev/QA preview only — validates that engine output resolves to a
+    Narrative synthesis of the windows below, routed via condition matching against the flat library
+    in products/predictive_sandbox/blocks. Dev/QA preview only — validates that engine output resolves to a
     coherent read before any consumer-facing wiring is considered.
   </div>
 
@@ -445,6 +445,11 @@
             <th scope="col">Gradient</th>
             <th scope="col">Leading Index</th>
             <th scope="col" class="num">Coherence</th>
+            <th scope="col">Sem. State</th>
+            <th scope="col" class="num">Polarity</th>
+            <th scope="col" class="num">Coalition</th>
+            <th scope="col" class="num">Counterforce</th>
+            <th scope="col" class="num">Complexity</th>
             <th scope="col" class="num">Memory</th>
             <th scope="col">Interpretive Tags</th>
         </tr>
@@ -463,6 +468,11 @@
           <td class="tag-{{ w.gradient if w.gradient else 'none' }}">{{ w.gradient if w.gradient else '—' }}</td>
           <td class="hi">{{ w.leading_index if w.leading_index else '—' }}</td>
           <td class="num lo">{{ "%.4f" | format(w.coherence) if w.coherence is not none else '—' }}</td>
+          <td>{{ w.semantic_state }}</td>
+          <td class="num lo">{{ "%.4f" | format(w.semantic_diagnostics.polarity) if w.semantic_diagnostics.polarity is not none else '—' }}</td>
+          <td class="num lo">{{ "%.4f" | format(w.semantic_diagnostics.coalition) if w.semantic_diagnostics.coalition is not none else '—' }}</td>
+          <td class="num lo">{{ "%.4f" | format(w.semantic_diagnostics.counterforce) if w.semantic_diagnostics.counterforce is not none else '—' }}</td>
+          <td class="num lo">{{ "%.4f" | format(w.semantic_diagnostics.complexity) if w.semantic_diagnostics.complexity is not none else '—' }}</td>
           <td class="num lo">{{ "%.4f" | format(w.memory) if w.memory is not none else '—' }}</td>
           <td class="tag-list">
             {% if w.interpretive_tags %}{{ w.interpretive_tags | join(', ') }}{% else %}<span class="tag-none">—</span>{% endif %}
@@ -528,6 +538,8 @@
             <th scope="col" class="num">Event Weight</th>
             <th scope="col" class="num">Target Rel.</th>
             <th scope="col" class="num">Trigger Strength</th>
+            <th scope="col" class="num">Confidence</th>
+            <th scope="col">Conf. State</th>
             <th scope="col">Start Date</th>
             <th scope="col">Peak Date</th>
             <th scope="col">End Date</th>
@@ -547,6 +559,8 @@
           <td class="num">{{ "%.4f" | format(s.event_weight) }}</td>
           <td class="num">{{ "%.4f" | format(s.target_relevance) }}</td>
           <td class="num hi">{{ "%.4f" | format(s.trigger_strength) }}</td>
+          <td class="num hi">{{ "%.4f" | format(s.epistemic_confidence) }}</td>
+          <td>{{ s.confidence_state }}</td>
           <td>{{ s.start_date }}</td>
           <td class="hi">{{ s.peak_date }}</td>
           <td>{{ s.end_date }}</td>

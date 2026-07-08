@@ -1,0 +1,90 @@
+{
+  "_note": "Predictive Sandbox R&D content. Family: timing_shift. Texture: openings, resumptions, exact crossings, and closings inside a single window's lifecycle. Routes on pass_state / lifecycle_route / gradient as computed by engine/predictive_engine.py (_phase_state_for_history, _lifecycle_route). No prose here invents a predictive mechanism beyond what those functions already resolve.",
+  "family": "timing_shift",
+  "entries": [
+    {
+      "id": "ts_opening_approach",
+      "scope": "window",
+      "family": "timing_shift",
+      "mode": "situational",
+      "conditions": {
+        "gradient": ["rising"],
+        "lifecycle_route": ["emergent"],
+        "pass_state": ["APPROACH"]
+      },
+      "title": "An Unlogged Interval Starts Running",
+      "body": "Nothing on record precedes this. The window is building toward contact for the first time rather than repeating a prior pass, and the orb is still closing rather than tight. Whatever this activates has no established track record yet — the shape of it is still forming.",
+      "tags": ["sandbox", "predictive", "situational", "timing_shift", "emergent"],
+      "notes": "Routes on a genuinely first-pass window: zero prior episodes, approach phase, rising gradient. Keep distinct from ts_return_pass, which covers the reactivation case."
+    },
+    {
+      "id": "ts_return_pass",
+      "scope": "window",
+      "family": "timing_shift",
+      "mode": "practical",
+      "conditions": {
+        "gradient": ["rising"],
+        "lifecycle_route": ["reactivation"]
+      },
+      "title": "A Closed Matter Reopens",
+      "body": "This is not the first run at this activation — there is at least one prior episode on file, and the same line is being crossed again. Whatever was handled, filed, or set down the first time is back in motion and asking for a second decision, not a first one.",
+      "tags": ["sandbox", "predictive", "practical", "timing_shift", "reactivation"],
+      "notes": "prior_episode_count > 0 with rising gradient per _lifecycle_route(). Practical mode: treat as recurrence, not a fresh start."
+    },
+    {
+      "id": "ts_exact_crossing",
+      "scope": "window",
+      "family": "timing_shift",
+      "mode": "threshold",
+      "conditions": {
+        "pass_state": ["EXACTNESS"],
+        "gradient": ["rising", "plateau"]
+      },
+      "title": "The Interval Hits Its Tightest Point",
+      "body": "Orb has closed to its narrowest recorded range. This is the exact pass, not the lead-up to it — whatever this window has been building toward is happening at, or within a day or two of, this date rather than sometime near it.",
+      "tags": ["sandbox", "predictive", "threshold", "timing_shift", "exactness"],
+      "notes": "pass_state == EXACTNESS is the FSM's tightest-orb state (_FSM_EXACTNESS_THRESHOLD). Distinguish from ts_culmination_close, which is a plateau/memory read rather than an orb read."
+    },
+    {
+      "id": "ts_retrograde_review",
+      "scope": "window",
+      "family": "timing_shift",
+      "mode": "practical",
+      "conditions": {
+        "pass_state": ["RETROGRADE_REVIEW"]
+      },
+      "title": "The Same Ground Gets Crossed Backward",
+      "body": "A contact already made exact once is being crossed again, this time in reverse. Whatever was decided or triggered on the first pass is up for a second look — not a new development, but a chance to revise or confirm a decision already on the books.",
+      "tags": ["sandbox", "predictive", "practical", "timing_shift", "retrograde"],
+      "notes": "pass_state == RETROGRADE_REVIEW requires prior_exact_hit True and a retrograde signal per compute_next_phase_state(). Do not describe this as a fresh event."
+    },
+    {
+      "id": "ts_residual_field",
+      "scope": "window",
+      "family": "timing_shift",
+      "mode": "atmospheric",
+      "conditions": {
+        "pass_state": ["RESIDUAL_FIELD"],
+        "lifecycle_route": ["residual", "integrative"]
+      },
+      "title": "The Signal Loosens Without Fully Clearing",
+      "body": "Orb has widened past the exit threshold, but the field has not reset to quiet — there is still a low, background level of the earlier activation present. This is not a new development and not a clean close; it is the tail end of something still settling.",
+      "tags": ["sandbox", "predictive", "atmospheric", "timing_shift", "residual"],
+      "notes": "pass_state == RESIDUAL_FIELD is reached only from a prior RESOLUTION/AFTERMATH state per compute_next_phase_state(). Pair with lifecycle_route in {residual, integrative} for texture consistency, not as a strict requirement."
+    },
+    {
+      "id": "ts_culmination_close",
+      "scope": "window",
+      "family": "timing_shift",
+      "mode": "institutional",
+      "conditions": {
+        "gradient": ["plateau"],
+        "lifecycle_route": ["culminating"]
+      },
+      "title": "A Long Build Reaches Its Ceiling",
+      "body": "Accumulated charge from repeated prior passes is at or near its highest recorded level, and the current window is holding rather than still climbing. Whatever has been building toward this point across multiple episodes is at the top of its arc now, not partway up it.",
+      "tags": ["sandbox", "predictive", "institutional", "timing_shift", "culminating"],
+      "notes": "lifecycle_route == culminating requires memory_charge >= 0.75 with a plateau gradient per _lifecycle_route(). Institutional mode chosen for scale/finality texture (a term, a cycle, a formal period closing) — swap mode freely per scope."
+    }
+  ]
+}

@@ -98,23 +98,38 @@ runtime shape is:
 5. localized window detection
 6. dev-facing render of those windows in the dedicated sandbox template
 
-The active formula version in code is `predictive_v0.2`. Its real
+The active formula version in code is `predictive_v0.3.1`. Its real
 implemented strengths are:
 
 - transit-derived signal scoring
 - target-aware predictive component routing
 - baseline/residual window segmentation
+- predictive evidence normalization via
+  `method_family`, `event_kind`, `independence_group`,
+  `activation_route`
 - `leading_index`
 - `gradient`
 - split between slow structural signals and fast trigger signals
+- episode-based memory
+- FSM / hysteresis phase continuity for predictive pass state
+- signal-level operation profiles with bounded aspect bias
+- target-sensitive substrate shaping
+- signal-level epistemic confidence scaffolding
+- window-level semantic aggregation, coherence scoring, and bounded
+  diagnostics for polarity, coalition, counterforce, and complexity
+- qualified lunation extraction with eclipse duplicate suppression
+- a flat predictive sandbox JSON library routed by computed window
+  evidence rather than the retired single-file block map
 
 Its deliberate limits are also important:
 
-- `coherence` is currently a placeholder field
-- `memory` is currently a placeholder field
+- relay / shear topology is not yet implemented
+- full interval-sampled epistemic robustness is not yet implemented;
+  current `relation_robustness` still includes an exactness-derived
+  term with a target-uncertainty modifier
 - the renderer's narrative preview is a thin dev aid, not a claim system
-- the sandbox currently reasons mostly from the transit engine rather
-  than a broader multi-clock predictive field
+- the sandbox currently reasons mostly from transits plus the qualified
+  lunation stress-test clock, not a broad multi-clock predictive field
 
 ### v0.3 architectural direction
 
@@ -128,18 +143,18 @@ planning stance is:
   `gradient`
 - keep renderer meaning downstream of computed evidence
 
-The strongest near-term path is:
+The strongest near-term path after `v0.3` core is:
 
-1. normalize event taxonomy using method family vs event kind vs
-   independence group
-2. add bounded new clocks
-   lunations, eclipses, exact returns, Solar Arc sandbox, limited
-   secondary progressions sandbox
-3. implement an episode-based memory layer
-4. add target-sensitive operation typing
-5. add sandbox-only semantic field metrics
-   coherence, polarity, coalition, counterforce, complexity
-6. leave epistemic pathway topology structurally deferred until the
+1. add bounded semantic atomic mechanics
+   target-sensitive operation vectors, aspect bias, epistemic
+   confidence scaffolding
+2. replace exactness-proxy confidence with real interval robustness
+3. harden sandbox-only semantic and content routing coverage against
+   real output distributions
+4. add bounded new clocks
+   exact returns, Solar Arc sandbox, limited secondary progressions
+   sandbox
+5. leave relay / shear / pathway topology structurally deferred until the
    semantic registry and fixtures stabilize
 
 This direction treats predictive work as a layered computational system:

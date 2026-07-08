@@ -1,0 +1,21 @@
+{
+  "id": "legacy_dfis_releasing",
+  "scope": "window",
+  "family": "legacy_conversion",
+  "mode": "situational",
+  "conditions": {
+    "leading_index": [
+      "DFIS"
+    ],
+    "gradient": [
+      "releasing"
+    ]
+  },
+  "title": "A Reserve Settles Back Into the Background",
+  "body": "The active charge around reclaiming power is easing. What needed to move has largely moved, and the underlying resource returns to a quieter, standby state rather than an urgent one.\nAction: Bank the gain from this stretch instead of continuing to push for more from the same reserve.",
+  "tags": [
+    "legacy",
+    "needs_adaptation"
+  ],
+  "notes": "Converted from predictive_window_blocks.json. Routes on legacy leading_index."
+}
