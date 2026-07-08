@@ -1,0 +1,10 @@
+{
+  "_note": "Practical 'best used for' theme per weekday ruler. Punchy, actionable, business-friendly — the complement to day_ruler.json's atmospheric sentence. Keyed by ruling planet.",
+  "Moon": "Intuition, home, emotional check-ins, self-care.",
+  "Mars": "Action, tackling tough tasks, workouts, decisive moves.",
+  "Mercury": "Writing, business meetings, editing, learning, local travel.",
+  "Jupiter": "Expansion, launching projects, gratitude, big-picture planning.",
+  "Venus": "Socializing, beauty, design, romance, treating yourself.",
+  "Saturn": "Organization, boundaries, deep focus, chores, long-term strategy.",
+  "Sun": "Rest, visibility, creative hobbies, setting intentions for the week."
+}

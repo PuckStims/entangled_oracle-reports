@@ -38,7 +38,27 @@ from config import HOUSE_DOMAINS, PALETTES  # noqa: E402
 CARD_INK = {
     "vibrant": {"accent": "#00FFB2", "head": "#BF7FFF", "gold": "#FFD000"},
     "muted":   {"accent": "#5F8C7E", "head": "#8A7499", "gold": "#A57C3A"},
+    # Cool twilight ink for the Moon-sign frame (internal landscape).
+    "twilight": {"accent": "#5F7A99", "head": "#74749A", "gold": "#93826B"},
 }
+
+# Card-local palettes not in config. "twilight" is a soft, cool light scheme so
+# the Moon-sign line reads distinctly from the warm cream Sun-sign line in-feed.
+CARD_PALETTES = {
+    "twilight": {
+        "bg": "#EDEFF5", "surface": "#E4E8F1", "surface_2": "#DBE0EC",
+        "border": "#CBD2E0", "text": "#262B36", "muted": "#6E7688",
+        "subtle": "#9AA2B2",
+        # legacy aliases used by the template
+        "accent": "#5F7A99", "purple": "#74749A", "gold": "#93826B",
+    },
+}
+
+
+def _resolve_palette(palette_name: str) -> dict:
+    if palette_name in CARD_PALETTES:
+        return CARD_PALETTES[palette_name]
+    return PALETTES.get(palette_name, PALETTES["vibrant"])
 from selectors.utils import get_sign_element  # noqa: E402
 from selectors.block_selector import select_block  # noqa: E402
 from formulas.standard_indexes import get_day_ruler  # noqa: E402
@@ -190,16 +210,42 @@ def compute_day_sky(date: datetime) -> dict:
     }
 
 
-def build_sign_reading(sky: dict, sign: str, palette_name: str = "vibrant") -> dict:
+# Per-frame framing: which sign the reader anchors on, and the editorial voice.
+#   sun  — Sun sign as 1st house; features the day's fast-planet aspect (external
+#          events, how the day meets you).
+#   moon — Moon sign as 1st house; features the transiting Moon's own house
+#          (internal weather, how you meet the day inside).
+FRAMES = {
+    "sun":  {"label": "Sun Sign", "tagline": "External Identity",
+             "anchor_word": "Sun sign"},
+    "moon": {"label": "Moon Sign", "tagline": "Internal Landscape",
+             "anchor_word": "Moon sign"},
+}
+
+
+def build_sign_reading(sky: dict, sign: str, palette_name: str = "vibrant",
+                       frame: str = "sun") -> dict:
     """
     Assemble the medium-length reading for one sign from a precomputed day sky.
 
-    Sections: Today's Sky (shared) - Your Activation (solar house) - Day's Ruler.
+    Sections: Today's Sky (shared) - Your Activation (whole-sign house) - Day's Ruler.
+
+    frame="sun"  anchors on the reader's Sun sign and features the day's fast
+                 planet. frame="moon" anchors on the reader's Moon sign and
+                 features the transiting Moon (its house shifts every ~2.5 days).
     """
+    frame_info = FRAMES.get(frame, FRAMES["sun"])
     sign_index = ZODIAC_SIGNS.index(sign)
 
-    # Solar houses: the sign's 0th degree is its own 1st-house cusp.
-    house = _whole_sign_house(sky["feature_longitude"], sign_index * 30)
+    if frame == "moon":
+        feature_planet = "Moon"
+        feature_longitude = sky["longitudes"]["Moon"]
+    else:
+        feature_planet = sky["feature_planet"]
+        feature_longitude = sky["feature_longitude"]
+
+    # Whole-sign houses from the anchor: the sign's 0th degree is its 1st-house cusp.
+    house = _whole_sign_house(feature_longitude, sign_index * 30)
     house_name = HOUSE_DOMAINS.get(house, "chart")
 
     todays_sky_block = select_block(
@@ -208,7 +254,7 @@ def build_sign_reading(sky: dict, sign: str, palette_name: str = "vibrant") -> d
     )
     activation_block = select_block(
         "daily_horoscope", "your_activation",
-        sky["feature_planet"], str(house),
+        feature_planet, str(house),
     )
     day_ruler_block = select_block(
         "daily_horoscope", "day_ruler", sky["day_ruler"],
@@ -227,23 +273,27 @@ def build_sign_reading(sky: dict, sign: str, palette_name: str = "vibrant") -> d
         "moon_phase": sky["moon_phase"],
         "moon_sign": sky["moon_sign"],
         "todays_sky_block": todays_sky_block,
-        "activation_planet": sky["feature_planet"],
+        "activation_planet": feature_planet,
         "activation_house": house,
         "activation_house_name": house_name,
         "activation_block": activation_block,
         "day_ruler_name": sky["day_ruler"],
         "day_ruler_block": day_ruler_block,
+        "frame": frame,
+        "frame_label": frame_info["label"],
+        "frame_tagline": frame_info["tagline"],
         "palette_name": palette_name,
-        "palette": PALETTES.get(palette_name, PALETTES["vibrant"]),
+        "palette": _resolve_palette(palette_name),
         "ink": CARD_INK.get(palette_name, CARD_INK["vibrant"]),
     }
 
 
 def build_caption(reading: dict) -> str:
     """Facebook caption (the text half of each post)."""
+    read_by = "read by your Moon sign" if reading["frame"] == "moon" else "read by your Sun sign"
     return (
         f"{reading['sign_glyph']} {reading['sign'].upper()} "
-        f"({reading['sign_dates']}) · {reading['display_date']}\n\n"
+        f"({reading['frame_label']} · {read_by}) · {reading['display_date']}\n\n"
         f"{reading['activation_planet']} moves through your "
         f"{reading['activation_house_name']}. {reading['activation_block']}\n\n"
         f"Today's sky: {reading['moon_phase']} in {reading['moon_sign']}. "

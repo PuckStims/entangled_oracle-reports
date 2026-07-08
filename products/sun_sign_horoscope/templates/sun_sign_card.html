@@ -52,6 +52,14 @@
       color: var(--text);
       margin-top: 6px;
     }
+    .tagline {
+      font-size: 17px;
+      color: var(--head);
+      margin-top: 8px;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      font-style: italic;
+    }
     .sign-dates { font-size: 19px; color: var(--muted); margin-top: 6px; letter-spacing: 2px; }
     .date-line { font-size: 19px; color: var(--gold); margin-top: 4px; letter-spacing: 1px; }
     hr { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
@@ -78,11 +86,12 @@
 </head>
 <body>
   <div id="card">
-    <div class="brand">Entangled Oracle · Daily Horoscope</div>
+    <div class="brand">Entangled Oracle · {{ frame_label | default('Daily') }} Horoscope</div>
 
     <div class="sign-head">
       <div class="glyph">{{ sign_glyph }}</div>
       <div class="sign-name">{{ sign }}</div>
+      {% if frame_tagline %}<div class="tagline">{{ frame_tagline }}</div>{% endif %}
       <div class="sign-dates">{{ sign_dates }}</div>
       <div class="date-line">{{ display_date }}</div>
     </div>

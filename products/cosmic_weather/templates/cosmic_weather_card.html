@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cosmic Weather · {{ iso_date }}</title>
+  <style>
+    :root {
+      --bg:     {{ palette.bg }};
+      --surface:{{ palette.surface }};
+      --border: {{ palette.border }};
+      --text:   {{ palette.text }};
+      --muted:  {{ palette.muted }};
+      --accent: {{ ink.accent }};
+      --head:   {{ ink.head }};
+      --gold:   {{ ink.gold }};
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { margin: 0; }
+    #card {
+      width: 1080px;
+      height: 1080px;
+      overflow: hidden;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Georgia', 'Times New Roman', serif;
+      padding: 64px 80px;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.5;
+    }
+    .brand {
+      font-size: 18px;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-align: center;
+    }
+    .title {
+      text-align: center;
+      font-size: 60px;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      color: var(--text);
+      margin-top: 26px;
+    }
+    .weekday { text-align: center; font-size: 26px; color: var(--gold); margin-top: 12px; letter-spacing: 3px; }
+    .date-line { text-align: center; font-size: 20px; color: var(--muted); margin-top: 4px; letter-spacing: 1px; }
+    hr { border: none; border-top: 1px solid var(--border); margin: 34px 0; }
+    .section { margin-bottom: 30px; }
+    .label {
+      font-size: 17px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+    .headline { font-size: 30px; color: var(--head); margin-bottom: 12px; }
+    .body { font-size: 24px; color: var(--text); }
+    .used-for {
+      margin-top: 16px;
+      padding: 18px 22px;
+      background: var(--surface);
+      border-left: 3px solid var(--gold);
+      border-radius: 6px;
+    }
+    .used-for .cue {
+      font-size: 15px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .used-for .theme { font-size: 25px; color: var(--text); }
+    footer {
+      margin-top: auto;
+      text-align: center;
+      font-size: 17px;
+      letter-spacing: 2px;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <div id="card">
+    <div class="brand">Entangled Oracle · Cosmic Weather</div>
+
+    <div class="title">Cosmic Weather</div>
+    <div class="weekday">{{ weekday }} · ruled by {{ day_ruler_name }}</div>
+    <div class="date-line">{{ display_date }}</div>
+
+    <hr>
+
+    <div class="section">
+      <div class="label">Today's Sky</div>
+      <div class="headline">{{ moon_phase }} in {{ moon_sign }}</div>
+      <div class="body">{{ todays_sky_block }}</div>
+    </div>
+
+    <div class="section">
+      <div class="label">The Day's Ruler</div>
+      <div class="headline">{{ day_ruler_name }}</div>
+      <div class="body">{{ day_ruler_block }}</div>
+      <div class="used-for">
+        <div class="cue">Best used for</div>
+        <div class="theme">{{ day_theme }}</div>
+      </div>
+    </div>
+
+    <footer>Ksisti-Puck LLC · entangled-oracle</footer>
+  </div>
+</body>
+</html>

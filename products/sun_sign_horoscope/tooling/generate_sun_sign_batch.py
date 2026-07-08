@@ -65,10 +65,12 @@ def _parse_args(argv=None) -> argparse.Namespace:
                         help="Number of consecutive days to generate (default 7).")
     parser.add_argument("--sign", default=None,
                         help="Limit to a single sign (e.g. Leo). Default: all 12.")
-    parser.add_argument("--palette", default="vibrant", choices=["vibrant", "muted"],
-                        help="Color palette (default vibrant).")
+    parser.add_argument("--frame", default="sun", choices=["sun", "moon"],
+                        help="sun = Sun-sign/external (default); moon = Moon-sign/internal.")
+    parser.add_argument("--palette", default=None, choices=["vibrant", "muted", "twilight"],
+                        help="Color palette. Default: muted for sun, twilight for moon.")
     parser.add_argument("--out", default=None,
-                        help="Output directory. Default: output/sun_sign_horoscope/<start>_<days>d")
+                        help="Output directory. Default: output/sun_sign_horoscope/<start>_<days>d_<frame>")
     return parser.parse_args(argv)
 
 
@@ -92,10 +94,12 @@ def main(argv=None) -> int:
     args = _parse_args(argv)
     start = _resolve_start(args.start)
     signs = _resolve_signs(args.sign)
+    palette = args.palette or ("twilight" if args.frame == "moon" else "muted")
     template = _load_template()
 
     out_dir = args.out or os.path.join(
-        OUTPUT_DIR, "sun_sign_horoscope", f"{start.strftime('%Y-%m-%d')}_{args.days}d"
+        OUTPUT_DIR, "sun_sign_horoscope",
+        f"{start.strftime('%Y-%m-%d')}_{args.days}d_{args.frame}",
     )
     os.makedirs(out_dir, exist_ok=True)
 
@@ -106,7 +110,7 @@ def main(argv=None) -> int:
         date = start + timedelta(days=day_offset)
         sky = compute_day_sky(date)  # computed once per day, shared across signs
         for sign in signs:
-            reading = build_sign_reading(sky, sign, palette_name=args.palette)
+            reading = build_sign_reading(sky, sign, palette_name=palette, frame=args.frame)
             html = template.render(**reading)
             stem = f"{reading['iso_date']}_{sign.lower()}"
             html_name = f"{stem}.html"
@@ -139,14 +143,16 @@ def main(argv=None) -> int:
         writer.writeheader()
         writer.writerows(captions_rows)
 
+    anchor = "Moon sign" if args.frame == "moon" else "Sun sign"
     manifest = {
         "product": "sun_sign_horoscope",
-        "methodology": "Tropical zodiac · Solar (whole-sign-from-sun) houses",
+        "frame": args.frame,
+        "methodology": f"Tropical zodiac · whole-sign houses from the reader's {anchor}",
         "generated_utc": datetime.now(timezone.utc).isoformat(),
         "start_date": start.strftime("%Y-%m-%d"),
         "days": args.days,
         "signs": signs,
-        "palette": args.palette,
+        "palette": palette,
         "post_count": len(posts),
         "posts": posts,
     }
