@@ -1,24 +1,19 @@
 # Entangled Oracle — Phase D & E Remaining Work
 
-Standalone continuation of the standard-forecasting phased upgrade map. Phases A (ZR Loosing of the Bond), B (scaffolding verification), C (Annual Profections weighting), and the Personal-Forecast half of D (progressed Moon) are done, verified, and committed (`8cef1f3`). This document covers what's left: the open half of Phase D, and the fully-deferred Phase E items.
+Standalone continuation of the standard-forecasting phased upgrade map. Phases A (ZR Loosing of the Bond), B (scaffolding verification), C (Annual Profections weighting), and both halves of Phase D (progressed Moon in Personal Forecast, and Year Ahead progressions/solar-arc "texture") are done, verified, and committed. This document now covers what's left: Phase D's real follow-on (volume/content), and the fully-deferred Phase E items.
 
 ---
 
-## Phase D remainder — Year Ahead progressions/solar arc as "texture"
+## Phase D — closed
 
-**Decided already:** progressions and solar arc belong in Year Ahead's 12-month scope (not Personal Forecast — confirmed too slow for a 90-day window, except progressed Moon which is already wired in). Framed as ambient developmental *texture* — describing the terrain/mood of the period — not point-forecast claims ("on date X, Y happens"). Uses the prog-to-prog/transit-to-prog axes verified in Phase B, plus the existing `clock_role: "chapter"` designation already present in `engine/progressions.py`/`engine/solar_arc.py` for non-Moon contacts.
+Both halves landed:
+- Progressed Moon → Personal Forecast (`8cef1f3`)
+- Year Ahead progressions/solar-arc "texture," backend-only: `include_year_texture` flag on `compute_year_ahead_events()`, filtered to `clock_role == "chapter"`, surfaced as its own `year_texture_progressions`/`year_texture_solar_arc` keys, not merged into `all_events` (`cea2fec`)
+- Follow-on scoring fix, found during live review: progression/solar-arc events were scoring a flat `0.0` (missing `raw_score` field plus no scoring-formula case for these event types); fixed and re-verified against a real chart — also fixed the already-shipped Moon-progression events for free, since they share the same code path (`3807661`)
 
-**Still open — the one real fork:**
-- **Backend-only this pass:** wire progression/solar-arc events into `compute_year_ahead_events` (mirroring how `include_moon_progressions` was added for Personal Forecast — an opt-in flag, e.g. `include_year_texture: bool = False`, defaulting False so nothing changes until explicitly turned on), verify the data flows correctly against real charts, but don't touch templates or write new prose yet.
-- **All the way to visible content:** also design and write the actual "texture" section — the language/framing is as much a voice decision as a data one, and hasn't been drafted at all yet.
+**Real follow-on, not part of Phase D itself:** a live 12-month chart produced 208 `year_texture_progressions` and 14 `year_texture_solar_arc` events — reported raw, no cap applied, per the standing rule below. Now that real scores exist (post-`3807661`), there's an actual axis to sort/trim by if volume-limiting is ever taken up. Not decided, not scheduled.
 
-Recommendation stands from earlier: backend first, get real data to react to before writing client-facing language. But that's the actual decision to make when picking this up.
-
-**Implementation notes for whoever builds this:**
-- `engine/progressions.py::scan_progression_events()` already tags Moon-sourced contacts `clock_role: "modifier"` and everything else `clock_role: "chapter"` — filtering to `clock_role == "chapter"` (the inverse of the existing `_filter_moon_progression_events()` helper in `engine/transit_engine.py`) gets you the non-Moon, texture-appropriate set directly.
-- `engine/solar_arc.py::scan_solar_arc_events()` needs no filtering — every event it produces is already `clock_role: "chapter"`.
-- Don't fold these into `all_events`' existing sort without checking — `entry_datetime`/`peak_datetime`/`leave_datetime` windows here are much wider (season-scale) than transits, so "chronological order" may read strangely mixed into the same list. Worth its own section/list in the returned dict rather than assuming it slots into `all_events` cleanly the way Moon progressions did.
-- The `link_related_forecast_events(..., progression_events=..., solar_arc_events=...)` parameters already exist and already run events through `enrich_forecast_event` — this scaffolding is ready, just unused for the non-Moon case.
+**Also still not done, deliberately deferred by the backend-only scoping decision:** the client-facing "texture" section itself — no templates touched, no prose written. That's a voice/design pass for whenever visible content is picked up, same recommendation as before: get real data reacted to first (done now), write language second.
 
 ---
 
