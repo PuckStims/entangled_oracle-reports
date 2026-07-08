@@ -5,6 +5,60 @@ Newest entry on top. See `agents/README.md` for the convention.
 
 ---
 
+## 2026-07-08 - Phase 4 method-charter review, before Codex implementation: phase0.1.0 -> phase0.1.1 (Claude / Sonnet 5)
+
+**Context:** Ahead of the operator prompting Codex for Phase 4 (Returns
+and Annual Profections), Claude did its Phase 4 method-charter review
+per `EO_UPGRADE_PHASES_1_9_AGENT_PROMPTS.md`'s Claude ownership
+("verify that the returns and profections charter is complete enough
+for implementation... do not edit code"), mirroring the pattern that
+already caught real gaps ahead of Phases 2 and 3.
+
+**One load-bearing gap found and fixed, affecting three charters:**
+
+Neither C1 (Returns), C4 (Annual Profections), nor C5b (Zodiacal
+Releasing, Phase 6) specified a value for `orb`, `distance`, or
+`phase` on their emitted `ForecastEvent`s. `phase0/01_predictive_object_schemas.md`
+§2 has a hard rule: every `ForecastEvent` must carry at least one of
+those three fields, or the sidecar writer must reject it as malformed.
+As charted, every return moment, every annual profection handoff, and
+every ZR period transition would have been silently rejected the
+first time the sidecar writer actually ran against them -- a blocker
+that would only have surfaced at validation time, not at
+implementation-read time.
+
+**Fix:** all three now set `distance = 0.0` for their exact-moment
+`ForecastEvent`s -- a genuine value (zero residual/zero deviation at
+an astronomically exact instant), not a placeholder, and consistent
+across all three charters so the convention doesn't fragment.
+
+**Two smaller precision fixes, also patched:**
+
+1. C1's independence-group enum trailed with an unexplained "..." for
+   the "secondary" body return list (Mercury, Venus, Mars, Uranus,
+   Neptune, Pluto, Chiron -- off by default in Phase 4). Clarified
+   that if ever enabled, those collectively use
+   `return_family_generic` (already reserved in
+   `phase0/01_predictive_object_schemas.md` §9) rather than
+   fragmenting into per-body groups ahead of demand.
+2. C1's "chapter" role language could be read as the Return scanner
+   constructing a `ChapterState` object directly. Clarified that the
+   scanner only emits `ForecastEvent`s; promotion to a proper
+   `ChapterState` (with the already-reserved `chapter_kind =
+   "return_year"`) happens downstream in the shared chapter builder
+   (`phase0/04_convergence_and_candidate_protocol.md` §8.1), not in
+   the Return scanner itself.
+3. C4's time-lord ruler table (`Mars, Venus, Mercury, Moon, Sun,
+   Mercury, Venus, Mars, Jupiter, Saturn, Saturn, Jupiter`) was
+   correct but unlabeled -- confirmed it's the classical/traditional
+   domicile rulers in zodiacal sign order (Aries through Pisces), not
+   a house-number lookup, and added that framing explicitly so a
+   fast read can't misinterpret it as house-indexed.
+
+**Files changed:** `phase0/03_method_charters.md`.
+
+---
+
 ## 2026-07-08 - Phase 3 all-34 asteroid predictive activation foundation (Codex / GPT-5)
 
 **Context:** After both parallel Phase 2 lanes completed and the Phase 2

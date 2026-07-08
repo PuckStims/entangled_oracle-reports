@@ -1,9 +1,9 @@
 # Phase 0 — Method Charters
 
 Program: [EO_PREDICTIVE_ARCHITECTURE_PROGRAM.md](../EO_PREDICTIVE_ARCHITECTURE_PROGRAM.md)
-Status: charter (Phase 0). No implementation permitted until sign-off.
-Version: `phase0.1.0`
-Date: 2026-07-07
+Status: charter (Phase 0, operator-approved). No implementation permitted until sign-off.
+Version: `phase0.1.1`
+Date: 2026-07-07 (patched same day, before Phase 4 implementation began, per Phase 4 Claude method-charter review: fixed a load-bearing gap in C1 Returns, C4 Annual Profections, and C5b Zodiacal Releasing where none specified a value for `phase0/01_predictive_object_schemas.md` §2's hard `orb`/`distance`/`phase` requirement — every emitted event from these three charters would otherwise have been rejected as malformed by the sidecar writer. Also clarified the C1 Return-chapter vs. `ChapterState` layering, the C1 secondary-body independence-group fallback, and the C4 time-lord ruler lookup table's zodiacal-order framing. See `phase0.1.0` → `phase0.1.1` diff in `agents/REVISIONS.md`.
 
 One charter per active clock family or planned clock family. Each charter specifies the exact answer to twelve required questions:
 
@@ -55,7 +55,7 @@ Charters are ordered by build sequence per the program (Phase 4 → Phase 6).
 
 ### 5. Orb / exactness
 
-- The return moment itself is exact (bisection to ≤0.01°). Not an orb-based event.
+- The return moment itself is exact (bisection to ≤0.01°). Not an orb-based event, so `orb` is left null. Per `phase0/01_predictive_object_schemas.md` §2's hard rule ("every `ForecastEvent` carries at least one of `orb`, `distance`, or `phase`, or the sidecar writer must reject it as malformed"), the return moment's `ForecastEvent.distance` carries the bisection residual, which is `0.0` by construction (the root-finder terminates once the residual is within the 0.01° tolerance, and the stored value is the rounded residual — effectively zero, not a placeholder). `phase` stays null for the moment event.
 - For candidate-support purposes, a "return window" may be declared as `[peak_at − 12h, peak_at + 12h]` for the Sun and Moon; `[peak_at − 24h, peak_at + 24h]` for Jupiter and Saturn. This is the window in which return-driven convergence is granted proximity to co-occurring triggers.
 
 ### 6. Output shape
@@ -65,11 +65,11 @@ Charters are ordered by build sequence per the program (Phase 4 → Phase 6).
 - `clock_role = "return"`.
 - `activation_route = "return_moment"`.
 - `temporal_precision = "instant"` for solar/lunar; `"day"` for Jupiter/Saturn given typical usage.
-- `independence_group ∈ {"return_family_solar", "return_family_lunar", "return_family_jupiter", "return_family_saturn", ...}`.
+- `independence_group ∈ {"return_family_solar", "return_family_lunar", "return_family_jupiter", "return_family_saturn", "return_family_generic"}` — the fifth value is `phase0/01_predictive_object_schemas.md` §9's reserved catch-all. If the "secondary" body list (Mercury, Venus, Mars, Uranus, Neptune, Pluto, Chiron — declared policy, off by default in Phase 4) is ever enabled, every secondary-body return uses `return_family_generic` collectively rather than a per-body group; splitting secondary bodies into individual `return_family_<body>` groups is deferred until a real validation need arises, so the taxonomy doesn't fragment ahead of demand.
 
 ### 7. Chapter vs. trigger role
 
-- Solar return: `chapter` for the "solar return year" (start_at = current SR moment; end_at = next SR moment). Additionally, the SR moment itself may be emitted as a `trigger` event when convergence assembly needs the exact moment. **The scanner emits both, but they carry distinct `event_id`s and both link to the same `independence_group` — the candidate builder dedupes.**
+- Solar return: `chapter` for the "solar return year" (start_at = current SR moment; end_at = next SR moment). Additionally, the SR moment itself may be emitted as a `trigger` event when convergence assembly needs the exact moment. **The scanner emits both, but they carry distinct `event_id`s and both link to the same `independence_group` — the candidate builder dedupes.** Both are `ForecastEvent` records, not a `ChapterState` directly — the scanner does not construct `ChapterState` itself. The chapter builder (`phase0/04_convergence_and_candidate_protocol.md` §8.1) later aggregates the chapter-role `ForecastEvent` into a proper `ChapterState` with `chapter_kind = "return_year"` (already reserved for this in `phase0/01_predictive_object_schemas.md` §4). The Return scanner's job stops at emitting the two `ForecastEvent`s; promotion to `ChapterState` is downstream, shared machinery.
 - Lunar return: `chapter` for the "lunar return month"; `trigger` for the return moment.
 - Jupiter / Saturn returns: `chapter` for the return year (± 6 months of the exact date); `trigger` for the exact moment.
 
@@ -267,7 +267,7 @@ Charters are ordered by build sequence per the program (Phase 4 → Phase 6).
 
 - Whole-sign annual profection: from age 0 (birth year), House 1 profects. Age 1 → House 2. Age 12 → back to House 1. So profected house for age `t` = `((t % 12) + 1)`.
 - Profected sign = the sign of that house in the natal chart.
-- Time lord = the traditional domicile ruler of that sign (using classical rulership: Mars, Venus, Mercury, Moon, Sun, Mercury, Venus, Mars, Jupiter, Saturn, Saturn, Jupiter).
+- Time lord = the traditional domicile ruler of that sign. Lookup table in zodiacal sign order, Aries through Pisces, using classical/traditional rulerships (not modern outer-planet rulerships — matches the codebase's established dignity convention): Aries=Mars, Taurus=Venus, Gemini=Mercury, Cancer=Moon, Leo=Sun, Virgo=Mercury, Libra=Venus, Scorpio=Mars, Sagittarius=Jupiter, Capricorn=Saturn, Aquarius=Saturn, Pisces=Jupiter. Look up by the profected *sign*, not by house number — house number determines the sign only via the natal chart's own whole-sign house-to-sign mapping.
 - Optional: monthly profection (12 signs per year, 1 per month starting from the annual profected sign).
 
 ### 2. House system and zodiac
@@ -286,12 +286,12 @@ Charters are ordered by build sequence per the program (Phase 4 → Phase 6).
 
 ### 5. Orb / exactness
 
-- Not applicable; whole-sign transitions occur on the birthday (year handoff) or on the monthly profection date.
+- Not applicable; whole-sign transitions occur on the birthday (year handoff) or on the monthly profection date. Per `phase0/01_predictive_object_schemas.md` §2's hard rule ("every `ForecastEvent` carries at least one of `orb`, `distance`, or `phase`"), the yearly handoff `ForecastEvent` (§6 below) sets `distance = 0.0` — the handoff is an exact whole-sign transition with zero residual by construction, not an approximated or orb-based contact, so `0.0` is a genuine value, not a placeholder. `orb` and `phase` stay null for this event.
 
 ### 6. Output shape
 
-- Emits `TimeLordPeriod` with `system = "annual_profection"` or `"monthly_profection"`.
-- Additionally emits a single `ForecastEvent` per year at the profection year handoff (birthday) with `method_family = "PROFECTION"`, `method_variant = "annual_profection"`, `clock_role = "time_lord"`, `activation_route = "profection_year_lord"`, `temporal_precision = "year_or_longer"`, `independence_group = "profection_family"`.
+- Emits `TimeLordPeriod` with `system = "annual_profection"` or `"monthly_profection"`. `TimeLordPeriod` has no orb/distance/phase requirement (that rule is `ForecastEvent`-only), so the period record itself needs no such field.
+- Additionally emits a single `ForecastEvent` per year at the profection year handoff (birthday) with `method_family = "PROFECTION"`, `method_variant = "annual_profection"`, `clock_role = "time_lord"`, `activation_route = "profection_year_lord"`, `temporal_precision = "year_or_longer"`, `independence_group = "profection_family"`, `distance = 0.0` (see §5).
 
 ### 7. Chapter vs. trigger role
 
@@ -426,12 +426,12 @@ Charters are ordered by build sequence per the program (Phase 4 → Phase 6).
 
 ### 5. Orb / exactness
 
-- Not applicable; period boundaries are exact-to-the-day.
+- Not applicable; period boundaries are exact-to-the-day. Per `phase0/01_predictive_object_schemas.md` §2's hard rule, the period-transition `ForecastEvent`s (§6 below) set `distance = 0.0` — a period boundary is exact by construction, not orb-approximated, so `0.0` is genuine, not a placeholder. Same convention as C1 (Returns) and C4 (Profections).
 
 ### 6. Output shape
 
-- Primary: `TimeLordPeriod` records for every L1, L2, L3, L4 period intersecting the report window. Each has `system ∈ {"zodiacal_releasing_fortune", "zodiacal_releasing_spirit"}`, `level ∈ {"L1", "L2", "L3", "L4"}`, `parent_period_id` filled where applicable.
-- Secondary: `ForecastEvent` records at period-transition moments with `method_family = "ZODIACAL_RELEASING"`, `method_variant ∈ {"zr_l1_transition", "zr_l2_transition", "zr_peak", "zr_lob"}`, `clock_role ∈ {"time_lord", "trigger", "overlay"}`, `activation_route = "zr_period_transition"`, `temporal_precision` inherits from level.
+- Primary: `TimeLordPeriod` records for every L1, L2, L3, L4 period intersecting the report window. Each has `system ∈ {"zodiacal_releasing_fortune", "zodiacal_releasing_spirit"}`, `level ∈ {"L1", "L2", "L3", "L4"}`, `parent_period_id` filled where applicable. No orb/distance/phase requirement (`ForecastEvent`-only rule).
+- Secondary: `ForecastEvent` records at period-transition moments with `method_family = "ZODIACAL_RELEASING"`, `method_variant ∈ {"zr_l1_transition", "zr_l2_transition", "zr_peak", "zr_lob"}`, `clock_role ∈ {"time_lord", "trigger", "overlay"}`, `activation_route = "zr_period_transition"`, `temporal_precision` inherits from level, `distance = 0.0` (see §5).
 - `independence_group ∈ {"zr_family_fortune", "zr_family_spirit"}` — Fortune ZR and Spirit ZR are independent families.
 
 ### 7. Chapter vs. trigger role
