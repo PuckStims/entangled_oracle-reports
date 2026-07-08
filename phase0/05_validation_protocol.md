@@ -3,8 +3,8 @@
 Program: [EO_PREDICTIVE_ARCHITECTURE_PROGRAM.md](../EO_PREDICTIVE_ARCHITECTURE_PROGRAM.md)
 Depends on: [04_convergence_and_candidate_protocol.md](./04_convergence_and_candidate_protocol.md), [06_sidecar_and_export_contract.md](./06_sidecar_and_export_contract.md).
 Status: charter (Phase 0). Policy. No implementation.
-Version: `phase0.1.0`
-Date: 2026-07-07
+Version: `phase0.1.1`
+Date: 2026-07-07. Patched 2026-07-08: this file's "promote a candidate class to a client surface — that is Phase 10" note is superseded — operator decision folded that promotion into Phase 9b (validated alongside, not gated on outcome-ledger completeness), see `EO_UPGRADE_PHASES_1_9_AGENT_PROMPTS.md` and `04_convergence_and_candidate_protocol.md` §10. This does not change the outcome-ledger schema, status categories, or ablation requirements below — validation continues exactly as specified.
 
 ## Purpose
 

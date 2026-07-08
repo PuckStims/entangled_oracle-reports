@@ -484,7 +484,7 @@ unit-test fixtures (do not rebuild or duplicate any of this):**
 Every one of `raw_events`' `method_family` values (`TRANSIT`, `PROPRIETARY_TRANSIT`,
 `LUNATION`, `RETURN`, `SOLAR_ARC`, `PROGRESSION`, `PROFECTION`, `ZODIACAL_RELEASING`)
 is live and produces real events on real charts today. `phase0/` contracts are
-at: `01`=`phase0.1.1`, `02`=`phase0.1.1`, `03`=`phase0.1.2`, `06`=`phase0.1.1`
+at: `01`=`phase0.1.2`, `02`=`phase0.1.2`, `03`=`phase0.1.3`, `04`=`phase0.1.2`, `05`=`phase0.1.1`, `06`=`phase0.1.1`
 (all per-file versions — check each file's own header, don't assume `phase0.1.0`).
 
 **`ForecastEvent.natal_anchor_ids` is empty on every event emitted so far, on
@@ -528,14 +528,31 @@ impulse to make the system "more complete" or "more impressive" has a
 specific, named failure mode here, and this document is written to be
 followed literally, not spiritually:**
 
-1. **No client-facing report changes in Phases 7, 8, or 9.** Not a new
+1. **No client-facing report changes in Phases 7 or 8.** Not a new
    template section, not a "just a small mention" in Year Ahead prose, not
    a teaser in the sandbox narrative preview beyond what already exists.
-   The sidecar is the only surface. This is not a suggestion to be
-   balanced against other goals — it is a hard boundary. If a phase's
-   `Required outcomes` list doesn't say "template" or "prose," do not add
-   template or prose changes, no matter how contained or "obviously fine"
-   they seem in the moment.
+   The sidecar is the only surface for those two phases. This is not a
+   suggestion to be balanced against other goals — it is a hard boundary.
+   If a phase's `Required outcomes` list doesn't say "template" or
+   "prose," do not add template or prose changes, no matter how contained
+   or "obviously fine" they seem in the moment.
+
+   **Operator decision, 2026-07-08 — this boundary is explicitly lifted
+   for Phase 9.** Phase 9 is the last actively-scoped phase in this
+   program; this document never turned the original program's "Phase 10 —
+   Controlled Surface Expansion" into real agent prompts, and the operator
+   has decided not to run it as a separate effort. Report-facing
+   promotion — wiring `ChapterState` / `MicroCandidate` evidence into
+   Year Ahead and Personal Forecast prose — is now in scope for Phase 9,
+   see the Phase 9 section below. Every place in `phase0/01`, `02`, `03`,
+   `04`, `05` that says a promotion decision "is Phase 10" or "requires
+   Phase 10 governance" should now be read as "in scope for Phase 9, per
+   this note," unless that specific file has since been re-patched with
+   more specific language. Rules 2-6 below are unaffected by this
+   change — this is a scope change for *where evidence may be surfaced*,
+   not a license to add new methods, simplify scores, fabricate
+   validation data, reintroduce the sandbox cap, or fill perceived gaps
+   beyond what's asked.
 2. **No new astronomical or interpretive methods beyond what each phase's
    `Required outcomes` list names.** Do not add harmonics, midpoints,
    antiscia, additional lots beyond Fortune/Spirit/Necessity, additional
@@ -742,6 +759,114 @@ Read the "State as of Phase 6 completion" section near the top of EO_UPGRADE_PHA
 Goal: audit whether the validation laboratory can fairly evaluate candidates without retrofitting success.
 
 Do not edit code. Review outcome categories, matched-random baseline design, quiet-period handling, non-hit treatment, unresolved treatment, research completeness, and ablation requirements. Specifically check for any fixture or example data that reads as a real historical result rather than clearly-labeled synthetic test data. Produce exact review findings and any required acceptance tests.
+```
+
+## Phase 9b - Report Integration (folded-in Controlled Surface Expansion)
+
+**Operator decision, 2026-07-08:** this workstream did not exist in the
+original Phase 9 scope above — it is the original program's "Phase 10 —
+Controlled Surface Expansion" (`EO_PREDICTIVE_ARCHITECTURE_PROGRAM.md`),
+folded into Phase 9 because Phase 9 is the last actively-scoped phase in
+this program and the operator does not intend to run a separate Phase 10
+effort. This is the one place in the whole program where the "no
+client-facing report changes" boundary is deliberately lifted — see
+anti-drift rule 1's Phase 9 carve-out above. Gating decision: **expose
+now, validate alongside** — chapters/candidates surface in report prose
+as soon as this phase lands, explicitly framed as predictive/experimental,
+rather than waiting for outcome-ledger history to accumulate. Phase 9's
+harness (above) tracks hit/miss over time in parallel; it does not block
+this exposure.
+
+Purpose:
+Make the already-built predictive evidence (chapters, candidates) visible
+to report readers for the first time, instead of leaving it sidecar-only
+forever, without overclaiming validated accuracy it doesn't have yet.
+
+Required outcomes:
+
+- Year Ahead and Personal Forecast report generation reads `ChapterState`
+  and (for Personal Forecast only — candidates are narrower and more
+  suited to a discrete-event surface) `MicroCandidate` records straight
+  from the same in-memory predictive results already computed during
+  generation (`predictive_results` / the object that feeds
+  `build_predictive_sidecar`) — not by re-parsing the written
+  `.eo_predictive.json` file, and not by duplicating any scoring logic
+  that already lives in `engine/convergence.py` / `engine/candidates.py`.
+- New template section(s), clearly and consistently labeled as
+  predictive/experimental content (e.g. a "Predictive Signals" or
+  "Emerging Chapters" module with visible framing language) — not
+  blended into existing prose as if it were the same kind of claim as
+  the rest of the report. Readers must be able to tell this content
+  apart from the report's existing established interpretive text.
+- Component scores remain available in whatever data backs the template
+  (do not throw them away when rendering) even if the prose itself only
+  narrates a subset in plain language — rule 3's "no score
+  simplification" governs the underlying data and the sidecar, not
+  every sentence of client-facing prose, but the full component
+  breakdown must still be reachable (e.g. in an expandable detail block
+  or the existing sidecar) from the report, not deleted.
+- No `MicroCandidate` is presented as a settled prediction. Prose must
+  use hedged, research-framed language (e.g. "a period the system flags
+  as..." not "you will..."). This is not a style preference — it is the
+  same claim-safety discipline the rest of this program has enforced
+  since Phase 1's client-forecast-adequacy cleanup.
+- Update `report_surface_visibility` defaults where `phase0/01`, `02`,
+  `03`, `04` currently say a promotion "requires Phase 10" — those
+  objects may now include `year_ahead` / `personal_forecast` in their
+  visibility list, gated by report type as described above, not gated by
+  validation status.
+- This phase does not change Daily Horoscope, Weekly Horoscope, or
+  Soul Ecosystem report prose. Scope is Year Ahead and Personal Forecast
+  only, matching where the sidecar already writes evidence today.
+
+Codex file ownership:
+
+- `generate.py` (the Year Ahead / Personal Forecast context-building
+  functions only — do not touch Daily/Weekly Horoscope or Soul Ecosystem
+  code paths)
+- `templates/year_ahead.html`, `templates/personal_forecast.html` (new
+  sections, additive only)
+- `phase0/01_predictive_object_schemas.md`, `02`, `03`, `04` —
+  `report_surface_visibility` default updates only, version-bumped, with
+  the operator-decision note referenced in each changed line
+- tests
+
+Claude file ownership:
+
+- pre-implementation charter patch review (the same pattern as every
+  prior phase) of the `report_surface_visibility` default changes above
+- post-implementation live verification: generate a real Year Ahead and
+  a real Personal Forecast report, open the rendered HTML (not just the
+  sidecar), and confirm the new section renders, is clearly labeled as
+  predictive/experimental, and does not misstate a candidate as a
+  settled prediction
+- claim-safety audit of the new template prose, using the same standard
+  as the original `CLIENT_FORECAST_CLAIM_CLEANUP_QUEUE.md` cleanup
+
+Codex prompt:
+
+```text
+You are Codex working in C:\entangled_oracle on Phase 9b report integration.
+
+Before anything else, read the "State as of Phase 6 completion" section near the top of this file, and the Phase 9b section immediately above this prompt in full -- this is the one workstream in the whole program where client-facing report changes are explicitly authorized, per the operator's 2026-07-08 decision. Confirm Phase 7, 8, and (at least the harness half of) Phase 9 are actually done before starting; if any is missing, stop and say so.
+
+Goal: surface ChapterState (Year Ahead and Personal Forecast) and MicroCandidate (Personal Forecast only) evidence in report prose for the first time, framed as predictive/experimental, not gated on outcome-ledger validation history.
+
+Read the existing report-building functions in generate.py for year_ahead and personal_forecast (the same functions that already call write_predictive_sidecar_for_report) and the existing templates. Add new, clearly-labeled, additive template sections fed directly from the predictive_results object already computed during generation -- do not duplicate convergence/candidate scoring logic, and do not read from the written .eo_predictive.json file. Update the report_surface_visibility defaults named in phase0/01, 02, 03, 04 wherever they currently gate on "Phase 10," with a version bump per file and a reference to the operator's 2026-07-08 note in agents/REVISIONS.md.
+
+Do not touch Daily Horoscope, Weekly Horoscope, or Soul Ecosystem prose. Do not present any candidate or chapter as a settled prediction -- use hedged, research-framed language throughout. Do not collapse component scores out of the underlying data even if the prose only narrates a subset. Add tests confirming the new sections render and confirming report_surface_visibility gating actually restricts content to the two report types named.
+```
+
+Claude Code prompt:
+
+```text
+You are Claude Code working in C:\entangled_oracle on Phase 9b report integration review.
+
+Read the "State as of Phase 6 completion" section and the Phase 9b section near the top of EO_UPGRADE_PHASES_1_9_AGENT_PROMPTS.md first.
+
+Before Codex implements: review the report_surface_visibility default changes proposed against phase0/01, 02, 03, 04 for consistency and version-bump correctness.
+
+After Codex delivers: do not just run tests. Generate a real Year Ahead report and a real Personal Forecast report via generate.py, open the rendered HTML output directly, and confirm the new predictive section is present, clearly labeled as experimental/predictive (not blended into existing established-claim prose), and does not overstate any candidate or chapter as a settled prediction. Cross-check against the claim-safety standard already used in CLIENT_FORECAST_CLAIM_CLEANUP_QUEUE.md. Report any real issues found and fix them directly if narrowly scoped, same as every prior phase in this program.
 ```
 
 ## Safe Parallel Run Matrix

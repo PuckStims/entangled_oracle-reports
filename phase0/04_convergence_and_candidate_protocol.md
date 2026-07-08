@@ -3,8 +3,8 @@
 Program: [EO_PREDICTIVE_ARCHITECTURE_PROGRAM.md](../EO_PREDICTIVE_ARCHITECTURE_PROGRAM.md)
 Depends on: [01_predictive_object_schemas.md](./01_predictive_object_schemas.md), [02_asteroid_predictive_registry.json](./02_asteroid_predictive_registry.json), [03_method_charters.md](./03_method_charters.md).
 Status: charter (Phase 0, operator-approved). Policy. No implementation.
-Version: `phase0.1.1`
-Date: 2026-07-08 (patched before Phase 7 implementation began, per Phase 7 Claude review: added the explicit build order for anchors → chapter builder → convergence, a TimeLordPeriod-to-ChapterState granularity rule, a quantified "shared time window" clustering threshold, and confirmed ChapterState's confidence/counterforce/complexity reuse the MicroCandidate formulas rather than needing separate derivations. See `agents/REVISIONS.md` for the full diff.)
+Version: `phase0.1.2`
+Date: 2026-07-08 (patched before Phase 7 implementation began, per Phase 7 Claude review: added the explicit build order for anchors → chapter builder → convergence, a TimeLordPeriod-to-ChapterState granularity rule, a quantified "shared time window" clustering threshold, and confirmed ChapterState's confidence/counterforce/complexity reuse the MicroCandidate formulas rather than needing separate derivations. See `agents/REVISIONS.md` for the full diff. Patched again same day, before Phase 9b: operator decision lifted the "Phase 10 governance" gate on §10's report-surface routing — see §10 and `EO_UPGRADE_PHASES_1_9_AGENT_PROMPTS.md`'s Phase 9b section.)
 
 ## Purpose
 
@@ -310,12 +310,20 @@ Format specified in [06_sidecar_and_export_contract.md](./06_sidecar_and_export_
 
 ## 10. Report-surface routing (candidate class)
 
-- `Weather` → internal + sandbox always; Year Ahead climate section under Phase 10 governance.
-- `ChapterState` → internal + sandbox always; Year Ahead chapter modules and Personal Forecast under Phase 10 governance.
-- `Trigger` (as signal) → internal + sandbox always; per-signal-role visibility via governance.
-- `MicroCandidate` → **internal + validation lab only until Phase 10 explicitly gates a research/practitioner surface.** No client-facing candidate output prior to Phase 10.
+**Operator decision, 2026-07-08 — the "Phase 10 governance" gate below is
+lifted, folded into Phase 9b (see
+`EO_UPGRADE_PHASES_1_9_AGENT_PROMPTS.md`).** Phase 9 is the last
+actively-scoped phase in this program; the operator chose not to run a
+separate Phase 10 effort and instead authorized report-facing promotion
+now, framed as predictive/experimental content, validated alongside via
+the Phase 9 outcome ledger rather than gated on it.
 
-This preserves the program rule: "No new clock enters report prose before it enters the evidence sidecar and validation harness." The candidate object is the endpoint of that pipeline.
+- `Weather` → internal + sandbox always; Year Ahead climate section may now surface per Phase 9b, framed as predictive/experimental.
+- `ChapterState` → internal + sandbox always; Year Ahead chapter modules and Personal Forecast may now surface per Phase 9b, framed as predictive/experimental.
+- `Trigger` (as signal) → internal + sandbox always; not directly surfaced in Phase 9b (chapters and candidates are the report-facing units, not raw signals).
+- `MicroCandidate` → internal + validation lab always; **may now also surface in Personal Forecast per Phase 9b**, explicitly hedged as a research-flagged window, never presented as a settled prediction.
+
+This updates the program rule "No new clock enters report prose before it enters the evidence sidecar and validation harness" to its Phase 9b form: report prose now may draw directly from the evidence sidecar's own objects (chapters, candidates), with the validation harness running in parallel rather than as a precondition. The candidate/chapter objects remain the same objects computed for the sidecar — report prose is an additional consumer, not a separate pipeline.
 
 ## 11. Locked at Phase 0
 

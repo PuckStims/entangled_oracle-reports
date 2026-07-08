@@ -2,8 +2,8 @@
 
 Program: [EO_PREDICTIVE_ARCHITECTURE_PROGRAM.md](../EO_PREDICTIVE_ARCHITECTURE_PROGRAM.md)
 Status: charter (Phase 0, operator-approved). Contracts. No implementation.
-Version: `phase0.1.1`
-Date: 2026-07-07 (patched same day, before Phase 2 implementation began, per Phase 2 Claude contract-conformance review: added `NatalPromiseAnchor.natal_lots` and `TimeLordPeriod.report_surface_visibility` — see `phase0.1.0` → `phase0.1.1` diff in `agents/REVISIONS.md`)
+Version: `phase0.1.2`
+Date: 2026-07-07 (patched same day, before Phase 2 implementation began, per Phase 2 Claude contract-conformance review: added `NatalPromiseAnchor.natal_lots` and `TimeLordPeriod.report_surface_visibility` — see `phase0.1.0` → `phase0.1.1` diff in `agents/REVISIONS.md`). Patched again 2026-07-08: every "Phase 10" promotion gate below is superseded — operator decision folded that promotion into Phase 9b, see `EO_UPGRADE_PHASES_1_9_AGENT_PROMPTS.md` and `04_convergence_and_candidate_protocol.md` §10.
 
 Every predictive object below is defined at the field level: name, type, cardinality, semantics, and provenance rule. Every implementation in Phases 1–8 builds against these contracts. When a scanner cannot supply a required field it must record why in `calculation_trace.missing_fields`, not silently drop it.
 

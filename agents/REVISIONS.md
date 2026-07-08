@@ -5,6 +5,69 @@ Newest entry on top. See `agents/README.md` for the convention.
 
 ---
 
+## 2026-07-08 - Operator decision: Phase 10 gate lifted, folded into new Phase 9b (Claude / Sonnet 5)
+
+**Context:** Before prompting Codex for Phase 9, the operator explicitly
+asked to remove the standing "no client-facing report changes" guardrail
+for this phase specifically, reasoning: Phase 9 is the last actively-
+scoped phase in this program, there is no separate Phase 10 effort
+planned, and trying to both hedge (keep waiting on a hypothetical future
+phase) and upgrade (actually ship report integration) at the same time
+would split focus for no benefit. Asked the operator one clarifying
+question on gating mechanics before touching any charter file: whether
+promoted evidence should be gated on completed outcome-ledger validation,
+or exposed immediately with predictive/experimental framing while
+validation runs alongside. Operator chose the latter ("expose now,
+validate alongside") — matches "after phase 9 completes we'll want
+generated reports to automatically include updates" actually happening
+soon, rather than after months of real-world outcome tracking.
+
+**What changed:** This is a charter patch, not an implementation. No
+engine or template code was touched.
+
+- `EO_UPGRADE_PHASES_1_9_AGENT_PROMPTS.md`: anti-drift rule 1 ("no
+  client-facing report changes in Phases 7, 8, or 9") now reads "Phases 7
+  or 8" only, with an explicit dated carve-out note for Phase 9. Added a
+  new `## Phase 9b - Report Integration` section (this program's original
+  "Phase 10 — Controlled Surface Expansion" from
+  `EO_PREDICTIVE_ARCHITECTURE_PROGRAM.md`, never previously turned into
+  real agent prompts) with its own required outcomes, file ownership, and
+  Codex/Claude prompts — scoped to Year Ahead and Personal Forecast only,
+  additive template sections, hedged/research-framed prose only, reading
+  directly from the same in-memory predictive-results object that already
+  feeds the sidecar (no duplicated scoring logic, no re-parsing the
+  written `.eo_predictive.json`).
+- `phase0/04_convergence_and_candidate_protocol.md` §10 (report-surface
+  routing): the "Phase 10 governance" gate on `Weather`, `ChapterState`,
+  and `MicroCandidate` promotion to Year Ahead / Personal Forecast is
+  lifted, with an operator-decision note and updated per-class routing
+  language. `phase0.1.1` → `phase0.1.2`.
+- `phase0/01_predictive_object_schemas.md`, `02_asteroid_predictive_
+  registry.md`, `03_method_charters.md`, `05_validation_protocol.md`:
+  each file's header now carries a dated pointer note that its own
+  "Phase 10" promotion-gate references are superseded by this decision
+  (cross-referencing `04` §10 and the new Phase 9b section) rather than
+  rewriting every individual line — the per-field default
+  `report_surface_visibility` values documented in those files are
+  unchanged and still accurate; only the *promotion-beyond-default* gate
+  moved. `01` `phase0.1.1` → `phase0.1.2`, `02` `phase0.1.1` →
+  `phase0.1.2`, `03` `phase0.1.2` → `phase0.1.3`, `05` `phase0.1.0` →
+  `phase0.1.1`.
+
+**Explicitly unaffected:** anti-drift rules 2-6 (no new methods, no
+score simplification in the underlying data/sidecar, no fabricated
+validation data, no reintroduced sandbox cap, no silent scope-filling).
+Phase 9's validation harness (outcome ledger, status categories,
+ablation runs) is unchanged — Phase 9b is additive alongside it, not a
+replacement.
+
+**Next step:** ready to prompt Codex for Phase 9 (validation harness) and
+Phase 9b (report integration) — Claude's pre-implementation review of
+both is done; this entry and the charter patches above are that review's
+output.
+
+---
+
 ## 2026-07-08 - Phase 8 live-verification: two real bugs found and fixed (Claude / Sonnet 5)
 
 **Context:** Standard post-Codex verification pass on the Phase 8 landing —
