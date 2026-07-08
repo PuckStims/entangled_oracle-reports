@@ -3,8 +3,8 @@
 Program: [EO_PREDICTIVE_ARCHITECTURE_PROGRAM.md](../EO_PREDICTIVE_ARCHITECTURE_PROGRAM.md)
 Depends on: [04_convergence_and_candidate_protocol.md](./04_convergence_and_candidate_protocol.md), [06_sidecar_and_export_contract.md](./06_sidecar_and_export_contract.md).
 Status: charter (Phase 0). Policy. No implementation.
-Version: `phase0.1.1`
-Date: 2026-07-07. Patched 2026-07-08: this file's "promote a candidate class to a client surface — that is Phase 10" note is superseded — operator decision folded that promotion into Phase 9b (validated alongside, not gated on outcome-ledger completeness), see `EO_UPGRADE_PHASES_1_9_AGENT_PROMPTS.md` and `04_convergence_and_candidate_protocol.md` §10. This does not change the outcome-ledger schema, status categories, or ablation requirements below — validation continues exactly as specified.
+Version: `phase0.1.2`
+Date: 2026-07-07. Patched 2026-07-08: this file's "promote a candidate class to a client surface — that is Phase 10" note is superseded — operator decision folded that promotion into Phase 9b (validated alongside, not gated on outcome-ledger completeness), see `EO_UPGRADE_PHASES_1_9_AGENT_PROMPTS.md` and `04_convergence_and_candidate_protocol.md` §10. This does not change the outcome-ledger schema, status categories, or ablation requirements below — validation continues exactly as specified. Patched again 2026-07-08, during Phase 9 review: §5.10 step 2 still said "preserve the window width (6 days)" — a leftover instance of the same fixed-cap error corrected everywhere else in this program on 2026-07-07 (the 6-day cap is `predictive_sandbox`-only, per `04_convergence_and_candidate_protocol.md` §4.2). Fixed to preserve each candidate's own trigger-derived width. Codex's Phase 9 harness implementation (`engine/validation_harness.py`) already did this correctly — this patch brings the charter text in line with the code, not the other way around.
 
 ## Purpose
 
@@ -148,8 +148,8 @@ Reported alongside `event coverage` (§5.2) for calibration reads.
 Procedure:
 
 1. Preserve the report year, chart, and candidate count.
-2. Preserve the window width (6 days).
-3. For each real candidate, generate a matched-random candidate: same window width, randomly placed within the same report period, respecting the same "excluded dates" if any (e.g. exclude birthdays as noise).
+2. Preserve each real candidate's own trigger-derived `window_days` (per [04_convergence_and_candidate_protocol.md](./04_convergence_and_candidate_protocol.md) §4.2 — there is no fixed universal width to preserve; `predictive_sandbox`'s separate 6-day research cap applies only to its own runs, per that same section).
+3. For each real candidate, generate a matched-random candidate: same window width as its real counterpart, randomly placed within the same report period, respecting the same "excluded dates" if any (e.g. exclude birthdays as noise).
 4. Code outcomes for the matched-random candidates using the same blind protocol.
 5. Compute the same metrics on the matched-random set.
 6. Report EO metrics *minus* matched-random baseline.

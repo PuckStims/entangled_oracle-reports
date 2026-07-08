@@ -5,6 +5,116 @@ Newest entry on top. See `agents/README.md` for the convention.
 
 ---
 
+## 2026-07-08 - Phase 9 harness live-verification, plus a leftover six-day-cap charter bug found and fixed (Claude / Sonnet 5)
+
+**Context:** Standard post-Codex verification of the Phase 9 validation
+harness — full regression suite, then reading the actual harness code
+(not just its own summary) and live-testing every public function
+against a real sidecar, not just the synthetic unit fixtures.
+
+**Charter bug found (in the charter, not the code):**
+`phase0/05_validation_protocol.md` §5.10 step 2 still said "Preserve the
+window width (6 days)" for matched-random baseline generation — a
+leftover instance of the exact fixed-cap error the operator caught and
+corrected everywhere else in this program on 2026-07-07 (`01`, `04`,
+`06`, `07`, `README`, and the top-level program doc all got fixed; `05`
+was missed). Checked whether Codex's implementation had inherited the
+stale charter language: it had not —
+`engine/validation_harness.py`'s `build_matched_random_baseline()` and
+`_candidate_width_seconds()` correctly read each real candidate's own
+`window_days`/actual `[start_at, end_at]` span, per candidate, exactly
+as its own closeout note claimed ("preserving report period, candidate
+count, and each candidate's emitted window width"). Fixed the charter
+text to match the (correct) code, bumped `05` `phase0.1.1` →
+`phase0.1.2`.
+
+**Live verification, against a real `year_ahead` sidecar (41
+candidates), not just `tests/test_phase9_validation_harness.py`'s
+synthetic fixtures:**
+
+- `sidecar_run_package()` and `initialize_outcome_ledger()` produce
+  identical `run_package_id` / matched-random baseline candidates across
+  two independent calls on the same sidecar (reproducibility per §9).
+- Matched-random baseline's per-candidate `window_days` set matched the
+  real candidates' `window_days` set exactly (sorted-list equality) —
+  confirms width preservation is real, not just documented.
+- `append_outcome_entry()` correctly rejected: an invalid
+  `outcome_category` string, a `reviewed_at` timestamp before the
+  candidate's own `pre_registered_at`, and a `supported_hit` entry
+  missing `event_date` — all three are hard requirements from
+  `phase0/05_validation_protocol.md` §1.2 and §3, and all three raised
+  `ValueError` as expected rather than silently accepting bad data.
+- `build_ablation_report()` and `asteroid_contribution_report()` ran
+  against the same real sidecar without error; ablation removing
+  `transit_family` dropped all 41 candidates, consistent with the
+  broad-chapter-support pattern already documented in the Phase 8
+  verification entry below (every candidate in this particular report
+  shares the same handful of long-duration chapters) — not a new
+  finding, just confirms the two phases' data agree.
+- Outcome ledger round-tripped through `write_outcome_ledger()` /
+  `read_outcome_ledger()` correctly, including shape validation on
+  reload.
+
+**No code bugs found in `engine/validation_harness.py` this pass.**
+Confirmed it is fully decoupled from report generation (`generate.py`
+and `engine/predictive_sidecar.py` have zero references to it) — outcome
+ledgers are never written during normal report generation, matching
+§1's "outcomes live outside the generation artifact."
+
+**Verification:** Full phase 1-9 regression suite (58 tests) passes.
+
+---
+
+## 2026-07-08 - Phase 9 retrospective validation harness implementation (Codex / GPT-5)
+
+**Context:** Operator asked Codex to implement Phase 9 after the passive
+JSON/content-block review. Claude had also added a Phase 9b/report-
+integration charter carve-out, but Phase 9b depends on the validation
+harness half of Phase 9 being present first. This entry covers the
+harness only: no report-template changes, no historical validation
+claims, and no fabricated outcome data.
+
+**What changed:**
+
+- Added `engine/validation_harness.py` for sidecar-native validation
+  infrastructure:
+  - immutable run-package descriptors with reproducible `run_package_id`
+    and sidecar hash;
+  - outcome-ledger initialization, read/write, validation, and append-only
+    reviewer entries;
+  - the five locked outcome categories exactly as chartered;
+  - deterministic matched-random baselines preserving report period,
+    candidate count, and each candidate's emitted window width;
+  - outcome summaries that keep `unresolved`, `research_incomplete`, and
+    `excluded_by_protocol` out of precision denominators;
+  - sidecar-native method-family ablation summaries;
+  - per-asteroid contribution summaries with the chartered publication
+    threshold reminder.
+- Added `tests/test_phase9_validation_harness.py` with deliberately
+  synthetic fixture names and subjects so no test data can be mistaken for
+  a real historical hit/non-hit.
+
+**Verification:**
+
+- `python -m py_compile engine\validation_harness.py tests\test_phase9_validation_harness.py`
+- `$env:PYTHONPATH='C:\entangled_oracle\.venv\Lib\site-packages'; python -m unittest tests.test_phase9_validation_harness`
+- `$env:PYTHONPATH='C:\entangled_oracle\.venv\Lib\site-packages'; python -m unittest tests.test_phase2_predictive_sidecar tests.test_phase3_asteroid_predictive_activation tests.test_phase4_returns_profections tests.test_phase5_solar_arc_progressions tests.test_phase6_lots_zodiacal_releasing tests.test_phase7_natal_promise_convergence tests.test_phase8_candidates tests.test_phase9_validation_harness`
+- Real report run:
+  `python .\generate.py predictive_sandbox --name "Phase Nine" --date 1990-01-01 --time 12:00 --location "Peoria, Illinois, USA" --report-date 2026-01-01 --output-dir tmp\phase9_real --output-filename phase9_real.html --no-browser`
+- Real sidecar harness inspection for
+  `tmp\phase9_real\phase9_real.eo_predictive.json`: 40 candidates, 3
+  rejected/suppressed candidates, 40 matched-random baseline candidates,
+  `quiet_period = False`, transit-family ablation removes 40 candidates,
+  and 40 candidates carry asteroid participation on this chart/run.
+
+**Boundary notes:** Phase 9 does not code any real outcomes, does not
+write outcome ledgers during normal report generation, does not use report
+HTML/prose as validation input, does not count unresolved outcomes as hits
+or misses, and does not add a sixth outcome status. Phase 9b report
+integration remains a separate next implementation slice.
+
+---
+
 ## 2026-07-08 - Operator decision: Phase 10 gate lifted, folded into new Phase 9b (Claude / Sonnet 5)
 
 **Context:** Before prompting Codex for Phase 9, the operator explicitly
