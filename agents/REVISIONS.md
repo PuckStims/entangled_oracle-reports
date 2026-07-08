@@ -5,6 +5,44 @@ Newest entry on top. See `agents/README.md` for the convention.
 
 ---
 
+## 2026-07-08 - Phase 7 method-charter review, before Codex implementation: phase0.1.0 -> phase0.1.1 (Claude / Sonnet 5)
+
+**Context:** Ahead of Codex's Phase 7 implementation, done same-day
+per the coordination doc's own "Caution" flag on this phase (graph
+contracts and convergence code are tightly coupled, so review must
+land before parallel work starts, not during it).
+
+**Four gaps found and fixed in `phase0/04_convergence_and_candidate_protocol.md`:**
+
+1. **No explicit build order.** The chapter builder's own step 3
+   ("cluster signals by shared anchor") depends on `natal_anchor_ids`
+   being populated, but anchor construction is listed as a separate,
+   unordered "required outcome" of the same phase -- a real
+   chicken-and-egg risk. Added an explicit sequence: anchors ->
+   anchor-matching (retroactive, not just prospective) -> chapter
+   builder -> convergence/candidates.
+2. **No `TimeLordPeriod`-to-`ChapterState` granularity rule.** With
+   real ZR data now existing (Phase 6: L1/L2/L3/L4 records per lot),
+   "aggregate active TimeLordPeriod records into their durations" was
+   ambiguous about whether every period record becomes its own
+   chapter or whether levels nest under one. Fixed: one `ChapterState`
+   per top-level occurrence (one per profection year, one per ZR L1),
+   child levels contribute as supporting evidence, not separate
+   chapters.
+3. **Unquantified "shared time window" for chapter clustering.**
+   Fixed: overlap or within 30 days of the chapter's own range --
+   deliberately wider than the candidate builder's +/-3-day discovery
+   buffer, since chapters operate at month/year scale.
+4. **`ChapterState.confidence`/`counterforce`/`complexity` had no
+   stated formula**, risking a second, inconsistent derivation
+   alongside `MicroCandidate`'s already-specified ones. Fixed:
+   explicitly reuse the same formulas, applied to the chapter's own
+   contributing signals.
+
+**Files changed:** `phase0/04_convergence_and_candidate_protocol.md`.
+
+---
+
 ## 2026-07-08 - Phase 7-9 prompts hardened against scope drift, no implementation started (Claude / Sonnet 5)
 
 **Context:** Operator asked to stop after Phase 6 rather than risk a

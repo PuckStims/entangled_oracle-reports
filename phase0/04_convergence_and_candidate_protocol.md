@@ -2,9 +2,9 @@
 
 Program: [EO_PREDICTIVE_ARCHITECTURE_PROGRAM.md](../EO_PREDICTIVE_ARCHITECTURE_PROGRAM.md)
 Depends on: [01_predictive_object_schemas.md](./01_predictive_object_schemas.md), [02_asteroid_predictive_registry.json](./02_asteroid_predictive_registry.json), [03_method_charters.md](./03_method_charters.md).
-Status: charter (Phase 0). Policy. No implementation.
-Version: `phase0.1.0`
-Date: 2026-07-07
+Status: charter (Phase 0, operator-approved). Policy. No implementation.
+Version: `phase0.1.1`
+Date: 2026-07-08 (patched before Phase 7 implementation began, per Phase 7 Claude review: added the explicit build order for anchors → chapter builder → convergence, a TimeLordPeriod-to-ChapterState granularity rule, a quantified "shared time window" clustering threshold, and confirmed ChapterState's confidence/counterforce/complexity reuse the MicroCandidate formulas rather than needing separate derivations. See `agents/REVISIONS.md` for the full diff.)
 
 ## Purpose
 
@@ -262,12 +262,21 @@ Every candidate retains signals and events that participated in its window's dec
 
 Chapters are built first. Candidates reference chapters via `chapter_support`, not via direct signal references, for long-clock support.
 
+**Phase 7 overall build order (not previously stated explicitly — this is the actual dependency chain, not a suggestion):**
+
+1. Build the `NatalPromiseAnchor` set for the chart (`phase0/01_predictive_object_schemas.md` §1).
+2. Run the anchor-matcher over every existing `ForecastEvent` and `PredictiveSignal`, populating `natal_anchor_ids` — retroactively for events already produced by the six existing method families, not only prospectively for new ones.
+3. Run the chapter builder (§8.1 below) — this step depends on step 2's populated `natal_anchor_ids`, since chapter clustering keys on shared anchor.
+4. Run cross-clock convergence / candidate assembly (Phase 8) — depends on step 3's `ChapterState` objects existing.
+
+Building the chapter builder or convergence scoring before anchors exist will produce empty or nonsensical clusters; there is no way to do this out of order.
+
 ### 8.1 Chapter builder order
 
-1. Aggregate active `TimeLordPeriod` records into their durations.
-2. Identify sustained transit cycles with `duration_days > 90`.
-3. Cluster signals by shared anchor + shared time window.
-4. Emit `ChapterState` per cluster meeting the chapter rules (§1.2).
+1. Aggregate active `TimeLordPeriod` records into their durations. **Granularity rule (not previously stated): one `ChapterState` per top-level (root) period occurrence — one per annual profection year, one per Zodiacal Releasing L1 occurrence — not one per period record at every level.** Child-level `TimeLordPeriod` records (ZR L2/L3/L4 sitting under an L1, or a monthly profection sitting under an annual one, if ever added) contribute to their parent chapter's `contributing_signal_ids`/`active_long_clocks` and may adjust its `weight_modifier`, but do not themselves become separate `ChapterState` objects. This keeps `chapter_kind` values (`profection_year`, `zr_period`, etc.) meaningful as single objects per real-world period, not fragmented across four levels.
+2. Identify sustained transit cycles with `duration_days > 90`, computed from each signal's own `start_date`/`end_date` (`phase0/01_predictive_object_schemas.md` §3) — no new duration field to invent.
+3. Cluster signals by shared anchor + shared time window. **"Shared time window" (not previously quantified): a signal qualifies for a chapter's cluster when its `[start_date, end_date]` range overlaps the chapter's own range, or falls within 30 days of it.** This is deliberately wider than the candidate builder's ±3-day discovery buffer (§8.2) because chapters operate at month/year scale, not day scale — reusing the candidate builder's tighter buffer here would silently exclude most of the long-clock signals a chapter is supposed to gather.
+4. Emit `ChapterState` per cluster meeting the chapter rules (§1.2). **`ChapterState.confidence`, `counterforce`, and `complexity` reuse the same formulas as their `MicroCandidate` equivalents (§5.1's confidence formula, §6.3's counterforce formula, and the complexity definition in §5.1), applied to the chapter's own `contributing_signal_ids` set — do not derive a separate formula for chapters.** `ChapterState.coherence` already has its own explicit formula (§3.2); this note covers the three fields that didn't.
 
 ### 8.2 Candidate builder order
 
@@ -318,5 +327,7 @@ This preserves the program rule: "No new clock enters report prose before it ent
 - Alternative evidence retention (§7).
 - Rejected-candidate registry (§8.3).
 - Component score preservation (§5).
+- Phase 7 build order: anchors → anchor-matching → chapter builder → convergence/candidates (§8).
+- One `ChapterState` per top-level `TimeLordPeriod` occurrence, not per level (§8.1).
 
 Any change to these requires a new policy version and an operator note in `agents/REVISIONS.md`.
