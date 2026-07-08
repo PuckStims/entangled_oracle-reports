@@ -380,6 +380,57 @@ def compute_predictive_windows(
         debug["time_lord_period_error"] = str(exc)
         print(f"[Predictive] Time-lord period collection failed (non-fatal): {exc}")
 
+    natal_snapshot_id = ""
+    natal_promise_anchors: list[dict] = []
+    chapters: list[dict] = []
+    convergence_composition: list[dict] = []
+    try:
+        from engine.natal_promise import (
+            apply_anchor_matching,
+            build_natal_promise_anchors,
+            match_anchor_ids,
+            natal_snapshot_id_for_payload,
+        )
+
+        natal_snapshot_id = natal_snapshot_id_for_payload(natal_payload)
+        natal_promise_anchors = build_natal_promise_anchors(
+            natal_payload,
+            index_results,
+            natal_snapshot_id=natal_snapshot_id,
+        )
+        apply_anchor_matching(signals, natal_promise_anchors, natal_payload)
+        for period in time_lord_periods:
+            if isinstance(period, dict):
+                period["natal_anchor_ids"] = match_anchor_ids(
+                    {
+                        "method_family": "TIME_LORD",
+                        "source_body": period.get("period_lord"),
+                        "target_body": period.get("period_house"),
+                        "domain_keys": [
+                            item for item in period.get("activated_house_topics", [])
+                            if item in {"identity", "resources", "communication", "home", "creativity", "work", "partnership", "transformation", "meaning", "vocation", "community", "spirit"}
+                        ],
+                    },
+                    natal_promise_anchors,
+                    natal_payload,
+                )
+        debug["natal_promise_anchor_count"] = len(natal_promise_anchors)
+        debug["signals_with_natal_anchor_ids"] = sum(1 for signal in signals if signal.get("natal_anchor_ids"))
+    except Exception as exc:
+        debug["natal_promise_error"] = str(exc)
+        print(f"[Predictive] Natal promise anchor build/match failed (non-fatal): {exc}")
+
+    try:
+        from engine.convergence import build_chapter_states, build_convergence_composition
+
+        chapters = build_chapter_states(time_lord_periods=time_lord_periods, signals=signals, anchors=natal_promise_anchors, payload=natal_payload)
+        convergence_composition = build_convergence_composition(signals=signals, chapters=chapters, anchors=natal_promise_anchors, payload=natal_payload)
+        debug["chapter_count"] = len(chapters)
+        debug["convergence_composition_count"] = len(convergence_composition)
+    except Exception as exc:
+        debug["convergence_error"] = str(exc)
+        print(f"[Predictive] Chapter/convergence build failed (non-fatal): {exc}")
+
     # ── Phase 4a: Daily resonance series ──────────────────────
     daily_series: list[dict] = []
     try:
@@ -407,6 +458,11 @@ def compute_predictive_windows(
         "daily_series":    daily_series,
         "signals":         signals,
         "time_lord_periods": time_lord_periods,
+        "natal_snapshot_id": natal_snapshot_id,
+        "natal_promise_anchors": natal_promise_anchors,
+        "chapters": chapters,
+        "convergence_composition": convergence_composition,
+        "index_results": index_results,
         "debug":           debug,
     }
 

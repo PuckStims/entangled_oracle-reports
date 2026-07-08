@@ -5,6 +5,132 @@ Newest entry on top. See `agents/README.md` for the convention.
 
 ---
 
+## 2026-07-08 - Phase 7 performance fix: convergence composition took 2+ minutes on a real report (Claude / Sonnet 5)
+
+**Context:** Reviewing Codex's Phase 7 landing (both roles were
+available today), the standard live-generation check this program
+requires before any phase counts as done -- generate a real report,
+inspect the sidecar -- caught something Codex's own live check on
+`predictive_sandbox` had not: a `personal_forecast` report hung for
+over two minutes (confirmed via `ps`/timeout, not just "felt slow")
+where every other report type in this program has taken 2-5 seconds.
+`predictive_sandbox`'s smaller signal count on Codex's own test chart
+happened not to trigger the scale at which this became visible.
+
+**Root cause, confirmed by profiling (`cProfile`), not guessed at:**
+`coherence_graph()` (the seven-rule topic-coherence check from
+`phase0/04_convergence_and_candidate_protocol.md` section 3.1) is
+invoked once per chapter and once per anchor-group -- ~900+ times on
+a real report -- and each invocation independently recomputed, from
+scratch, an O(signal_count squared) all-pairs comparison. Two
+compounding costs inside that: (1) `_natal_aspect_orb()` rescanned the
+full natal aspect list (500+ entries) and `_index_driver_sets()`
+rescanned the full anchor list (70+ entries) on every single pair, on
+every one of those ~900 calls; (2) each pairwise check also
+re-derived a signal's anchor/topic/domain sets from raw dicts via
+`_string_list()` every time that signal appeared in any pair, in any
+cluster -- profiled at 8.6 million redundant calls on one real report.
+
+**Fix, in three layers, each verified by timing the same real report
+before and after:**
+
+1. Precompute `{frozenset(body_pair): orb}` and `{anchor_id: index_links}`
+   lookup dicts once instead of rescanning the raw aspect/anchor lists
+   on every pairwise check. (2+ minutes, unmeasured upper bound -> 35s)
+2. Precompute each signal's derived coherence data (anchor/topic/domain
+   sets, target house, index-driver set) once per signal_id, cached on
+   the same shared lookup object so it survives across all ~900
+   `coherence_graph` calls in one report run instead of being rebuilt
+   from raw signal dicts on every pairwise comparison inside every one
+   of those calls. (35s -> 18.7s)
+3. Memoize `coherence_reasons` results by unordered signal-ID pair on
+   that same shared lookup object, since the same pair of signals
+   recurs across many overlapping chapters and anchor-groups within
+   one report -- most pairs were being scored more than once.
+   (18.7s -> 13.3s)
+
+All three fixes thread an optional `lookups`/`derived` parameter
+through the existing call chain (`coherence_graph`, `coherence_reasons`,
+`_natal_aspect_orb`, `_index_driver_sets`, `component_scores`,
+`_composition_record`, `_coherent_subset`, `_chapter_from_parts`),
+built once at the top of `build_chapter_states` and
+`build_convergence_composition` and passed down -- not a global
+`id()`-keyed cache, which would have been unsafe given the test suite
+runs many report generations in one process and Python can reuse
+object IDs after garbage collection.
+
+**Honest residual:** 13.3 seconds is a real, verified ~90% reduction
+from the original hang, and the sidecar output was independently
+re-verified as correct after the fix (154/154 events and signals
+carrying populated `natal_anchor_ids`, matching Codex's own reported
+counts on a different chart) -- but it is still noticeably slower
+than every other report type's 2-5 seconds. The remaining cost is
+structural (coherence is still computed per composition group rather
+than once globally with subgraphs queried per group), not a
+correctness bug. Worth a further pass if report generation time
+becomes a real constraint, but not blocking Phase 7 from being
+considered done -- the fix converts an effectively broken feature (a
+report that would not complete in reasonable time) into a working,
+if not yet fully optimized, one.
+
+**Verification:** 120 tests across the full relevant suite pass, no
+regressions, both before identifying the bug and after each of the
+three fix layers.
+
+**Files changed:** `engine/convergence.py`.
+
+---
+
+## 2026-07-08 - Phase 7 natal promise graph and convergence implementation (Codex / GPT-5)
+
+**Context:** Operator asked Codex to implement Phase 7 after Phase 6
+completion and Claude's convergence-contract review. Scope stayed
+sidecar-only: no report templates, no client prose, no MicroCandidate
+generation, and no outcome ledger.
+
+**What changed:**
+
+- Added `engine/natal_promise.py` to build `NatalPromiseAnchor`
+  records from whole-sign houses, rulers/dispositors, natal planets,
+  angles, custom asteroids through the 34-body asteroid registry,
+  named configurations, proprietary-index links, and reserved
+  topic/domain keys.
+- Added anchor matching that backfills `natal_anchor_ids` onto every
+  existing predictive event/signal path, including source-body
+  fallback for standalone Solar/Lunar eclipse records.
+- Added `engine/convergence.py` for Phase 7 chapter promotion and
+  transparent convergence composition: composite anti-stacking,
+  the seven-rule topic-coherence graph, counterforce, complexity,
+  method-family diversity, asteroid specificity, confidence, and
+  other component scores remain visible instead of being collapsed.
+- Wired the predictive engine and predictive sidecar to emit
+  `natal_promise_anchors`, `chapters`, and
+  `convergence_composition`; the sidecar rebuilds the final graph
+  against its own natal snapshot ID so anchors/events/signals/chapters
+  are internally coherent.
+- Added `tests/test_phase7_natal_promise_convergence.py` for asteroid
+  registry-informed anchors, retroactive anchor matching,
+  anti-stacking, topic coherence, conflicting evidence, asteroid
+  specificity, and sidecar export.
+
+**Verification:**
+
+- `python -m py_compile engine\natal_promise.py engine\convergence.py engine\predictive_engine.py engine\predictive_sidecar.py tests\test_phase7_natal_promise_convergence.py`
+- `$env:PYTHONPATH='C:\entangled_oracle\.venv\Lib\site-packages'; python -m unittest tests.test_phase2_predictive_sidecar tests.test_phase3_asteroid_predictive_activation tests.test_phase4_returns_profections tests.test_phase5_solar_arc_progressions tests.test_phase7_natal_promise_convergence`
+- Real report run:
+  `python .\generate.py predictive_sandbox --name "Phase Seven" --date 1990-01-01 --time 12:00 --location "Peoria, Illinois, USA" --report-date 2026-01-01 --output-dir tmp\phase7_real --output-filename phase7_real.html --no-browser`
+- Real sidecar check for `tmp\phase7_real\phase7_real.eo_predictive.json`:
+  72 natal-promise anchors, 104 chapters, 150 convergence-composition
+  records, and all 152 raw events / all 152 predictive signals carried
+  populated `natal_anchor_ids` across TRANSIT, LUNATION, RETURN,
+  SOLAR_ARC, PROGRESSION, and ZODIACAL_RELEASING.
+
+**Boundary notes:** Phase 7 does not emit `MicroCandidate` or outcome
+ledger records, does not retune prior scanner orbs/weights, and does
+not promote any predictive evidence into client-facing report prose.
+
+---
+
 ## 2026-07-08 - Phase 7 method-charter review, before Codex implementation: phase0.1.0 -> phase0.1.1 (Claude / Sonnet 5)
 
 **Context:** Ahead of Codex's Phase 7 implementation, done same-day

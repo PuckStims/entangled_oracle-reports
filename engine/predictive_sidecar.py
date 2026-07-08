@@ -113,6 +113,62 @@ def build_predictive_sidecar(
         _predictive_signal_from_signal(signal, event_id_by_signal_id, formula_version, asteroid_names)
         for signal in source_signals
     ]
+    time_lord_periods = _json_safe(predictive_results.get("time_lord_periods", []))
+    natal_promise_anchors = _json_safe(predictive_results.get("natal_promise_anchors", []))
+    chapters = _json_safe(predictive_results.get("chapters", []))
+    convergence_composition = _json_safe(predictive_results.get("convergence_composition", []))
+    phase7_debug: dict = {}
+
+    try:
+        from engine.natal_promise import apply_anchor_matching, build_natal_promise_anchors, match_anchor_ids
+        from engine.convergence import build_chapter_states, build_convergence_composition
+
+        natal_promise_anchors = build_natal_promise_anchors(
+            payload,
+            predictive_results.get("index_results", {}),
+            natal_snapshot_id=natal_snapshot_id,
+            created_at=generated_at,
+        )
+        apply_anchor_matching(raw_events, natal_promise_anchors, payload)
+        apply_anchor_matching(predictive_signals, natal_promise_anchors, payload)
+        for period in (time_lord_periods if isinstance(time_lord_periods, list) else []):
+            if not isinstance(period, dict):
+                continue
+            period["natal_anchor_ids"] = match_anchor_ids(
+                {
+                    "method_family": "TIME_LORD",
+                    "source_body": period.get("period_lord"),
+                    "target_body": period.get("period_house"),
+                    "domain_keys": [
+                        item for item in period.get("activated_house_topics", [])
+                        if item in {"identity", "resources", "communication", "home", "creativity", "work", "partnership", "transformation", "meaning", "vocation", "community", "spirit"}
+                    ],
+                },
+                natal_promise_anchors,
+                payload,
+            )
+        chapters = build_chapter_states(
+            signals=predictive_signals,
+            time_lord_periods=time_lord_periods if isinstance(time_lord_periods, list) else [],
+            anchors=natal_promise_anchors,
+            payload=payload,
+            emitted_at=generated_at,
+        )
+        convergence_composition = build_convergence_composition(
+            signals=predictive_signals,
+            chapters=chapters,
+            anchors=natal_promise_anchors,
+            payload=payload,
+        )
+        phase7_debug = {
+            "natal_promise_anchor_count": len(natal_promise_anchors),
+            "raw_events_with_natal_anchor_ids": sum(1 for event in raw_events if event.get("natal_anchor_ids")),
+            "predictive_signals_with_natal_anchor_ids": sum(1 for signal in predictive_signals if signal.get("natal_anchor_ids")),
+            "chapter_count": len(chapters),
+            "convergence_composition_count": len(convergence_composition),
+        }
+    except Exception as exc:
+        phase7_debug = {"phase7_sidecar_error": str(exc)}
 
     daily_series = _daily_series_with_provenance(
         predictive_results.get("daily_series", []),
@@ -136,20 +192,21 @@ def build_predictive_sidecar(
         "natal_snapshot": _natal_snapshot(payload, birth_data, natal_snapshot_id),
         "environment": _environment(formula_version),
         "policy_versions": policy_versions,
-        "natal_promise_anchors": [],
+        "natal_promise_anchors": _json_safe(natal_promise_anchors),
         "raw_events": raw_events,
         "predictive_signals": predictive_signals,
         "daily_series": daily_series,
-        "time_lord_periods": _json_safe(predictive_results.get("time_lord_periods", [])),
-        "chapters": [],
+        "time_lord_periods": _json_safe(time_lord_periods),
+        "chapters": _json_safe(chapters),
         "candidates": [],
         "rejected_candidates": [],
-        "convergence_composition": [],
+        "convergence_composition": _json_safe(convergence_composition),
         "detector_thresholds": _detector_thresholds(),
         "asteroid_diagnostics": _asteroid_diagnostics(payload, raw_events, predictive_signals),
         "debug": {
             "predictive_engine": predictive_results.get("debug") or {},
-            "phase2_note": "Phase 2 serializes current transit-backed predictive evidence only; advanced clocks are not implemented here.",
+            "phase7_sidecar": phase7_debug,
+            "phase2_note": "Predictive sidecar serializes internal evidence only; report prose is gated separately.",
         },
         "provenance": {
             "scanner_versions": {
@@ -166,6 +223,8 @@ def build_predictive_sidecar(
                 "scan_secondary_progressions": _debug_scanner_state(predictive_results, "progression_signal_count", "wired_phase5"),
                 "compute_lots": _debug_scanner_state(predictive_results, "zr_signal_count", "wired_phase6"),
                 "zodiacal_releasing": _debug_scanner_state(predictive_results, "zr_signal_count", "wired_phase6"),
+                "natal_promise_graph": _debug_scanner_state(predictive_results, "natal_promise_anchor_count", "wired_phase7"),
+                "cross_clock_convergence": _debug_scanner_state(predictive_results, "convergence_composition_count", "wired_phase7"),
             },
             "sidecar_writer_version": SIDECAR_WRITER_VERSION,
             "sidecar_written_at": _iso_datetime(generated_at),
@@ -202,7 +261,7 @@ def _forecast_event_from_signal(signal: dict, index: int, emitted_at: datetime, 
         "source_kind": _body_kind(source_body, asteroid_names),
         "target_body": target_body or None,
         "target_kind": _target_kind(target_body, asteroid_names),
-        "natal_anchor_ids": [],
+        "natal_anchor_ids": _string_list(signal.get("natal_anchor_ids")),
         "topic_keys": _string_list(signal.get("topic_keys")),
         "domain_keys": _string_list(signal.get("domain_keys")),
         "start_at": _iso_datetime(start_at),
@@ -270,7 +329,7 @@ def _predictive_signal_from_signal(
         "source_body": source_body,
         "target_body": target_body or None,
         "aspect": signal.get("aspect") or None,
-        "natal_anchor_ids": [],
+        "natal_anchor_ids": _string_list(signal.get("natal_anchor_ids")),
         "topic_keys": _string_list(signal.get("topic_keys")),
         "domain_keys": _string_list(signal.get("domain_keys")),
         "asteroid_participants": _asteroid_participants(source_body, target_body, asteroid_names),
