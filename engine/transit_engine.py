@@ -2321,6 +2321,15 @@ def _filter_moon_progression_events(progression_events: list[dict]) -> list[dict
     return kept
 
 
+def _filter_texture_progression_events(progression_events: list[dict]) -> list[dict]:
+    """
+    Keeps only progression events scoped as season-scale "texture" (clock_role == "chapter").
+    Explicitly excludes the progressed Moon / modifier events which are handled by the 
+    Personal Forecast.
+    """
+    return [e for e in progression_events if e.get("clock_role") == "chapter"]
+
+
 # ── Public Year-Ahead API ──────────────────────────────────────
 def compute_year_ahead_events(
     natal_payload: dict,
@@ -2328,6 +2337,7 @@ def compute_year_ahead_events(
     end_date: datetime | None = None,
     step_hours: int = 12,
     include_moon_progressions: bool = False,
+    include_year_texture: bool = False,
 ) -> dict:
     """
     Builds the structured event timeline for the full Year Ahead report.
@@ -2392,6 +2402,20 @@ def compute_year_ahead_events(
             scan_progression_events(natal_payload, report_start, report_end)
         )
 
+    year_texture_progressions = []
+    year_texture_solar_arc = []
+    if include_year_texture:
+        from engine.progressions import scan_progression_events
+        from engine.solar_arc import scan_solar_arc_events
+        
+        year_texture_progressions = _filter_texture_progression_events(
+            scan_progression_events(natal_payload, report_start, report_end)
+        )
+        for e in year_texture_progressions:
+            e["_is_year_texture"] = True
+            
+        year_texture_solar_arc = scan_solar_arc_events(natal_payload, report_start, report_end)
+
     linked_events = link_related_forecast_events(
         transit_events,
         ingress_events,
@@ -2399,7 +2423,8 @@ def compute_year_ahead_events(
         eclipse_events,
         activation_profile,
         lunation_events=lunation_events,
-        progression_events=moon_progression_events,
+        progression_events=moon_progression_events + year_texture_progressions,
+        solar_arc_events=year_texture_solar_arc,
         time_lord_periods=profection_periods,
     )
     transit_events = linked_events["transit_events"]
@@ -2407,7 +2432,16 @@ def compute_year_ahead_events(
     station_events = linked_events["station_events"]
     eclipse_events = linked_events["eclipse_events"]
     lunation_events = linked_events["lunation_events"]
-    progression_events = linked_events["progression_events"]
+    
+    progression_events = []
+    year_texture_progressions_enriched = []
+    for e in linked_events["progression_events"]:
+        if e.pop("_is_year_texture", False):
+            year_texture_progressions_enriched.append(e)
+        else:
+            progression_events.append(e)
+            
+    year_texture_solar_arc_enriched = linked_events["solar_arc_events"]
 
     all_events = transit_events + ingress_events + station_events + eclipse_events + lunation_events + progression_events
     all_events.sort(
@@ -2426,5 +2460,7 @@ def compute_year_ahead_events(
         "eclipses": eclipse_events,
         "lunations": lunation_events,
         "progressions": progression_events,
+        "year_texture_progressions": year_texture_progressions_enriched,
+        "year_texture_solar_arc": year_texture_solar_arc_enriched,
         "all_events": all_events,
     }

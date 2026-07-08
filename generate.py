@@ -7302,10 +7302,13 @@ def _build_year_ahead_context(
         payload,
         start_date=report_start,
         end_date=report_end,
+        include_year_texture=True,
     )
 
     all_events     = timeline.get("all_events", [])
     transit_events = timeline.get("transits", [])
+    year_texture_progressions = timeline.get("year_texture_progressions", [])
+    year_texture_solar_arc = timeline.get("year_texture_solar_arc", [])
 
     # ── EO_TRANSIT_TRACE — terminal-only diagnostic, not written to HTML ──
     _TRANSIT_TRACE = _env_flag("EO_TRANSIT_TRACE")
@@ -7704,6 +7707,8 @@ def _build_year_ahead_context(
         "dominant_aspect_character": dominant_character,
         "annual_arc": months,
         "months": months,
+        "year_texture_progressions": year_texture_progressions,
+        "year_texture_solar_arc": year_texture_solar_arc,
         "forecast_shape": forecast_shape_details["label"],
         "forecast_shape_details": forecast_shape_details,
         "year_ahead_curated_summaries": _build_year_ahead_curated_summaries(

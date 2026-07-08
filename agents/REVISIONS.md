@@ -5,6 +5,78 @@ Newest entry on top. See `agents/README.md` for the convention.
 
 ---
 
+## 2026-07-08 - Year Ahead progressions/solar-arc "texture" wired backend-only (Gemini, live-verified by Claude / Sonnet 5)
+
+**Context:** the other half of Phase D — the progressed-Moon half landed
+same-day in the entry below. Operator decision: Year Ahead's 12-month
+scope gets progression and solar-arc events too, framed as ambient
+developmental "texture" (season-scale terrain/mood), not point-forecast
+claims. This pass was explicitly scoped backend-only: wire the data,
+verify it against real charts, no templates or new prose yet — get real
+data to react to before anyone writes client-facing language for it.
+Implemented by Gemini from a written brief (Codex was unavailable this
+session); independently re-reviewed and re-verified line-by-line by
+Claude before landing, per the operator's "rigorous post-review" call
+for non-Claude-authored changes.
+
+**What changed:**
+
+- `engine/transit_engine.py`: `compute_year_ahead_events()` gained an
+  `include_year_texture: bool = False` parameter (default preserves
+  existing behavior for every current caller). When `True`, it calls
+  `scan_progression_events()` and filters to `clock_role == "chapter"`
+  via a new `_filter_texture_progression_events()` helper (the
+  complement of the existing Moon-only `_filter_moon_progression_events()`),
+  and calls `scan_solar_arc_events()` directly (no filtering needed —
+  every event it emits is already `"chapter"`-tagged). Both pass through
+  the existing `link_related_forecast_events(..., progression_events=...,
+  solar_arc_events=...)` scaffolding for standard enrichment, then are
+  split back out (season-scale windows are deliberately kept out of
+  `all_events`'s chronological sort — mixing months-wide windows into a
+  day-scale transit list would read as broken ordering, not richer
+  content). Added `"year_texture_progressions"` and
+  `"year_texture_solar_arc"` keys to the return dict.
+- `generate.py`: `_build_year_ahead_context()` now passes
+  `include_year_texture=True` and pulls both new keys into the report
+  context dict for inspection only — neither is wired into any template,
+  content-pack block, or rendered HTML section.
+
+**Verification:** re-ran independently (not just trusting the reported
+numbers) against the same real natal chart (1990-06-15, Peoria, IL) —
+confirmed 208 `year_texture_progressions` and 14 `year_texture_solar_arc`
+events over the 12-month window, with genuine season-scale spans (e.g.
+Sun Conj ASC: entry 2026-05-09 -> peak 2026-07-08 -> leave 2026-09-06;
+Mars Opp Pluto solar arc: entry 2026-04-09 -> peak 2026-07-08 -> leave
+2026-10-06), matching the design assumption these run 9mo-2yr, not days.
+Confirmed the `False`-default path is behavior-identical to pre-change
+code. Grepped `products/`, `selectors/`, `formulas/` for `year_texture` —
+zero hits, confirming no template/content wiring happened. Full suite:
+325 passed / 19 failed, all 19 confirmed pre-existing on clean `master`
+via stash-and-rerun (5 known-broken test-module imports already logged
+below, offline-geocoding-data failures, and quarantine/predictive-sandbox
+failures) — zero regressions from this change.
+
+**Known gap surfaced, not fixed this pass:** every progression/solar-arc
+event's `score` (`reader_facing_activity_score` / `combined_intensity_score`)
+comes out `0.0` regardless of real exactness or natal relevance.
+`_reader_activity_score()` and `EVENT_TYPE_BASELINES` in
+`formulas/standard/forecast_activation.py` have no case for
+`"progression"`/`"solar_arc"` event types, so they fall back to
+`_clamp(concentration)`, and neither scanner emits a `concentration_score`.
+This is pre-existing (identical for the already-shipped Moon-progression
+events in Personal Forecast, not introduced here) and out of scope for
+this backend-wiring pass, but it means `score` cannot be used as the axis
+for any future volume-limiting decision on the 208-event count below
+until this scoring gap is addressed.
+
+**Open, not decided here:** 208 `year_texture_progressions` in a single
+12-month window is a real density finding, reported raw and unfiltered
+per the operator's explicit instruction not to invent a cap. Whether/how
+to bound this (and by what real astrological convention, not a picked
+number) is a separate decision for a future session.
+
+---
+
 ## 2026-07-08 - Progressed Moon wired into Personal Forecast, gated to Moon only (Claude / Sonnet 5)
 
 **Context:** operator decision on the standard-forecasting phased map's
