@@ -5,6 +5,52 @@ Newest entry on top. See `agents/README.md` for the convention.
 
 ---
 
+## 2026-07-07 - Phase 2 contract-conformance patch: phase0.1.0 -> phase0.1.1 (Claude / Sonnet 5)
+
+**Context:** Immediately after operator sign-off on `phase0/`, Claude
+Code began its Phase 2 lane per `EO_UPGRADE_PHASES_1_9_AGENT_PROMPTS.md`
+("audit phase0/01_predictive_object_schemas.md and
+phase0/06_sidecar_and_export_contract.md for field completeness before
+Codex implements the sidecar"). This is exactly what Phase 2 Claude
+review is for, done same-day and before any evidence there of Codex
+having started coding from these files, per the Safe Parallel Run
+Matrix's condition ("Yes, if Claude does not edit phase0/ while Codex
+is coding from it").
+
+**Two gaps found and patched, both files bumped `phase0.1.0` ->
+`phase0.1.1`:**
+
+1. **No home for computed natal Lot positions.** Lots (Fortune,
+   Spirit, Necessity) are natal-chart-derived points, but neither
+   `NatalPromiseAnchor` nor the sidecar's `natal_snapshot` had
+   anywhere to store them — every other referenceable point (planets,
+   asteroids, angles) had a canonical home; Lots did not. This would
+   have blocked Phase 6 Codex with nowhere defined to resolve
+   `ForecastEvent`s with `source_kind`/`target_kind = "lot"` against.
+   Fixed: added `NatalPromiseAnchor.natal_lots` and
+   `natal_snapshot.lots` (canonical home, same shape as an `angles`
+   entry plus a `sect` field).
+2. **`TimeLordPeriod` missing `report_surface_visibility`.** Every
+   sibling evidence object (`ForecastEvent`, `ChapterState`,
+   `MicroCandidate`) has this field for client/report gating;
+   `TimeLordPeriod` did not, despite the profections charter
+   (`phase0/03_method_charters.md` §C4) explicitly anticipating a
+   Phase 10 Year Ahead promotion decision this field is needed to
+   gate. Fixed: added the field, defaulting to
+   `[internal_rd, predictive_sandbox]`.
+
+**Versioning:** per-object, not global — only `NatalPromiseAnchor` and
+`TimeLordPeriod` moved to `phase0.1.1` (each gained one field);
+`ForecastEvent`, `PredictiveSignal`, `ChapterState`, `MicroCandidate`
+are unchanged and remain `phase0.1.0`. Both fields default to safe,
+inert values, so this patch changes nothing for Phases 2-5 — it only
+closes a gap Phase 6 would otherwise have hit.
+
+**Files changed:** `phase0/01_predictive_object_schemas.md`,
+`phase0/06_sidecar_and_export_contract.md`.
+
+---
+
 ## 2026-07-07 - Phase 0 predictive architecture contracts approved (operator sign-off)
 
 **Context:** `phase0/` (README, predictive object schemas, asteroid
@@ -28,6 +74,66 @@ Codex and Claude Code lanes.
 overclaim on `entangled_oracle_SITE.html`'s Year Ahead card) was fixed
 directly at the operator's request — see that file for detail. The
 queue is now fully closed.
+
+---
+
+## 2026-07-07 - Phase 2 predictive evidence sidecar foundation (Codex / GPT-5)
+
+**Context:** The user confirmed Phase 0 contract sign-off and initiated
+Phase 2 after both systems completed their Phase 1 lanes. Claude Code is
+handling the Phase 2 contract-review prompt; this Codex pass implemented
+the additive evidence sidecar lane only.
+
+**What changed:**
+
+- Added [engine/predictive_sidecar.py](C:/entangled_oracle/engine/predictive_sidecar.py), a dedicated writer for
+  `.eo_predictive.json` sidecars defined by the Phase 0 sidecar/export
+  contract.
+- Added a `ForecastEvent` adapter for current transit-backed predictive
+  signals. This creates deterministic `fe_*` event IDs, preserves method
+  family, method variant, source/target, timing, orb/phase, strength
+  components, confidence components, independence group, activation route,
+  and provenance.
+- Added a `PredictiveSignal` adapter that preserves source event linkage,
+  signal role, operation profile, epistemic confidence, dates, and
+  formula/policy versions.
+- Added daily contributor provenance: each daily row now records
+  contributing signal IDs, contributing event IDs, and structural versus
+  trigger contributors in the sidecar.
+- Added immutable natal snapshot, environment, policy-version,
+  detector-threshold, asteroid-diagnostic, debug, and provenance sections
+  to the sidecar shape.
+- Wired predictive report generation so `year_ahead`,
+  `personal_forecast`, and `predictive_sandbox` write a sibling
+  `.eo_predictive.json` after the normal HTML and delivery manifest are
+  written. Sidecar failure remains non-fatal to report delivery.
+
+**Files changed by this Codex pass:**
+
+- [engine/predictive_sidecar.py](C:/entangled_oracle/engine/predictive_sidecar.py)
+- [generate.py](C:/entangled_oracle/generate.py)
+- [tests/test_phase2_predictive_sidecar.py](C:/entangled_oracle/tests/test_phase2_predictive_sidecar.py)
+
+**Verification:**
+
+- `python -m py_compile engine\predictive_sidecar.py generate.py tests\test_phase2_predictive_sidecar.py`
+- `python -m unittest tests.test_phase2_predictive_sidecar`
+- `$env:PYTHONPATH='C:\entangled_oracle\.venv\Lib\site-packages'; python -m unittest tests.test_daily_horoscope_activation tests.test_phase1_client_forecast_adequacy tests.test_phase2_predictive_sidecar`
+
+Result:
+
+- `22` focused tests passed.
+
+**Deliberately not implemented in Phase 2:** no new method clocks, no
+progressions, no Solar Arc, no returns, no profections, no time-lord
+systems, no Lots, no Zodiacal Releasing, no discrete candidate engine,
+and no client-facing prose promotion. This phase is the evidence runway
+for those later required phases.
+
+**Coordination note:** `phase0/01_predictive_object_schemas.md` and
+`phase0/06_sidecar_and_export_contract.md` were already modified in the
+worktree by the parallel Claude/contract lane and were not edited by this
+Codex implementation pass.
 
 ---
 

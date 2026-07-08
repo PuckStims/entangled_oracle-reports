@@ -1,9 +1,9 @@
 # Phase 0 — Predictive Object Schemas
 
 Program: [EO_PREDICTIVE_ARCHITECTURE_PROGRAM.md](../EO_PREDICTIVE_ARCHITECTURE_PROGRAM.md)
-Status: charter (Phase 0). Contracts. No implementation.
-Version: `phase0.1.0`
-Date: 2026-07-07
+Status: charter (Phase 0, operator-approved). Contracts. No implementation.
+Version: `phase0.1.1`
+Date: 2026-07-07 (patched same day, before Phase 2 implementation began, per Phase 2 Claude contract-conformance review: added `NatalPromiseAnchor.natal_lots` and `TimeLordPeriod.report_surface_visibility` — see `phase0.1.0` → `phase0.1.1` diff in `agents/REVISIONS.md`)
 
 Every predictive object below is defined at the field level: name, type, cardinality, semantics, and provenance rule. Every implementation in Phases 1–8 builds against these contracts. When a scanner cannot supply a required field it must record why in `calculation_trace.missing_fields`, not silently drop it.
 
@@ -19,7 +19,7 @@ Type notation:
 - `{K: V}` — mapping.
 - `?T` — optional (nullable). Absence must be justified in `calculation_trace`.
 
-Every object carries `schema_version: str` (default `phase0.1.0`) so downstream consumers can gate on shape without ambiguity.
+Every object carries its own `schema_version: str` so downstream consumers can gate on shape without ambiguity. Versions are per-object, not global: as of this file's `phase0.1.1` patch, only `NatalPromiseAnchor` and `TimeLordPeriod` moved to `phase0.1.1` (each gained one field — `natal_lots` and `report_surface_visibility` respectively); `ForecastEvent`, `PredictiveSignal`, `ChapterState`, and `MicroCandidate` are unchanged and remain `phase0.1.0`.
 
 ---
 
@@ -31,7 +31,7 @@ A durable record of why a topic, domain, body, asteroid, angle, house, ruler, as
 
 | Field | Type | Cardinality | Semantics |
 |---|---|---|---|
-| `schema_version` | `str` | 1 | `phase0.1.0` |
+| `schema_version` | `str` | 1 | `phase0.1.1` |
 | `anchor_id` | `str` | 1 | Stable identifier scoped to the natal snapshot. Format `npa_<8-hex>`; generated from a canonical hash of `(natal_snapshot_id, topic_keys sorted, natal_bodies sorted, natal_asteroids sorted, houses sorted)`. |
 | `natal_snapshot_id` | `str` | 1 | The natal snapshot this anchor was derived from (see sidecar contract §2). |
 | `anchor_kind` | `str` | 1 | One of: `topic_focus`, `configuration`, `ruler_chain`, `index_signature`, `house_axis`, `angle_axis`, `named_pattern`. |
@@ -39,6 +39,7 @@ A durable record of why a topic, domain, body, asteroid, angle, house, ruler, as
 | `domain_keys` | `[str]` | 0..n | House-domain tags: `identity`, `resources`, `communication`, `home`, `creativity`, `work`, `partnership`, `transformation`, `meaning`, `vocation`, `community`, `spirit`. |
 | `natal_bodies` | `[str]` | 0..n | Planet or luminary names from natal payload (`Sun` … `Pluto`, `Chiron`, `North_Node`, `South_Node`, `Lilith_BML`). |
 | `natal_asteroids` | `[str]` | 0..n | Asteroid names from `custom_asteroids`. |
+| `natal_lots` | `[str]` | 0..n | Lot names from `natal_snapshot.lots` (sidecar contract §2.2) — e.g. `Fortune`, `Spirit`, `Necessity`. Empty until Phase 6 lands; the field exists now so Lots-based anchors do not require a schema revision later. |
 | `houses` | `[int]` | 0..n | Whole-sign houses 1..12 relevant to this anchor. |
 | `rulers` | `[str]` | 0..n | Body names that participate as domicile / exaltation / triplicity rulers of the relevant houses. |
 | `dispositors` | `[str]` | 0..n | Bodies further up the dispositor chain from `rulers`, if the anchor invokes chain logic. |
@@ -255,7 +256,7 @@ Shared contract for profection years, zodiacal-releasing L1–L4 periods, and ot
 
 | Field | Type | Cardinality | Semantics |
 |---|---|---|---|
-| `schema_version` | `str` | 1 | `phase0.1.0` |
+| `schema_version` | `str` | 1 | `phase0.1.1` |
 | `period_id` | `str` | 1 | `tlp_<system_code>_<8-hex>`. |
 | `system` | `str` | 1 | One of: `annual_profection`, `monthly_profection`, `zodiacal_releasing_fortune`, `zodiacal_releasing_spirit`, `firdaria`, `custom`. |
 | `level` | `str` | 1 | For hierarchical systems: `L1`, `L2`, `L3`, `L4`, or `year`, `month`. |
@@ -274,6 +275,7 @@ Shared contract for profection years, zodiacal-releasing L1–L4 periods, and ot
 | `confidence` | `float` | 1 | |
 | `confidence_components` | `{str: float}` | 1 | |
 | `birth_time_dependency` | `str` | 1 | `none` for whole-sign profection; `hard` for degree-precise; `soft` for lot-based ZR. |
+| `report_surface_visibility` | `[str]` | 0..n | Same subset as `ForecastEvent.report_surface_visibility`. Default `[internal_rd, predictive_sandbox]`. Gates, per period, whether e.g. "current profected year" or "current ZR period" may surface in `year_ahead_appendix` — a decision the profections charter (`03_method_charters.md` §C4) explicitly anticipates for Phase 10 but which had no field to record until this addition. |
 | `formula_version` | `str` | 1 | |
 | `policy_version` | `str` | 1 | |
 | `provenance` | `{...}` | 1 | |
@@ -407,3 +409,12 @@ For Phase 3's implementation planning:
 - `PredictiveSignal` fields already in `engine/predictive_engine._event_to_signal()` and `_compute_signal_operation_profile()` / `_compute_signal_epistemic_confidence()`.
 
 The adapter recommended in the Phase 0 → Phase 1 handoff is `formulas/report_surface.py`-style but targeting event normalization: `_to_forecast_event(raw_event) → ForecastEvent`. This is the point of Phase 3.
+
+## 11. Phase 0.1.1 patch note
+
+Added post-sign-off, same day, before Phase 2 implementation began (Phase 2 Claude contract-conformance review per `EO_UPGRADE_PHASES_1_9_AGENT_PROMPTS.md`):
+
+- `NatalPromiseAnchor.natal_lots` (§1) — no field previously existed to reference a chart's computed Lot positions from an anchor, unlike `natal_bodies`/`natal_asteroids`.
+- `TimeLordPeriod.report_surface_visibility` (§6) — every sibling evidence object had this field for client/report gating; `TimeLordPeriod` did not, despite the profections charter (`03_method_charters.md` §C4) anticipating a Phase 10 Year Ahead promotion decision this field is needed to gate.
+
+Both fields default to safe values (`natal_lots` empty until Phase 6; `report_surface_visibility` defaulting to `[internal_rd, predictive_sandbox]`), so this patch does not change behavior for Phases 2–5 — it only closes a gap Phase 6 would otherwise have hit with nowhere defined to put required data.

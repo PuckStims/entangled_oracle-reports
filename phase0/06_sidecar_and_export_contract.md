@@ -1,10 +1,10 @@
 # Phase 0 — Sidecar and Export Contract
 
 Program: [EO_PREDICTIVE_ARCHITECTURE_PROGRAM.md](../EO_PREDICTIVE_ARCHITECTURE_PROGRAM.md)
-Depends on: [01_predictive_object_schemas.md](./01_predictive_object_schemas.md), [04_convergence_and_candidate_protocol.md](./04_convergence_and_candidate_protocol.md), [05_validation_protocol.md](./05_validation_protocol.md).
-Status: charter (Phase 0). Contract. No implementation.
-Version: `phase0.1.0`
-Date: 2026-07-07
+Depends on: [01_predictive_object_schemas.md](./01_predictive_object_schemas.md) (now `phase0.1.1`), [04_convergence_and_candidate_protocol.md](./04_convergence_and_candidate_protocol.md), [05_validation_protocol.md](./05_validation_protocol.md).
+Status: charter (Phase 0, operator-approved). Contract. No implementation.
+Version: `phase0.1.1`
+Date: 2026-07-07 (patched same day, before Phase 2 implementation began, per Phase 2 Claude contract-conformance review: added `natal_snapshot.lots` — see `phase0.1.0` → `phase0.1.1` diff in `agents/REVISIONS.md`)
 
 ## Purpose
 
@@ -27,8 +27,8 @@ Note: the existing `manifest.json` is intentionally not extended with `predictiv
 
 ```json
 {
-  "sidecar_version": "phase0.1.0",
-  "sidecar_schema_version": "phase0.1.0",
+  "sidecar_version": "phase0.1.1",
+  "sidecar_schema_version": "phase0.1.1",
   "report_run": { ... },
   "natal_snapshot": { ... },
   "environment": { ... },
@@ -98,6 +98,7 @@ Immutable. This is *the* natal snapshot the predictive run used. If a chart is r
   "houses": { "House_1": {...}, ..., "House_12": {...} },
   "standard_planets": { "Sun": {...}, ..., "Lilith_BML": {...} },
   "custom_asteroids": { "Kassandra": {...}, ..., "DNA": {...} },
+  "lots": { "Fortune": {...}, "Spirit": {...}, "Necessity": {...} },
   "aspects": [ {...}, ... ],
   "user_profile": {...}
 }
@@ -106,6 +107,8 @@ Immutable. This is *the* natal snapshot the predictive run used. If a chart is r
 `natal_snapshot_id` is deterministic: hash of the canonicalized `birth_data + methodology + ephemeris_files_hash + policy_versions.natal_engine`. The same chart re-run under the same natal engine produces the same ID.
 
 `custom_asteroids` includes all 34 entries (or their error strings). Missing asteroids are listed in `asteroid_diagnostics.ephemeris_missing`.
+
+`lots` is empty (`{}`) until Phase 6 implements Lot calculation per `03_method_charters.md` §C5. Each populated entry follows the same shape as an `angles` entry (`longitude`, `sign`, `degree`, `house`) plus a `sect` field (`day` / `night`) recording which sect condition produced that lot's formula variant for this chart. This is the canonical natal home for Lot positions — `NatalPromiseAnchor.natal_lots` (`01_predictive_object_schemas.md` §1) and any `ForecastEvent` with `source_kind` or `target_kind = "lot"` resolve against these entries, the same way body-based events resolve against `standard_planets`/`custom_asteroids`.
 
 ### 2.3 `environment`
 
@@ -134,7 +137,7 @@ Every policy artifact used during the run, versioned.
 
 ```json
 {
-  "predictive_object_schemas": "phase0.1.0",
+  "predictive_object_schemas": "phase0.1.1",
   "asteroid_registry": "phase0.1.0",
   "method_charters": "phase0.1.0",
   "convergence_protocol": "phase0.1.0",
@@ -411,5 +414,6 @@ Rules:
 - Daily provenance requirement (§2.8).
 - Detector-threshold snapshot requirement (§2.14).
 - Deterministic `natal_snapshot_id` and `candidate_id` (§2.2, [04](./04_convergence_and_candidate_protocol.md) §4.4).
+- `natal_snapshot.lots` as the canonical home for computed Lot of Fortune / Spirit / Necessity positions (§2.2, added in `phase0.1.1`).
 
 Any change requires a new sidecar version.
