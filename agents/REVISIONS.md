@@ -5,6 +5,59 @@ Newest entry on top. See `agents/README.md` for the convention.
 
 ---
 
+## 2026-07-08 - Progression/solar-arc scoring gap fixed: real scores replace flat 0.0 (Claude / Sonnet 5)
+
+**Context:** surfaced during live-review of the Year Ahead texture-wiring
+pass below — every `year_texture_progressions`/`year_texture_solar_arc`
+event came back with `score` (`reader_facing_activity_score` /
+`combined_intensity_score`) hard-stuck at `0.0`, regardless of real
+exactness or natal relevance. Root cause: `engine/progressions.py` and
+`engine/solar_arc.py` already compute a concentration-like value
+(`trigger_strength`) per event, but never exposed it under any of the
+field names `enrich_forecast_event()`'s fallback chain
+(`concentration_score` -> `combined_intensity_score` -> `raw_score`)
+actually checks — so `concentration` silently defaulted to `0.0`. On top
+of that, `formulas/standard/forecast_activation.py`'s
+`_reader_activity_score()` and `EVENT_TYPE_BASELINES` had no case for
+`"progression"`/`"solar_arc"` event types at all, falling back to bare
+`_clamp(concentration)` with no natal-relevance/theme weighting even
+if concentration had been populated.
+
+**What changed:**
+
+- `engine/progressions.py::_progression_contact_event()` and
+  `engine/solar_arc.py::_solar_arc_event()` — added a `"raw_score"` key
+  equal to the already-computed `trigger_strength` value. (Confirmed the
+  other progression-event constructors — `_progression_ingress_event()`,
+  `_progressed_lunation_event()` — are `clock_role: "trigger"`, not
+  `"chapter"`, so they never reach the texture path and don't need this.)
+- `formulas/standard/forecast_activation.py` — added `"progression": 0.20`
+  and `"solar_arc": 0.20` to `EVENT_TYPE_BASELINES` (between ingress's
+  0.14 and eclipse/station's 0.30), and a new `_reader_activity_score()`
+  branch for both event types: `concentration*0.22 + exactness*0.08 +
+  natal_relevance*0.40 + theme_convergence*0.30`, capped at `high=0.55`
+  — weighted toward natal relevance/theme over raw concentration (these
+  are season-scale ambient texture per the method charter, not
+  point-forecast drivers), and capped below every point-event type's
+  ceiling so texture can never outrank the methods it's meant to
+  contextualize.
+
+**Verification:** re-ran against the same real chart used in the texture
+pass below (1990-06-15, Peoria, IL). `year_texture_progressions` (208
+events): scores now range 0.123-0.55, zero events stuck at 0.0.
+`year_texture_solar_arc` (14 events): 0.028-0.55, same. As an unplanned
+bonus, the already-shipped Personal Forecast Moon-progression events (30
+per this chart) also went from all-zero to a real 0.4093-0.55 range, with
+no separate code change needed since they share the same enrichment path.
+Full suite: 226 passed, no regressions.
+
+**Open, not decided here:** this gives the 208-event volume question from
+the texture pass below a real axis to sort/trim by, but doesn't decide
+anything about a cap itself — that's still a separate call for whenever
+volume-limiting is actually taken up.
+
+---
+
 ## 2026-07-08 - Year Ahead progressions/solar-arc "texture" wired backend-only (Gemini, live-verified by Claude / Sonnet 5)
 
 **Context:** the other half of Phase D — the progressed-Moon half landed

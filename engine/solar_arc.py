@@ -220,6 +220,7 @@ def _solar_arc_event(
         "target_relevance": target.get("relevance", 0.65),
         "trigger_strength": round(0.80 * target.get("relevance", 0.65) * max(0.0, 1.0 - orb / SOLAR_ARC_ORB), 5),
         "signal_strength": round(0.80 * target.get("relevance", 0.65) * max(0.0, 1.0 - orb / SOLAR_ARC_ORB), 5),
+        "raw_score": round(0.80 * target.get("relevance", 0.65) * max(0.0, 1.0 - orb / SOLAR_ARC_ORB), 5),
         "entry_datetime": exact_at - timedelta(days=CHAPTER_WINDOW_DAYS),
         "peak_datetime": exact_at,
         "leave_datetime": exact_at + timedelta(days=CHAPTER_WINDOW_DAYS),

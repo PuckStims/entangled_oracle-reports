@@ -72,6 +72,8 @@ EVENT_TYPE_BASELINES = {
     "station": 0.30,
     "eclipse": 0.30,
     "ingress": 0.14,
+    "progression": 0.20,
+    "solar_arc": 0.20,
 }
 
 
@@ -379,6 +381,19 @@ def _reader_activity_score(
             + natal_relevance * 0.36
             + theme_convergence * 0.26,
             high=0.62,
+        )
+    if event_type in {"progression", "solar_arc"}:
+        # Season-scale "texture" per phase0/03_method_charters.md: ambient
+        # developmental terrain, not a point-forecast driver. Weighted toward
+        # natal relevance/theme over raw concentration, and capped below the
+        # ingress ceiling so texture events cannot outrank the point-event
+        # methods they're meant to contextualize.
+        return _clamp(
+            concentration * 0.22
+            + exactness * 0.08
+            + natal_relevance * 0.40
+            + theme_convergence * 0.30,
+            high=0.55,
         )
     return _clamp(concentration)
 
