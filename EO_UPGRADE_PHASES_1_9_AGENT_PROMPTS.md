@@ -459,6 +459,122 @@ Goal: audit the Lots and ZR charter for formula clarity, sect handling, domain a
 Do not edit code during Codex implementation. Produce a precise review with fixture recommendations and claim-language warnings.
 ```
 
+## State as of Phase 6 completion (2026-07-08) — read this before starting Phase 7, 8, or 9
+
+This section exists so any agent — Codex, Claude Code, Antigravity/Gemini,
+or a future session of any of these — can pick up Phase 7-9 correctly
+without needing prior conversation history. If you are that agent: read
+this whole section before touching anything.
+
+**What already exists and works, verified live on real charts, not just
+unit-test fixtures (do not rebuild or duplicate any of this):**
+
+| File | What it does | Wired into |
+|---|---|---|
+| `engine/asteroid_policy.py` | Loads/validates the 34-asteroid registry, exposes source/target/clock eligibility | `engine/predictive_engine.py` |
+| `engine/returns.py` | Solar/Lunar/Jupiter/Saturn exact-moment returns | `engine/predictive_engine.py` |
+| `engine/profections.py` | Annual whole-sign profection `TimeLordPeriod` records | `engine/predictive_engine.py` |
+| `engine/solar_arc.py` | Naibod-adjusted Solar Arc directed contacts | `engine/predictive_engine.py` |
+| `engine/progressions.py` | Classical one-day-per-year secondary progressions | `engine/predictive_engine.py` |
+| `engine/lots.py` | Lot of Fortune/Spirit/Necessity, sect-aware | `engine/predictive_sidecar.py` (`natal_snapshot.lots`) |
+| `engine/zodiacal_releasing.py` | L1-L4 period stack, peaks, LOB, per Fortune and Spirit | `engine/predictive_engine.py` |
+| `engine/predictive_engine.py` | Central signal collector; every method above plugs in via a `_collect_*_signals()` function feeding a shared `signals` list, wrapped in try/except so one method's failure never breaks another | — |
+| `engine/predictive_sidecar.py` | Writes `.eo_predictive.json` next to every `year_ahead`/`personal_forecast`/`predictive_sandbox` report; this is the ONLY place predictive evidence is currently surfaced. No report template renders any of it. | `generate.py` (post-render hook, non-fatal) |
+
+Every one of `raw_events`' `method_family` values (`TRANSIT`, `PROPRIETARY_TRANSIT`,
+`LUNATION`, `RETURN`, `SOLAR_ARC`, `PROGRESSION`, `PROFECTION`, `ZODIACAL_RELEASING`)
+is live and produces real events on real charts today. `phase0/` contracts are
+at: `01`=`phase0.1.1`, `02`=`phase0.1.1`, `03`=`phase0.1.2`, `06`=`phase0.1.1`
+(all per-file versions — check each file's own header, don't assume `phase0.1.0`).
+
+**`ForecastEvent.natal_anchor_ids` is empty on every event emitted so far, on
+purpose** (per the Anchor Linkage Deferral note earlier in this document).
+Phase 7 is where this gets populated — both prospectively for new events and
+retroactively for the roughly 150-200 events already sitting in any given
+report's sidecar. Building `NatalPromiseAnchor` without also backfilling
+existing events would leave Phase 7 half-finished.
+
+**The one bug pattern that has bitten three phases in a row — check for
+this specifically before writing any new natal-data-reading code:**
+
+`engine.natal_engine.generate_payload()`'s real output has NO top-level
+`birth_date`, `date`, or `julian_day` keys. Those only exist nested inside
+`payload["user_profile"]["local_datetime"]` (ISO string) and
+`payload["user_profile"]["julian_day"]` (float). Every one of `returns.py`,
+`solar_arc.py`, and `progressions.py` originally read the wrong top-level
+keys, passed their own unit tests (because the test fixtures happened to
+include a convenience top-level key the real engine never produces), and
+silently returned zero results on every real chart — caught only by
+generating an actual report and inspecting the sidecar, not by running
+`unittest`. **Any new code in Phase 7, 8, or 9 that reads birth date,
+Julian day, or other natal-payload fields must check `user_profile` first,
+and must be verified against a real `generate_payload()` output — not just
+a hand-built test fixture — before being considered done.**
+
+**The verification bar for every phase, restated because it is the single
+most load-bearing habit in this whole program:** running `unittest` and
+seeing `OK` is necessary but never sufficient. Before calling any phase
+done: generate a real report via `generate.py <report_type> --name ... --date
+... --time ... --location ... --report-date ... --output-dir tmp/... --no-browser`,
+open the resulting `.eo_predictive.json`, and confirm the new phase's
+output is actually present and looks correct — not just that no exception
+was thrown. Every real bug found across Phases 2-6 was caught this way,
+none by unit tests alone. Clean up `tmp/` output afterward (it's
+gitignored, but keep the working tree tidy).
+
+**Explicit anti-drift boundaries — read these even if you are confident
+you already know the scope. They exist because a natural, well-intentioned
+impulse to make the system "more complete" or "more impressive" has a
+specific, named failure mode here, and this document is written to be
+followed literally, not spiritually:**
+
+1. **No client-facing report changes in Phases 7, 8, or 9.** Not a new
+   template section, not a "just a small mention" in Year Ahead prose, not
+   a teaser in the sandbox narrative preview beyond what already exists.
+   The sidecar is the only surface. This is not a suggestion to be
+   balanced against other goals — it is a hard boundary. If a phase's
+   `Required outcomes` list doesn't say "template" or "prose," do not add
+   template or prose changes, no matter how contained or "obviously fine"
+   they seem in the moment.
+2. **No new astronomical or interpretive methods beyond what each phase's
+   `Required outcomes` list names.** Do not add harmonics, midpoints,
+   antiscia, additional lots beyond Fortune/Spirit/Necessity, additional
+   time-lord systems (Firdaria etc. — explicitly reserved for post-Phase-6
+   per `phase0/03_method_charters.md` C6), or any other technique that
+   "would fit naturally" alongside what's being built. If it's not listed,
+   it's out of scope for this phase, full stop — propose it separately
+   afterward if it seems valuable, do not fold it in.
+3. **No score simplification.** Every component score (topic_coherence,
+   method_family_diversity, counterforce, complexity, confidence, etc.)
+   must remain individually visible in the output. Do not collapse
+   multiple components into one summary number without also preserving
+   the components. A single "star rating" or "confidence: high/medium/low"
+   replacing the real component breakdown is exactly the kind of
+   simplification this program was built to prevent.
+4. **No fabricated example data presented as if real**, especially in
+   Phase 9. The outcome ledger and matched-random baseline are
+   infrastructure to be built — they do not yet have real historical
+   outcome data in them, because no real historical review has happened.
+   Do not populate test fixtures with data styled to look like a genuine
+   validated prediction success ("candidate X correctly predicted event
+   Y") unless that is explicitly labeled as synthetic test fixture data,
+   clearly and repeatedly, everywhere it appears (variable names, docstrings,
+   comments). A stray plausible-looking "hit" in a fixture can get quoted
+   later as if it were a real result — guard against that specifically.
+5. **`predictive_sandbox`'s six-calendar-day research cap is sandbox-only.**
+   This was a real correction made earlier in this program (an operator
+   caught it, not an agent) — the general system's `MicroCandidate` window
+   width is trigger-derived, with no fixed maximum, per
+   `phase0/04_convergence_and_candidate_protocol.md` section 4.2. Do not
+   reintroduce a fixed day-count cap for the general system in Phase 8.
+6. **When in doubt about scope, do less, not more, and say so explicitly**
+   in the phase's closeout note (`agents/REVISIONS.md`) rather than silently
+   filling a perceived gap. Every phase in this program so far has been a
+   real, working foundation — not a finished, polished system — and that
+   is intentional, not a shortcoming to compensate for.
+
+---
+
 ## Phase 7 - Natal Promise Graph and Cross-Clock Convergence
 
 Purpose:
@@ -467,23 +583,21 @@ specific chart, then compose independent evidence without stacking.
 
 Required outcomes:
 
-- `NatalPromiseAnchor` construction
-- topic/domain keys
-- house/ruler/dispositor links
-- planet/angle/asteroid links
-- natal configuration links
-- proprietary index links
-- topic coherence engine
-- method-family diversity logic
-- counterforce and complexity components
-- chapter / trigger / weather separation
-- transparent component scoring
+- `NatalPromiseAnchor` construction (per `phase0/01_predictive_object_schemas.md` §1) from houses, house rulers, dispositors, natal planets, angles, all 34 asteroids (via `engine/asteroid_policy.py`), named configurations (`formulas/standard/named_configurations.py`), proprietary index driver links, and topic/domain keys (drawn only from the reserved namespace in `phase0/01_predictive_object_schemas.md` §7 — do not invent new topic or domain keys without a version bump and an operator note)
+- an anchor-matcher that populates `ForecastEvent.natal_anchor_ids` and `PredictiveSignal.natal_anchor_ids` — **both retroactively for every event already in a report's sidecar and prospectively for new events**, matching by `source_body`/`target_body`/`method_family` against the anchors built for that chart
+- topic coherence engine per `phase0/04_convergence_and_candidate_protocol.md` §3 (the seven coherence-graph rules, computed exactly as chartered, not approximated)
+- method-family diversity logic using the composite-dedup rule in §2.2 (`transit_family`/`proprietary_transit_family` collapse on shared source+target; every other independence group counts independently)
+- counterforce and complexity components per §6, each visible as its own field, not folded into one score
+- `ChapterState` construction (per `phase0/01_predictive_object_schemas.md` §4) via the chapter builder order in `phase0/04_convergence_and_candidate_protocol.md` §8.1 — this is also where Return/Solar-Arc/Progression/ZR "chapter"-role `ForecastEvent`s finally get promoted into real `ChapterState` objects with the already-reserved `chapter_kind` values (`return_year`, `solar_arc_chapter`, `progressed_lunation_phase`, `zr_period`, `sustained_transit_chapter`, `long_transit_cycle`)
+- transparent component scoring throughout — see anti-drift rule 3 above
+
+Explicit non-goals for this phase specifically (in addition to the general anti-drift rules above): do not build `MicroCandidate` yet (that's Phase 8); do not build the outcome ledger (Phase 9); do not add a new clock family.
 
 Codex file ownership:
 
-- natal promise graph module
-- convergence module
-- scoring components
+- `engine/natal_promise.py` (new) — anchor construction and the anchor-matcher
+- `engine/convergence.py` (new) — chapter builder, coherence graph, method-diversity/anti-stacking logic
+- extends `engine/predictive_engine.py` (anchor-matching pass after signal collection) and `engine/predictive_sidecar.py` (emit `natal_promise_anchors` and `chapters` arrays, currently always empty per `phase0/06_sidecar_and_export_contract.md` §2.5/§2.10)
 - tests
 
 Claude file ownership:
@@ -496,17 +610,21 @@ Codex prompt:
 ```text
 You are Codex working in C:\entangled_oracle on Phase 7 natal promise graph and cross-clock convergence.
 
+Before anything else, read the "State as of Phase 6 completion" section near the top of this file (EO_UPGRADE_PHASES_1_9_AGENT_PROMPTS.md) in full. It names a real bug pattern that has hit three phases in a row and a verification requirement that is not optional.
+
 Goal: build the internal graph and convergence engine that prevents forecast evidence from becoming context-free timing noise.
 
-Start with git status. Read phase0/01_predictive_object_schemas.md and phase0/04_convergence_and_candidate_protocol.md. Implement NatalPromiseAnchor construction from houses, rulers, dispositors, natal bodies, angles, asteroids, configurations, proprietary indexes, and topic/domain keys. Then implement cross-clock convergence with method-family diversity, anti-stacking, topic coherence, counterforce, complexity, and component scores.
+Start with git status. Read phase0/01_predictive_object_schemas.md sections 1 and 4, and phase0/04_convergence_and_candidate_protocol.md in full. Implement NatalPromiseAnchor construction from houses, rulers, dispositors, natal bodies, angles, all 34 asteroids, named configurations, proprietary indexes, and topic/domain keys drawn only from the reserved namespace. Build the anchor-matcher and use it to populate natal_anchor_ids on every ForecastEvent and PredictiveSignal already being produced by the six existing method families -- this must work retroactively on events already flowing through the pipeline, not just prospectively. Then implement the chapter builder (promoting existing chapter-role events into real ChapterState objects) and cross-clock convergence: method-family diversity via the composite-dedup rule, topic coherence via the seven coherence-graph rules, counterforce, and complexity.
 
-Do not collapse component scores into one opaque number. Do not expose discrete-event predictions yet. Add tests for anti-stacking, topic coherence, conflicting evidence, and asteroid-specific contribution.
+Do not collapse component scores into one opaque number. Do not build MicroCandidate or the outcome ledger -- those are Phase 8 and 9. Do not add a new clock family. Do not touch any report template or add any client-facing prose. Add tests for anti-stacking, topic coherence, conflicting evidence, and asteroid-specific contribution. Before calling this done, generate a real report and confirm natal_promise_anchors and chapters are non-empty in the resulting .eo_predictive.json, and that existing events (returns, Solar Arc, progressions, ZR, transits) now carry populated natal_anchor_ids.
 ```
 
 Claude Code prompt:
 
 ```text
 You are Claude Code working in C:\entangled_oracle on Phase 7 convergence review.
+
+Read the "State as of Phase 6 completion" section near the top of EO_UPGRADE_PHASES_1_9_AGENT_PROMPTS.md first.
 
 Goal: audit whether the proposed graph and convergence rules can distinguish real independent method convergence from repeated evidence.
 
@@ -521,31 +639,21 @@ client-facing prediction.
 
 Required outcomes:
 
-- `MicroCandidate` object
-- trigger-derived candidate windows
-- no retrospective date shrinking
-- pre-registration timestamp
-- candidate calendar
+- `MicroCandidate` object per `phase0/01_predictive_object_schemas.md` §5
+- trigger-derived candidate windows — **no fixed maximum width for the general system; see anti-drift rule 5 above and `phase0/04_convergence_and_candidate_protocol.md` §4.2 for the exact derivation rule**
+- no retrospective date shrinking (§4.3 — `window_days` is fixed at emission, permanently)
+- pre-registration timestamp (`pre_registered_at`, set once, never overwritten)
+- candidate calendar assembly per §8.2 (candidate builder order: iterate trigger-signal peaks, scan a discovery buffer for coherent clustering, match anchors/chapter-support/trigger-support, compute component scores, check the ten hard requirements in §4.1, emit or reject)
 - accepted candidates
-- rejected/suppressed candidates
-- rejection reasons
+- rejected/suppressed candidates with the locked `filter_reason` enum from `phase0/06_sidecar_and_export_contract.md` §2.12 (do not invent new reason strings outside that enum without a version bump)
 - confidence bands
-- candidate-specific sidecar export
-- outcome ledger linkage
-
-Important width rule:
-
-General EO candidate windows are derived from the natural boundaries of
-their anchoring trigger evidence. `predictive_sandbox` may keep a
-separate six-calendar-day cap as an internal stress-test rule, but that
-cap is not the general system rule.
+- candidate-specific sidecar export (`candidates` and `rejected_candidates` arrays, currently always empty)
+- outcome ledger linkage (`report_run_id`, `candidate_id` — the ledger itself is Phase 9's job; Phase 8 only needs to emit candidates with stable, referenceable IDs)
 
 Codex file ownership:
 
-- candidate assembly module
-- rejected-candidate registry
-- sidecar candidate export
-- validation hooks
+- `engine/candidates.py` (new) — candidate assembly, rejection logging
+- extends `engine/predictive_sidecar.py` (emit `candidates` and `rejected_candidates`)
 - tests
 
 Claude file ownership:
@@ -558,11 +666,15 @@ Codex prompt:
 ```text
 You are Codex working in C:\entangled_oracle on Phase 8 discrete candidate engine.
 
+Before anything else, read the "State as of Phase 6 completion" section near the top of this file in full, especially anti-drift rule 5 about the six-day cap.
+
 Goal: implement internal R&D MicroCandidate generation without adding client-facing prediction claims.
 
-Start with git status. Read phase0/04_convergence_and_candidate_protocol.md, phase0/05_validation_protocol.md, and phase0/06_sidecar_and_export_contract.md. Build MicroCandidate generation from chapter support, trigger support, method-family diversity, topic coherence, confidence, counterforce, and trigger-derived window boundaries. Preserve accepted and rejected candidates with reasons. Write candidate-specific sidecar evidence before outcome review.
+Start with git status. Read phase0/04_convergence_and_candidate_protocol.md in full, phase0/05_validation_protocol.md, and phase0/06_sidecar_and_export_contract.md sections 2.11 and 2.12. This phase depends on Phase 7's NatalPromiseAnchor and ChapterState objects already existing and being populated -- confirm that before starting; if Phase 7 is not actually done (not just planned), stop and say so rather than building Phase 8 on an assumed foundation.
 
-Do not use post-hoc shrinking. Do not expose candidates in Year Ahead or Personal Forecast prose. Add tests for pre-registration fields, rejected candidates, anti-stacking, trigger-derived width, and outcome-ledger separation.
+Build MicroCandidate generation from chapter support, trigger support, method-family diversity, topic coherence, confidence, counterforce, and trigger-derived window boundaries per section 4.2 -- the window is the union of the natural span of qualifying trigger signals (temporal_precision in instant/day only), never a fixed cap. Preserve accepted and rejected candidates with reasons from the locked filter_reason enum. Write candidate-specific sidecar evidence before any outcome review exists.
+
+Do not use post-hoc shrinking. Do not expose candidates in Year Ahead or Personal Forecast prose or any template. Do not introduce any fixed maximum window width for the general system. Add tests for pre-registration fields, rejected candidates, anti-stacking, trigger-derived width (including a test that a wide-window trigger produces a wide candidate, proving there is no hidden cap), and outcome-ledger ID linkage. Before calling this done, generate a real report with a chart/window likely to produce candidates and confirm the sidecar's candidates and rejected_candidates arrays are populated and inspectable.
 ```
 
 Claude Code prompt:
@@ -570,9 +682,11 @@ Claude Code prompt:
 ```text
 You are Claude Code working in C:\entangled_oracle on Phase 8 discrete-candidate protocol review.
 
+Read the "State as of Phase 6 completion" section near the top of EO_UPGRADE_PHASES_1_9_AGENT_PROMPTS.md first.
+
 Goal: stress-test the MicroCandidate protocol before or alongside Codex implementation.
 
-Do not edit code. Look for loopholes that would allow post-hoc shrinking, vague event domains, hidden outcome knowledge, evidence stacking, unresolved status inflation, or client-facing overclaiming. Produce a failure-mode checklist and acceptance criteria.
+Do not edit code. Look for loopholes that would allow post-hoc shrinking, vague event domains, hidden outcome knowledge, evidence stacking, unresolved status inflation, a reintroduced fixed window cap, or client-facing overclaiming. Produce a failure-mode checklist and acceptance criteria.
 ```
 
 ## Phase 9 - Retrospective Validation Laboratory
@@ -583,25 +697,17 @@ answer after the fact.
 
 Required outcomes:
 
-- immutable run packages
-- separate outcome ledger
-- research status categories
-- matched-random baseline
-- transit-only baseline
-- asteroid-enabled comparison
-- returns/profections comparison
-- Solar Arc/progression comparison
-- full convergence comparison
-- per-method ablation
-- per-asteroid contribution analysis
-- quiet-period and non-hit review
+- immutable run packages (the sidecar itself, per `phase0/06_sidecar_and_export_contract.md` §4 — write-once per run, re-running produces a new sidecar rather than mutating the old one)
+- separate outcome ledger per §3 (`<report_id>.eo_outcomes.json`, written by reviewer tooling, never by the generation engine)
+- research status categories — **exactly** the five locked in `phase0/05_validation_protocol.md`: `supported_hit`, `supported_non_hit`, `unresolved`, `research_incomplete`, `excluded_by_protocol`. Do not add or rename categories.
+- matched-random baseline generation
+- transit-only baseline, asteroid-enabled comparison, returns/profections comparison, Solar Arc/progression comparison, full convergence comparison — these are **ablation runs**: the same chart/window run once with a method family disabled and once with it enabled, comparing candidate output, not runs against fabricated "ground truth"
+- per-method ablation, per-asteroid contribution analysis
+- quiet-period and non-hit review support — a report window producing zero candidates is a valid, expected, and important outcome to preserve and review, not a failure to hide
 
 Codex file ownership:
 
-- validation harness
-- baseline runner
-- outcome ledger schema
-- matched-random comparison code
+- `engine/validation_harness.py` (new) — outcome ledger read/write, matched-random baseline generation, ablation runner
 - tests
 
 Claude file ownership:
@@ -615,11 +721,15 @@ Codex prompt:
 ```text
 You are Codex working in C:\entangled_oracle on Phase 9 retrospective validation laboratory.
 
-Goal: build the validation harness for EO predictive candidates and method layers.
+Before anything else, read the "State as of Phase 6 completion" section near the top of this file in full, especially anti-drift rule 4 about fabricated example data.
 
-Start with git status. Read phase0/05_validation_protocol.md and phase0/06_sidecar_and_export_contract.md (the sidecar contract). Implement immutable run-package handling, separate outcome-ledger loading, research status categories, matched-random baselines, method ablations, asteroid contribution analysis, and quiet-period/non-hit review support.
+Goal: build the validation harness for EO predictive candidates and method layers. This phase builds infrastructure for validation -- it does not perform an actual historical validation study, because Phase 8's candidates are brand new and no real outcome review has happened yet. Do not create fixture data styled to look like a genuine validated hit; if you need example data for a test, label it as synthetic everywhere it appears (variable name, docstring, comment) and keep it obviously schematic (e.g. round numbers, placeholder names) rather than plausible-looking.
 
-Do not use report prose or HTML scraping as validation input. Do not count unresolved as success or failure. Add tests for status categories, matched-random preservation of period/candidate count/window conditions, ablation output, and reproducible run package IDs.
+Start with git status. Read phase0/05_validation_protocol.md in full and phase0/06_sidecar_and_export_contract.md section 3 (the outcome ledger). This phase depends on Phase 8's MicroCandidate objects already existing -- confirm that before starting; if Phase 8 is not actually done, stop and say so.
+
+Implement immutable run-package handling (the sidecar is already write-once; confirm and test this rather than rebuilding it), separate outcome-ledger read/write matching the exact schema in section 3, the five locked research status categories exactly as named, matched-random baseline generation that preserves candidate count/window-width conditions from the real run, per-method ablation (rerun with a method family's signals excluded, compare), and per-asteroid contribution analysis.
+
+Do not use report prose or HTML scraping as validation input -- read from the sidecar's structured data only. Do not count unresolved as success or failure in any aggregate metric. Do not add a sixth status category. Add tests for status categories, matched-random preservation of period/candidate count/window conditions, ablation output, and reproducible run package IDs.
 ```
 
 Claude Code prompt:
@@ -627,9 +737,11 @@ Claude Code prompt:
 ```text
 You are Claude Code working in C:\entangled_oracle on Phase 9 validation design review.
 
+Read the "State as of Phase 6 completion" section near the top of EO_UPGRADE_PHASES_1_9_AGENT_PROMPTS.md first.
+
 Goal: audit whether the validation laboratory can fairly evaluate candidates without retrofitting success.
 
-Do not edit code. Review outcome categories, matched-random baseline design, quiet-period handling, non-hit treatment, unresolved treatment, research completeness, and ablation requirements. Produce exact review findings and any required acceptance tests.
+Do not edit code. Review outcome categories, matched-random baseline design, quiet-period handling, non-hit treatment, unresolved treatment, research completeness, and ablation requirements. Specifically check for any fixture or example data that reads as a real historical result rather than clearly-labeled synthetic test data. Produce exact review findings and any required acceptance tests.
 ```
 
 ## Safe Parallel Run Matrix

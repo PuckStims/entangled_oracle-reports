@@ -5,6 +5,49 @@ Newest entry on top. See `agents/README.md` for the convention.
 
 ---
 
+## 2026-07-08 - Phase 7-9 prompts hardened against scope drift, no implementation started (Claude / Sonnet 5)
+
+**Context:** Operator asked to stop after Phase 6 rather than risk a
+mid-Phase-7 cutoff from token limits, and specifically asked that
+Phases 7-9 be made explicit enough that a different, less
+session-aware tool (Antigravity/Gemini was named specifically) can't
+drift from scope on "excitement" about the project. No Phase 7
+implementation was started.
+
+**What changed:** added a new "State as of Phase 6 completion" section
+to `EO_UPGRADE_PHASES_1_9_AGENT_PROMPTS.md`, positioned right before
+Phase 7, that any agent (not just one with this session's context) can
+read cold: a table of every engine file that exists and works today
+and what it's wired into; that `natal_anchor_ids` is empty everywhere
+on purpose and Phase 7 must backfill it, not just populate it
+prospectively; the exact recurring bug pattern (`user_profile` nesting
+for birth date / Julian day) that has hit three phases in a row,
+stated as a specific thing to check for rather than a story to
+remember; and the live-verification requirement restated as
+non-optional, since every real bug found in this program was caught
+that way and none by unit tests alone.
+
+Added six explicit, numbered anti-drift rules covering the specific
+failure modes an "excited" agent could plausibly produce: no
+client-facing report changes in Phases 7-9 under any framing; no new
+astronomical/interpretive methods beyond each phase's named required
+outcomes; no collapsing component scores into one opaque number; no
+fabricated example data in Phase 9 presented as if it were a real
+historical result; no reintroduction of the six-day candidate-window
+cap (the earlier, corrected mistake) for the general system; and "do
+less and say so" over silently filling a perceived gap.
+
+Rewrote all six Phase 7-9 prompts (three Codex, three Claude Code) to
+reference the new section explicitly at the top, name concrete new
+file paths matching the established `engine/*.py` convention rather
+than vague "module" language, add phase-specific non-goals, and
+require a live-generated-report check with a specific pass condition
+before any phase can be called done -- not just "add tests."
+
+**Files changed:** `EO_UPGRADE_PHASES_1_9_AGENT_PROMPTS.md`.
+
+---
+
 ## 2026-07-08 - Phase 6 Lots and Zodiacal Releasing foundation (Claude / Sonnet 5, both Codex and Claude roles)
 
 **Context:** Codex was unavailable for the rest of the night, so at the
