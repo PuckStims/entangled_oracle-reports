@@ -29,7 +29,12 @@ class TestPhase9bReportSurface(unittest.TestCase):
         self.assertEqual(surface["chapter_count"], 1)
         self.assertEqual(surface["candidate_count"], 1)
         candidate = surface["candidates"][0]
-        self.assertIn("research prompt", candidate["summary"])
+        # summary now routes through selectors.block_selector.select_block()
+        # keyed on (candidate_domain[0], independent_method_families[0]) against
+        # products/personal_forecast/blocks/shared/predictive_candidates.json --
+        # unfilled scaffold leaves surface their [TODO] marker visibly rather
+        # than being filtered, per the operator's batch-testing workflow.
+        self.assertIn("identity domain, led by transit_family", candidate["summary"])
         self.assertEqual(candidate["component_scores"]["topic_coherence"], 0.8)
         self.assertEqual(candidate["component_scores"]["method_family_diversity"], 0.67)
 

@@ -411,7 +411,7 @@ def _build_predictive_report_surface(sidecar: dict, report_type: str, *, max_cha
     if not isinstance(sidecar, dict):
         sidecar = {}
     chapters = [
-        _format_predictive_chapter(chapter)
+        _format_predictive_chapter(chapter, report_type)
         for chapter in (sidecar.get("chapters") or [])
         if isinstance(chapter, dict)
     ]
@@ -426,7 +426,7 @@ def _build_predictive_report_surface(sidecar: dict, report_type: str, *, max_cha
     candidates = []
     if report_type == "personal_forecast":
         candidates = [
-            _format_predictive_candidate(candidate)
+            _format_predictive_candidate(candidate, report_type)
             for candidate in (sidecar.get("candidates") or [])
             if isinstance(candidate, dict)
         ]
@@ -455,7 +455,7 @@ def _build_predictive_report_surface(sidecar: dict, report_type: str, *, max_cha
     }
 
 
-def _format_predictive_chapter(chapter: dict) -> dict:
+def _format_predictive_chapter(chapter: dict, report_type: str) -> dict:
     chapter_id = str(chapter.get("chapter_id") or "")
     start_at = _date_label_from_iso(chapter.get("start_at"))
     end_at = _date_label_from_iso(chapter.get("end_at"))
@@ -463,6 +463,13 @@ def _format_predictive_chapter(chapter: dict) -> dict:
     topics = _display_list(chapter.get("topic_keys"), fallback=["active pattern"])
     clocks = _display_list(chapter.get("active_long_clocks"), fallback=[chapter.get("chapter_kind", "chapter")])
     score = _rounded_display(chapter.get("chapter_summary_score", chapter.get("coherence", 0.0)))
+
+    raw_kind = str(chapter.get("chapter_kind") or "sustained_transit_chapter")
+    raw_domains = [str(item) for item in (chapter.get("domain_keys") or []) if str(item)]
+    primary_domain = raw_domains[0] if raw_domains else "identity"
+    from selectors.block_selector import select_block
+    summary = select_block(report_type, "predictive_chapters", raw_kind, primary_domain)
+
     return {
         "chapter_id": chapter_id,
         "title": _chapter_title(chapter, domains, clocks),
@@ -471,10 +478,7 @@ def _format_predictive_chapter(chapter: dict) -> dict:
         "domains": domains,
         "topics": topics,
         "active_long_clocks": clocks,
-        "summary": (
-            f"The research layer flags this as a coherent chapter around {', '.join(domains[:2])}. "
-            f"Its supporting clocks include {', '.join(clocks[:3])}, and its topic trail centers on {', '.join(topics[:3])}."
-        ),
+        "summary": summary,
         "component_scores": {
             "coherence": _rounded_display(chapter.get("coherence")),
             "counterforce": _rounded_display(chapter.get("counterforce")),
@@ -489,7 +493,7 @@ def _format_predictive_chapter(chapter: dict) -> dict:
     }
 
 
-def _format_predictive_candidate(candidate: dict) -> dict:
+def _format_predictive_candidate(candidate: dict, report_type: str) -> dict:
     candidate_id = str(candidate.get("candidate_id") or "")
     start_at = _date_label_from_iso(candidate.get("start_at"))
     peak_at = _date_label_from_iso(candidate.get("peak_at"))
@@ -498,6 +502,14 @@ def _format_predictive_candidate(candidate: dict) -> dict:
     topics = _display_list(candidate.get("candidate_topic_keys"), fallback=["active pattern"])
     families = _display_list(candidate.get("independent_method_families"), fallback=["method family"])
     component_scores = candidate.get("component_scores") if isinstance(candidate.get("component_scores"), dict) else {}
+
+    raw_domains = [str(item) for item in (candidate.get("candidate_domain") or []) if str(item)]
+    primary_domain = raw_domains[0] if raw_domains else "identity"
+    raw_families = [str(item) for item in (candidate.get("independent_method_families") or []) if str(item)]
+    leading_family = raw_families[0] if raw_families else "transit_family"
+    from selectors.block_selector import select_block
+    summary = select_block(report_type, "predictive_candidates", primary_domain, leading_family)
+
     return {
         "candidate_id": candidate_id,
         "title": f"Flagged window around {peak_at or start_at or 'this period'}",
@@ -506,11 +518,7 @@ def _format_predictive_candidate(candidate: dict) -> dict:
         "domains": domains,
         "topics": topics,
         "independent_method_families": families,
-        "summary": (
-            f"The system flags this window for observation around {', '.join(domains[:2])}. "
-            f"It is supported by {len(families)} independent {'method family' if len(families) == 1 else 'method families'} "
-            f"and should be treated as a research prompt, not a promise of an external event."
-        ),
+        "summary": summary,
         "convergence_score": _rounded_display(candidate.get("convergence_score")),
         "counterforce": _rounded_display(candidate.get("counterforce")),
         "complexity": _rounded_display(candidate.get("complexity")),

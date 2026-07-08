@@ -5,6 +5,122 @@ Newest entry on top. See `agents/README.md` for the convention.
 
 ---
 
+## 2026-07-08 - Phase 9b predictive-content blocks wired live, TODOs surface unfiltered by design (Claude / Sonnet 5)
+
+**Context:** Immediately following the scaffold above, operator confirmed
+they want the wiring done now (not deferred) and explicitly want
+unfilled `[TODO]` blocks to surface visibly in generated reports rather
+than being filtered — this is a deliberate product-development choice,
+not an oversight: operator batch-generates free reports specifically to
+find gaps, since they don't write code themselves and this is how they
+audit content coverage.
+
+**What changed, in `generate.py`:**
+
+- `_format_predictive_chapter(chapter, report_type)` and
+  `_format_predictive_candidate(candidate, report_type)` now take
+  `report_type` and call `selectors.block_selector.select_block()`
+  instead of building the old inline f-string. Chapters route on
+  `(chapter_kind, domain_keys[0])` against `predictive_chapters.json`;
+  candidates route on `(candidate_domain[0], independent_method_families[0])`
+  against `predictive_candidates.json` — matching the scaffold built one
+  entry above.
+- `_build_predictive_report_surface()` now passes `report_type` through
+  to both formatters (it already had `report_type` itself; this just
+  threads it one level deeper).
+- No filtering was added. `select_block()`'s own fallback-key
+  degradation (exact match → domain/family-level `"fallback"` → file
+  top-level `"fallback"`) is the only safety net — an unfilled leaf
+  renders its literal `"[TODO: ~N words -- ...]"` string directly in the
+  rendered report HTML, on purpose.
+- Updated `tests/test_phase9b_report_surface.py`'s candidate assertion,
+  which had checked for the old hardcoded phrase ("research prompt")
+  that no longer exists in the code now that content is block-driven.
+
+**Verification:**
+
+- Full phase 1-9b regression suite (60 tests) passes.
+- Live-generated a real Year Ahead report and confirmed the rendered
+  HTML shows `"[TODO: ~65 words -- solar_arc_chapter chapter, creativity
+  domain]"` directly in the predictive-chapter card body — confirming
+  the wiring is real (routes to the correct chapter_kind/domain
+  combination for that chart's actual data) and that the TODO surfaces
+  exactly as the operator wants for now.
+
+**Next step, operator's own:** fill in `predictive_chapters.json` (both
+copies) and `predictive_candidates.json` with real prose, then batch-run
+reports to find which combinations actually occur on real charts and
+prioritize those first. No further engine or generate.py work is needed
+for this to work end-to-end — filling the JSON is the entire remaining
+task.
+
+---
+
+## 2026-07-08 - Phase 9b predictive-content block scaffold (Claude / Sonnet 5)
+
+**Context:** Operator wants to move from engine work to content work next:
+Phase 9b's predictive/experimental section currently renders from two
+generic inline Python f-strings (`_format_predictive_chapter()` /
+`_format_predictive_candidate()` in `generate.py`), not from the
+hand-authored JSON block libraries every other section of Year Ahead and
+Personal Forecast uses via `selectors/block_selector.py`'s
+`select_block()`. This entry is the scaffold only — no prose written, no
+`generate.py` wiring changed. That's a deliberate, separate next step.
+
+**Routing keys, confirmed against engine code (not charter prose, which
+in one case is wrong):**
+
+- Chapters: `chapter_kind` (7 values, from
+  `engine/convergence.py`'s `_chapter_kind_for_period`/
+  `_chapter_kind_for_signal`) × `domain_keys` (12 values, from
+  `engine/candidates.py`'s `DOMAIN_KEYS`).
+- Candidates (Personal Forecast only, per
+  `phase0/04_convergence_and_candidate_protocol.md` §10): `candidate_domain`
+  × leading `independent_method_families` entry (12 real families).
+  Found and noted a charter/code mismatch while pulling the real family
+  list: `phase0/03_method_charters.md` describes return independence
+  groups as `return_family_solar`/`return_family_lunar`, but
+  `engine/returns.py` actually emits `f"return_family_{body.lower()}"` —
+  i.e. `return_family_sun`, `return_family_moon`,
+  `return_family_jupiter`, `return_family_saturn`. Used the code's real
+  values for the scaffold; the charter text still needs its own fix
+  separately (not done in this entry — flagging it here so it doesn't
+  get lost).
+
+**Files added, all JSON-valid, zero code changes:**
+
+- `products/year_ahead/blocks/plainspeak/predictive_chapters.json` — 92
+  `[TODO: ~65 words -- ...]` leaves (7 kinds × 12 domains + 7 per-kind
+  fallbacks + 1 top fallback).
+- `products/personal_forecast/blocks/shared/predictive_chapters.json` —
+  same 92-leaf shape, `~60 words` target, personal_forecast voice.
+- `products/personal_forecast/blocks/shared/predictive_candidates.json`
+  — 157 `[TODO: ~50 words -- ...]` leaves (12 domains × 12 non-generic
+  families + 12 per-domain fallbacks + 1 top fallback).
+  `return_family_generic` / `zr_family_generic` (rare code fallbacks,
+  not real leading families in practice) deliberately do NOT get their
+  own full domain grid — they route through the existing per-domain
+  `"fallback"` key instead, consistent with `select_block()`'s own
+  fallback-key degradation, so nothing 404s at runtime without doubling
+  scaffold size for values that almost never occur.
+
+Every `_note` field states the hedged/research-framing requirement
+explicitly (this is the one product section that must NOT read as a
+settled claim, per the Phase 9b operator decision) so that requirement
+survives even if a different session or tool fills these in later
+without this conversation's context.
+
+**Not done yet, on purpose:** `generate.py` is not wired to call
+`select_block()` for these files — `_format_predictive_chapter()` /
+`_format_predictive_candidate()` still generate their original inline
+sentence. Wiring them up (and deciding whether unfilled `[TODO]` blocks
+should surface visibly in dev/preview generation the way the operator
+wants for now, or be filtered the way `products/identity_profile`'s
+`_safe_select()` filters them for paid output) is a deliberate separate
+next step, not done here.
+
+---
+
 ## 2026-07-08 - Phase 9b report-integration live-verification (Claude / Sonnet 5)
 
 **Context:** Standard post-Codex verification of Phase 9b — the one
