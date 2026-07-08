@@ -213,6 +213,30 @@ class TestActivationPriorityChain(unittest.TestCase):
 
         self.assertEqual(variables["activation_planet"], "Saturn")
 
+    def test_report_start_date_controls_daily_display_and_activation_scan(self):
+        report_date = datetime(2026, 1, 1, tzinfo=timezone.utc)
+
+        with patch("engine.transit_engine.scan_stations", return_value=[]) as scan_stations:
+            with patch("engine.transit_engine.compute_daily_activation_transits", return_value=[]) as activation_scan:
+                variables = resolve_all(
+                    _payload_stub(),
+                    {},
+                    querent_name="Date Control Test",
+                    report_start_date=report_date,
+                )
+
+        self.assertEqual(variables["display_date"], "January 01, 2026")
+        self.assertEqual(variables["report_start_date"], "January 01, 2026")
+        self.assertEqual(variables["day_ruler_name"], "Jupiter")
+
+        station_start = scan_stations.call_args.args[1]
+        station_end = scan_stations.call_args.args[2]
+        self.assertEqual(station_start, report_date)
+        self.assertEqual(station_end, report_date + timedelta(days=1))
+
+        activation_moment = activation_scan.call_args.args[1]
+        self.assertEqual(activation_moment, report_date)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

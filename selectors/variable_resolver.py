@@ -167,7 +167,7 @@ def resolve_all(
     variables["querent_name"] = querent_name
     variables["generation_date"] = now.strftime("%B %d, %Y")
     variables["generation_location"] = current_location
-    variables["display_date"] = now.strftime("%B %d, %Y")
+    variables["display_date"] = report_start_date.strftime("%B %d, %Y")
     variables["report_start_date"] = report_start_date.strftime("%B %d, %Y")
     variables["report_end_date"] = (
         report_end_date.strftime("%B %d, %Y")
@@ -299,7 +299,7 @@ def resolve_all(
 
     # ── Day Ruler ──────────────────────────────────────────────
 
-    variables["day_ruler_name"] = get_day_ruler()
+    variables["day_ruler_name"] = get_day_ruler(report_start_date)
 
     # ── Formula / EAS Variables ────────────────────────────────
 
@@ -532,12 +532,16 @@ def resolve_all(
         import swisseph as _swe
         from datetime import timezone as _tz, timedelta as _timedelta
         from engine.transit_engine import (
+            ZODIAC_SIGNS,
             _whole_sign_house,
             compute_daily_activation_transits,
             scan_stations,
         )
 
-        _now_utc = datetime.now(_tz.utc)
+        if report_start_date.tzinfo is None:
+            _now_utc = report_start_date.replace(tzinfo=_tz.utc)
+        else:
+            _now_utc = report_start_date.astimezone(_tz.utc)
         _jd = _swe.julday(
             _now_utc.year,
             _now_utc.month,
@@ -549,6 +553,7 @@ def resolve_all(
         _sun_lon  = _swe.calc_ut(_jd, _swe.SUN)[0][0]
         _moon_lon = _swe.calc_ut(_jd, _swe.MOON)[0][0]
         _phase_angle = (_moon_lon - _sun_lon) % 360
+        _moon_sign = ZODIAC_SIGNS[int(_moon_lon // 30) % 12]
 
         _PHASE_NAMES = [
             (45,  "New Moon"),
@@ -563,6 +568,8 @@ def resolve_all(
         variables["moon_phase_descriptor"] = next(
             name for threshold, name in _PHASE_NAMES if _phase_angle < threshold
         )
+        variables["sky_moon_sign"] = _moon_sign
+        variables["sky_moon_sign_element"] = get_sign_element(_moon_sign)
 
         _asc_lon = variables.get("ascendant_longitude", 0.0)
 
@@ -631,6 +638,8 @@ def resolve_all(
 
     except Exception:
         variables["moon_phase_descriptor"]   = ""
+        variables["sky_moon_sign"]           = ""
+        variables["sky_moon_sign_element"]   = "unknown"
         variables["activation_planet"]       = ""
         variables["activation_house_number"] = 0
         variables["natal_house_name"]        = ""

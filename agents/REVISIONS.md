@@ -5,6 +5,84 @@ Newest entry on top. See `agents/README.md` for the convention.
 
 ---
 
+## 2026-07-07 - Phase 0 predictive architecture contracts approved (operator sign-off)
+
+**Context:** `phase0/` (README, predictive object schemas, asteroid
+predictive registry, method charters, convergence and candidate
+protocol, validation protocol, sidecar and export contract, versioning
+and regression fixtures) was drafted and corrected across two Claude
+Code sessions on 2026-07-07, including a correction to the discrete
+candidate window rule (trigger-derived, not a fixed six-day maximum,
+which was only ever meant as `predictive_sandbox`'s own internal
+research cap).
+
+**Decision:** the operator explicitly approved the `phase0/` contracts
+as final, satisfying `phase0/README.md`'s "Definition of Phase 0 done"
+sign-off requirement and `EO_UPGRADE_PHASES_1_9_AGENT_PROMPTS.md`'s
+Phase 0 Gate. Phase 2 (predictive evidence infrastructure) may now
+begin implementation directly against these contracts for both the
+Codex and Claude Code lanes.
+
+**Also resolved this session:** the one open item from
+`CLIENT_FORECAST_CLAIM_CLEANUP_QUEUE.md` (the "personal progressions"
+overclaim on `entangled_oracle_SITE.html`'s Year Ahead card) was fixed
+directly at the operator's request — see that file for detail. The
+queue is now fully closed.
+
+---
+
+## 2026-07-07 - Phase 1 client forecast adequacy repairs (Codex / GPT-5)
+
+**Context:** The user approved implementing Phase 1 from
+`EO_UPGRADE_PHASES_1_9_AGENT_PROMPTS.md` while Claude Code handled the
+Claude-side prompt lane. This pass stayed inside the client forecast
+adequacy scope from `CLIENT_FORECAST_ENGINE_ADEQUACY_AUDIT.md` and did
+not add advanced method clocks.
+
+**What changed:**
+
+- Daily Horoscope date control now follows the requested report date
+  instead of switching back to the system date inside
+  `selectors/variable_resolver.py`.
+- Daily display date, day ruler, Moon phase, sky Moon sign/element, station
+  scan window, and same-day activation scan now all derive from the
+  report start date.
+- Daily template sky copy now uses the calculated sky Moon sign while
+  preserving the natal Moon sign as a fallback.
+- Weekly Horoscope keeps the engine's ranked top-moment selection, then
+  renders those selected exact contacts in chronological order and labels
+  the section as selected exact contacts rather than an unqualified
+  timeline.
+- Personal Forecast timing dots now use each event's real position inside
+  the 90-day report window instead of even loop-index spacing.
+
+**Files changed:**
+
+- [selectors/variable_resolver.py](C:/entangled_oracle/selectors/variable_resolver.py)
+- [generate.py](C:/entangled_oracle/generate.py)
+- [products/daily_horoscope/templates/daily_horoscope.html](C:/entangled_oracle/products/daily_horoscope/templates/daily_horoscope.html)
+- [products/weekly_horoscope/templates/weekly_horoscope.html](C:/entangled_oracle/products/weekly_horoscope/templates/weekly_horoscope.html)
+- [products/personal_forecast/templates/personal_forecast.html](C:/entangled_oracle/products/personal_forecast/templates/personal_forecast.html)
+- [tests/test_daily_horoscope_activation.py](C:/entangled_oracle/tests/test_daily_horoscope_activation.py)
+- [tests/test_phase1_client_forecast_adequacy.py](C:/entangled_oracle/tests/test_phase1_client_forecast_adequacy.py)
+
+**Verification:**
+
+- `python -m py_compile generate.py selectors\variable_resolver.py tests\test_daily_horoscope_activation.py tests\test_phase1_client_forecast_adequacy.py`
+- `$env:PYTHONPATH='C:\entangled_oracle\.venv\Lib\site-packages'; python -m unittest tests.test_daily_horoscope_activation tests.test_phase1_client_forecast_adequacy`
+
+Result:
+
+- `17` focused tests passed.
+
+**Still out of scope:** Weekly Horoscope still needs a real authored
+interpretive content layer before it should be treated as a mature client
+narrative product. Progressions, Solar Arc, returns, profections, time
+lords, Lots, Zodiacal Releasing, and discrete candidate research remain
+required later phases, not Phase 1 work.
+
+---
+
 ## 2026-07-06 - Predictive Sandbox heavy audit and targeted repair pass (Codex / GPT-5)
 
 **Context:** The user asked for a heavy code audit and repair pass over

@@ -586,6 +586,28 @@ def _personal_forecast_date_sort_key(event: dict) -> datetime:
     return datetime.max.replace(tzinfo=timezone.utc)
 
 
+def _personal_forecast_timeline_position_pct(
+    event: dict,
+    start_date: datetime,
+    end_date: datetime,
+) -> int:
+    """Maps an event timestamp onto the report window as a 0-100 percentage."""
+    event_date = _personal_forecast_date_sort_key(event)
+    if event_date == datetime.max.replace(tzinfo=timezone.utc):
+        return 50
+
+    if event_date.tzinfo is None and start_date.tzinfo is not None:
+        event_date = event_date.replace(tzinfo=start_date.tzinfo)
+
+    total_seconds = (end_date - start_date).total_seconds()
+    if total_seconds <= 0:
+        return 50
+
+    elapsed_seconds = (event_date - start_date).total_seconds()
+    pct = int(round((elapsed_seconds / total_seconds) * 100))
+    return max(0, min(100, pct))
+
+
 def _select_personal_forecast_timing_events(
     all_events: list[dict],
     featured_event: dict | None,
@@ -969,6 +991,11 @@ def _build_personal_forecast_context(
             "best_use": timing_copy["best_use"],
             "intensity": _personal_forecast_intensity(_personal_forecast_score(event)),
             "featured": _personal_forecast_event_identity(event) == featured_identity,
+            "timeline_position_pct": _personal_forecast_timeline_position_pct(
+                event,
+                start_date,
+                end_date,
+            ),
         })
 
     guidance = blocks["guidance"]
@@ -1064,7 +1091,7 @@ def _build_horoscope_context(variables, index_results, payload) -> dict:
     ctx["todays_sky_block"] = select_block(
         "daily_horoscope", "todays_sky",
         _moon_phase_key(v.get("moon_phase_descriptor", "")),
-        v.get("moon_sign_element", "fallback")
+        v.get("sky_moon_sign_element") or v.get("moon_sign_element", "fallback")
     )
 
     # Your Activation block
@@ -1150,6 +1177,10 @@ def _build_weekly_horoscope_context(
         count=10,
         include_angles=not simple_mode,
     )
+    raw_moments = sorted(
+        raw_moments,
+        key=lambda moment: moment.get("peak_datetime") or datetime.max.replace(tzinfo=timezone.utc),
+    )
 
     weekly_timeline = []
     for moment in raw_moments:
@@ -1178,6 +1209,8 @@ def _build_weekly_horoscope_context(
         "week_end_display": (report_end - timedelta(days=1)).strftime("%B %d, %Y"),
         "weekly_timeline": weekly_timeline,
         "weekly_timeline_count": len(weekly_timeline),
+        "weekly_timeline_mode": "chronological_selected_exact_contacts",
+        "weekly_scope_note": "Selected exact contacts, shown in chronological order.",
         "palette_name": _palette_name,
         "palette": _PALETTES.get(_palette_name, _PALETTES["vibrant"]),
     }

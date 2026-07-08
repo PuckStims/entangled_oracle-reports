@@ -170,7 +170,7 @@
   <!-- Today's Sky -->
   <div class="section">
     <div class="section-label">Today's Sky</div>
-    <div class="moon-line">{{ moon_phase_descriptor }} in {{ moon_sign }}</div>
+    <div class="moon-line">{{ moon_phase_descriptor }} in {{ sky_moon_sign or moon_sign }}</div>
     <div class="block">{{ todays_sky_block }}</div>
   </div>
 

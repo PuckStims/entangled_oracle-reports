@@ -3,9 +3,9 @@
 Date: 2026-07-07
 Source: Phase 1 claim/presentation audit per `EO_UPGRADE_PHASES_1_9_AGENT_PROMPTS.md`
 Scope: outward-facing copy only. No source code, formulas, or templates inspected here beyond the two marketing site files below.
-Status: open — one item
+Status: closed — one item, resolved 2026-07-07
 
-## Item 1: "personal progressions" claimed for Year Ahead on the live marketing site
+## Item 1: "personal progressions" claimed for Year Ahead on the live marketing site — RESOLVED
 
 **File:** `entangled_oracle_SITE.html`
 **Lines:** 521, 522
@@ -31,6 +31,8 @@ This is a live claim, on the $45 product's own order card, for a method the repo
 **Cross-check:** `marketing-site/index.html` — the *other* marketing site file — already describes Year Ahead correctly ("month by month, transit by transit, nothing smoothed over"), with no progressions claim. The two site files currently disagree with each other about what Year Ahead does. Worth confirming with the operator which site file is the live/canonical one, since only `entangled_oracle_SITE.html` needs the text fix, but it's also worth checking whether the two files are meant to stay in sync at all or whether one is stale.
 
 **Owner:** Codex, per `EO_UPGRADE_PHASES_1_9_AGENT_PROMPTS.md` Phase 1 file ownership (marketing/site copy falls outside its explicitly listed ownership paths — confirm assignment with the operator before editing, since Phase 1's Codex ownership list names `generate.py`, `selectors/variable_resolver.py`, `engine/transit_engine.py`, and the daily/weekly/personal-forecast product paths, not the root-level site HTML files).
+
+**Resolution (2026-07-07):** the operator explicitly assigned this fix outside the normal Phase 1 ownership split and asked Claude to apply it directly, since it's a two-line text change with zero pipeline risk. Applied exactly as suggested above — both `product-desc` copy and the `openOrderDemo()` button string now read "eclipse activity" / "eclipses" instead of "personal progressions" / "progressions." `marketing-site/index.html` required no change (already correct). No further action needed on this item.
 
 ## Swept and clean (no action needed)
 

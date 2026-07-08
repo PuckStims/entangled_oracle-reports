@@ -97,9 +97,12 @@
     {% endif %}
   </header>
 
-  <!-- Your Week's Timeline -->
+  <!-- Selected Exact Contacts -->
   <div class="section">
-    <div class="section-label">Your Week's Timeline</div>
+    <div class="section-label">Selected Exact Contacts</div>
+    {% if weekly_scope_note %}
+    <div class="empty-state" style="margin-bottom:12px;">{{ weekly_scope_note }}</div>
+    {% endif %}
     {% if weekly_timeline %}
       {% for moment in weekly_timeline %}
       <div class="moment">

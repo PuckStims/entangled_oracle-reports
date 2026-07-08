@@ -586,9 +586,8 @@
     <!-- Signature timeline bar -->
     <div class="timeline-track" aria-hidden="true">
       {% if timing_windows %}
-        {% set window_count = timing_windows | length %}
         {% for window in timing_windows %}
-          {% set pct = (loop.index0 / (window_count - 1) * 100) if window_count > 1 else 50 %}
+          {% set pct = window.timeline_position_pct | default(50) %}
           <div class="timeline-dot {% if window.featured %}featured{% elif window.intensity == 'high' %}high{% endif %}"
                style="left: {{ pct }}%;"
                title="{{ window.date_label }}"></div>
