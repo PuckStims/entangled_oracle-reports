@@ -77,6 +77,64 @@ across all three charters so the convention doesn't fragment.
 
 ---
 
+## 2026-07-08 - Phase 5 Solar Arc and secondary progressions evidence foundation (Codex / GPT-5)
+
+**Context:** Initiated Phase 5 from the live post-Phase-4 worktree. The
+implementation followed `EO_UPGRADE_PHASES_1_9_AGENT_PROMPTS.md`, the C2
+Solar Arc and C3 Secondary Progressions charters in
+`phase0/03_method_charters.md`, and the evidence-object contracts in
+`phase0/01_predictive_object_schemas.md`. Scope remained internal evidence
+only; no client report prose or templates were changed.
+
+**Solar Arc:** Added `engine/solar_arc.py`, implementing the single declared
+Naibod-adjusted secondary-Sun Solar Arc convention:
+`arc(t) = progressed_Sun.longitude(t) - natal_Sun.longitude`, with
+progressed Sun using the one-ephemeris-day-per-year mapping. Directed sources
+include natal planets, exact-birth-time angles, and anchor-tier asteroids
+only where the Phase 3 asteroid registry permits source eligibility. Natal
+targets include planets, angles, and registry-eligible asteroid targets.
+Solar Arc events emit `method_family = "SOLAR_ARC"`,
+`independence_group = "solar_arc_family"`, chartered activation routes, angle
+confidence gating, and `[internal_rd, predictive_sandbox]` visibility.
+
+**Secondary progressions:** Added `engine/progressions.py`, implementing the
+classical one-ephemeris-day-per-year progressed chart constructor, progressed
+planet contacts, exact-birth-time progressed angles, registry-gated anchor
+asteroid compatibility, progressed ingresses, and progressed lunation phase
+events. Progression events emit `method_family = "PROGRESSION"`,
+`independence_group = "progression_family"`, chartered variants/routes, angle
+confidence gating, and `[internal_rd, predictive_sandbox]` visibility.
+
+**Integration:** Updated `engine/predictive_engine.py` to adapt Solar Arc and
+secondary progression scanner events into predictive signals alongside the
+existing transit, asteroid, return, and profection evidence. Updated
+`engine/predictive_sidecar.py` to record Phase 5 scanner provenance through
+`scan_solar_arc` and `scan_secondary_progressions` in `.eo_predictive.json`.
+`ForecastEvent.natal_anchor_ids` remains empty; anchor matching is still
+deferred to Phase 7.
+
+**Tests:** Added `tests/test_phase5_solar_arc_progressions.py` covering Solar
+Arc exact contact behavior, angle withholding under approximate birth time,
+anchor-only asteroid source eligibility, secondary progressed chart date
+mapping, progression/Solar Arc method-family separation, progressed-angle
+gating, and sidecar serialization.
+
+**Verification:** all of the following passed:
+
+```powershell
+python -m py_compile engine\solar_arc.py engine\progressions.py engine\predictive_engine.py engine\predictive_sidecar.py tests\test_phase5_solar_arc_progressions.py
+python -m unittest tests.test_phase5_solar_arc_progressions tests.test_phase4_returns_profections tests.test_phase3_asteroid_predictive_activation tests.test_phase2_predictive_sidecar
+$env:PYTHONPATH='C:\entangled_oracle\.venv\Lib\site-packages'; python -m unittest tests.test_predictive_engine tests.test_phase2_predictive_sidecar tests.test_phase3_asteroid_predictive_activation tests.test_phase4_returns_profections tests.test_phase5_solar_arc_progressions
+```
+
+Base-Python focused runs log expected non-fatal skips for live Swiss
+Ephemeris-dependent scanners when `swisseph` is unavailable. The venv-backed
+run imports Swiss Ephemeris and completes `OK (skipped=1)`. The broader
+predictive run still prints the pre-existing sandbox-template `signal_count`
+traceback during one test path, but remains passing.
+
+---
+
 ## 2026-07-08 - Phase 4 returns and annual profections evidence foundation (Codex / GPT-5)
 
 **Context:** Initiated Phase 4 from the live post-Phase-3 worktree. The

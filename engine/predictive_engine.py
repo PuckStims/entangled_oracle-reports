@@ -334,6 +334,32 @@ def compute_predictive_windows(
         debug["return_signal_error"] = str(exc)
         print(f"[Predictive] Return signal collection failed (non-fatal): {exc}")
 
+    try:
+        solar_arc_signals = _collect_solar_arc_signals(
+            natal_payload,
+            start_date,
+            end_date,
+            debug,
+            start_index=len(signals),
+        )
+        signals.extend(solar_arc_signals)
+    except Exception as exc:
+        debug["solar_arc_signal_error"] = str(exc)
+        print(f"[Predictive] Solar Arc signal collection failed (non-fatal): {exc}")
+
+    try:
+        progression_signals = _collect_progression_signals(
+            natal_payload,
+            start_date,
+            end_date,
+            debug,
+            start_index=len(signals),
+        )
+        signals.extend(progression_signals)
+    except Exception as exc:
+        debug["progression_signal_error"] = str(exc)
+        print(f"[Predictive] Progression signal collection failed (non-fatal): {exc}")
+
     time_lord_periods: list[dict] = []
     try:
         time_lord_periods = _collect_time_lord_periods(natal_payload, start_date, end_date, debug)
@@ -490,6 +516,48 @@ def _collect_time_lord_periods(
     return periods
 
 
+def _collect_solar_arc_signals(
+    natal_payload: dict,
+    start_date: datetime,
+    end_date: datetime,
+    debug: dict,
+    *,
+    start_index: int = 0,
+) -> list[dict]:
+    from engine.solar_arc import scan_solar_arc_events
+
+    events = scan_solar_arc_events(natal_payload, start_date, end_date)
+    debug["solar_arc_event_count"] = len(events)
+    signals: list[dict] = []
+    for offset, event in enumerate(events):
+        signal = _event_to_signal(event, start_index + offset, birth_time_status=_predictive_birth_time_status(natal_payload))
+        if signal is not None:
+            signals.append(signal)
+    debug["solar_arc_signal_count"] = len(signals)
+    return signals
+
+
+def _collect_progression_signals(
+    natal_payload: dict,
+    start_date: datetime,
+    end_date: datetime,
+    debug: dict,
+    *,
+    start_index: int = 0,
+) -> list[dict]:
+    from engine.progressions import scan_progression_events
+
+    events = scan_progression_events(natal_payload, start_date, end_date)
+    debug["progression_event_count"] = len(events)
+    signals: list[dict] = []
+    for offset, event in enumerate(events):
+        signal = _event_to_signal(event, start_index + offset, birth_time_status=_predictive_birth_time_status(natal_payload))
+        if signal is not None:
+            signals.append(signal)
+    debug["progression_signal_count"] = len(signals)
+    return signals
+
+
 def _event_to_signal(event: dict, index: int, birth_time_status: str = "unknown") -> dict | None:
     """
     Converts one transit engine event dict to a PredictiveSignal node.
@@ -504,7 +572,8 @@ def _event_to_signal(event: dict, index: int, birth_time_status: str = "unknown"
     peak_orb      = _safe_float(event.get("peak_orb") or event.get("orb"), default=0.0)
     allowed_orb   = _safe_float(event.get("orb_limit"), _TRANSIT_ORB.get(source_body, _DEFAULT_ORB))
 
-    exactness = max(0.0, 1.0 - peak_orb / allowed_orb) if allowed_orb > 0 else 0.0
+    computed_exactness = max(0.0, 1.0 - peak_orb / allowed_orb) if allowed_orb > 0 else 0.0
+    exactness = _safe_float(event.get("exactness"), computed_exactness)
 
     event_weight = _safe_float(event.get("weight"), _PLANET_WEIGHT.get(source_body, _DEFAULT_PLANET_WEIGHT))
     target_relevance = max(
@@ -516,13 +585,15 @@ def _event_to_signal(event: dict, index: int, birth_time_status: str = "unknown"
         default=0.0,
     )
     theme_convergence = _safe_float(event.get("theme_convergence"), default=0.0)
-    trigger_strength = round(exactness * event_weight * target_relevance, 5)
-    signal_strength = round(
+    computed_trigger_strength = round(exactness * event_weight * target_relevance, 5)
+    trigger_strength = _safe_float(event.get("trigger_strength"), computed_trigger_strength)
+    computed_signal_strength = round(
         trigger_strength
         * (1.0 + min(0.20, structural_importance * 0.20))
         * (1.0 + min(0.12, theme_convergence * 0.12)),
         5,
     )
+    signal_strength = _safe_float(event.get("signal_strength"), computed_signal_strength)
 
     start_dt = _coerce_datetime(event.get("entry_datetime") or event.get("start_datetime"))
     peak_dt  = _coerce_datetime(event.get("peak_datetime"))
@@ -1162,6 +1233,10 @@ def _normalize_event_kind(event_type: str, event: dict) -> str:
         return "ECLIPSE"
     if event_type == "return":
         return str(event.get("method_variant") or "exact_return")
+    if event_type == "solar_arc":
+        return str(event.get("method_variant") or "solar_arc_body_aspect")
+    if event_type == "progression":
+        return str(event.get("method_variant") or "progression_body_aspect")
     if event_type == "lunation":
         subtype = str(event.get("lunation_type") or "").strip().upper()
         return subtype or "LUNATION"

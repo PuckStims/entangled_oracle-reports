@@ -162,6 +162,8 @@ def build_predictive_sidecar(
                 "scan_proprietary_forecast_windows": _proprietary_scanner_state(predictive_results),
                 "scan_return_moments": _debug_scanner_state(predictive_results, "return_signal_count", "wired_phase4"),
                 "annual_profections": _debug_scanner_state(predictive_results, "annual_profection_period_count", "wired_phase4"),
+                "scan_solar_arc": _debug_scanner_state(predictive_results, "solar_arc_signal_count", "wired_phase5"),
+                "scan_secondary_progressions": _debug_scanner_state(predictive_results, "progression_signal_count", "wired_phase5"),
             },
             "sidecar_writer_version": SIDECAR_WRITER_VERSION,
             "sidecar_written_at": _iso_datetime(generated_at),
