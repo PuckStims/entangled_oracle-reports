@@ -159,7 +159,7 @@ def build_predictive_sidecar(
                 "scan_stations": "current_runtime",
                 "scan_eclipses": "current_runtime",
                 "scan_lunations": "current_runtime",
-                "scan_proprietary_forecast_windows": "not_wired_phase2",
+                "scan_proprietary_forecast_windows": _proprietary_scanner_state(predictive_results),
             },
             "sidecar_writer_version": SIDECAR_WRITER_VERSION,
             "sidecar_written_at": _iso_datetime(generated_at),
@@ -197,8 +197,8 @@ def _forecast_event_from_signal(signal: dict, index: int, emitted_at: datetime, 
         "target_body": target_body or None,
         "target_kind": _target_kind(target_body, asteroid_names),
         "natal_anchor_ids": [],
-        "topic_keys": [],
-        "domain_keys": [],
+        "topic_keys": _string_list(signal.get("topic_keys")),
+        "domain_keys": _string_list(signal.get("domain_keys")),
         "start_at": _iso_datetime(start_at),
         "peak_at": _iso_datetime(peak_at),
         "end_at": _iso_datetime(end_at),
@@ -228,9 +228,10 @@ def _forecast_event_from_signal(signal: dict, index: int, emitted_at: datetime, 
             "source_event_type": signal.get("source_event_type"),
             "allowed_orb": signal.get("allowed_orb"),
             "missing_fields": missing_fields,
+            "asteroid_policy": signal.get("asteroid_policy") or {},
             "notes": "Phase 2 adapts current predictive signals into ForecastEvent shape; raw scanner-event retention deepens in later phases.",
         },
-        "report_surface_visibility": _report_surface_visibility(source_body, target_body, asteroid_names),
+        "report_surface_visibility": _signal_report_surface_visibility(signal, source_body, target_body, asteroid_names),
         "provenance": {
             "scanner": "engine.predictive_engine",
             "scanner_version": str(signal.get("formula_version") or ""),
@@ -263,8 +264,8 @@ def _predictive_signal_from_signal(
         "target_body": target_body or None,
         "aspect": signal.get("aspect") or None,
         "natal_anchor_ids": [],
-        "topic_keys": [],
-        "domain_keys": [],
+        "topic_keys": _string_list(signal.get("topic_keys")),
+        "domain_keys": _string_list(signal.get("domain_keys")),
         "asteroid_participants": _asteroid_participants(source_body, target_body, asteroid_names),
         "start_date": _iso_date(signal.get("start_date")),
         "peak_date": _iso_date(signal.get("peak_date")),
@@ -280,6 +281,7 @@ def _predictive_signal_from_signal(
         "confidence_components": _dict_float(signal.get("confidence_components") or {}),
         "confidence_state": str(signal.get("confidence_state") or "low"),
         "angle_eligibility": bool(signal.get("angle_eligibility", False)),
+        "asteroid_policy": signal.get("asteroid_policy") or {},
         "routing_state": str(signal.get("routing_state") or ""),
         "pass_sequence": str(signal.get("pass_sequence") or ""),
         "cycle_id": str(signal.get("cycle_id") or ""),
@@ -412,6 +414,8 @@ def _detector_thresholds() -> dict:
 def _asteroid_diagnostics(payload: dict, raw_events: list[dict], predictive_signals: list[dict]) -> dict:
     custom = payload.get("custom_asteroids") if isinstance(payload.get("custom_asteroids"), dict) else {}
     present = sorted(custom.keys())
+    registry = _asteroid_registry_summary()
+    declared = registry.get("asteroid_names", [])
     event_counts = {
         name: sum(1 for event in raw_events if name in event.get("asteroid_participants", []))
         for name in present
@@ -421,9 +425,11 @@ def _asteroid_diagnostics(payload: dict, raw_events: list[dict], predictive_sign
         for name in present
     }
     return {
-        "asteroid_registry_version": SIDECAR_SCHEMA_VERSION,
+        "asteroid_registry_version": registry.get("policy_version") or SIDECAR_SCHEMA_VERSION,
+        "registry_asteroids_declared_count": registry.get("asteroid_count", 0),
+        "registry_asteroids_declared": declared,
         "asteroids_present": present,
-        "asteroids_absent": [],
+        "asteroids_absent": [name for name in declared if name not in present],
         "ephemeris_missing": [name for name, value in custom.items() if isinstance(value, str)],
         "asteroids_active_as_target": sorted({
             event.get("target_body")
@@ -552,6 +558,39 @@ def _report_surface_visibility(source_body: str, target_body: str, asteroid_name
     if _is_asteroid_participant(source_body, target_body, asteroid_names):
         return ["internal_rd", "predictive_sandbox", "soul_ecosystem"]
     return ["internal_rd"]
+
+
+def _signal_report_surface_visibility(signal: dict, source_body: str, target_body: str, asteroid_names: set[str]) -> list[str]:
+    policy = signal.get("asteroid_policy") if isinstance(signal.get("asteroid_policy"), dict) else {}
+    surfaces = _string_list(policy.get("report_surface_visibility"))
+    if surfaces:
+        return surfaces
+    return _report_surface_visibility(source_body, target_body, asteroid_names)
+
+
+def _string_list(value: Any) -> list[str]:
+    if not isinstance(value, list):
+        return []
+    return [str(item) for item in value if str(item)]
+
+
+def _proprietary_scanner_state(predictive_results: dict) -> str:
+    debug = predictive_results.get("debug") if isinstance(predictive_results.get("debug"), dict) else {}
+    return str(debug.get("scan_proprietary_forecast_windows") or "rd_gate_disabled")
+
+
+def _asteroid_registry_summary() -> dict:
+    try:
+        from engine.asteroid_policy import asteroid_registry_summary
+
+        return asteroid_registry_summary()
+    except Exception as exc:
+        return {
+            "policy_version": SIDECAR_SCHEMA_VERSION,
+            "asteroid_count": 0,
+            "asteroid_names": [],
+            "error": str(exc),
+        }
 
 
 def _temporal_precision(start_at: datetime | None, peak_at: datetime | None, end_at: datetime | None) -> str:

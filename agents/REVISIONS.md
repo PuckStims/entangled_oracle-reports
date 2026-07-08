@@ -5,6 +5,54 @@ Newest entry on top. See `agents/README.md` for the convention.
 
 ---
 
+## 2026-07-08 - Phase 3 all-34 asteroid predictive activation foundation (Codex / GPT-5)
+
+**Context:** After both parallel Phase 2 lanes completed and the Phase 2
+body-classification blocker was fixed, Codex initiated the Phase 3
+implementation lane from the refreshed `phase0.1.1` asteroid registry.
+Claude's Phase 3 registry review had already moved Sirene/Themis source
+restrictions into structured policy fields and added explicit
+proprietary-transit normalization guidance.
+
+**Implementation:** Added `engine/asteroid_policy.py`, a machine-readable
+registry loader and policy API that validates exactly 34 asteroid records,
+enforces required fields, exposes source/target/clock eligibility, preserves
+the migration-map target weights for the existing eight anchor asteroids,
+and evaluates the structured Sirene/Themis `{allowed_aspects,
+restricted_targets}` rules directly. Updated `engine/predictive_engine.py`
+so the existing `scan_proprietary_forecast_windows()` output can be adapted
+into internal R&D evidence behind `options["enable_asteroid_rd"]`,
+`options["include_proprietary_asteroids"]`, `EO_ASTEROID_RD=1`, or
+`EO_PREDICTIVE_ASTEROID_RD=1`. The adapter preserves the scanner's existing
+triggers, orbs, weights, and scores while normalizing events as
+`method_family = "PROPRIETARY_TRANSIT"`, lowercase formula-group
+`method_variant`, and `independence_group = "proprietary_transit_family"`.
+
+**Sidecar:** `engine/predictive_sidecar.py` now preserves asteroid
+topic/domain keys, per-signal asteroid policy traces, proprietary scanner
+gate state, and registry-declared asteroid diagnostics. Sidecar inclusion
+remains separate from client prose; no templates or consumer report prose
+were changed.
+
+**Tests:** Added `tests/test_phase3_asteroid_predictive_activation.py`
+covering exact all-34 registry loading, required fields, migration-map
+weights, Sirene/Themis restriction checks, R&D gate behavior,
+`PROPRIETARY_TRANSIT` signal normalization, and sidecar provenance.
+
+**Verification:** all of the following passed:
+
+```powershell
+python -m py_compile engine\asteroid_policy.py engine\predictive_engine.py engine\predictive_sidecar.py tests\test_phase3_asteroid_predictive_activation.py
+python -m unittest tests.test_phase3_asteroid_predictive_activation tests.test_phase2_predictive_sidecar
+$env:PYTHONPATH='C:\entangled_oracle\.venv\Lib\site-packages'; python -m unittest tests.test_predictive_engine tests.test_phase2_predictive_sidecar tests.test_phase3_asteroid_predictive_activation
+```
+
+The broader focused run still prints the pre-existing sandbox-template
+`signal_count` traceback during one test path, but the suite completes
+`OK (skipped=1)`.
+
+---
+
 ## 2026-07-07 - Phase 2 sidecar body-classification blocker fixed (Codex / GPT-5)
 
 **Context:** Before Phase 3 implementation, Claude flagged

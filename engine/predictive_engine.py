@@ -40,6 +40,7 @@ v0.3.1 changes (semantic atomic layer scaffolding):
 from __future__ import annotations
 
 import math
+import os
 from datetime import datetime, timedelta, timezone, date
 from typing import Any
 
@@ -120,6 +121,7 @@ _ANGLE_TARGETS: frozenset[str] = frozenset({
 
 _METHOD_WEIGHT_BY_GROUP: dict[str, float] = {
     "transit_clock": 1.00,
+    "proprietary_transit_family": 0.95,
     "lunar_phase_clock": 0.92,
     "return_clock": 0.88,
     "progression_clock": 0.94,
@@ -174,6 +176,7 @@ _ASPECT_OPERATION_BIAS: dict[str, dict[str, float]] = {
 
 _METHOD_OPERATION_MULTIPLIER: dict[str, dict[str, float]] = {
     "TRANSIT": {"stabilize": 1.00, "amplify": 1.00, "activate": 1.00, "disrupt": 1.00, "dissolve": 1.00, "reveal": 1.00},
+    "PROPRIETARY_TRANSIT": {"stabilize": 0.96, "amplify": 1.00, "activate": 1.04, "disrupt": 1.04, "dissolve": 1.00, "reveal": 1.08},
     "LUNATION": {"stabilize": 0.92, "amplify": 1.06, "activate": 0.96, "disrupt": 0.96, "dissolve": 1.06, "reveal": 1.02},
     "RETURN": {"stabilize": 1.02, "amplify": 0.98, "activate": 0.94, "disrupt": 0.92, "dissolve": 0.94, "reveal": 1.06},
     "PROGRESSION": {"stabilize": 0.96, "amplify": 0.96, "activate": 0.90, "disrupt": 0.90, "dissolve": 1.04, "reveal": 1.08},
@@ -301,6 +304,23 @@ def compute_predictive_windows(
         debug["transit_signal_error"] = str(exc)
         print(f"[Predictive] Transit signal collection failed (non-fatal, report continues with 0 signals): {exc}")
 
+    if _proprietary_asteroid_rd_enabled(options):
+        try:
+            proprietary_signals = _collect_proprietary_asteroid_signals(
+                natal_payload,
+                start_date,
+                end_date,
+                debug,
+                start_index=len(signals),
+            )
+            signals.extend(proprietary_signals)
+        except Exception as exc:
+            debug["proprietary_asteroid_signal_error"] = str(exc)
+            print(f"[Predictive] Proprietary asteroid signal collection failed (non-fatal): {exc}")
+    else:
+        debug["proprietary_asteroid_rd_enabled"] = False
+        debug["scan_proprietary_forecast_windows"] = "rd_gate_disabled"
+
     # ── Phase 4a: Daily resonance series ──────────────────────
     daily_series: list[dict] = []
     try:
@@ -363,6 +383,58 @@ def _collect_transit_signals(
     return signals
 
 
+def _collect_proprietary_asteroid_signals(
+    natal_payload: dict,
+    start_date: datetime,
+    end_date: datetime,
+    debug: dict,
+    *,
+    start_index: int = 0,
+) -> list[dict]:
+    """
+    Adapts the existing proprietary forecast scanner into internal evidence.
+
+    The scanner's own trigger definitions, orbs, weights, and final scores are
+    preserved. This function only normalizes emitted windows into the shared
+    PredictiveSignal shape when the R&D gate is enabled.
+    """
+    from engine.asteroid_policy import load_asteroid_policy
+    from engine.transit_engine import scan_proprietary_forecast_windows
+
+    policy = load_asteroid_policy()
+    debug["proprietary_asteroid_rd_enabled"] = True
+    debug["asteroid_registry_version"] = policy.policy_version
+    debug["asteroid_registry_count"] = policy.asteroid_count
+
+    windows_by_formula = scan_proprietary_forecast_windows(
+        natal_payload,
+        start_date=start_date,
+        end_date=end_date,
+    )
+    signals: list[dict] = []
+    skipped: list[dict] = []
+    index = start_index
+
+    for formula_name, formula_events in windows_by_formula.items():
+        for event in formula_events:
+            signal = _proprietary_event_to_signal(event, index, policy)
+            index += 1
+            if signal is None:
+                skipped.append({
+                    "formula_name": formula_name,
+                    "source_body": event.get("transit_planet"),
+                    "target_body": event.get("natal_target"),
+                    "reason": "missing_peak_datetime_or_policy_rejection",
+                })
+                continue
+            signals.append(signal)
+
+    debug["scan_proprietary_forecast_windows"] = "wired_phase3_rd_gate"
+    debug["proprietary_asteroid_signal_count"] = len(signals)
+    debug["proprietary_asteroid_skipped"] = skipped
+    return signals
+
+
 def _event_to_signal(event: dict, index: int, birth_time_status: str = "unknown") -> dict | None:
     """
     Converts one transit engine event dict to a PredictiveSignal node.
@@ -375,13 +447,13 @@ def _event_to_signal(event: dict, index: int, birth_time_status: str = "unknown"
     target_body   = str(event.get("natal_target") or event.get("house_number") or "")
     aspect        = str(event.get("aspect") or event.get("aspect_name") or "")
     peak_orb      = _safe_float(event.get("peak_orb") or event.get("orb"), default=0.0)
-    allowed_orb   = _TRANSIT_ORB.get(source_body, _DEFAULT_ORB)
+    allowed_orb   = _safe_float(event.get("orb_limit"), _TRANSIT_ORB.get(source_body, _DEFAULT_ORB))
 
     exactness = max(0.0, 1.0 - peak_orb / allowed_orb) if allowed_orb > 0 else 0.0
 
-    event_weight = _PLANET_WEIGHT.get(source_body, _DEFAULT_PLANET_WEIGHT)
+    event_weight = _safe_float(event.get("weight"), _PLANET_WEIGHT.get(source_body, _DEFAULT_PLANET_WEIGHT))
     target_relevance = max(
-        _TARGET_RELEVANCE.get(target_body, _DEFAULT_RELEVANCE),
+        _target_relevance_for_body(target_body),
         _safe_float(event.get("natal_relevance"), default=0.0),
     )
     structural_importance = _safe_float(
@@ -455,6 +527,114 @@ def _event_to_signal(event: dict, index: int, birth_time_status: str = "unknown"
         "confidence_components": confidence_components,
         "confidence_state": confidence_state,
         "angle_eligibility": angle_eligibility,
+    })
+    return signal
+
+
+def _proprietary_event_to_signal(event: dict, index: int, policy: Any) -> dict | None:
+    formula_name = str(event.get("formula_name") or "").strip().upper()
+    source_body = str(event.get("transit_planet") or "")
+    target_body = str(event.get("natal_target") or "")
+    aspect = str(event.get("aspect") or "")
+    peak_dt = _coerce_datetime(event.get("peak_datetime"))
+    start_dt = _coerce_datetime(event.get("entry_datetime")) or peak_dt
+    end_dt = _coerce_datetime(event.get("leave_datetime")) or peak_dt
+    if peak_dt is None:
+        return None
+
+    source_record = policy.record_for(source_body)
+    target_record = policy.record_for(target_body)
+    if source_record is not None and not policy.source_eligible(
+        source_body,
+        "transit",
+        aspect=aspect,
+        target_body=target_body,
+    ):
+        return None
+    if target_record is not None and not policy.target_eligible(target_body, "transit"):
+        return None
+
+    exactness = max(
+        0.0,
+        1.0 - _safe_float(event.get("orb"), 0.0) / _safe_float(event.get("orb_limit"), _DEFAULT_ORB),
+    )
+    event_weight = _safe_float(event.get("weight"), 1.0)
+    target_relevance = max(
+        _target_relevance_for_body(target_body),
+        policy.target_weight(target_body) if target_record is not None else 0.0,
+    )
+    trigger_strength = _bounded(_safe_float(event.get("combined_intensity_score", event.get("score", 0.0)), 0.0))
+    if trigger_strength == 0.0:
+        trigger_strength = round(exactness * min(1.0, event_weight) * target_relevance, 5)
+
+    topic_keys = _merged_policy_list(policy, "topic_keys", source_body, target_body)
+    domain_keys = _merged_policy_list(policy, "domain_keys", source_body, target_body)
+    participants = [
+        name for name in (source_body, target_body)
+        if policy.record_for(name) is not None
+    ]
+    report_surfaces = []
+    for name in participants:
+        for surface in policy.report_surface_permissions(name):
+            if surface not in report_surfaces:
+                report_surfaces.append(surface)
+
+    signal = {
+        "signal_id": f"sig_prp_{index:04d}",
+        "method_family": "PROPRIETARY_TRANSIT",
+        "event_kind": formula_name.lower() if formula_name else "proprietary_transit",
+        "independence_group": "proprietary_transit_family",
+        "activation_route": _proprietary_activation_route(target_body),
+        "source_event_type": "proprietary_transit",
+        "source_body": source_body,
+        "target_body": target_body,
+        "aspect": aspect,
+        "orb": _safe_float(event.get("orb"), 0.0),
+        "allowed_orb": _safe_float(event.get("orb_limit"), _DEFAULT_ORB),
+        "exactness": round(exactness, 5),
+        "event_weight": event_weight,
+        "target_relevance": target_relevance,
+        "trigger_strength": trigger_strength,
+        "signal_strength": trigger_strength,
+        "structural_importance": 0.0,
+        "theme_convergence": 0.0,
+        "routing_state": "",
+        "pass_sequence": "",
+        "cycle_id": str(event.get("formula_name") or ""),
+        "contact_count": 1,
+        "multiple_exact_passes": False,
+        "start_date": _to_date(start_dt),
+        "peak_date": _to_date(peak_dt),
+        "end_date": _to_date(end_dt),
+        "topic_keys": topic_keys,
+        "domain_keys": domain_keys,
+        "asteroid_registry_version": policy.policy_version,
+        "asteroid_policy": {
+            "participants": participants,
+            "source_validation_category": policy.validation_category(source_body) if source_record is not None else "",
+            "target_validation_category": policy.validation_category(target_body) if target_record is not None else "",
+            "report_surface_visibility": report_surfaces or ["internal_rd"],
+            "formula_group": formula_name,
+            "formula_label": event.get("formula_label") or "",
+            "raw_score": _safe_float(event.get("raw_score"), 0.0),
+            "combined_intensity_score": trigger_strength,
+        },
+    }
+    operation_profile, operation_basis, dominant_operation = _compute_signal_operation_profile(signal)
+    signal.update({
+        "operation_profile": operation_profile,
+        "operation_basis": operation_basis,
+        "dominant_operation": dominant_operation,
+        "epistemic_confidence": 0.75,
+        "confidence_components": {
+            "calculation_integrity": 1.0,
+            "birth_time_support": 1.0,
+            "orb_support": round(exactness, 5),
+            "method_maturity": 0.75,
+            "report_surface_gated": 1.0,
+        },
+        "confidence_state": "moderate",
+        "angle_eligibility": target_body in _ANGLE_TARGETS,
     })
     return signal
 
@@ -874,8 +1054,10 @@ def _leading_index(active_sigs: list[dict], index_results: dict) -> str:
 
 
 def _normalize_method_family(event_type: str) -> str:
-    if event_type in {"transit", "station", "ingress", "proprietary_transit"}:
+    if event_type in {"transit", "station", "ingress"}:
         return "TRANSIT"
+    if event_type == "proprietary_transit":
+        return "PROPRIETARY_TRANSIT"
     if event_type in {"eclipse", "lunation", "new_moon", "full_moon"}:
         return "LUNATION"
     if event_type == "return":
@@ -925,6 +1107,7 @@ def _normalize_event_kind(event_type: str, event: dict) -> str:
 def _independence_group_for_family(method_family: str) -> str:
     return {
         "TRANSIT": "transit_clock",
+        "PROPRIETARY_TRANSIT": "proprietary_transit_family",
         "LUNATION": "lunar_phase_clock",
         "RETURN": "return_clock",
         "PROGRESSION": "progression_clock",
@@ -943,6 +1126,9 @@ def _activation_route_for_signal(method_family: str, event_kind: str, target_bod
         if target_body.isdigit():
             return "house_context"
         return "transit_to_body"
+
+    if method_family == "PROPRIETARY_TRANSIT":
+        return _proprietary_activation_route(target_body)
 
     if method_family == "LUNATION":
         if target_body in _ANGLE_TARGETS:
@@ -965,6 +1151,59 @@ def _activation_route_for_signal(method_family: str, event_kind: str, target_bod
     return "unspecified_route"
 
 
+def _proprietary_asteroid_rd_enabled(options: dict | None) -> bool:
+    if isinstance(options, dict):
+        for key in ("enable_asteroid_rd", "include_proprietary_asteroids", "include_proprietary_transits"):
+            if key in options:
+                return _truthy(options.get(key))
+    return _truthy(os.environ.get("EO_ASTEROID_RD")) or _truthy(os.environ.get("EO_PREDICTIVE_ASTEROID_RD"))
+
+
+def _proprietary_activation_route(target_body: str) -> str:
+    if target_body in _ANGLE_TARGETS:
+        return "proprietary_transit_to_angle"
+    if str(target_body).isdigit():
+        return "proprietary_transit_to_house"
+    return "proprietary_transit_to_body"
+
+
+def _target_relevance_for_body(target_body: str) -> float:
+    if target_body in _TARGET_RELEVANCE:
+        return _TARGET_RELEVANCE[target_body]
+    try:
+        from engine.asteroid_policy import load_asteroid_policy
+
+        policy = load_asteroid_policy()
+        if policy.record_for(target_body) is not None:
+            return policy.target_weight(target_body)
+    except Exception:
+        pass
+    return _DEFAULT_RELEVANCE
+
+
+def _merged_policy_list(policy: Any, accessor_name: str, *body_names: str) -> list[str]:
+    merged: list[str] = []
+    accessor = getattr(policy, accessor_name)
+    for body_name in body_names:
+        if policy.record_for(body_name) is None:
+            continue
+        for item in accessor(body_name):
+            if item not in merged:
+                merged.append(item)
+    return merged
+
+
+def _truthy(value: Any) -> bool:
+    return str(value or "").strip().lower() in {"1", "true", "yes", "on", "enabled"}
+
+
+def _bounded(value: float, default: float = 0.0) -> float:
+    try:
+        return max(0.0, min(1.0, float(value)))
+    except (TypeError, ValueError):
+        return default
+
+
 def apply_signed_bias(base: float, bias: float, influence: float = 0.35) -> float:
     """Apply bounded bias without letting an operation axis leave [0, 1]."""
     safe_base = min(1.0, max(0.0, base))
@@ -985,7 +1224,16 @@ def _target_substrate(target_body: str) -> str:
         return "social_outer"
     if target_body.isdigit():
         return "house"
-    if target_body in {"Kassandra", "Aletheia", "Destinn", "Karma", "Kaali", "Medea", "Hermes", "Chaos", "North_Node", "Lilith_BML", "Vertex"}:
+    if target_body in {"North_Node", "Lilith_BML", "Vertex"}:
+        return "specialist"
+    try:
+        from engine.asteroid_policy import load_asteroid_policy
+
+        if load_asteroid_policy().record_for(target_body) is not None:
+            return "specialist"
+    except Exception:
+        pass
+    if target_body in {"Kassandra", "Aletheia", "Destinn", "Karma", "Kaali", "Medea", "Hermes", "Chaos"}:
         return "specialist"
     return "generic"
 
