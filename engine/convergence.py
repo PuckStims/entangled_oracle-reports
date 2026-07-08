@@ -185,11 +185,11 @@ def method_family_diversity(signals: list[dict]) -> dict:
             suppressed.append(str(sig["signal_id"]))
     groups = sorted({_normalized_group(sig) for sig in winners.values()})
     return {
-        "count": len(winners),
+        "count": len(groups),
         "independent_method_families": groups,
         "dedup_keys": ["|".join(key) for key in sorted(winners)],
         "suppressed_signal_ids": sorted(suppressed),
-        "anti_stacking_ratio": round(len(winners) / max(1, len(signals)), 4),
+        "anti_stacking_ratio": round(len(groups) / max(1, len(signals)), 4),
     }
 
 

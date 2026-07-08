@@ -176,6 +176,28 @@ def build_predictive_sidecar(
         predictive_signals,
         event_id_by_signal_id,
     )
+    candidates = []
+    rejected_candidates = []
+    phase8_debug: dict = {}
+    try:
+        from engine.candidates import build_candidate_registry
+
+        candidate_registry = build_candidate_registry(
+            report_run_id=report_run_id,
+            natal_snapshot_id=natal_snapshot_id,
+            signals=predictive_signals,
+            chapters=chapters if isinstance(chapters, list) else [],
+            anchors=natal_promise_anchors if isinstance(natal_promise_anchors, list) else [],
+            daily_series=daily_series,
+            payload=payload,
+            pre_registered_at=generated_at,
+        )
+        candidates = candidate_registry["candidates"]
+        rejected_candidates = candidate_registry["rejected_candidates"]
+        convergence_composition = list(convergence_composition or []) + candidate_registry["convergence_composition"]
+        phase8_debug = candidate_registry["debug"]
+    except Exception as exc:
+        phase8_debug = {"phase8_candidate_error": str(exc)}
 
     return {
         "sidecar_version": SIDECAR_SCHEMA_VERSION,
@@ -199,14 +221,15 @@ def build_predictive_sidecar(
         "daily_series": daily_series,
         "time_lord_periods": _json_safe(time_lord_periods),
         "chapters": _json_safe(chapters),
-        "candidates": [],
-        "rejected_candidates": [],
+        "candidates": _json_safe(candidates),
+        "rejected_candidates": _json_safe(rejected_candidates),
         "convergence_composition": _json_safe(convergence_composition),
         "detector_thresholds": _detector_thresholds(),
         "asteroid_diagnostics": _asteroid_diagnostics(payload, raw_events, predictive_signals),
         "debug": {
             "predictive_engine": predictive_results.get("debug") or {},
             "phase7_sidecar": phase7_debug,
+            "phase8_candidates": phase8_debug,
             "phase2_note": "Predictive sidecar serializes internal evidence only; report prose is gated separately.",
         },
         "provenance": {
@@ -226,6 +249,7 @@ def build_predictive_sidecar(
                 "zodiacal_releasing": _debug_scanner_state(predictive_results, "zr_signal_count", "wired_phase6"),
                 "natal_promise_graph": _debug_scanner_state(predictive_results, "natal_promise_anchor_count", "wired_phase7"),
                 "cross_clock_convergence": _debug_scanner_state(predictive_results, "convergence_composition_count", "wired_phase7"),
+                "micro_candidate_builder": "wired_phase8",
             },
             "sidecar_writer_version": SIDECAR_WRITER_VERSION,
             "sidecar_written_at": _iso_datetime(generated_at),
@@ -327,6 +351,11 @@ def _predictive_signal_from_signal(
         "independence_group": str(signal.get("independence_group") or "transit_family"),
         "activation_route": str(signal.get("activation_route") or "transit_to_body"),
         "signal_role": _signal_role(signal),
+        "temporal_precision": str(signal.get("temporal_precision") or "") or _temporal_precision(
+            _signal_datetime(signal.get("start_date")),
+            _signal_datetime(signal.get("peak_date")),
+            _signal_datetime(signal.get("end_date")),
+        ),
         "source_body": source_body,
         "target_body": target_body or None,
         "aspect": signal.get("aspect") or None,

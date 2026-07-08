@@ -5,6 +5,128 @@ Newest entry on top. See `agents/README.md` for the convention.
 
 ---
 
+## 2026-07-08 - Phase 8 live-verification: two real bugs found and fixed (Claude / Sonnet 5)
+
+**Context:** Standard post-Codex verification pass on the Phase 8 landing —
+full regression suite, then a live `year_ahead` report generation with
+direct inspection of `.eo_predictive.json`'s new `candidates` array,
+since every real bug found this whole program has come from that live
+check, never from unit tests alone. Both bugs below were confirmed the
+same way: an actual field value in a real report that couldn't be
+explained by intended behavior.
+
+**Bug 1 — ZR trigger events could carry a peak date outside the report
+window.** A real candidate (`cand_d8858b73`) had `peak_at =
+2024-03-07`, entirely outside its report's `[2026-07-08, 2027-07-08]`
+window. Root cause: `engine/zodiacal_releasing.py`'s
+`zodiacal_releasing_events()` collects L1/L2 `TimeLordPeriod` records
+that *overlap* the window (correct — a period can be active before the
+window starts) but then emitted a `zr_l1_transition`/`zr_l2_transition`/
+`zr_peak` `ForecastEvent` at that period's true `start_at`, even when
+the period had started years before the window and only its *tail*
+overlapped it. The function's own docstring already promised events
+"intersecting [start_date, end_date]" — the implementation didn't
+enforce that. Fixed by filtering emitted events to
+`window_start <= peak_datetime <= window_end` inside
+`zodiacal_releasing_events()`, after generating them per-period.
+Periods themselves are unaffected (still correctly represent ongoing
+`TimeLordPeriod` context regardless of when they started); only the
+discrete transition/peak *events* are now window-scoped, which is what
+Phase 8's candidate builder actually consumes as trigger evidence.
+
+**Bug 2 — `method_family_diversity()` inflated its own `count` field,
+silently defeating the anti-stacking rule it exists to enforce.**
+Every candidate in the same live report showed `component_scores
+["method_family_diversity_count"] = 72` while `independent_method_
+families` (the actual list of distinct family names) had only 8
+entries — an internal contradiction. Root cause in
+`engine/convergence.py`'s `method_family_diversity()`: after building
+the composite-dedup `winners` dict (correctly keyed by
+`(independence_group, source_body, target_body)` per
+`phase0/04_convergence_and_candidate_protocol.md` §2.2, to collapse
+`transit_family`/`proprietary_transit_family` pairs targeting the same
+body), the function reported `count = len(winners)` — the number of
+distinct dedup *keys* — instead of the number of distinct *family
+labels* among them. Per §2.9 of that same charter (using almost this
+exact example): "Multiple asteroid contacts ... do **not** inflate
+`independent_method_families` count on their own. They belong to the
+same `transit_family` (or `proprietary_transit_family`) vote." Any
+candidate with several distinct asteroid or multi-target contacts
+within one family therefore had its diversity count silently inflated,
+which feeds directly into `component_scores.method_family_diversity`
+(and would have fed the `|independent_method_families| >= 2` hard
+emission gate had a report ever had fewer than 2 genuine families
+present). Fixed by computing `count` and `anti_stacking_ratio` from
+`len(groups)` (the deduplicated family-label set already computed for
+`independent_method_families`) instead of `len(winners)`. Also fixed
+`tests/test_phase7_natal_promise_convergence.py`'s
+`test_asteroid_specificity_contributes_without_extra_method_vote` —
+it asserted `diversity["count"] == 2` for the *exact* two-asteroid,
+one-family example from charter §2.9, contradicting its own next
+assertion that `independent_method_families == ["proprietary_transit_
+family"]` (length 1) and its own test name ("...without extra method
+vote"). Corrected to assert `count == 1`, matching both the charter's
+explicit example and the test's own stated intent.
+
+**Verification:** Full phase 1-8 regression suite (52 tests) passes
+after both fixes. Re-ran the same real `year_ahead` report: 41
+candidates, zero outside the report window, `method_family_diversity_
+count` now equals the length of `independent_method_families` on every
+candidate checked, rejected-candidate registry unchanged in shape
+(`superseded_by_later_candidate` merges still recorded correctly).
+
+---
+
+## 2026-07-08 - Phase 8 discrete MicroCandidate engine implementation (Codex / GPT-5)
+
+**Context:** Operator asked Codex to implement Phase 8 after Claude's
+pre-review found and fixed the blocking `signal_role` derivation bug.
+Scope stayed internal R&D only: no client-facing report prose, no
+template changes, no outcome ledger, and no fixed general candidate
+window cap.
+
+**What changed:**
+
+- Added `engine/candidates.py` for Phase 8 `MicroCandidate` assembly:
+  trigger-derived natural windows, pre-registration timestamps,
+  stable `candidate_id` generation, chapter/trigger/anchor support,
+  method-family anti-stacking, topic coherence, component score
+  preservation, confidence handling, alternative evidence retention,
+  accepted candidates, and locked-enum rejected/suppressed candidates.
+- Wired `engine/predictive_sidecar.py` to emit `candidates` and
+  `rejected_candidates` arrays and append candidate-specific
+  convergence-composition records with `candidate_id` linkage.
+- Added `temporal_precision` to serialized `PredictiveSignal` records
+  so Phase 8 can enforce the contract's trigger qualification rule
+  (`signal_role = trigger_evidence` and `temporal_precision` in
+  `instant`/`day`) after sidecar normalization.
+- Added `tests/test_phase8_candidates.py` for pre-registration fields,
+  outcome-ledger linkage fields, rejected candidates, composite
+  anti-stacking, trigger-derived wide windows with no hidden cap, and
+  sidecar export.
+- Updated the Phase 7 sidecar integration test so it no longer freezes
+  `candidates` to the pre-Phase-8 empty placeholder.
+
+**Verification:**
+
+- `python -m py_compile engine\candidates.py engine\predictive_sidecar.py tests\test_phase8_candidates.py tests\test_phase7_natal_promise_convergence.py`
+- `$env:PYTHONPATH='C:\entangled_oracle\.venv\Lib\site-packages'; python -m unittest tests.test_phase2_predictive_sidecar tests.test_phase3_asteroid_predictive_activation tests.test_phase4_returns_profections tests.test_phase5_solar_arc_progressions tests.test_phase6_lots_zodiacal_releasing tests.test_phase7_natal_promise_convergence tests.test_phase8_candidates`
+- Real report run:
+  `python .\generate.py predictive_sandbox --name "Phase Eight" --date 1990-01-01 --time 12:00 --location "Peoria, Illinois, USA" --report-date 2026-01-01 --output-dir tmp\phase8_real --output-filename phase8_real.html --no-browser`
+- Real sidecar check for `tmp\phase8_real\phase8_real.eo_predictive.json`:
+  72 natal-promise anchors, 63 chapters, 38 pre-registered
+  candidates, 5 rejected/suppressed candidates, 38 candidate-specific
+  convergence records, `maximum_window_days = null`, and locked
+  rejection reason `superseded_by_later_candidate` for merged trigger
+  peaks.
+
+**Boundary notes:** Phase 8 does not write `<report>.eo_outcomes.json`,
+does not score any candidate as hit/non-hit, does not scrape report
+HTML, and does not expose candidate claims in Year Ahead, Personal
+Forecast, or Predictive Sandbox prose.
+
+---
+
 ## 2026-07-08 - Phase 8 pre-review finding: `signal_role` was never actually derived, only echoed (Claude / Sonnet 5)
 
 **Context:** Doing the pre-implementation review of

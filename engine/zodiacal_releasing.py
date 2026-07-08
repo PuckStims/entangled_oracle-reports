@@ -114,7 +114,9 @@ def zodiacal_releasing_events(
     for period in periods:
         if period["level"] not in ("L1", "L2"):
             continue
-        events.extend(_events_for_period(context, period))
+        for event in _events_for_period(context, period):
+            if window_start <= event["peak_datetime"] <= window_end:
+                events.append(event)
     events.sort(key=lambda e: e["peak_datetime"])
     return events
 
