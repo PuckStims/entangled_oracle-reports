@@ -1,0 +1,692 @@
+{
+  "audit_metadata": {
+    "generated_at": "2026-07-07",
+    "method": "read_only_code_inspection",
+    "repository": "C:/entangled_oracle",
+    "companion_document": "EO_MULTICLOCK_ASTEROID_PREDICTIVE_READINESS_AUDIT.md",
+    "prior_audits_reconciled": [
+      "ENGINE_CAPABILITY_SURFACE_AUDIT.md",
+      "ENGINE_CAPABILITY_SURFACE_AUDIT.json",
+      "CLIENT_FORECAST_ENGINE_ADEQUACY_AUDIT.md",
+      "agents/PLANNED_UPDATES.md",
+      "agents/REVISIONS.md",
+      "ARCHITECTURE.md",
+      "METHODS.md"
+    ],
+    "no_production_files_modified": true,
+    "asteroid_count_verified": 34
+  },
+  "findings": [
+    {
+      "id": "natal_promise_asteroid_substrate",
+      "layer": "natal_promise",
+      "capability": "Full natal calculation, house assignment, and aspect matrix inclusion for all 34 declared asteroids alongside planets and angles",
+      "status": "Fully integrated as first-class input",
+      "existing_substrate": [
+        "engine/natal_engine.py:76-120 ASTEROID_DICTIONARY (34 asteroids)",
+        "engine/natal_engine.py:559-581 per-asteroid Swiss Ephemeris calculation with graceful per-body failure",
+        "engine/natal_engine.py:583-626 unified aspect matrix over planets + asteroids + ASC/MC/Vertex at 10 degree scan orb",
+        "formulas/governance_registry.py:130-238 per-asteroid registry records with catalog number, lineage, layer eligibility",
+        "formulas/proprietary_indexes.py consumes asteroid natal positions in KVQ, MKI, RWI, DFIS, CATALYST, AHL, NGE",
+        "selectors/utils.py:33-46 unified body_data helper searches standard_planets and custom_asteroids"
+      ],
+      "missing_components": [
+        "no manifest snapshot of natal asteroid positions or aspect matrix in .manifest.json",
+        "no natal-configuration key that could be reused as a hypothesis link for forecast windows"
+      ],
+      "asteroid_compatibility": "all_34_first_class_at_natal_layer",
+      "confidence": "high",
+      "evidence": [
+        "engine/natal_engine.py:76",
+        "engine/natal_engine.py:557-582",
+        "formulas/governance_registry.py:187-238"
+      ],
+      "notes": "Natal substrate is the strongest layer for asteroid participation in the entire codebase."
+    },
+    {
+      "id": "natal_promise_target_relevance",
+      "layer": "natal_promise",
+      "capability": "Per-body target relevance scoring for forecast salience, including 8 proprietary asteroids at relevance 0.70-0.85",
+      "status": "Formula-ready but unconnected",
+      "existing_substrate": [
+        "engine/predictive_engine.py:75-106 _TARGET_RELEVANCE table",
+        "Kassandra 0.85, Aletheia 0.80, Destinn 0.80, Karma 0.80, Kaali 0.75, Medea 0.75, Hermes 0.70, Chaos 0.70",
+        "engine/transit_engine.py:859-862 PROPRIETARY_ASTEROID_TARGETS list mirrors these 8"
+      ],
+      "missing_components": [
+        "the transit signal stream never carries asteroid target_body because scan_proprietary_forecast_windows is unwired",
+        "the other 26 asteroids have no forecast-side relevance weighting at all"
+      ],
+      "asteroid_compatibility": "eight_specified_no_delivery",
+      "confidence": "high",
+      "evidence": ["engine/predictive_engine.py:75-106"],
+      "notes": "Weights exist but no signals reach them today."
+    },
+    {
+      "id": "asteroid_proprietary_forecast_scanner",
+      "layer": "asteroid",
+      "capability": "Asteroid-aware transit event scanner producing proprietary_transit events for DISRUPTION, SOVEREIGNTY, CATALYST formula groups",
+      "status": "Implemented but hidden / inactive",
+      "existing_substrate": [
+        "engine/transit_engine.py:864-889 _proprietary_targets() extends _natal_targets with 8 asteroids",
+        "engine/transit_engine.py:896-932 PROPRIETARY_FORMULA_CONFIG with per-trigger source, target, allowed aspects, weight",
+        "engine/transit_engine.py:951-1049 scan_proprietary_forecast_windows() full three-phase scanner with entry/peak/leave, cycle merging, event_type='proprietary_transit'",
+        "engine/predictive_engine.py:876-887 _normalize_method_family maps proprietary_transit to TRANSIT method_family"
+      ],
+      "missing_components": [
+        "no call site in compute_year_ahead_events or predictive_engine _collect_transit_signals",
+        "governance layer restricts asteroids to soul_ecosystem and predictive_sandbox visibility, unclear if this is why the scanner is not wired"
+      ],
+      "asteroid_compatibility": "eight_asteroid_targets_seven_asteroid_sources_plus_BML_Chiron_NorthNode",
+      "confidence": "high",
+      "evidence": [
+        "engine/transit_engine.py:951",
+        "grep confirmed sole reference to scan_proprietary_forecast_windows is its own def line"
+      ],
+      "notes": "Highest-leverage single wiring change in the codebase. Sources include Chaos, Hermes, Aletheia, Medea, Kaali, Destinn, Karma, plus BML, Chiron, TrueNode."
+    },
+    {
+      "id": "asteroid_governance_visibility_gate",
+      "layer": "asteroid",
+      "capability": "Governance registry gates asteroid material to soul_ecosystem and predictive_sandbox only",
+      "status": "Configuration-only (policy gate)",
+      "existing_substrate": [
+        "formulas/governance_registry.py:230 eligible_report_types=('soul_ecosystem','predictive_sandbox')",
+        "formulas/governance_registry.py:222-236 AsteroidEligibilityRecord per asteroid with default_visibility='technical_reference'",
+        "formulas/report_surface.py layer rules enforce the policy"
+      ],
+      "missing_components": [
+        "no per-tenant / per-content-pack override mechanism",
+        "no practitioner-appendix layer for Year Ahead / Personal Forecast asteroid content"
+      ],
+      "asteroid_compatibility": "deliberately_scoped_out_of_mainline_reports",
+      "confidence": "high",
+      "evidence": ["formulas/governance_registry.py:230"],
+      "notes": "This is a deliberate design policy per the client-forecast adequacy audit, not a bug."
+    },
+    {
+      "id": "asteroid_predictive_component_registry",
+      "layer": "asteroid",
+      "capability": "Predictive component registry links KVQ, MKI, RWI, DFIS, CATALYST dimensions to eligible natal target bodies including asteroids",
+      "status": "Partially wired",
+      "existing_substrate": [
+        "engine/predictive_engine.py:206-245 PREDICTIVE_COMPONENT_REGISTRY",
+        "KVQ.kass_angle targets Kassandra + angles",
+        "DFIS.dfis_core targets Medea, Kaali, Moon, Pluto",
+        "CATALYST.catalyst_node targets Destinn, Karma, Vertex, Sun"
+      ],
+      "missing_components": [
+        "NGE and AHL entries commented out",
+        "only used by _leading_index for label selection, not for scoring or convergence"
+      ],
+      "asteroid_compatibility": "five_of_seven_indexes_target_asteroids_two_deferred",
+      "confidence": "high",
+      "evidence": ["engine/predictive_engine.py:206-245"],
+      "notes": "The predictive engine already knows which asteroids drive which indexes; it just does not receive asteroid-target signals from the current transit scanner."
+    },
+    {
+      "id": "transit_cycle_scanner",
+      "layer": "transit",
+      "capability": "Two-phase natal-transit cycle detector with sub-arc-minute contact refinement and 120-day cycle merging",
+      "status": "Fully surfaced (Year Ahead + Personal Forecast)",
+      "existing_substrate": [
+        "engine/transit_engine.py:1452-1578 scan_transit_windows",
+        "engine/transit_engine.py:66-73 TRANSIT_PLANETS Saturn Uranus Neptune Pluto Jupiter Mars",
+        "engine/transit_engine.py:94-98 STANDARD_TARGETS 10 planets plus ASC MC Vertex (Mars restricted)"
+      ],
+      "missing_components": [
+        "asteroid natal targets not included (planets + angles only)",
+        "asteroid transit sources not included"
+      ],
+      "asteroid_compatibility": "excluded",
+      "confidence": "high",
+      "evidence": ["engine/transit_engine.py:1452"],
+      "notes": "Highest-quality forecast surface today, but asteroid-blind."
+    },
+    {
+      "id": "transit_ingress_station_eclipse_lunation_scanners",
+      "layer": "transit",
+      "capability": "House ingresses (Jupiter through Pluto), stations (Mercury through Pluto), eclipses with 2 degree natal contact, plain lunations with 2 degree natal contact and eclipse-date suppression",
+      "status": "Fully surfaced",
+      "existing_substrate": [
+        "engine/transit_engine.py:1584+ scan_house_ingresses",
+        "engine/transit_engine.py:1681+ scan_stations",
+        "engine/transit_engine.py:2015+ scan_eclipses",
+        "engine/transit_engine.py:2176-2263 scan_lunations with ECLIPSE_TARGET_KEYS filter"
+      ],
+      "missing_components": [
+        "asteroid targets excluded from ECLIPSE_TARGET_KEYS (planets + ASC/MC/Vertex only)",
+        "ingress scanner limited to Jupiter through Pluto (Mars/Venus/Mercury/Sun ingresses absent)"
+      ],
+      "asteroid_compatibility": "excluded",
+      "confidence": "high",
+      "evidence": ["engine/transit_engine.py:209-223 ECLIPSE_TARGET_KEYS"],
+      "notes": "Fully operational transit-family scanners with clear asteroid exclusion policy."
+    },
+    {
+      "id": "transit_intra_day_and_daily_scanners",
+      "layer": "transit",
+      "capability": "Same-day activation with graduated per-planet orbs (0.15-1.0 degrees); Moon-primary intra-day exact-contact timeline extendable across arbitrary date ranges",
+      "status": "Fully surfaced",
+      "existing_substrate": [
+        "engine/transit_engine.py:1177-1250 compute_daily_activation_transits",
+        "engine/transit_engine.py:1297-1390 compute_daily_timeline",
+        "engine/transit_engine.py:150-184 DAILY_ACTIVATION_PLANETS/ORB/SIGNIFICANCE",
+        "engine/transit_engine.py:1803-1902 detect_retrograde_clusters and detect_void_of_course_windows"
+      ],
+      "missing_components": [
+        "asteroid transit sources not represented",
+        "daily date-source bug for daily_horoscope report per prior audit"
+      ],
+      "asteroid_compatibility": "excluded",
+      "confidence": "high",
+      "evidence": ["engine/transit_engine.py:1297"],
+      "notes": "Intra-day exact-contact assembly is available and could feed micro-window candidate work."
+    },
+    {
+      "id": "predictive_signal_normalization",
+      "layer": "convergence",
+      "capability": "Signal-level normalization: method_family, event_kind, independence_group, activation_route, operation_profile, epistemic_confidence, angle_eligibility",
+      "status": "Partially wired",
+      "existing_substrate": [
+        "engine/predictive_engine.py:336-459 _collect_transit_signals + _event_to_signal",
+        "engine/predictive_engine.py:876-965 _normalize_method_family + independence + activation route helpers",
+        "engine/predictive_engine.py:998-1114 operation profile + epistemic confidence"
+      ],
+      "missing_components": [
+        "signal stream only carries TRANSIT-family events today",
+        "interval-sampled epistemic robustness not implemented (per agents/PLANNED_UPDATES.md); relation_robustness still exactness-derived"
+      ],
+      "asteroid_compatibility": "target_relevance_reserves_slots_for_8_asteroids_but_no_signals_reach_them",
+      "confidence": "high",
+      "evidence": ["engine/predictive_engine.py:366-459"],
+      "notes": "The normalization scaffold is ready to receive multi-clock events. It just doesn't get them."
+    },
+    {
+      "id": "predictive_daily_resonance_series",
+      "layer": "convergence",
+      "capability": "Daily raw / smooth / baseline / residual series with structural-vs-trigger split",
+      "status": "Partially wired",
+      "existing_substrate": ["engine/predictive_engine.py:464-521 _build_daily_series"],
+      "missing_components": [
+        "per-day contributing signal IDs not preserved (critical validation loss)",
+        "consumer reports do not render daily series",
+        "manifest does not include daily series"
+      ],
+      "asteroid_compatibility": "would_be_included_automatically_via_signals_if_asteroid_signals_existed",
+      "confidence": "high",
+      "evidence": ["engine/predictive_engine.py:464-521"],
+      "notes": "Adding contributing_signal_ids per day would unlock retrospective attribution."
+    },
+    {
+      "id": "predictive_window_detector",
+      "layer": "convergence",
+      "capability": "Prominence-filtered residual peak detector with minimum-distance filter, valley-based boundaries, FSM lifecycle continuity, episode memory, and window-level semantic diagnostics (coherence, polarity, coalition, counterforce, complexity, dominant_operation, semantic_state)",
+      "status": "Partially wired",
+      "existing_substrate": [
+        "engine/predictive_engine.py:555-689 _detect_windows",
+        "engine/predictive_engine.py:710-760 prominence helpers",
+        "engine/predictive_engine.py:1132-1228 semantic metrics",
+        "engine/predictive_engine.py:1231-1398 episode memory and FSM lifecycle"
+      ],
+      "missing_components": [
+        "rejected peak indices/prominences not preserved (only counts in debug)",
+        "_MIN_PEAK_DISTANCE = 14 blocks sub-2-week candidate windows",
+        "no first-class broad-chapter output type distinct from residual windows",
+        "consumer reports do not render windows or semantic diagnostics"
+      ],
+      "asteroid_compatibility": "receives_any_signal_type_that_reaches_it",
+      "confidence": "high",
+      "evidence": ["engine/predictive_engine.py:555"],
+      "notes": "Detector is method-family agnostic; adding new clocks does not require detector changes."
+    },
+    {
+      "id": "convergence_detector",
+      "layer": "convergence",
+      "capability": "Transit-family convergence overlay detector (post-legacy replacement)",
+      "status": "Partially wired",
+      "existing_substrate": ["generate.py:6966+ active _detect_and_frame_convergences"],
+      "missing_components": [
+        "operates within transit sub-types only, not across method families",
+        "synthesized convergence objects carry combined_intensity_score = 0.0",
+        "no aggregation on independence_group, activation_route, natal_house, or natal configuration"
+      ],
+      "asteroid_compatibility": "inherits_transit_target_scope",
+      "confidence": "high",
+      "evidence": ["generate.py:6842-6966 legacy dead; 6966+ active"],
+      "notes": "Convergence with method provenance is scaffolded but has nothing to converge across."
+    },
+    {
+      "id": "progressions_secondary",
+      "layer": "progression",
+      "capability": "Secondary progressions (one ephemeris day per year of life; progressed body-to-natal contacts and progressed ingresses)",
+      "status": "Absent (taxonomy hook only)",
+      "existing_substrate": [
+        "engine/predictive_engine.py:125 progression_clock weight 0.94",
+        "engine/predictive_engine.py:179 PROGRESSION operation multiplier row",
+        "engine/predictive_engine.py:883-884 _normalize_method_family recognizes 'progression'",
+        "engine/predictive_engine.py:955-958 progression_to_angle and progression_to_body activation routes"
+      ],
+      "missing_components": [
+        "no progression scanner exists",
+        "no progressed-chart constructor",
+        "no birth-time gating logic for progressed angles",
+        "no time-scale mapping code (day-for-a-year)"
+      ],
+      "asteroid_compatibility": "would_inherit_from_scanner_design",
+      "confidence": "high",
+      "evidence": ["grep negative across engine, formulas, selectors"],
+      "notes": "Deferred per agents/PLANNED_UPDATES.md; taxonomy is ready for it."
+    },
+    {
+      "id": "solar_arc_directions",
+      "layer": "solar_arc",
+      "capability": "Solar Arc directions (uniform arc from progressed Sun applied to all natal bodies; arc-to-natal contacts)",
+      "status": "Absent (taxonomy hook only)",
+      "existing_substrate": [
+        "engine/predictive_engine.py:126 solar_arc_clock weight 0.96",
+        "engine/predictive_engine.py:180 SOLAR_ARC operation multiplier row",
+        "engine/predictive_engine.py:885-886 _normalize_method_family recognizes 'solar_arc'",
+        "engine/predictive_engine.py:960-963 solar_arc_to_angle and solar_arc_to_body activation routes"
+      ],
+      "missing_components": [
+        "no arc scanner exists",
+        "no single declared arc convention",
+        "no arc computation utility"
+      ],
+      "asteroid_compatibility": "would_inherit_from_scanner_design",
+      "confidence": "high",
+      "evidence": ["grep negative across engine, formulas, selectors"],
+      "notes": "Deferred per agents/PLANNED_UPDATES.md; taxonomy ready."
+    },
+    {
+      "id": "returns_solar_lunar_planetary",
+      "layer": "return",
+      "capability": "Solar / lunar / Jupiter / Saturn return event scanners (event-level, not full return chart)",
+      "status": "Absent (taxonomy hook only)",
+      "existing_substrate": [
+        "engine/predictive_engine.py:124 return_clock weight 0.88",
+        "engine/predictive_engine.py:178 RETURN operation multiplier row",
+        "engine/predictive_engine.py:881-882 _normalize_method_family recognizes 'return'"
+      ],
+      "missing_components": [
+        "no return-moment scanner",
+        "no return-chart constructor",
+        "no anti-double-counting policy defined for return vs transit vs lunation"
+      ],
+      "asteroid_compatibility": "would_inherit_from_scanner_design",
+      "confidence": "high",
+      "evidence": ["grep negative"],
+      "notes": "Planned first non-transit clock per agents/PLANNED_UPDATES.md."
+    },
+    {
+      "id": "profections",
+      "layer": "profection",
+      "capability": "Annual profections (age to whole-sign house to sign to time lord)",
+      "status": "Not present at all",
+      "existing_substrate": [
+        "engine/natal_engine.py whole-sign house math",
+        "formulas/standard/rulership_network.py rulership logic"
+      ],
+      "missing_components": [
+        "no profection module",
+        "no method_family hook (would fall to UNKNOWN)",
+        "no age-based whole-sign transfer computation"
+      ],
+      "asteroid_compatibility": "n_a",
+      "confidence": "high",
+      "evidence": ["grep negative"],
+      "notes": "Cheap to add computationally; would work as a target-relevance weighter rather than an event source."
+    },
+    {
+      "id": "zodiacal_releasing",
+      "layer": "zodiacal_releasing",
+      "capability": "Zodiacal Releasing from Lot of Spirit (and Fortune) with L1/L2/L3/L4 period stack and loosing-of-the-bond markers",
+      "status": "Not present at all",
+      "existing_substrate": [],
+      "missing_components": [
+        "no lot computation infrastructure at all",
+        "no ZR period generator",
+        "no period-transition logic",
+        "no method_family hook"
+      ],
+      "asteroid_compatibility": "n_a",
+      "confidence": "high",
+      "evidence": ["grep negative for zodiacal, releasing, Lot_of, Spirit_lot, Fortune_lot, arabic_part"],
+      "notes": "Requires an Arabic Parts / Hellenistic lots substrate that does not exist yet."
+    },
+    {
+      "id": "time_lord_general",
+      "layer": "time_lord",
+      "capability": "Time-lord systems generally (firdaria, primary directions, monomoiria, etc.)",
+      "status": "Not present at all",
+      "existing_substrate": [],
+      "missing_components": ["no time-lord code anywhere"],
+      "asteroid_compatibility": "n_a",
+      "confidence": "high",
+      "evidence": ["grep negative"],
+      "notes": "Deferred per agents/PLANNED_UPDATES.md ('primary directions, harmonics, time lords, asteroid seasons, electional timing, synastry prediction, and pathway-throughput style claims')."
+    },
+    {
+      "id": "arabic_parts_lots",
+      "layer": "natal_promise",
+      "capability": "Arabic Parts / Hellenistic lots (Fortune, Spirit, Necessity, etc.)",
+      "status": "Not present at all",
+      "existing_substrate": [],
+      "missing_components": ["no lot computation utility"],
+      "asteroid_compatibility": "n_a",
+      "confidence": "high",
+      "evidence": ["grep negative"],
+      "notes": "Blocks ZR and any lot-anchored technique."
+    },
+    {
+      "id": "candidate_event_micro_windows",
+      "layer": "event_candidate",
+      "capability": "Narrow (3-6 day) candidate event windows",
+      "status": "Missing from active processing",
+      "existing_substrate": [
+        "engine/predictive_engine.py:555 residual peak detection produces windows",
+        "engine/transit_engine.py:1297 compute_daily_timeline returns intra-day exact contact moments"
+      ],
+      "missing_components": [
+        "_MIN_PEAK_DISTANCE = 14 blocks sub-2-week windows in the residual detector",
+        "no assembly of intra-day moments into candidate window objects",
+        "no ranking or convergence layer that combines evidence to justify a narrow window"
+      ],
+      "asteroid_compatibility": "would_receive_asteroid_signals_if_produced",
+      "confidence": "high",
+      "evidence": ["engine/predictive_engine.py:258"],
+      "notes": "The astronomy exists; assembling narrow candidates is schema + detector work."
+    },
+    {
+      "id": "report_pipeline_manifest",
+      "layer": "report_pipeline",
+      "capability": "Report manifest sidecar",
+      "status": "Partially wired",
+      "existing_substrate": [
+        "generate.py:3444-3525 _write_report_manifest",
+        "manifest records report_type, report_version, methodology, active modules, warnings, birth data, report-surface trace"
+      ],
+      "missing_components": [
+        "predictive_results (signals, daily_series, windows, debug) omitted",
+        "raw all_events timeline omitted",
+        "no ephemeris fingerprint",
+        "no threshold/constant snapshot for reproducibility"
+      ],
+      "asteroid_compatibility": "would_capture_asteroid_signals_if_included",
+      "confidence": "high",
+      "evidence": ["generate.py:3444"],
+      "notes": "Adding predictive_results under a feature flag would enable retrospective evidence review."
+    },
+    {
+      "id": "report_pipeline_consumer_dropout",
+      "layer": "report_pipeline",
+      "capability": "Consumer template rendering of predictive_results",
+      "status": "Dropped in pipeline",
+      "existing_substrate": [
+        "generate.py:224-245 predictive_results computed for year_ahead, personal_forecast, predictive_sandbox",
+        "generate.py:245 predictive_results placed into variables and forwarded to context builders",
+        "personal_forecast and year_ahead context builders return predictive_results"
+      ],
+      "missing_components": [
+        "products/year_ahead/templates/active/year_ahead.html does not render predictive_results",
+        "products/personal_forecast/templates/personal_forecast.html does not render predictive_results",
+        "only products/predictive_sandbox/templates/predictive_sandbox.html renders these fields"
+      ],
+      "asteroid_compatibility": "irrelevant_until_earlier_stages_carry_asteroid_signals",
+      "confidence": "high",
+      "evidence": ["templates confirmed via prior audit"],
+      "notes": "Deliberate for now; would require a governance-consistent surface layer per report."
+    },
+    {
+      "id": "validation_predictive_export_sidecar",
+      "layer": "validation",
+      "capability": "First-class machine-readable predictive evidence sidecar",
+      "status": "Absent",
+      "existing_substrate": [
+        "tools/extract_sandbox_ledger.py scrapes rendered sandbox HTML into CSV"
+      ],
+      "missing_components": [
+        "no .predictive.json sidecar writer",
+        "no rejected_peaks preservation",
+        "no per-day contributing_signal_ids",
+        "no formula-version bindings snapshot"
+      ],
+      "asteroid_compatibility": "would_include_asteroid_signals_if_upstream_produces_them",
+      "confidence": "high",
+      "evidence": ["ENGINE_CAPABILITY_SURFACE_AUDIT.md section 5"],
+      "notes": "The single largest blocker to retrospective validation."
+    },
+    {
+      "id": "validation_natal_snapshot",
+      "layer": "validation",
+      "capability": "Immutable natal snapshot in report manifest (aspect matrix, asteroid positions, houses)",
+      "status": "Partially wired",
+      "existing_substrate": ["manifest carries birth data, resolved location, methodology"],
+      "missing_components": [
+        "aspect matrix not embedded",
+        "asteroid positions not embedded",
+        "houses not embedded"
+      ],
+      "asteroid_compatibility": "would_capture_all_34",
+      "confidence": "high",
+      "evidence": ["generate.py:3444-3525"],
+      "notes": "Would enable external reproduction of any downstream calculation."
+    },
+    {
+      "id": "validation_outcome_ledger",
+      "layer": "validation",
+      "capability": "Persisted outcome / retrospective validation log per chart per window",
+      "status": "Absent",
+      "existing_substrate": [],
+      "missing_components": [
+        "no retrospective outcome ingestion path",
+        "no per-window verdict schema",
+        "no misses/quiet-period ledger"
+      ],
+      "asteroid_compatibility": "n_a",
+      "confidence": "high",
+      "evidence": ["absent everywhere"],
+      "notes": "New infrastructure required. Not blocked by anything in the current engine."
+    },
+    {
+      "id": "predictive_sandbox_block_library",
+      "layer": "report_pipeline",
+      "capability": "Predictive sandbox JSON block library routed by computed window evidence",
+      "status": "Partially wired",
+      "existing_substrate": [
+        "products/predictive_sandbox/blocks/00_scaffold/",
+        "products/predictive_sandbox/blocks/10_copy_entirely/",
+        "products/predictive_sandbox/blocks/20_modify_from_existing/",
+        "products/predictive_sandbox/blocks/30_new_writes/",
+        "products/predictive_sandbox/blocks/90_archive/",
+        "generate.py:7736-7973 sandbox context + block routing"
+      ],
+      "missing_components": [
+        "content coverage still uneven per agents/REVISIONS.md",
+        "legacy converted blocks still reachable as fallback"
+      ],
+      "asteroid_compatibility": "routes_on_window_fields_which_are_asteroid_agnostic_at_present",
+      "confidence": "medium",
+      "evidence": ["directory structure confirmed"],
+      "notes": "Sandbox R&D lane per plan of record."
+    },
+    {
+      "id": "asteroid_soul_ecosystem_surface",
+      "layer": "report_pipeline",
+      "capability": "soul_ecosystem client surface for asteroid natal narrative",
+      "status": "Fully surfaced",
+      "existing_substrate": [
+        "products/soul_ecosystem/blocks/ archetypes (impact_radius, knowledge_legacy, reality_field, foresight_pattern, ancestral_layer)",
+        "products/soul_ecosystem/templates/soul_ecosystem.html"
+      ],
+      "missing_components": [
+        "no predictive integration (soul_ecosystem is natal/context-only per client-forecast adequacy audit)"
+      ],
+      "asteroid_compatibility": "primary_asteroid_client_surface",
+      "confidence": "high",
+      "evidence": ["agents/REVISIONS.md 2026-07-02"],
+      "notes": "This is the intended consumer surface for asteroid-driven narrative."
+    },
+    {
+      "id": "temporal_river_and_constellation_mesh",
+      "layer": "report_pipeline",
+      "capability": "Alternate diagnostic visualization surfaces (temporal_river, constellation_mesh)",
+      "status": "Engine-only (adjacent surfaces)",
+      "existing_substrate": [
+        "engine/temporal_river.py + preview_temporal_river.py",
+        "engine/constellation_mesh.py + preview_constellation_mesh.py",
+        "scripts/test_temporal_river_from_birth.py"
+      ],
+      "missing_components": [
+        "not integrated with predictive engine",
+        "not gated to any client product"
+      ],
+      "asteroid_compatibility": "unknown_not_evaluated",
+      "confidence": "medium",
+      "evidence": ["directory listing"],
+      "notes": "Catalogued for completeness; not evaluated as multi-clock predictive infrastructure."
+    },
+    {
+      "id": "predictive_method_taxonomy_readiness",
+      "layer": "convergence",
+      "capability": "Method taxonomy hooks ready to absorb events from any of TRANSIT, LUNATION, RETURN, PROGRESSION, SOLAR_ARC, UNKNOWN families",
+      "status": "Formula-ready but unconnected",
+      "existing_substrate": [
+        "engine/predictive_engine.py:121-128 _METHOD_WEIGHT_BY_GROUP",
+        "engine/predictive_engine.py:175-181 _METHOD_OPERATION_MULTIPLIER",
+        "engine/predictive_engine.py:876-887 _normalize_method_family",
+        "engine/predictive_engine.py:919-965 independence group and activation route mappers"
+      ],
+      "missing_components": [
+        "only TRANSIT family produces events; RETURN/PROGRESSION/SOLAR_ARC hooks never fire",
+        "LUNATION is a normalized method family but is treated as a subtype of the transit-clock in convergence detection"
+      ],
+      "asteroid_compatibility": "asteroid_source_or_target_events_would_normalize_naturally",
+      "confidence": "high",
+      "evidence": ["engine/predictive_engine.py:876-887"],
+      "notes": "Adding any long clock only requires producing events with a matching event_type string."
+    }
+  ],
+  "asteroid_inventory": [
+    {"asteroid": "Sirene", "ephemeris_id": 11009, "predictive_target_relevance": null, "proprietary_source": false, "proprietary_target": false, "indexes": ["NGE"], "status": "natal_only_indexed"},
+    {"asteroid": "Aphrodite", "ephemeris_id": 11388, "predictive_target_relevance": null, "proprietary_source": false, "proprietary_target": false, "indexes": ["NGE"], "status": "natal_only_indexed"},
+    {"asteroid": "Apollo", "ephemeris_id": 11862, "predictive_target_relevance": null, "proprietary_source": false, "proprietary_target": false, "indexes": ["RWI", "NGE"], "status": "natal_only_indexed"},
+    {"asteroid": "Kassandra", "ephemeris_id": 10114, "predictive_target_relevance": 0.85, "proprietary_source": false, "proprietary_target": true, "indexes": ["KVQ"], "status": "natal_plus_proprietary_target_unwired"},
+    {"asteroid": "Karma", "ephemeris_id": 13811, "predictive_target_relevance": 0.80, "proprietary_source": true, "proprietary_target": false, "indexes": ["CATALYST"], "status": "natal_plus_proprietary_source_unwired"},
+    {"asteroid": "Destinn", "ephemeris_id": 16583, "predictive_target_relevance": 0.80, "proprietary_source": true, "proprietary_target": true, "indexes": ["CATALYST", "NGE"], "status": "natal_plus_proprietary_source_and_target_unwired"},
+    {"asteroid": "Mnemosyne", "ephemeris_id": 10057, "predictive_target_relevance": null, "proprietary_source": false, "proprietary_target": false, "indexes": ["MKI"], "status": "natal_only_indexed"},
+    {"asteroid": "Atlantis", "ephemeris_id": 11198, "predictive_target_relevance": null, "proprietary_source": false, "proprietary_target": false, "indexes": ["MKI"], "status": "natal_only_indexed"},
+    {"asteroid": "Sophia", "ephemeris_id": 10251, "predictive_target_relevance": null, "proprietary_source": false, "proprietary_target": false, "indexes": ["MKI"], "status": "natal_only_indexed"},
+    {"asteroid": "Arachne", "ephemeris_id": 10407, "predictive_target_relevance": null, "proprietary_source": false, "proprietary_target": false, "indexes": ["RWI"], "status": "natal_only_indexed"},
+    {"asteroid": "Chaos", "ephemeris_id": 29521, "predictive_target_relevance": 0.70, "proprietary_source": true, "proprietary_target": false, "indexes": ["RWI"], "status": "natal_plus_proprietary_source_unwired"},
+    {"asteroid": "Hermes", "ephemeris_id": 79230, "predictive_target_relevance": 0.70, "proprietary_source": true, "proprietary_target": false, "indexes": ["MKI", "RWI", "CATALYST"], "status": "natal_plus_proprietary_source_unwired"},
+    {"asteroid": "Themis", "ephemeris_id": 10024, "predictive_target_relevance": null, "proprietary_source": false, "proprietary_target": false, "indexes": ["RWI", "NGE"], "status": "natal_only_indexed"},
+    {"asteroid": "Euterpe", "ephemeris_id": 10027, "predictive_target_relevance": null, "proprietary_source": false, "proprietary_target": false, "indexes": [], "status": "natal_only_no_downstream_use"},
+    {"asteroid": "Urania", "ephemeris_id": 10030, "predictive_target_relevance": null, "proprietary_source": false, "proprietary_target": false, "indexes": [], "status": "natal_only_no_downstream_use"},
+    {"asteroid": "Polyhymnia", "ephemeris_id": 10033, "predictive_target_relevance": null, "proprietary_source": false, "proprietary_target": false, "indexes": [], "status": "natal_only_no_downstream_use"},
+    {"asteroid": "Circe", "ephemeris_id": 10034, "predictive_target_relevance": null, "proprietary_source": false, "proprietary_target": false, "indexes": ["DFIS"], "status": "natal_only_indexed"},
+    {"asteroid": "Isis", "ephemeris_id": 10042, "predictive_target_relevance": null, "proprietary_source": false, "proprietary_target": false, "indexes": [], "status": "natal_only_no_downstream_use"},
+    {"asteroid": "Melete", "ephemeris_id": 10056, "predictive_target_relevance": null, "proprietary_source": false, "proprietary_target": false, "indexes": [], "status": "natal_only_no_downstream_use"},
+    {"asteroid": "Sappho", "ephemeris_id": 10080, "predictive_target_relevance": null, "proprietary_source": false, "proprietary_target": false, "indexes": [], "status": "natal_only_no_downstream_use"},
+    {"asteroid": "Terpsichore", "ephemeris_id": 10081, "predictive_target_relevance": null, "proprietary_source": false, "proprietary_target": false, "indexes": ["NGE"], "status": "natal_only_indexed"},
+    {"asteroid": "Minerva", "ephemeris_id": 10093, "predictive_target_relevance": null, "proprietary_source": false, "proprietary_target": false, "indexes": [], "status": "natal_only_no_downstream_use"},
+    {"asteroid": "Hekate", "ephemeris_id": 10100, "predictive_target_relevance": null, "proprietary_source": false, "proprietary_target": false, "indexes": ["DFIS"], "status": "natal_only_indexed"},
+    {"asteroid": "Medea", "ephemeris_id": 10212, "predictive_target_relevance": 0.75, "proprietary_source": true, "proprietary_target": false, "indexes": ["DFIS"], "status": "natal_plus_proprietary_source_unwired"},
+    {"asteroid": "Aletheia", "ephemeris_id": 10259, "predictive_target_relevance": 0.80, "proprietary_source": true, "proprietary_target": false, "indexes": [], "status": "natal_plus_proprietary_source_unwired"},
+    {"asteroid": "Industria", "ephemeris_id": 10389, "predictive_target_relevance": null, "proprietary_source": false, "proprietary_target": false, "indexes": [], "status": "natal_only_no_downstream_use"},
+    {"asteroid": "Alma", "ephemeris_id": 10390, "predictive_target_relevance": null, "proprietary_source": false, "proprietary_target": false, "indexes": [], "status": "natal_only_no_downstream_use"},
+    {"asteroid": "Moirai", "ephemeris_id": 10638, "predictive_target_relevance": null, "proprietary_source": false, "proprietary_target": false, "indexes": ["NGE"], "status": "natal_only_indexed"},
+    {"asteroid": "Lilith_Asteroid", "ephemeris_id": 11181, "predictive_target_relevance": null, "proprietary_source": false, "proprietary_target": false, "indexes": [], "status": "natal_only_no_downstream_use"},
+    {"asteroid": "Anubis", "ephemeris_id": 11912, "predictive_target_relevance": null, "proprietary_source": false, "proprietary_target": false, "indexes": ["AHL"], "status": "natal_only_indexed"},
+    {"asteroid": "Kaali", "ephemeris_id": 14227, "predictive_target_relevance": 0.75, "proprietary_source": true, "proprietary_target": false, "indexes": ["DFIS"], "status": "natal_plus_proprietary_source_unwired"},
+    {"asteroid": "Child", "ephemeris_id": 14580, "predictive_target_relevance": null, "proprietary_source": false, "proprietary_target": false, "indexes": ["AHL"], "status": "natal_only_indexed"},
+    {"asteroid": "Angel", "ephemeris_id": 21911, "predictive_target_relevance": null, "proprietary_source": false, "proprietary_target": false, "indexes": [], "status": "natal_only_no_downstream_use"},
+    {"asteroid": "DNA", "ephemeris_id": 65555, "predictive_target_relevance": null, "proprietary_source": false, "proprietary_target": false, "indexes": ["AHL"], "status": "natal_only_indexed"}
+  ],
+  "clock_summary": {
+    "fully_operational": [
+      "transit_cycles",
+      "house_ingresses_jupiter_through_pluto",
+      "stations_mercury_through_pluto",
+      "eclipses",
+      "plain_lunations_with_natal_contact_and_eclipse_dedup",
+      "retrograde_clusters",
+      "void_of_course_moon",
+      "same_day_activation_transits",
+      "daily_and_weekly_exact_contact_timeline",
+      "convergence_overlay_within_transit_family",
+      "predictive_residual_window_detector"
+    ],
+    "implemented_but_hidden_or_inactive": [
+      "scan_proprietary_forecast_windows_asteroid_aware"
+    ],
+    "partially_scaffolded": [
+      "retrograde_cycles_as_first_class_multi_station_events",
+      "predictive_method_families_other_than_transit"
+    ],
+    "configuration_or_taxonomy_only": [
+      "RETURN_method_family",
+      "PROGRESSION_method_family",
+      "SOLAR_ARC_method_family",
+      "UNKNOWN_fallback_family"
+    ],
+    "planned_but_not_implemented": [
+      "exact_returns_solar_lunar_jupiter_saturn",
+      "solar_arc_sandbox_macro_one_convention",
+      "limited_secondary_progressions_sandbox"
+    ],
+    "not_present_at_all": [
+      "annual_profections",
+      "zodiacal_releasing",
+      "firdaria_and_other_time_lord_systems",
+      "primary_directions",
+      "arabic_parts_or_hellenistic_lots",
+      "ingresses_below_jupiter"
+    ],
+    "dead_or_unreachable": [
+      "_detect_and_frame_convergences_legacy_dead",
+      "MCQ_SIREN_MAGNETIC_legacy_indexes"
+    ]
+  },
+  "top_three_latent_capabilities": [
+    "scan_proprietary_forecast_windows_ready_to_wire_into_predictive_signal_stream",
+    "signal_and_window_normalization_layer_already_designed_to_absorb_new_clocks",
+    "window_diagnostics_preserve_separation_of_intensity_coherence_memory_gradient_and_semantic_state_ready_for_multi_method_convergence"
+  ],
+  "top_three_gaps_blocking_discrete_event_work": [
+    "no_long_clock_scanners_so_convergence_across_method_families_has_nothing_to_converge_across",
+    "daily_provenance_and_rejected_peak_evidence_are_dropped_blocking_retrospective_validation",
+    "no_first_class_validation_export_predictive_results_omitted_from_manifest_and_only_sandbox_html_surfaces_windows"
+  ],
+  "recommended_investigation_order": [
+    "verify_intent_behind_scan_proprietary_forecast_windows_non_wiring",
+    "design_predictive_evidence_sidecar_schema",
+    "assess_preservation_of_daily_contributor_ids_and_rejected_peak_indices",
+    "define_minimum_viable_exact_return_event_contract",
+    "clarify_governance_policy_for_proprietary_asteroid_signals_reaching_predictive_engine",
+    "decide_convergence_detection_scope_across_independence_group_or_natal_configuration",
+    "assess_micro_window_candidate_assembly_from_intra_day_exact_contacts",
+    "confirm_manifest_or_natal_sidecar_boundary_for_asteroid_natal_positions",
+    "audit_governance_layer_for_cross_report_asteroid_visibility_policy_calls",
+    "identify_quick_wins_predictive_results_in_manifest_and_signal_ids_per_day"
+  ],
+  "audit_verdict": {
+    "system_class": "transit_weather_plus_sandbox_diagnostic_with_strong_asteroid_natal_substrate",
+    "multi_clock_status": "not_multi_clock_but_scaffold_ready",
+    "discrete_event_prediction_status": "not_supported_today_at_3_to_6_day_granularity",
+    "asteroid_first_class_natal": true,
+    "asteroid_first_class_forecast": false,
+    "asteroid_forecast_scanner_exists_but_unwired": true,
+    "overhaul_required": false,
+    "incremental_path_available": true,
+    "primary_incremental_deltas": [
+      "wire_scan_proprietary_forecast_windows_into_predictive_signal_stream",
+      "preserve_daily_contributor_ids_and_rejected_peak_diagnostics",
+      "add_predictive_evidence_sidecar_writer",
+      "add_at_least_one_non_transit_scanner_returns_first",
+      "define_cross_family_convergence_aggregation",
+      "define_micro_window_candidate_assembly"
+    ]
+  }
+}
