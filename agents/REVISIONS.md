@@ -5,6 +5,70 @@ Newest entry on top. See `agents/README.md` for the convention.
 
 ---
 
+## 2026-07-08 - Phase 8 pre-review finding: `signal_role` was never actually derived, only echoed (Claude / Sonnet 5)
+
+**Context:** Doing the pre-implementation review of
+`phase0/04_convergence_and_candidate_protocol.md` before prompting Codex
+for Phase 8 (the same pattern used before every phase since Phase 3),
+checking whether Phase 8's hard requirements against Phase 7's output
+are actually satisfiable. Phase 8's MicroCandidate rule requires
+`|trigger_support| >= 1`, defined as signals with `signal_role ==
+"trigger_evidence"`.
+
+**Root cause, confirmed by reading, not assumed:** `signal_role` is a
+three-value enum (`chapter_evidence` / `trigger_evidence` /
+`modifier_evidence`) defined by a specific derivation rule in
+`phase0/01_predictive_object_schemas.md` section 3 (based on
+`temporal_precision` and `clock_role`). Two separate bugs meant no real
+signal ever actually carried a correct value:
+
+1. `engine/predictive_engine.py`'s `_event_to_signal()` (the shared
+   adapter for transit/return/solar_arc/progression/ZR signals) set
+   `clock_role` and `temporal_precision` on every signal but never set
+   `signal_role` at all. `_proprietary_event_to_signal()` (the Phase 3
+   asteroid adapter) set neither `clock_role` nor `signal_role`.
+2. `engine/predictive_sidecar.py`'s `_signal_role()` — the only place
+   that *did* compute a `signal_role` value, at sidecar-serialization
+   time — didn't implement the schema rule at all. It returned
+   `clock_role` back verbatim (e.g. the literal string `"chapter"`),
+   which never matches any of the three valid enum values. Under this
+   logic, `trigger_support` could never be non-empty on any real
+   report, no matter what Phase 8 built on top of it.
+
+**Fix:** Added `_derive_signal_role(temporal_precision, clock_role,
+*, source_body="", duration_days=None)` to `engine/predictive_engine.py`,
+implementing the schema's rule directly (chapter_evidence for
+`temporal_precision in {season, year_or_longer}` or `clock_role ==
+chapter`; trigger_evidence for `temporal_precision in {instant, day,
+week}` and `clock_role in {trigger, return, overlay}`; modifier_evidence
+for `clock_role in {modifier, time_lord}`; ties toward trigger_evidence).
+Wired it into `_event_to_signal()` and `_proprietary_event_to_signal()`
+so `signal_role` is set once, in-memory, at signal construction time —
+not just at sidecar export. Raw `TRANSIT` scan events (from
+`transit_engine.py`) never carry `clock_role`/`temporal_precision` at
+all, so added an explicit fallback for that one case only (both fields
+blank): structural outer-planet source body or >90-day duration ->
+chapter_evidence, else trigger_evidence — the same heuristic
+`convergence.py`'s own `_is_long_clock_signal()` already used
+independently, so this isn't a new invented rule, just making the
+existing one available earlier and consistently.
+`predictive_sidecar.py`'s `_signal_role()` now prefers the upstream
+`signal_role` if already one of the three valid values, and only
+falls back to re-deriving (with the same structural/duration fallback)
+for signals built outside the engine, e.g. test fixtures.
+
+**Verification:** Full phase 1-7 regression suite (47 tests) passes.
+Live-generated a real `year_ahead` report and inspected
+`.eo_predictive.json` directly: 127 signals, `signal_role` distribution
+`{trigger_evidence: 64, chapter_evidence: 54, modifier_evidence: 9}`
+across all method families (TRANSIT, LUNATION, RETURN, SOLAR_ARC,
+PROGRESSION, ZODIACAL_RELEASING) — the first time this field has ever
+held a schema-correct value on a real report. Phase 8's
+`trigger_support` requirement is now satisfiable. Clear to prompt Codex
+for Phase 8.
+
+---
+
 ## 2026-07-08 - Phase 7 performance fix: convergence composition took 2+ minutes on a real report (Claude / Sonnet 5)
 
 **Context:** Reviewing Codex's Phase 7 landing (both roles were

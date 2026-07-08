@@ -18,6 +18,7 @@ from datetime import date, datetime, time, timezone
 from typing import Any
 
 from product_versions import write_json
+from engine.predictive_engine import _derive_signal_role
 
 
 SIDECAR_SCHEMA_VERSION = "phase0.1.1"
@@ -558,17 +559,21 @@ def _method_code(method_family: str) -> str:
     return code[:4] or "unk"
 
 
+_VALID_SIGNAL_ROLES = frozenset({"chapter_evidence", "trigger_evidence", "modifier_evidence"})
+
+
 def _signal_role(signal: dict) -> str:
-    explicit = str(signal.get("clock_role") or "").strip()
-    if explicit:
-        return explicit
-    source_body = signal.get("source_body")
-    if source_body in _STRUCTURAL_BODIES:
-        return "chapter_evidence"
-    event_kind = str(signal.get("event_kind") or "").upper()
-    if event_kind in {"STATION", "INGRESS"}:
-        return "trigger_evidence"
-    return "trigger_evidence"
+    upstream = str(signal.get("signal_role") or "").strip()
+    if upstream in _VALID_SIGNAL_ROLES:
+        return upstream
+    start = _parse_date(signal.get("start_date"))
+    end = _parse_date(signal.get("end_date"))
+    return _derive_signal_role(
+        str(signal.get("temporal_precision") or ""),
+        str(signal.get("clock_role") or ""),
+        source_body=str(signal.get("source_body") or ""),
+        duration_days=(end - start).days if start and end else None,
+    )
 
 
 def _clock_role_for_signal(signal: dict) -> str:

@@ -664,6 +664,49 @@ def _collect_progression_signals(
     return signals
 
 
+_CHAPTER_CLOCK_ROLES = {"chapter"}
+_TRIGGER_CLOCK_ROLES = {"trigger", "return", "overlay"}
+_MODIFIER_CLOCK_ROLES = {"modifier", "time_lord"}
+_CHAPTER_PRECISIONS = {"season", "year_or_longer"}
+_TRIGGER_PRECISIONS = {"instant", "day", "week"}
+_STRUCTURAL_SOURCE_BODIES = frozenset({"Saturn", "Uranus", "Neptune", "Pluto"})
+
+
+def _derive_signal_role(
+    temporal_precision: str,
+    clock_role: str,
+    *,
+    source_body: str = "",
+    duration_days: float | None = None,
+) -> str:
+    """
+    Implements phase0/01_predictive_object_schemas.md §3's PredictiveSignal.signal_role rule:
+    chapter_evidence for temporal_precision in {season, year_or_longer} OR clock_role == chapter;
+    trigger_evidence for temporal_precision in {instant, day, week} AND clock_role in {trigger, return, overlay};
+    modifier_evidence for clock_role in {modifier, time_lord};
+    ties broken toward trigger_evidence.
+
+    When a source event (e.g. raw TRANSIT scans) carries neither clock_role nor
+    temporal_precision, falls back to the same structural-body/duration heuristic
+    convergence.py already uses independently for `_is_long_clock_signal`, so
+    slow-moving structural transits still classify as chapter-level evidence.
+    """
+    precision = (temporal_precision or "").strip().lower()
+    role = (clock_role or "").strip().lower()
+    if precision in _CHAPTER_PRECISIONS or role in _CHAPTER_CLOCK_ROLES:
+        return "chapter_evidence"
+    if precision in _TRIGGER_PRECISIONS and role in _TRIGGER_CLOCK_ROLES:
+        return "trigger_evidence"
+    if role in _MODIFIER_CLOCK_ROLES:
+        return "modifier_evidence"
+    if not precision and not role:
+        if source_body in _STRUCTURAL_SOURCE_BODIES:
+            return "chapter_evidence"
+        if duration_days is not None and duration_days > 90:
+            return "chapter_evidence"
+    return "trigger_evidence"
+
+
 def _event_to_signal(event: dict, index: int, birth_time_status: str = "unknown") -> dict | None:
     """
     Converts one transit engine event dict to a PredictiveSignal node.
@@ -747,6 +790,12 @@ def _event_to_signal(event: dict, index: int, birth_time_status: str = "unknown"
         "end_date":          _to_date(end_dt),
         "clock_role":        str(event.get("clock_role") or ""),
         "temporal_precision": str(event.get("temporal_precision") or ""),
+        "signal_role":       _derive_signal_role(
+            str(event.get("temporal_precision") or ""),
+            str(event.get("clock_role") or ""),
+            source_body=source_body,
+            duration_days=(end_dt - start_dt).days if start_dt and end_dt else None,
+        ),
         "exact_dates":       [_to_date(dt) for dt in event.get("exact_datetimes", []) if isinstance(dt, datetime)],
         "report_surface_visibility": event.get("report_surface_visibility") or [],
         "calculation_trace": {
@@ -847,6 +896,12 @@ def _proprietary_event_to_signal(event: dict, index: int, policy: Any) -> dict |
         "start_date": _to_date(start_dt),
         "peak_date": _to_date(peak_dt),
         "end_date": _to_date(end_dt),
+        "clock_role": str(event.get("clock_role") or "trigger"),
+        "temporal_precision": str(event.get("temporal_precision") or "day"),
+        "signal_role": _derive_signal_role(
+            str(event.get("temporal_precision") or "day"),
+            str(event.get("clock_role") or "trigger"),
+        ),
         "topic_keys": topic_keys,
         "domain_keys": domain_keys,
         "asteroid_registry_version": policy.policy_version,
