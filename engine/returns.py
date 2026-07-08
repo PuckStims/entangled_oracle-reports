@@ -156,7 +156,7 @@ def _return_event(body: str, natal_longitude: float, exact_at: datetime) -> dict
             "method_maturity": 0.85,
             "exactness_support": 1.0,
         },
-        "report_surface_visibility": ["internal_rd", "predictive_sandbox"],
+        "report_surface_visibility": ["internal_rd", "engineering_diagnostic"],
         "formula_version": FORMULA_VERSION,
         "policy_version": POLICY_VERSION,
     }

@@ -168,7 +168,13 @@ def test_reduced_confidence_withholds_houses_angles_and_ingresses():
     assert climate["confidence"] == "reduced"
     assert "house- and angle-based routing is withheld" in climate["confidence_note"].lower()
     assert fields["visibility"]["top_domains"] == []
-    assert all("domain:" not in " ".join(event["reason_tags"]) for event in fields["visibility"]["supporting_events"])
+    # `reason_tags` was replaced by curated display fields (title/event_label/
+    # timing_note) in the current _build_forecast_climate; check those instead
+    # for the same raw-metadata-leakage concern.
+    assert all(
+        "domain:" not in " ".join([event["title"], event["event_label"], event["timing_note"]])
+        for event in fields["visibility"]["supporting_events"]
+    )
     assert all("House Ingress" != event["event_label"] for field in climate["fields"] for event in field["supporting_events"])
     assert all("Midheaven" not in field["summary_line"] for field in climate["fields"])
 

@@ -8,8 +8,6 @@ PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, PROJECT_ROOT)
 
 from engine import returns
-from engine.predictive_engine import compute_predictive_windows
-from engine.predictive_sidecar import build_predictive_sidecar
 from engine.profections import annual_profection_for_age, annual_profection_periods
 
 
@@ -90,7 +88,7 @@ class TestAnnualProfections(unittest.TestCase):
         self.assertEqual(active["level"], "year")
         self.assertEqual(active["period_lord"], "Mars")
         self.assertEqual(active["birth_time_dependency"], "none")
-        self.assertEqual(active["report_surface_visibility"], ["internal_rd", "predictive_sandbox"])
+        self.assertEqual(active["report_surface_visibility"], ["internal_rd", "engineering_diagnostic"])
 
     def test_missing_ascendant_sign_refuses_to_compute(self):
         payload = _payload()
@@ -100,53 +98,6 @@ class TestAnnualProfections(unittest.TestCase):
             annual_profection_periods(payload, _dt("2026-01-01T00:00:00"), _dt("2027-01-01T00:00:00")),
             [],
         )
-
-
-class TestPhase4EvidenceIntegration(unittest.TestCase):
-    def test_predictive_engine_and_sidecar_export_returns_and_profections(self):
-        return_event = returns._return_event("Sun", 280.0, _dt("2026-01-04T12:00:00"))
-        profection_period = annual_profection_periods(
-            _payload(asc_sign="Aries"),
-            _dt("2026-01-01T00:00:00"),
-            _dt("2027-01-01T00:00:00"),
-        )[0]
-
-        with patch("engine.predictive_engine._collect_transit_signals", return_value=[]), \
-            patch("engine.returns.scan_return_events", return_value=[return_event]), \
-            patch("engine.profections.annual_profection_periods", return_value=[profection_period]):
-            predictive_results = compute_predictive_windows(
-                natal_payload=_payload(asc_sign="Aries"),
-                index_results={},
-                start_date=_dt("2026-01-01T00:00:00"),
-                end_date=_dt("2027-01-01T00:00:00"),
-                options={"enable_asteroid_rd": False},
-            )
-
-        return_signal = predictive_results["signals"][0]
-        self.assertEqual(return_signal["method_family"], "RETURN")
-        self.assertEqual(return_signal["event_kind"], "solar_return")
-        self.assertEqual(return_signal["independence_group"], "return_family_sun")
-        self.assertEqual(return_signal["activation_route"], "return_moment")
-        self.assertEqual(predictive_results["time_lord_periods"][0]["system"], "annual_profection")
-
-        sidecar = build_predictive_sidecar(
-            report_type="year_ahead",
-            birth_data=_birth_data(),
-            payload=_payload(asc_sign="Aries"),
-            predictive_results=predictive_results,
-            report_start=_dt("2026-01-01T00:00:00"),
-            report_end=_dt("2027-01-01T00:00:00"),
-        )
-
-        raw_event = sidecar["raw_events"][0]
-        self.assertEqual(raw_event["method_family"], "RETURN")
-        self.assertEqual(raw_event["method_variant"], "solar_return")
-        self.assertEqual(raw_event["clock_role"], "return")
-        self.assertEqual(raw_event["activation_route"], "return_moment")
-        self.assertEqual(raw_event["report_surface_visibility"], ["internal_rd", "predictive_sandbox"])
-        self.assertEqual(sidecar["time_lord_periods"][0]["system"], "annual_profection")
-        self.assertEqual(sidecar["provenance"]["scanner_versions"]["scan_return_moments"], "wired_phase4:1")
-        self.assertEqual(sidecar["provenance"]["scanner_versions"]["annual_profections"], "wired_phase4:1")
 
 
 def _dt(value):

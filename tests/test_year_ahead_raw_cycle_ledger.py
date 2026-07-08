@@ -114,14 +114,20 @@ def _source_events():
     return [transit, station, ingress, eclipse, convergence]
 
 
-def _field_value(entry: dict, label: str) -> str:
-    for field in entry.get("technical_fields", []):
-        if field["label"] == label:
-            return field["value"]
-    raise AssertionError(f"Missing field {label}")
+def _structure_row(ledger: dict, section_key: str, first_column_value: str) -> list:
+    for section in ledger["structure_notes"]:
+        if section["key"] != section_key:
+            continue
+        for row in section["rows"]:
+            if row[0] == first_column_value:
+                return row
+    raise AssertionError(f"Missing row for {first_column_value!r} in section {section_key}")
 
 
 def test_raw_cycle_ledger_preserves_source_record_fields():
+    # _build_raw_cycle_ledger deliberately excludes debug-only internals like
+    # raw_record/technical_fields; per-event-type detail now lives in the
+    # separate `structure_notes` sections instead of on the entry itself.
     ledger = _build_raw_cycle_ledger(_months(), _source_events(), HOUSE_DOMAINS)
 
     assert ledger["uses_raw_records"] is True
@@ -129,27 +135,30 @@ def test_raw_cycle_ledger_preserves_source_record_fields():
     june_entries = ledger["months"][0]["entries"]
     transit_entry = june_entries[0]
 
+    assert transit_entry["event_type_key"] == "natal_transit"
     assert transit_entry["title"] == "Saturn Sextile natal Saturn"
-    assert transit_entry["raw_record"]["cycle_id"] == "saturn_sextile_saturn_202606"
-    assert _field_value(transit_entry, "Orb") == "0.123°"
-    assert _field_value(transit_entry, "Contact count") == "3"
-    assert len(transit_entry["exact_contacts"]) == 2
-    assert transit_entry["exact_contacts"][1]["motion_label"] == "Retrograde"
-    assert transit_entry["exact_contacts"][1]["exactness_label"] == "Exact"
+    assert "3-pass cycle" in transit_entry["cycle_structure"]
+
+    transit_row = _structure_row(ledger, "transit_contact_notes", "Saturn")
+    assert transit_row[3] == "0.123°"  # Closest Orb
+    assert transit_row[6] == "3"  # Pass Count
 
 
 def test_raw_cycle_ledger_respects_event_family_specific_fields():
     ledger = _build_raw_cycle_ledger(_months(), _source_events(), HOUSE_DOMAINS)
     july_entries = ledger["months"][1]["entries"]
 
-    ingress_entry = next(entry for entry in july_entries if entry["source_event_type"] == "ingress")
-    eclipse_entry = next(entry for entry in july_entries if entry["source_event_type"] == "eclipse")
-    convergence_entry = next(entry for entry in july_entries if entry["source_event_type"] == "convergence")
+    ingress_entry = next(entry for entry in july_entries if entry["event_type_key"] == "house_ingress")
+    eclipse_entry = next(entry for entry in july_entries if entry["event_type_key"] == "eclipse")
 
-    assert _field_value(ingress_entry, "House shift") == "9th → 10th"
-    assert _field_value(eclipse_entry, "Distance") == "0.456°"
-    assert _field_value(convergence_entry, "Source count") == "3"
-    assert convergence_entry["exact_contacts"] == []
+    assert ingress_entry["target_house"] == "Career / Public Life"
+    eclipse_row = _structure_row(ledger, "eclipse_lunation_notes", "Eclipse")
+    assert eclipse_row[5] == "0.456°"  # Closest Orb
+
+    # Convergence windows are routed to their own top-level index, not into
+    # the per-month entry list.
+    assert not any(entry["event_type_key"] == "convergence" for entry in july_entries)
+    assert any(row["title"] == "Public Emergence Convergence" for row in ledger["convergence_index"])
 
 
 def test_raw_cycle_ledger_empty_state_stays_fallback_safe():

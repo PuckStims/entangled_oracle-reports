@@ -118,7 +118,7 @@ def scan_solar_arc_events(natal_payload: dict, start_date: datetime, end_date: d
                 orb = abs(_aspect_delta(source_lon, target["longitude"], ASPECTS[aspect_name]))
                 if orb > SOLAR_ARC_ORB:
                     continue
-                events.append(_solar_arc_event(source_name, target_name, source, target, aspect_name, orb, exact_at, birth_time_state))
+                events.append(_solar_arc_event(source_name, target_name, source, target, aspect_name, orb, exact_at, birth_time_state, start))
 
     events.sort(key=lambda event: (event["peak_datetime"], event["transit_planet"], event["natal_target"]))
     return events
@@ -188,6 +188,7 @@ def _solar_arc_event(
     orb: float,
     exact_at: datetime,
     birth_time_state: str,
+    start: datetime,
 ) -> dict:
     angle_involved = source["kind"] == "angle" or target["kind"] == "angle"
     asteroid_involved = source["kind"] == "asteroid" or target["kind"] == "asteroid"
@@ -197,6 +198,10 @@ def _solar_arc_event(
     variant = "solar_arc_asteroid_aspect" if asteroid_involved else "solar_arc_angle_aspect" if angle_involved else "solar_arc_body_aspect"
     route = "solar_arc_to_asteroid" if target["kind"] == "asteroid" else "solar_arc_to_angle" if target["kind"] == "angle" else "solar_arc_to_body"
     exact_at = _ensure_utc(exact_at)
+    
+    is_exact = abs((start - exact_at).total_seconds()) < 3600
+    arc_phase = "exact" if is_exact else "building" if start < exact_at else "receding"
+    
     return {
         "event_type": "solar_arc",
         "transit_planet": source_name,
@@ -207,6 +212,7 @@ def _solar_arc_event(
         "activation_route": route,
         "independence_group": "solar_arc_family",
         "temporal_precision": "season",
+        "arc_phase": arc_phase,
         "orb": round(orb, 4),
         "orb_limit": SOLAR_ARC_ORB,
         "exactness": round(max(0.0, 1.0 - orb / SOLAR_ARC_ORB), 5),
@@ -226,7 +232,7 @@ def _solar_arc_event(
         },
         "confidence_state": confidence_state,
         "birth_time_dependency": "hard" if angle_involved else "soft",
-        "report_surface_visibility": ["internal_rd", "predictive_sandbox"],
+        "report_surface_visibility": ["internal_rd", "engineering_diagnostic"],
         "formula_version": FORMULA_VERSION,
         "policy_version": POLICY_VERSION,
     }

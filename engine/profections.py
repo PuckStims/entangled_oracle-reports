@@ -147,7 +147,7 @@ def _annual_period(
         "confidence": round(confidence, 4),
         "confidence_components": confidence_components,
         "birth_time_dependency": "none",
-        "report_surface_visibility": ["internal_rd", "predictive_sandbox"],
+        "report_surface_visibility": ["internal_rd", "engineering_diagnostic"],
         "formula_version": FORMULA_VERSION,
         "policy_version": POLICY_VERSION,
         "provenance": {

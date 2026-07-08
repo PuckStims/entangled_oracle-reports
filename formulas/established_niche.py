@@ -23,7 +23,7 @@ SPECIALIST_BODY_POLICIES = {
     "Chiron": {
         "display_name": "Chiron",
         "method_name": "specialist_body_context",
-        "eligible_report_types": ("soul_ecosystem", "predictive_sandbox"),
+        "eligible_report_types": ("soul_ecosystem",),
         "default_visibility": "supporting_context",
         "allowed_use_cases": (
             "natal sign placement",
@@ -47,7 +47,7 @@ SPECIALIST_BODY_POLICIES = {
     "Lilith_BML": {
         "display_name": "Black Moon Lilith",
         "method_name": "specialist_body_context",
-        "eligible_report_types": ("soul_ecosystem", "predictive_sandbox", "year_ahead", "personal_forecast"),
+        "eligible_report_types": ("soul_ecosystem", "year_ahead", "personal_forecast"),
         "default_visibility": "expanded_section",
         "allowed_use_cases": (
             "sign",

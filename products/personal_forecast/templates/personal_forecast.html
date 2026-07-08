@@ -723,69 +723,6 @@
   <hr>
 
   <!-- ── Featured Transit ── -->
-  {% if predictive_report_surface and predictive_report_surface.enabled %}
-  <div class="predictive-research-section" id="predictive-research-layer">
-    <div class="section-label">Predictive / Experimental Layer</div>
-    <p class="predictive-research-note">{{ predictive_report_surface.framing }}</p>
-
-    {% if predictive_report_surface.chapters %}
-    <div class="predictive-card-list">
-      {% for chapter in predictive_report_surface.chapters %}
-      <article class="predictive-card">
-        <div class="predictive-card-kicker">Emerging chapter - {{ chapter.window_label }}</div>
-        <h3>{{ chapter.title }}</h3>
-        <p>{{ chapter.summary }}</p>
-        <div class="predictive-meta">
-          {% for domain in chapter.domains[:2] %}<span>{{ domain }}</span>{% endfor %}
-          {% for clock in chapter.active_long_clocks[:2] %}<span>{{ clock }}</span>{% endfor %}
-          <span>{{ chapter.contributing_signal_count }} signal{{ 's' if chapter.contributing_signal_count != 1 else '' }}</span>
-        </div>
-        <details class="predictive-details">
-          <summary>Component detail</summary>
-          <div class="predictive-score-grid">
-            {% for key, value in chapter.component_scores.items() %}
-            <div><span>{{ key | replace('_', ' ') }}</span><strong>{{ value }}</strong></div>
-            {% endfor %}
-          </div>
-        </details>
-      </article>
-      {% endfor %}
-    </div>
-    {% endif %}
-
-    {% if predictive_report_surface.candidates %}
-    <div class="predictive-card-list" style="margin-top: 16px;">
-      {% for candidate in predictive_report_surface.candidates %}
-      <article class="predictive-card">
-        <div class="predictive-card-kicker">Research-flagged window - {{ candidate.window_label }}</div>
-        <h3>{{ candidate.title }}</h3>
-        <p>{{ candidate.summary }}</p>
-        <div class="predictive-meta">
-          {% for domain in candidate.domains[:2] %}<span>{{ domain }}</span>{% endfor %}
-          {% for family in candidate.independent_method_families[:2] %}<span>{{ family }}</span>{% endfor %}
-          {% if candidate.candidate_status %}<span>{{ candidate.candidate_status | replace('_', ' ') }}</span>{% endif %}
-        </div>
-        <details class="predictive-details">
-          <summary>Component detail</summary>
-          <div class="predictive-score-grid">
-            <div><span>Convergence score</span><strong>{{ candidate.convergence_score }}</strong></div>
-            <div><span>Counterforce</span><strong>{{ candidate.counterforce }}</strong></div>
-            <div><span>Complexity</span><strong>{{ candidate.complexity }}</strong></div>
-            <div><span>Confidence</span><strong>{{ candidate.confidence }}</strong></div>
-            {% for key, value in candidate.component_scores.items() %}
-            <div><span>{{ key | replace('_', ' ') }}</span><strong>{{ value }}</strong></div>
-            {% endfor %}
-          </div>
-        </details>
-      </article>
-      {% endfor %}
-    </div>
-    {% endif %}
-  </div>
-
-  <hr>
-  {% endif %}
-
   <div class="featured-section">
     <div class="section-label">Turning Point</div>
     {% if featured_event %}

@@ -11,6 +11,7 @@ weights so forecast events can distinguish:
 """
 from __future__ import annotations
 
+from datetime import datetime
 from typing import Any
 
 from formulas.standard.aspect_architecture import evaluate_aspect_architecture
@@ -242,6 +243,30 @@ def _event_house_number(event: dict) -> int:
         return 0
 
 
+def _parse_period_datetime(value: Any) -> datetime | None:
+    if isinstance(value, datetime):
+        return value
+    if isinstance(value, str) and value:
+        try:
+            return datetime.fromisoformat(value.replace("Z", "+00:00"))
+        except ValueError:
+            return None
+    return None
+
+
+def _covering_period(periods: list[dict], moment: Any) -> dict | None:
+    if not isinstance(moment, datetime):
+        return None
+    for period in periods:
+        start_at = _parse_period_datetime(period.get("start_at"))
+        end_at = _parse_period_datetime(period.get("end_at"))
+        if start_at is None or end_at is None:
+            continue
+        if start_at <= moment < end_at:
+            return period
+    return None
+
+
 def _event_exactness(event: dict, event_type: str) -> float:
     if event_type == "transit":
         maximum_orb = float(event.get("maximum_orb", 0.0) or 0.0)
@@ -298,6 +323,10 @@ def _theme_matches(profile: dict[str, Any], target_name: str, house_number: int)
 
 
 def _routing_state(event_type: str, activity_score: float, structural_importance: float, theme_convergence: float) -> str:
+    if event_type in {"annual_profection", "zodiacal_releasing"}:
+        return "long-term era evidence"
+    if event_type in {"progression", "solar_arc"}:
+        return "chapter backdrop"
     if event_type == "convergence_window":
         return "convergence evidence"
     if activity_score >= 0.82 and structural_importance >= 0.66:
@@ -459,7 +488,11 @@ def link_related_forecast_events(
     station_events: list[dict],
     eclipse_events: list[dict],
     profile: dict[str, Any],
-) -> tuple[list[dict], list[dict], list[dict], list[dict]]:
+    lunation_events: list[dict] = None,
+    progression_events: list[dict] = None,
+    solar_arc_events: list[dict] = None,
+    time_lord_periods: list[dict] = None,
+) -> dict[str, list[dict]]:
     """
     Add cross-event context such as station-linked cycles and house-based clusters.
     """
@@ -467,6 +500,10 @@ def link_related_forecast_events(
     ingresses = [dict(event) for event in ingress_events]
     stations = [dict(event) for event in station_events]
     eclipses = [dict(event) for event in eclipse_events]
+    lunations = [dict(event) for event in (lunation_events or [])]
+    progressions = [dict(event) for event in (progression_events or [])]
+    solar_arcs = [dict(event) for event in (solar_arc_events or [])]
+    time_lords = [dict(event) for event in (time_lord_periods or [])]
 
     for station in stations:
         peak_dt = station.get("peak_datetime")
@@ -491,7 +528,7 @@ def link_related_forecast_events(
             station["near_active_transit_cycle"] = True
             station["_linked_station_softening"] = 0.08
 
-    related_sources = transits + stations + eclipses
+    related_sources = transits + stations + eclipses + lunations
     for ingress in ingresses:
         peak_dt = ingress.get("peak_datetime")
         house_number = _event_house_number(ingress)
@@ -554,6 +591,57 @@ def link_related_forecast_events(
     ingresses = [enrich_forecast_event(event, profile) for event in ingresses]
     stations = [enrich_forecast_event(event, profile) for event in stations]
     eclipses = [enrich_forecast_event(event, profile) for event in eclipses]
+    lunations = [enrich_forecast_event(event, profile) for event in lunations]
+    progressions = [enrich_forecast_event(event, profile) for event in progressions]
+    solar_arcs = [enrich_forecast_event(event, profile) for event in solar_arcs]
+    
+    # Do not force time_lord_periods into the point-event scoring shape.
+    for tl in time_lords:
+        tl["routing_state"] = _routing_state(str(tl.get("system") or ""), 0.0, 0.0, 0.0)
+
+    # Annual Profections: weight modifier for transits active during a
+    # profection year, per phase0/03_method_charters.md C4 §7 ("Annual
+    # profection is a weight modifier for its year. It elevates signals
+    # whose anchors involve the time lord, its ruled houses, or its natal
+    # aspects."). Deterministic multiplicative adjustment using the period's
+    # own declared weight_modifier -- not the quarantined statistical
+    # convergence apparatus.
+    annual_profections = [tl for tl in time_lords if str(tl.get("system") or "") == "annual_profection"]
+    if annual_profections:
+        for transit in transits:
+            peak_dt = transit.get("peak_datetime")
+            if peak_dt is None:
+                continue
+            active_period = _covering_period(annual_profections, peak_dt)
+            if active_period is None:
+                continue
+            period_lord = str(active_period.get("period_lord") or "").strip()
+            period_house = active_period.get("period_house")
+            transit_planet = str(transit.get("transit_planet") or "").strip()
+            target_name = _event_target_name(transit)
+            house_number = _event_house_number(transit)
+            is_time_lord_transit = bool(period_lord) and transit_planet == period_lord
+            is_aspect_to_lord = bool(period_lord) and target_name == period_lord
+            is_profected_house = bool(period_house) and house_number == period_house
+            if not (is_time_lord_transit or is_aspect_to_lord or is_profected_house):
+                continue
+            weight_modifier = float(active_period.get("weight_modifier", 1.0) or 1.0)
+            transit["structural_importance"] = round(
+                _clamp(float(transit.get("structural_importance", 0.0) or 0.0) * weight_modifier), 4,
+            )
+            transit["structural_score"] = transit["structural_importance"]
+            transit["theme_convergence"] = round(
+                _clamp(float(transit.get("theme_convergence", 0.0) or 0.0) * weight_modifier), 4,
+            )
+            transit["annual_profection_linkage"] = [
+                label
+                for label, is_active in [
+                    ("time_lord_transit", is_time_lord_transit),
+                    ("aspect_to_time_lord", is_aspect_to_lord),
+                    ("profected_house", is_profected_house),
+                ]
+                if is_active
+            ]
 
     for station in stations:
         if not bool(station.get("near_active_transit_cycle")):
@@ -578,4 +666,13 @@ def link_related_forecast_events(
         station["routing_state"] = "supporting event"
         station["pass_sequence"] = "station_linked"
 
-    return transits, ingresses, stations, eclipses
+    return {
+        "transit_events": transits,
+        "ingress_events": ingresses,
+        "station_events": stations,
+        "eclipse_events": eclipses,
+        "lunation_events": lunations,
+        "progression_events": progressions,
+        "solar_arc_events": solar_arcs,
+        "time_lord_periods": time_lords,
+    }

@@ -406,10 +406,10 @@ Charters are ordered by build sequence per the program (Phase 4 → Phase 6).
 
 - Input: Lot of Fortune (for topics of embodiment, health, livelihood) or Lot of Spirit (for topics of action, career, life direction).
 - L1 (major) periods: begin at the lot's sign; each sign rules for a fixed number of years per Vettius Valens (Aries 15, Taurus 8, Gemini 20, Cancer 25, Leo 19, Virgo 20, Libra 8, Scorpio 15, Sagittarius 12, Capricorn 27, Aquarius 30, Pisces 12). L1 periods cycle through the zodiac.
-- L2 (sub-) periods: within each L1, sub-divide into 12 sub-periods proportional to the L1 sign's total years, cycling through signs starting from the L1 sign.
-- L3 and L4: recursively subdivide L2 and L3 by the same rule.
+- L2 (sub-) periods: within each L1, keep the same fixed Valens sign-values but read them in the next smaller time-unit (months at L2). Starting from the L1 sign, accumulate sign-durations in zodiacal order, wrapping past Pisces as needed, until the enclosing L1's actual duration is exhausted; the final sub-period may be cut short by the L1 boundary.
+- L3 and L4: recursively apply the same fixed-value / next-smaller-unit rule to L2 and L3 respectively (days at L3, hours at L4), again accumulating and wrapping until the enclosing parent period is exhausted.
 - **Peaks**: an L1 period is a peak when its sign is the sign of the lot itself or the sign(s) in whole-sign aspect (angular houses from the lot: 4, 7, 10). Additional peak marker: whether the L2 period sign is angular from the L1 period sign.
-- **Loosing of the Bond (LOB)**: when a sub-period completes its allotted duration but the parent period has not, the next sub-period "jumps" to the sign opposite the sub-period that just ended. Marked as `is_loosing_of_the_bond = True`.
+- **Loosing of the Bond (LOB)**: when a full 12-sign pass of sub-periods completes but the parent period still has remaining duration, the next sub-period does not continue in normal zodiacal order; it "jumps" to the sign opposite the sub-period that just ended. Mark the incoming jumped-to sub-period as `is_loosing_of_the_bond = True`.
 
 ### 2. House system and zodiac
 

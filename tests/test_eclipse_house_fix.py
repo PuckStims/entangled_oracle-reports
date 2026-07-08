@@ -157,17 +157,17 @@ def _call_duration_descriptor(event: dict) -> str:
 def test_normal_transit_shows_enters_and_leaves():
     event = _make_transit_event()
     desc = _call_duration_descriptor(event)
-    assert "Enters orb" in desc
-    assert "Leaves orb" in desc
-    assert "Already active" not in desc
+    assert event["entry_date"] in desc
+    assert event["leave_date"] in desc
+    assert "Already in effect" not in desc
     assert "Continues beyond" not in desc
 
 
 def test_transit_active_at_start_suppresses_enters_label():
     event = _make_transit_event(in_orb_at_forecast_start=True)
     desc = _call_duration_descriptor(event)
-    assert "Already active at the start of this forecast" in desc
-    assert "Enters orb" not in desc
+    assert "Already in effect at the start of this forecast" in desc
+    assert event["entry_date"] not in desc
 
 
 def test_transit_continuing_past_end_suppresses_leaves_label():
@@ -178,19 +178,24 @@ def test_transit_continuing_past_end_suppresses_leaves_label():
 
 
 def test_exact_label():
+    # perfection_type no longer drives the descriptor: _duration_descriptor
+    # deliberately uses only neutral range language (see its docstring), so an
+    # "exact" event should render identically to any other transit window.
     event = _make_transit_event(perfection_type="exact")
     desc = _call_duration_descriptor(event)
-    assert "Exact:" in desc
+    assert "Exact:" not in desc
     assert "Closest approach" not in desc
-    assert "Exactest" not in desc
+    assert event["entry_date"] in desc
+    assert event["leave_date"] in desc
 
 
 def test_closest_approach_label():
     event = _make_transit_event(perfection_type="closest_approach")
     desc = _call_duration_descriptor(event)
-    assert "Closest approach:" in desc
+    assert "Closest approach:" not in desc
     assert "Exact:" not in desc
-    assert "Exactest" not in desc
+    assert event["entry_date"] in desc
+    assert event["leave_date"] in desc
 
 
 # ── Perfection type derivation test ───────────────────────────────────────────

@@ -5,6 +5,280 @@ Newest entry on top. See `agents/README.md` for the convention.
 
 ---
 
+## 2026-07-08 - Progressed Moon wired into Personal Forecast, gated to Moon only (Claude / Sonnet 5)
+
+**Context:** operator decision on the standard-forecasting phased map's
+Phase D: directed-timeline content (progressions/solar arc) generally
+runs too slow for Personal Forecast's 90-day window (solar arc and
+progressed Sun/Mercury/Venus contacts stay "current" for 9 months to 2
+years), but progressed Moon specifically is fast enough (~2-4 week orb
+window) to fit. Operator confirmed: include progressed Moon in Personal
+Forecast; everything else in the progression family stays out for now.
+The broader Year Ahead progressions/solar-arc "texture" placement (the
+rest of Phase D) is a separate, still-open decision — not resolved by
+this change.
+
+**What changed:**
+
+- `engine/transit_engine.py`: `compute_year_ahead_events()` gained an
+  `include_moon_progressions: bool = False` parameter (default preserves
+  existing behavior for every current caller). When `True`, it calls
+  `engine.progressions.scan_progression_events()` and filters the result
+  through a new `_filter_moon_progression_events()` helper, which keeps
+  only Moon-involved contacts/ingresses (`transit_planet == "Moon"`, or
+  Moon-involved `progressed_to_progressed`/`transit_to_progressed`
+  pairs) and explicitly excludes `progression_lunation_phase` — the
+  progressed Sun-Moon phase cycle, a much slower (~29.5-year) phenomenon
+  that happens to also carry `transit_planet == "Moon"` and would
+  otherwise slip through a naive "Moon" filter. Filtered events pass
+  through `link_related_forecast_events(..., progression_events=...)`
+  (already-existing scaffolding, previously unused) and join `all_events`.
+  Added a `"progressions"` key to the return dict.
+- `generate.py`: `_build_personal_forecast_context()` now passes
+  `include_moon_progressions=True`. Year Ahead's context builder is
+  untouched and still gets zero progression events by default.
+
+**Verification:** confirmed Year Ahead's progression count is exactly 0
+(unaffected) while Personal Forecast's 90-day window picks up ~30+ real
+Moon-involved events per chart, spanning all three relevant method
+variants, with genuine ~28-day contact windows (matching the code's
+existing ±14-day Moon-specific window) safely inside the 90-day scope.
+Full suite green (226 passed); both Year Ahead and Personal Forecast
+reports generated live with no errors.
+
+---
+
+## 2026-07-08 - Annual Profections wired into Year Ahead as a transit weight modifier (Claude / Sonnet 5)
+
+**Context:** `phase0/03_method_charters.md` C4 §7 specifies annual profection
+as "a weight modifier for its year. It elevates signals whose anchors
+involve the time lord, its ruled houses, or its natal aspects... It does
+not by itself justify a MicroCandidate." This had never been executed —
+`engine/profections.py` computed correct `TimeLordPeriod` records but
+nothing in `generate.py`'s live path ever called it.
+
+**What changed:**
+
+- `formulas/standard/forecast_activation.py`: added `_covering_period()`
+  and `_parse_period_datetime()` helpers, and a new block in
+  `link_related_forecast_events()` that, for each transit event whose
+  `peak_datetime` falls inside an active `annual_profection` period,
+  checks whether the transiting body is the period's time lord, aspects
+  the time lord, or activates the profected house — and if so,
+  multiplies that event's `structural_importance` and `theme_convergence`
+  by the period's own already-declared `weight_modifier` (currently
+  `1.12`, computed in `engine/profections.py`, not invented here). Tags
+  the event with `annual_profection_linkage` naming which condition(s)
+  matched. Deterministic, bounded (`_clamp`'d), fully explainable — no
+  statistical synthesis, nothing resembling the quarantined convergence
+  apparatus.
+- `engine/transit_engine.py`: `compute_year_ahead_events()` now calls
+  `annual_profection_periods()` and passes the result to
+  `link_related_forecast_events(..., time_lord_periods=profection_periods)`
+  — using the correct existing parameter name this time (an earlier,
+  reverted attempt crashed by passing `profection_events=`/`zr_events=`
+  keywords that didn't exist on the function). Profection periods are
+  *not* added to `all_events` — they aren't point events and don't carry
+  `peak_datetime`, so forcing them into that flat, sorted list would
+  reproduce the same crash. Per the charter's "does not... produce client
+  prose" instruction, nothing new is surfaced to report templates yet;
+  this only changes the scores transits already carry.
+
+**Verification:** confirmed the multiplier applies exactly (`×1.120`,
+matching the period's declared `weight_modifier`) only to matching
+transits, leaves non-matching transits untouched, and generated a live
+Year Ahead report end-to-end with no crash. Full suite green (226 passed).
+
+---
+
+## 2026-07-08 - Zodiacal Releasing Loosing of the Bond fix; progressed-angle Swiss Ephemeris precision; progression orb correction (Codex / GPT-5, Claude / Sonnet 5)
+
+**Context:** A prior audit (Codex) found `engine/zodiacal_releasing.py`'s
+Loosing of the Bond (LOB) was not merely rare but structurally impossible:
+`is_loosing_of_the_bond` was hardcoded `False`, and the proportional
+sub-period construction always summed exactly to the parent's duration by
+construction, leaving no residue for LOB to ever key off of. This
+contradicted the charter's own definition (`phase0/03_method_charters.md`
+C5b §1), which describes LOB as a real, structural sign-sequence event.
+
+**What changed (Codex):**
+
+- `engine/zodiacal_releasing.py`: replaced proportional sub-period
+  construction with the classical mechanism — each level (L2/L3/L4) reads
+  the same fixed Valens sign-year values used for L1, but in the next
+  smaller time unit (months at L2, days at L3, hours at L4). Sub-periods
+  accumulate in zodiacal order, wrapping past Pisces as needed, until the
+  enclosing parent's actual duration is exhausted. When a full 12-sign
+  pass completes with parent duration still remaining, the next sub-period
+  jumps to the sign opposite the one that just completed the lap, marked
+  `is_loosing_of_the_bond = True`, emitting a new `zr_lob` event variant.
+- `phase0/03_method_charters.md` C5b §1: reworded the L2-L4 and LOB
+  description to state the fixed-value/next-smaller-unit/wrap-and-jump
+  mechanism explicitly, since the prior "proportional to the L1 sign's
+  total years" wording had the same latent ambiguity as the bug itself.
+- `tests/test_phase6_lots_zodiacal_releasing.py`: added two hand-computed
+  fixtures independently deriving the expected LOB moment from first
+  principles (a Cancer L1 period's L2 cycle completes its 12-sign lap at
+  `211/12` years in, landing on Gemini as the 12th sign; LOB fires into
+  Gemini's opposite, Sagittarius) rather than deriving the expectation
+  from the function under test.
+- Also changed `report_surface_visibility` on ZR period/event records from
+  `["internal_rd", "predictive_sandbox"]` to
+  `["internal_rd", "engineering_diagnostic"]` — `predictive_sandbox` no
+  longer exists as a live report surface after the quarantine above.
+
+**What changed (Claude, verification pass):** independently re-derived the
+LOB boundary math and sign-opposition logic rather than trusting the
+summary; ran the full recursion (`_collect_periods` → `_subdivide`) to
+confirm `level` is passed as the child's own level at every recursion
+depth (no off-by-one in which divisor applies); ran the fixture and full
+suite. Found and fixed one unrelated collision: the same test file still
+imported `engine.predictive_sidecar` (quarantined earlier the same day)
+via a standalone `TestSidecarIntegration.test_natal_snapshot_carries_lots`
+test that had nothing to do with Zodiacal Releasing and was already
+duplicated by the quarantined `test_phase2_predictive_sidecar.py` — removed
+that one test class and the broken import; did not touch anything else in
+the file Codex had just added.
+
+**Also this session (Claude, Phase B — progressions):**
+
+- `engine/progressions.py`: progressed angles (Ascendant/Midheaven/IC/
+  Descendant) previously used a flat `natal_longitude + age_years`
+  approximation (~1°/year) for both position and applying/separating
+  speed. Replaced with genuine `swe.houses()` evaluated at the progressed
+  Julian day and natal birth coordinates, mirroring the exact house-angle
+  calculation and Porphyry polar fallback already used in
+  `engine/natal_engine.py`. Confirmed non-uniform, latitude-dependent
+  motion against a real chart (Ascendant/Descendant ≈1.72°/day vs.
+  Midheaven/IC ≈0.91°/day for the same chart) rather than a flat constant.
+- Progressed-to-progressed and transit-to-progressed orb limits: an
+  earlier pass had scaled each body's *natal* orb by an arbitrary `× 0.1`
+  factor with no basis in actual astrological convention. Per an explicit
+  operator rule (no EO-internal fixed number overrides real astrological
+  research for prediction functions), replaced with the existing flat
+  `CONTACT_ORB = 1.0` / `ANGLE_ORB = 0.5` ceiling already used for
+  progressed-to-natal contacts in the same module — independently
+  corroborated by external research converging on "very tight, roughly
+  ≤1°, tighter still for transit-to-progressed" rather than picking either
+  the old ad hoc scaling or the charter's number by default.
+
+**Verification:** full suite green (226 passed) after all of the above,
+including Codex's two new LOB fixtures and a live, non-mocked
+`scan_progression_events` run producing sensible event counts across all
+five method variants.
+
+**Context:** The operator was reviewing a fresh "Professional Forecasting
+Domain Audit" (traditional-technique completeness) alongside this repo's
+own Phase 0-9b predictive upgrade program when a deeper problem surfaced:
+the `predictive_sandbox` report type has no calculation logic of its own
+(confirmed — `generate.py`'s `_build_predictive_sandbox_context()` only
+reformats already-computed data), which raised the question of what the
+Phase 0-9b engine work was actually built on. The operator supplied two
+source specifications for direct comparison:
+
+- `Entangled_Oracle_Proprietary_Interpretive_Algorithms_Spec_v0.2` — the
+  real, synced, operational specification for
+  `formulas/proprietary_indexes.py` (KVQ, MKI, RWI, DFIS, Catalyst, NGE,
+  AHL + legacy MCQ/SIREN/MAGNETIC bridge). Confirmed acceptable as a
+  system reference.
+- `Entangled_Oracle_Testable_Predictive_Formulas_Experimental_v0.1` — the
+  actual design source for `engine/predictive_engine.py` and
+  `engine/convergence.py`. This document's own header states "Document
+  status: Experimental source-of-truth design specification" and
+  "Implementation status: Pre-implementation; fixture validation required
+  before production deployment." Confirmed **not** acceptable as a system
+  reference by the operator.
+
+Cross-referencing the two documents against the live code confirmed the
+Testable v0.1 spec's sections map directly onto what Phases 2-9b built and
+shipped: §4 (trigger strength) → predictive_engine.py signal
+normalization; §5 (Chorus Intensity, Natal Index Echo) → target-relevance
+scoring; §6 (window detection, gradient, activation episode ledger) →
+`_detect_windows()`'s FSM/lifecycle/memory; §7-9 (semantic topology,
+coalition/counterforce, operation ontology, cluster relation matrix) →
+`convergence.py`'s coherence/polarity/coalition/counterforce/complexity
+math. Phase 9b (2026-07-08, same day) had wired this directly into real
+Year Ahead / Personal Forecast client output under hedged "research
+signal" framing — an experimental, pre-implementation statistical
+invention, not an established astrological technique, reaching real
+report output. Operator's own framing: "if an astrologist read my files
+currently they'd think i literally hallucinated all that then treated it
+as fact."
+
+**Operator decision:** quarantine the whole apparatus — not delete, not
+partially rewire to "keep convergence active" (an intermediate plan
+floated mid-session and explicitly retracted once it became clear
+`convergence.py`'s own semantic-topology logic is itself Testable v0.1
+content, not merely downstream of predictive_engine.py).
+
+**What changed (this session, Claude / Sonnet 5):**
+
+- Moved (via `git mv`, history preserved) into
+  `quarantine/predictive_testable_v0_1/`: `engine/predictive_engine.py`,
+  `engine/convergence.py`, `engine/candidates.py`,
+  `engine/predictive_sidecar.py`, the entire `products/predictive_sandbox/`
+  product (templates + JSON block library), `tools/extract_sandbox_ledger.py`,
+  and the Phase 2/3/7/8/9/9b test files
+  (`test_predictive_engine.py`, `test_phase2_predictive_sidecar.py`,
+  `test_phase3_asteroid_predictive_activation.py`,
+  `test_phase7_natal_promise_convergence.py`, `test_phase8_candidates.py`,
+  `test_phase9_validation_harness.py`, `test_phase9b_report_surface.py`).
+  See `quarantine/predictive_testable_v0_1/README.md` for the full
+  rationale and inventory.
+- Moved (untracked, plain `mv`) previously-rendered `predictive_sandbox`
+  HTML/manifest samples, `.eo_predictive.json` sidecar exports, and
+  `tmp/phase*_real/` scratch runs into the same quarantine directory.
+- `generate.py`: removed the predictive-engine/sidecar computation block,
+  the `predictive_sandbox` report-type dispatch branch and CLI choice, the
+  sandbox-specific template error page, and `_build_predictive_report_
+  surface()` / `_build_predictive_sandbox_context()` plus their private
+  helpers. `variables["predictive_results"]` / `["predictive_sidecar"]`
+  are kept present but always empty so any stray template reference
+  degrades to blank instead of a Jinja `UndefinedError`.
+- `config.py`, `product_versions.py`: removed `predictive_sandbox`
+  report-type registration.
+- `products/year_ahead/templates/active/year_ahead.html`,
+  `products/personal_forecast/templates/personal_forecast.html`: removed
+  the Phase 9b "Predictive / experimental layer" sections outright
+  (they were already dead once `predictive_report_surface.enabled` was
+  hardcoded `False`, but left-in disallowed-content markup was itself
+  part of the problem being fixed).
+- `formulas/governance_registry.py`, `formulas/established_niche.py`:
+  removed `predictive_sandbox` from `eligible_report_types` tuples and the
+  report-profile map (vestigial once the report type no longer exists).
+- `engine/returns.py`, `engine/profections.py`, `engine/solar_arc.py`,
+  `engine/progressions.py`, `engine/zodiacal_releasing.py`: renamed the
+  `report_surface_visibility` tag value `"predictive_sandbox"` →
+  `"engineering_diagnostic"` (their only consumer, the now-quarantined
+  sidecar, is gone; the old name pointed at a product that no longer
+  exists). Updated the two Phase 4/5/6 test files' matching assertions.
+  Also removed the one integration test method in each of
+  `test_phase4_returns_profections.py` and
+  `test_phase5_solar_arc_progressions.py` that called into the quarantined
+  `predictive_engine`/`predictive_sidecar` modules, and the one sidecar
+  integration test in `test_phase6_lots_zodiacal_releasing.py` — the
+  remaining tests in all three files, which test the real technique
+  engines directly, are untouched.
+
+**Explicitly NOT touched, confirmed still legitimate:**
+`engine/returns.py`, `engine/profections.py`, `engine/solar_arc.py`,
+`engine/progressions.py`, `engine/lots.py`, `engine/zodiacal_releasing.py`,
+`engine/transit_engine.py` (established technique, fixture-tested,
+never Testable-derived), and `formulas/proprietary_indexes.py` (EO's own
+proprietary layer, confirmed acceptable by the operator against its own
+synced v0.2 specification).
+
+**Open follow-up, not done this session:** per-instance client-facing
+disclosure that the proprietary EAS layer (KVQ/MKI/RWI/DFIS/etc.) is EO's
+own interpretive system, not standard astrology — currently only
+disclosed generically at the document level
+(`products/shared/CLIENT_METHOD_AND_LIMITS.md`). `EO_UPGRADE_PHASE11_
+TOTAL_READINESS.md`'s Phase 11a section, written earlier the same session
+under the "rewire convergence to stay active" plan, is now superseded by
+this entry and needs a follow-up edit before it's actionable.
+
+---
+
 ## 2026-07-08 - Phase 9b predictive-content blocks filled in (operator content pass, Claude verification)
 
 **Context:** Operator wrote real prose into all three Phase 9b scaffold

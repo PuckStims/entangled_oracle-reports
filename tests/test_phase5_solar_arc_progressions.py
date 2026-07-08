@@ -8,8 +8,6 @@ PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, PROJECT_ROOT)
 
 from engine import progressions, solar_arc
-from engine.predictive_engine import compute_predictive_windows
-from engine.predictive_sidecar import build_predictive_sidecar
 
 
 class TestSolarArcDirections(unittest.TestCase):
@@ -98,66 +96,6 @@ class TestSecondaryProgressions(unittest.TestCase):
 
         self.assertIn("Ascendant", exact_sources)
         self.assertNotIn("Ascendant", approx_sources)
-
-
-class TestPhase5EvidenceIntegration(unittest.TestCase):
-    def test_predictive_engine_and_sidecar_export_solar_arc_and_progression(self):
-        solar_event = solar_arc._solar_arc_event(
-            "Sun",
-            "Moon",
-            {"kind": "luminary"},
-            {"kind": "luminary", "relevance": 0.9},
-            "Conjunction",
-            0.0,
-            _dt("2026-01-04T00:00:00"),
-            "exact",
-        )
-        progression_event = progressions._progression_contact_event(
-            "Sun",
-            "Moon",
-            {"kind": "planet"},
-            {"kind": "luminary", "relevance": 0.9},
-            "Conjunction",
-            0.0,
-            1.0,
-            _dt("2026-02-04T00:00:00"),
-            "exact",
-        )
-
-        with patch("engine.predictive_engine._collect_transit_signals", return_value=[]), \
-            patch("engine.returns.scan_return_events", return_value=[]), \
-            patch("engine.profections.annual_profection_periods", return_value=[]), \
-            patch("engine.solar_arc.scan_solar_arc_events", return_value=[solar_event]), \
-            patch("engine.progressions.scan_progression_events", return_value=[progression_event]):
-            predictive_results = compute_predictive_windows(
-                natal_payload=_payload(),
-                index_results={},
-                start_date=_dt("2026-01-01T00:00:00"),
-                end_date=_dt("2026-12-31T00:00:00"),
-                options={"enable_asteroid_rd": False},
-            )
-
-        families = {signal["method_family"] for signal in predictive_results["signals"]}
-        groups = {signal["independence_group"] for signal in predictive_results["signals"]}
-        self.assertIn("SOLAR_ARC", families)
-        self.assertIn("PROGRESSION", families)
-        self.assertIn("solar_arc_family", groups)
-        self.assertIn("progression_family", groups)
-
-        sidecar = build_predictive_sidecar(
-            report_type="predictive_sandbox",
-            birth_data=_birth_data(),
-            payload=_payload(),
-            predictive_results=predictive_results,
-            report_start=_dt("2026-01-01T00:00:00"),
-            report_end=_dt("2026-12-31T00:00:00"),
-        )
-
-        method_families = [event["method_family"] for event in sidecar["raw_events"]]
-        self.assertIn("SOLAR_ARC", method_families)
-        self.assertIn("PROGRESSION", method_families)
-        self.assertEqual(sidecar["provenance"]["scanner_versions"]["scan_solar_arc"], "wired_phase5:1")
-        self.assertEqual(sidecar["provenance"]["scanner_versions"]["scan_secondary_progressions"], "wired_phase5:1")
 
 
 def _dt(value):

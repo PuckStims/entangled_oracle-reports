@@ -67,7 +67,7 @@ The codebase does contain latent predictive-analysis capability not yet exposed.
 | Predictive debug counters | `engine/predictive_engine.py:579-609`, `320-321`; template `346-423` | Signal collection and detector internals | Yes, debug dict | No | Debug display only | Sandbox HTML only | Dev-facing only | Debug-only | Debug rows render raw count, peak filters, parameters |
 | Report manifest | `generate.py:3444-3525` | Context, payload, versions, trace | Yes, `.manifest.json` | No | Operator trace only | Yes | Operator-facing | Partially wired | Manifest lacks `predictive_results`/raw timeline evidence |
 | Returns / Solar Arc / progressions | `engine/predictive_engine.py:121-128`, `175-181`, `876-965` | None from normal scanners found | Only config/taxonomy hooks | No normal detector path found | No | No | No | Configuration-only | Search found method family hooks but no scanners; repo notes say not implemented |
-| Profections / time lords / zodiacal releasing | Repo search | No executable implementation found | No | No | No | No | No | Configuration-only | Search found no normal implementation |
+| Profections / time lords / zodiacal releasing | `engine/profections.py`, `engine/zodiacal_releasing.py` | Executable models returning `TimeLordPeriod` records | Yes | No | No | No | No | Partially surfaced | Quarantined from main pipeline but fully implemented |
 | Legacy convergence detector | `generate.py:6842-6966` | Events and convergence blocks | Function name includes `legacy_dead` | No evidence of normal call | No normal use found | No | No | Dead / unreachable | Active detector is `_detect_and_frame_convergences()` at `6966+`; legacy function appears superseded |
 
 ## 4. Latent Capability Findings

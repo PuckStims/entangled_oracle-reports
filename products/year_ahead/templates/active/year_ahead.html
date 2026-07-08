@@ -1990,42 +1990,6 @@
         <p class="section-note">These field qualities organize the recurring conditions already visible across the report's retained annual event set.</p>
       </section>
 
-      {% if predictive_report_surface and predictive_report_surface.enabled and predictive_report_surface.chapters %}
-      <section class="section" id="predictive-research-layer">
-        <div class="section-header">
-          <div>
-            <p class="eyebrow">Predictive / experimental layer</p>
-            <h2>Emerging Chapters Flagged by the Research Engine</h2>
-            <p class="section-subtitle">Coherent timing patterns drawn from the same sidecar evidence used for validation, shown as research signals rather than settled outcomes.</p>
-          </div>
-        </div>
-        <p class="forecast-climate-intro">{{ predictive_report_surface.framing }}</p>
-        <div class="predictive-research-grid">
-          {% for chapter in predictive_report_surface.chapters %}
-          <article class="predictive-research-card">
-            <p class="predictive-research-kicker">{{ chapter.window_label }}</p>
-            <h3>{{ chapter.title }}</h3>
-            <p>{{ chapter.summary }}</p>
-            <div class="predictive-research-meta">
-              {% for domain in chapter.domains[:2] %}<span>{{ domain }}</span>{% endfor %}
-              {% for clock in chapter.active_long_clocks[:2] %}<span>{{ clock }}</span>{% endfor %}
-              <span>{{ chapter.contributing_signal_count }} signal{{ 's' if chapter.contributing_signal_count != 1 else '' }}</span>
-            </div>
-            <details class="predictive-research-details">
-              <summary>Component detail</summary>
-              <div class="predictive-research-scores">
-                {% for key, value in chapter.component_scores.items() %}
-                <div><span>{{ key | replace('_', ' ') }}</span><strong>{{ value }}</strong></div>
-                {% endfor %}
-              </div>
-            </details>
-          </article>
-          {% endfor %}
-        </div>
-        <p class="section-note">These chapters are exposed now under the Phase 9b decision and are tracked alongside the Phase 9 validation harness.</p>
-      </section>
-      {% endif %}
-
       <!-- VII. YEAR ARCS -->
       <section class="section" id="year-arcs">
         <div class="section-header">

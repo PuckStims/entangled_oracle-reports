@@ -105,7 +105,6 @@ REPORT_TYPE_TO_PROFILE = {
     "year_ahead": REPORT_PROFILE_CORE_STANDARD_PLUS_EO,
     "personal_forecast": REPORT_PROFILE_CORE_STANDARD_PLUS_EO,
     "soul_ecosystem": REPORT_PROFILE_FULL_ENTANGLED_ORACLE,
-    "predictive_sandbox": REPORT_PROFILE_FULL_ENTANGLED_ORACLE,
 }
 
 BODY_REGISTRY: dict[str, RegistryRecord] = {
@@ -156,7 +155,7 @@ ASTEROID_ELIGIBILITY_REGISTRY: dict[str, AsteroidEligibilityRecord] = {
         method_status=METHOD_STATUS_ESTABLISHED_NICHE,
         lineage=("modern", "asteroid"),
         available_payload_data=("longitude", "sign", "degree", "house", "retrograde_state", "speed", "aspects", "angle_contacts", "transit availability"),
-        eligible_report_types=("soul_ecosystem", "predictive_sandbox"),
+        eligible_report_types=("soul_ecosystem",),
         default_visibility="expanded_section",
         birth_time_dependency="angle_contacts_and_house_require_exact_time",
         confidence_requirements=("exact_birth_time", "angle_dependent_unavailable"),
@@ -227,7 +226,7 @@ for key, display_name, catalog_number, eo_uses in (
         method_status=METHOD_STATUS_ESTABLISHED_NICHE,
         lineage=("modern", "asteroid", "specialist"),
         available_payload_data=("longitude", "sign", "degree", "house", "retrograde_state", "speed", "aspects", "angle_contacts", "transit availability"),
-        eligible_report_types=("soul_ecosystem", "predictive_sandbox"),
+        eligible_report_types=("soul_ecosystem",),
         default_visibility="technical_reference",
         birth_time_dependency="angle_contacts_and_house_require_exact_time",
         confidence_requirements=("exact_birth_time", "angle_dependent_unavailable"),

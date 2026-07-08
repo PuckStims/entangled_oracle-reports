@@ -20,7 +20,6 @@ REPORT_BLOCK_DIRS = {
     "personal_forecast": os.path.join(PRODUCTS_DIR, "personal_forecast", "blocks", "shared"),
     "soul_ecosystem":   os.path.join(PRODUCTS_DIR, "soul_ecosystem", "blocks"),
     "soul_journey":     os.path.join(PRODUCTS_DIR, "soul_ecosystem", "blocks"),
-    "predictive_sandbox": os.path.join(PRODUCTS_DIR, "predictive_sandbox", "blocks"),
     "identity_profile": os.path.join(PRODUCTS_DIR, "identity_profile", "blocks"),
     "shared":           os.path.join(PRODUCTS_DIR, "identity_profile", "blocks"),
 }

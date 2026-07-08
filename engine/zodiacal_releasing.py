@@ -8,23 +8,17 @@ Algorithm (Vettius Valens):
   - L1 periods: begin at the lot's sign, cycle forward through the zodiac.
     Each sign's L1 duration in years is VALENS_YEARS[sign]. One full
     12-sign L1 pass totals 211 years exactly (15+8+20+25+19+20+8+15+12+27+30+12).
-  - L2..L4: each level subdivides its parent into 12 sub-periods, one per
-    sign starting from the parent's own sign, with each sub-period's
-    duration proportional to that sign's own Valens year-count relative
-    to the 211-year total, scaled to the parent's actual duration. This
-    is applied recursively and identically at every level.
+  - L2..L4: each level uses the same fixed Valens sign-values as L1, but in
+    the next smaller time-unit (months for L2, days for L3, hours for L4).
+    Starting from the parent's own sign, periods run in zodiacal order and
+    wrap as needed until the parent's actual duration is exhausted.
   - Peak: a period is a peak when its own sign equals the lot's sign, or
     is in a whole-sign angular relationship to it (4th, 7th, or 10th sign
     counting the lot's sign as 1st).
-  - Loosing of the Bond (LOB): the charter's definition is "a sub-period
-    completes its allotted duration but the parent has not; the next
-    sub-period jumps to the sign opposite the one that just ended." Under
-    the proportional construction used here, one full 12-sign pass of
-    sub-periods sums exactly to the parent's duration by construction, so
-    this condition is a genuine edge case (floating-point residue at the
-    boundary), not a routine occurrence -- documented here rather than
-    silently forced to fire on a schedule it does not reliably have in
-    the classical technique as chartered.
+  - Loosing of the Bond (LOB): if a full 12-sign pass of sub-periods
+    completes and the parent still has time remaining, the next sub-period
+    jumps to the sign opposite the one that just ended instead of
+    continuing in normal zodiacal order.
 
 Only L1 and L2 periods generate trigger-role ForecastEvents (transitions,
 peaks, LOB) per C5b section 7 ("L3 and L4 are modifier scale -- used to
@@ -69,6 +63,12 @@ TRADITIONAL_RULERS = {
 _MAX_LEVEL = 4
 _LEVEL_NAMES = {1: "L1", 2: "L2", 3: "L3", 4: "L4"}
 _ANGULAR_OFFSETS = frozenset({0, 3, 6, 9})  # 1st (own), 4th, 7th, 10th sign, zero-indexed offsets
+_LEVEL_UNIT_DIVISORS = {
+    1: 1.0,
+    2: 12.0,
+    3: TROPICAL_YEAR_DAYS,
+    4: TROPICAL_YEAR_DAYS * 24.0,
+}
 
 
 def zodiacal_releasing_periods(
@@ -168,11 +168,13 @@ def _collect_periods(
             )
         return
 
-    for sign, sub_start, sub_duration_years in _subdivide(parent_sign, parent_start, parent_duration_years):
+    for sign, sub_start, sub_duration_years, is_lob in _subdivide(level, parent_sign, parent_start, parent_duration_years):
         sub_end = sub_start + timedelta(days=sub_duration_years * TROPICAL_YEAR_DAYS)
         if sub_end <= window_start or sub_start >= window_end:
             continue
-        record = _period_record(context, level, sign, sub_start, sub_end, parent_id=parent_id)
+        record = _period_record(
+            context, level, sign, sub_start, sub_end, parent_id=parent_id, is_loosing_of_the_bond=is_lob,
+        )
         out.append(record)
         _collect_periods(
             context, window_start, window_end, out,
@@ -209,17 +211,46 @@ def _l1_cycle_starts(
     return results
 
 
-def _subdivide(parent_sign: str, parent_start: datetime, parent_duration_years: float) -> list[tuple[str, datetime, float]]:
-    """Twelve proportional sub-periods of parent_sign's own duration, starting at parent_sign."""
-    parent_index = SIGNS.index(parent_sign)
+def _subdivide(level: int, parent_sign: str, parent_start: datetime, parent_duration_years: float) -> list[tuple[str, datetime, float, bool]]:
+    """Fixed-unit sub-periods for the requested level, including LOB jumps after completed 12-sign passes."""
+    if level not in _LEVEL_NAMES:
+        return []
+
+    sign_index = SIGNS.index(parent_sign)
     cursor = parent_start
-    out: list[tuple[str, datetime, float]] = []
-    for offset in range(12):
-        sub_sign = SIGNS[(parent_index + offset) % 12]
-        sub_years = (VALENS_YEARS[sub_sign] / TOTAL_VALENS_YEARS) * parent_duration_years
-        out.append((sub_sign, cursor, sub_years))
-        cursor = cursor + timedelta(days=sub_years * TROPICAL_YEAR_DAYS)
+    out: list[tuple[str, datetime, float, bool]] = []
+    elapsed_years = 0.0
+    next_is_lob = False
+    signs_since_lob = 0
+    epsilon = 1e-12
+
+    while elapsed_years + epsilon < parent_duration_years:
+        sub_sign = SIGNS[sign_index]
+        nominal_years = _level_duration_years(level, sub_sign)
+        remaining_years = parent_duration_years - elapsed_years
+        actual_years = min(nominal_years, remaining_years)
+        out.append((sub_sign, cursor, actual_years, next_is_lob))
+        next_is_lob = False
+        elapsed_years += actual_years
+        cursor = cursor + timedelta(days=actual_years * TROPICAL_YEAR_DAYS)
+
+        if actual_years + epsilon < nominal_years:
+            break
+
+        signs_since_lob += 1
+        if signs_since_lob == 12 and elapsed_years + epsilon < parent_duration_years:
+            sign_index = (sign_index + 6) % 12
+            next_is_lob = True
+            signs_since_lob = 0
+            continue
+
+        sign_index = (sign_index + 1) % 12
     return out
+
+
+def _level_duration_years(level: int, sign: str) -> float:
+    divisor = _LEVEL_UNIT_DIVISORS[level]
+    return VALENS_YEARS[sign] / divisor
 
 
 def _is_peak(context: dict, sign: str) -> bool:
@@ -229,7 +260,14 @@ def _is_peak(context: dict, sign: str) -> bool:
 
 
 def _period_record(
-    context: dict, level: int, sign: str, start_at: datetime, end_at: datetime, *, parent_id: str | None,
+    context: dict,
+    level: int,
+    sign: str,
+    start_at: datetime,
+    end_at: datetime,
+    *,
+    parent_id: str | None,
+    is_loosing_of_the_bond: bool = False,
 ) -> dict:
     lord = TRADITIONAL_RULERS[sign]
     is_peak = _is_peak(context, sign)
@@ -246,14 +284,14 @@ def _period_record(
         "period_house": None,
         "lord_natal_state": {"condition": "unavailable", "house": 0, "sign": "", "retrograde": False, "aspects": []},
         "is_peak": is_peak,
-        "is_loosing_of_the_bond": False,
+        "is_loosing_of_the_bond": is_loosing_of_the_bond,
         "activated_house_topics": [],
         "natal_anchor_ids": [],
         "weight_modifier": 1.10 if is_peak else 1.0,
         "confidence": 0.80,
         "confidence_components": {"calculation_integrity": 0.95, "method_maturity": 0.80},
         "birth_time_dependency": "soft",
-        "report_surface_visibility": ["internal_rd", "predictive_sandbox"],
+        "report_surface_visibility": ["internal_rd", "engineering_diagnostic"],
         "formula_version": FORMULA_VERSION,
         "policy_version": POLICY_VERSION,
         "provenance": {
@@ -272,6 +310,8 @@ def _events_for_period(context: dict, period: dict) -> list[dict]:
     start_at = _parse_iso(period["start_at"])
     variant = "zr_l1_transition" if period["level"] == "L1" else "zr_l2_transition"
     events.append(_transition_event(context, period, start_at, variant, clock_role="time_lord"))
+    if period["is_loosing_of_the_bond"]:
+        events.append(_transition_event(context, period, start_at, "zr_lob", clock_role="trigger"))
     if period["is_peak"]:
         events.append(_transition_event(context, period, start_at, "zr_peak", clock_role="trigger"))
     return events
@@ -299,7 +339,7 @@ def _transition_event(context: dict, period: dict, moment: datetime, variant: st
         "independence_group": context["independence_group"],
         "activation_route": "zr_period_transition",
         "temporal_precision": "day" if period["level"] == "L1" else "day",
-        "report_surface_visibility": ["internal_rd", "predictive_sandbox"],
+        "report_surface_visibility": ["internal_rd", "engineering_diagnostic"],
         "period_id": period["period_id"],
         "period_lord": period["period_lord"],
         "period_sign": period["period_sign"],

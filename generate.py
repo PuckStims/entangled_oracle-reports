@@ -9,7 +9,6 @@ Usage:
     python generate.py year_ahead --name "Puck" --date 1992-03-21 --time 08:11 --location "Peoria, IL"
     python generate.py personal_forecast --name "Puck" --date 1992-03-21 --time 08:11 --location "Peoria, IL"
     python generate.py soul_ecosystem --name "Puck" --date 1992-03-21 --time 08:11 --location "Peoria, IL"
-    python generate.py predictive_sandbox --name "Puck" --date 1992-03-21 --time 08:11 --location "Peoria, IL"
 
 DOB-only mode (simple horoscope, no birth time needed):
     python generate.py horoscope --name "Visitor" --date 1990-06-15 --simple
@@ -221,44 +220,12 @@ def generate_report(
     )
     variables["palette"] = birth_data.get("palette", "vibrant")
 
-    # ── Predictive engine (Phase 5 integration) ────────────────
-    # Only computed for report types that surface predictive windows.
-    # Wrapped in try/except so a predictive engine failure never breaks
-    # an existing report. results are injected into variables so every
-    # context builder can read them with variables.get("predictive_results", {}).
-    predictive_results: dict = {}
-    if report_type in ("year_ahead", "personal_forecast", "predictive_sandbox"):
-        try:
-            from engine.predictive_engine import compute_predictive_windows
-            _log_verbose("[Predictive] Computing windows...")
-            predictive_results = compute_predictive_windows(
-                natal_payload=payload,
-                index_results=index_results,
-                start_date=report_start,
-                end_date=report_end,
-            )
-            _pw = len(predictive_results.get("windows", []))
-            _ps = len(predictive_results.get("signals", []))
-            _log_verbose(f"[Predictive] {_pw} window(s), {_ps} signal(s)")
-        except Exception as _pe_err:
-            print(f"[Predictive] Skipped (non-fatal): {_pe_err}")
-    variables["predictive_results"] = predictive_results
-    predictive_sidecar_payload = None
-    if report_type in ("year_ahead", "personal_forecast", "predictive_sandbox"):
-        try:
-            from engine.predictive_sidecar import build_predictive_sidecar
-            predictive_sidecar_payload = build_predictive_sidecar(
-                report_type=report_type,
-                birth_data=birth_data,
-                payload=payload,
-                predictive_results=predictive_results,
-                report_start=report_start,
-                report_end=report_end,
-                engine_command=" ".join(sys.argv),
-            )
-        except Exception as _psc_err:
-            print(f"[PredictiveSidecar] Preview skipped (non-fatal): {_psc_err}")
-    variables["predictive_sidecar"] = predictive_sidecar_payload or {}
+    # Predictive engine (Testable Predictive Formulas Experimental v0.1) is
+    # quarantined — see quarantine/predictive_testable_v0_1/README.md.
+    # These keys are kept present (always empty) so any leftover template
+    # reference degrades to blank instead of a Jinja UndefinedError.
+    variables["predictive_results"] = {}
+    variables["predictive_sidecar"] = {}
 
     _log_verbose("[Blocks] Selecting...")
     context = build_report_context(
@@ -299,31 +266,6 @@ def generate_report(
 
     print(f"[Done] Report saved: {os.path.basename(output_path)}")
     print(f"[Done] Manifest saved: {os.path.basename(manifest_path)}")
-
-    if report_type in ("year_ahead", "personal_forecast", "predictive_sandbox"):
-        try:
-            from engine.predictive_sidecar import write_predictive_sidecar_for_report, write_predictive_sidecar_payload
-            if predictive_sidecar_payload:
-                sidecar_path = write_predictive_sidecar_payload(
-                    output_path=output_path,
-                    sidecar=predictive_sidecar_payload,
-                )
-            else:
-                sidecar_path = write_predictive_sidecar_for_report(
-                    output_path=output_path,
-                    report_type=report_type,
-                    birth_data=birth_data,
-                    payload=payload,
-                    predictive_results=predictive_results,
-                    report_start=report_start,
-                    report_end=report_end,
-                    engine_command=" ".join(sys.argv),
-                )
-            print(f"[Done] Predictive sidecar saved: {os.path.basename(sidecar_path)}")
-            if _stdout_report_paths_enabled():
-                print(f"[Done] Predictive sidecar path: {sidecar_path}")
-        except Exception as sidecar_error:
-            print(f"[PredictiveSidecar] Skipped (non-fatal): {sidecar_error}")
 
     if _stdout_report_paths_enabled():
         print(f"[Done] Report path: {output_path}")
@@ -390,9 +332,6 @@ def build_report_context(
     elif report_type == "soul_ecosystem":
         ctx.update(_build_soul_ecosystem_context(variables, index_results, payload))
 
-    elif report_type == "predictive_sandbox":
-        ctx.update(_build_predictive_sandbox_context(variables, index_results, payload, report_start, report_end))
-
     trace = ctx.get("report_surface_trace", {})
     if isinstance(trace, dict):
         trace["template_fields_populated"] = sorted(ctx.keys())
@@ -406,175 +345,14 @@ def build_report_context(
     return ctx
 
 
-def _build_predictive_report_surface(sidecar: dict, report_type: str, *, max_chapters: int = 4, max_candidates: int = 4) -> dict:
-    """Prepare Phase 9b report-facing cards from already-built sidecar evidence."""
-    if not isinstance(sidecar, dict):
-        sidecar = {}
-    chapters = [
-        _format_predictive_chapter(chapter, report_type)
-        for chapter in (sidecar.get("chapters") or [])
-        if isinstance(chapter, dict)
-    ]
-    chapters = [chapter for chapter in chapters if chapter]
-    chapters.sort(
-        key=lambda item: (
-            -float(item.get("chapter_summary_score", 0.0) or 0.0),
-            item.get("start_at", ""),
-            item.get("chapter_id", ""),
-        )
-    )
-    candidates = []
-    if report_type == "personal_forecast":
-        candidates = [
-            _format_predictive_candidate(candidate, report_type)
-            for candidate in (sidecar.get("candidates") or [])
-            if isinstance(candidate, dict)
-        ]
-        candidates = [candidate for candidate in candidates if candidate]
-        candidates.sort(
-            key=lambda item: (
-                item.get("peak_at", ""),
-                -float(item.get("convergence_score", 0.0) or 0.0),
-                item.get("candidate_id", ""),
-            )
-        )
-    return {
-        "enabled": bool(chapters or candidates),
-        "report_type": report_type,
-        "label": "Predictive / experimental",
-        "framing": (
-            "This section surfaces the system's research layer for this report. "
-            "It flags coherent timing patterns for observation and later validation; "
-            "it is not a settled prediction or an outcome claim."
-        ),
-        "chapters": chapters[:max_chapters],
-        "candidates": candidates[:max_candidates],
-        "chapter_count": len(chapters),
-        "candidate_count": len(candidates),
-        "sidecar_report_run_id": (sidecar.get("report_run") or {}).get("report_run_id", ""),
-    }
-
-
-def _format_predictive_chapter(chapter: dict, report_type: str) -> dict:
-    chapter_id = str(chapter.get("chapter_id") or "")
-    start_at = _date_label_from_iso(chapter.get("start_at"))
-    end_at = _date_label_from_iso(chapter.get("end_at"))
-    domains = _display_list(chapter.get("domain_keys"), fallback=["forecast field"])
-    topics = _display_list(chapter.get("topic_keys"), fallback=["active pattern"])
-    clocks = _display_list(chapter.get("active_long_clocks"), fallback=[chapter.get("chapter_kind", "chapter")])
-    score = _rounded_display(chapter.get("chapter_summary_score", chapter.get("coherence", 0.0)))
-
-    raw_kind = str(chapter.get("chapter_kind") or "sustained_transit_chapter")
-    raw_domains = [str(item) for item in (chapter.get("domain_keys") or []) if str(item)]
-    primary_domain = raw_domains[0] if raw_domains else "identity"
-    from selectors.block_selector import select_block
-    summary = select_block(report_type, "predictive_chapters", raw_kind, primary_domain)
-
-    return {
-        "chapter_id": chapter_id,
-        "title": _chapter_title(chapter, domains, clocks),
-        "window_label": _window_label(start_at, end_at),
-        "chapter_kind": _humanize_token(chapter.get("chapter_kind", "chapter")),
-        "domains": domains,
-        "topics": topics,
-        "active_long_clocks": clocks,
-        "summary": summary,
-        "component_scores": {
-            "coherence": _rounded_display(chapter.get("coherence")),
-            "counterforce": _rounded_display(chapter.get("counterforce")),
-            "complexity": _rounded_display(chapter.get("complexity")),
-            "confidence": _rounded_display(chapter.get("confidence")),
-            "chapter_summary_score": score,
-        },
-        "birth_time_dependency": str(chapter.get("birth_time_dependency") or "none"),
-        "contributing_signal_count": len(chapter.get("contributing_signal_ids") or []),
-        "report_surface_visibility": chapter.get("report_surface_visibility") or [],
-        "raw": chapter,
-    }
-
-
-def _format_predictive_candidate(candidate: dict, report_type: str) -> dict:
-    candidate_id = str(candidate.get("candidate_id") or "")
-    start_at = _date_label_from_iso(candidate.get("start_at"))
-    peak_at = _date_label_from_iso(candidate.get("peak_at"))
-    end_at = _date_label_from_iso(candidate.get("end_at"))
-    domains = _display_list(candidate.get("candidate_domain"), fallback=["forecast field"])
-    topics = _display_list(candidate.get("candidate_topic_keys"), fallback=["active pattern"])
-    families = _display_list(candidate.get("independent_method_families"), fallback=["method family"])
-    component_scores = candidate.get("component_scores") if isinstance(candidate.get("component_scores"), dict) else {}
-
-    raw_domains = [str(item) for item in (candidate.get("candidate_domain") or []) if str(item)]
-    primary_domain = raw_domains[0] if raw_domains else "identity"
-    raw_families = [str(item) for item in (candidate.get("independent_method_families") or []) if str(item)]
-    leading_family = raw_families[0] if raw_families else "transit_family"
-    from selectors.block_selector import select_block
-    summary = select_block(report_type, "predictive_candidates", primary_domain, leading_family)
-
-    return {
-        "candidate_id": candidate_id,
-        "title": f"Flagged window around {peak_at or start_at or 'this period'}",
-        "window_label": _window_label(start_at, end_at),
-        "peak_label": peak_at,
-        "domains": domains,
-        "topics": topics,
-        "independent_method_families": families,
-        "summary": summary,
-        "convergence_score": _rounded_display(candidate.get("convergence_score")),
-        "counterforce": _rounded_display(candidate.get("counterforce")),
-        "complexity": _rounded_display(candidate.get("complexity")),
-        "confidence": _rounded_display(candidate.get("confidence")),
-        "component_scores": {
-            str(key): _rounded_display(value)
-            for key, value in component_scores.items()
-        },
-        "birth_time_dependency": str(candidate.get("birth_time_dependency") or "none"),
-        "candidate_status": str(candidate.get("candidate_status") or ""),
-        "pre_registered_at": _date_label_from_iso(candidate.get("pre_registered_at")),
-        "report_surface_visibility": candidate.get("report_surface_visibility") or [],
-        "raw": candidate,
-    }
-
-
-def _chapter_title(chapter: dict, domains: list[str], clocks: list[str]) -> str:
-    kind = _humanize_token(chapter.get("chapter_kind", "chapter"))
-    domain = domains[0] if domains else "forecast field"
-    clock = clocks[0] if clocks else "timing layer"
-    return f"{kind}: {domain} through {clock}"
-
-
-def _display_list(value, *, fallback: list[str] | None = None) -> list[str]:
-    fallback = fallback or []
-    if not isinstance(value, list):
-        return fallback
-    items = [_humanize_token(item) for item in value if str(item)]
-    return items or fallback
-
-
-def _humanize_token(value) -> str:
-    text = str(value or "").replace("_", " ").strip()
-    return text[:1].upper() + text[1:] if text else ""
-
-
-def _date_label_from_iso(value) -> str:
-    if not value:
-        return ""
-    try:
-        return datetime.fromisoformat(str(value).replace("Z", "+00:00")).strftime("%b %d, %Y")
-    except ValueError:
-        return str(value)[:10]
-
-
-def _window_label(start_at: str, end_at: str) -> str:
-    if start_at and end_at and start_at != end_at:
-        return f"{start_at} - {end_at}"
-    return start_at or end_at or "Window pending"
-
-
-def _rounded_display(value) -> float:
-    try:
-        return round(float(value), 4)
-    except (TypeError, ValueError):
-        return 0.0
+def _build_predictive_report_surface(sidecar: dict, report_type: str) -> dict:
+    """
+    Was Phase 9b's report-facing cards, sourced from the now-quarantined
+    predictive_sidecar/predictive_engine/convergence apparatus (see
+    quarantine/predictive_testable_v0_1/README.md). Always returns disabled
+    so templates checking `.enabled` degrade to nothing rendered.
+    """
+    return {"enabled": False, "report_type": report_type, "chapters": [], "candidates": []}
 
 
 THEME_LABELS = {
@@ -1003,6 +781,7 @@ def _build_personal_forecast_context(
         payload,
         start_date=start_date,
         end_date=end_date,
+        include_moon_progressions=True,
     )
     all_events = timeline.get("all_events", [])
 
@@ -4459,7 +4238,7 @@ _CLIMATE_SIGNAL_LABELS = {
 
 SHOW_EO_LANDMARK_VISUALS = False
 SHOW_LANDMARK_VISUALS = SHOW_EO_LANDMARK_VISUALS
-SHOW_FORECAST_SHAPE_VISUALS = SHOW_EO_LANDMARK_VISUALS
+SHOW_FORECAST_SHAPE_VISUALS = True
 
 _YEAR_AHEAD_EVENT_TYPE_MAP = {
     "transit": "natal_transit",
@@ -7336,8 +7115,9 @@ def _validate_year_ahead_render_contract(context: dict) -> None:
                 errors.append(f"Convergence window {event_id} still carries an intensity label.")
 
     if not context.get("show_landmark_visuals", False):
-        if context.get("show_forecast_shape_visuals", False):
-            errors.append("Forecast Shape visuals remain enabled while EO Landmark visuals are disabled.")
+        # Forecast Shape visuals are standard, non-landmark content (derived from
+        # arc_score / combined_intensity_score, not landmark data) and are
+        # intentionally independent of the EO Landmark visuals flag.
         strongest = context.get("orientation_summary", {}).get("strongest_annual_themes", []) or []
         if strongest:
             errors.append("Landmark-derived strongest annual themes remain exposed while EO Landmark visuals are disabled.")
@@ -7976,256 +7756,6 @@ def _build_year_ahead_context(
     return context
 
 
-# ── Predictive Sandbox ─────────────────────────────────────────
-
-def _fmt_sandbox_date(d) -> str:
-    """Format a Python date/datetime object or ISO string to YYYY-MM-DD."""
-    if d is None:
-        return ""
-    if hasattr(d, "strftime"):
-        return d.strftime("%Y-%m-%d")
-    return str(d)
-
-
-@lru_cache(maxsize=1)
-def _load_predictive_window_blocks() -> list:
-    """Loads and caches the Predictive Sandbox narrative synthesis library."""
-    blocks_dir = os.path.join(PRODUCTS_DIR, "predictive_sandbox", "blocks")
-    # Sandbox-native content registers before legacy conversions so it wins
-    # ties in _predictive_window_narrative() (score comparison is strict
-    # `>`, so whichever block is appended first keeps a tied score).
-    active_folders = ["30_new_writes", "10_copy_entirely", "20_modify_from_existing"]
-
-    registry = []
-
-    for folder in active_folders:
-        folder_path = os.path.join(blocks_dir, folder)
-        if not os.path.isdir(folder_path):
-            continue
-        for filename in os.listdir(folder_path):
-            if filename.endswith(".json"):
-                with open(os.path.join(folder_path, filename), "r", encoding="utf-8") as handle:
-                    try:
-                        data = json.load(handle)
-                    except json.JSONDecodeError:
-                        continue
-
-                    if isinstance(data, dict):
-                        if "entries" in data and isinstance(data["entries"], list):
-                            entries_list = data["entries"]
-                        else:
-                            entries_list = [data]
-
-                        for entry in entries_list:
-                            if isinstance(entry, dict) and "id" in entry and "conditions" in entry and isinstance(entry["conditions"], dict):
-                                registry.append(entry)
-                    elif isinstance(data, list):
-                        for entry in data:
-                            if isinstance(entry, dict) and "id" in entry and "conditions" in entry and isinstance(entry["conditions"], dict):
-                                registry.append(entry)
-
-    return registry
-
-
-def _predictive_window_narrative(window: dict, blocks: list) -> dict:
-    """
-    Synthesizes a dev-facing narrative card for a single predictive window.
-    Routes by matching the computed window fields against block 'conditions'.
-    Favors blocks with more specific (higher count) matching conditions.
-    """
-    best_match = None
-    best_score = -1
-
-    for block in blocks:
-        conditions = block.get("conditions", {})
-        if not conditions:
-            # Blocks with no conditions match anything but score 0
-            score = 0
-        else:
-            match = True
-            for key, allowed_values in conditions.items():
-                window_val = window.get(key)
-                if window_val not in allowed_values:
-                    match = False
-                    break
-
-            if not match:
-                continue
-
-            score = len(conditions)
-
-        if score > best_score:
-            best_score = score
-            best_match = block
-
-    if not best_match:
-        return {
-            "dimension":       window.get("leading_index", "fallback"),
-            "dimension_label": "Unclassified",
-            "gradient":        window.get("gradient", "fallback"),
-            "title":           "An Unclassified Window",
-            "body":            "This window registered on the predictive engine's timeline but did not resolve to a specific narrative block. Treat it as a placeholder for engine tuning rather than a finished read.",
-            "action":          "Flag this window for review — it likely indicates a gap in the registry rather than a real absence of signal.",
-        }
-
-    return {
-        "dimension":       best_match.get("id", "fallback"),
-        "dimension_label": best_match.get("family", "fallback"),
-        "gradient":        window.get("gradient", "fallback"),
-        "title":           best_match.get("title", ""),
-        "body":            best_match.get("body", ""),
-        "action":          best_match.get("notes", ""),
-    }
-
-
-def _build_predictive_sandbox_context(
-    variables: dict,
-    index_results: dict,
-    payload: dict,
-    report_start: datetime | None = None,
-    report_end: datetime | None = None,
-) -> dict:
-    """
-    Builds raw diagnostic context for the predictive_sandbox report.
-    Exposes all predictive engine output as-is — no narrative prose,
-    no block selection, no interpretation. Engineering / validation use only.
-    """
-    from config import PALETTES as _PALETTES
-
-    raw = variables.get("predictive_results", {})
-    palette_name = variables.get("palette", "vibrant")
-    palette = _PALETTES.get(palette_name, _PALETTES["vibrant"])
-
-    signals = []
-    for sig in raw.get("signals", []):
-        signals.append({
-            "signal_id":        sig.get("signal_id", ""),
-            "method_family":    sig.get("method_family", ""),
-            "source_body":      sig.get("source_body", ""),
-            "target_body":      sig.get("target_body", ""),
-            "aspect":           sig.get("aspect", ""),
-            "orb":              round(float(sig.get("orb") or 0), 4),
-            "allowed_orb":      round(float(sig.get("allowed_orb") or 0), 4),
-            "exactness":        round(float(sig.get("exactness") or 0), 4),
-            "event_weight":     round(float(sig.get("event_weight") or 0), 4),
-            "target_relevance": round(float(sig.get("target_relevance") or 0), 4),
-            "trigger_strength": round(float(sig.get("trigger_strength") or 0), 4),
-            "epistemic_confidence": round(float(sig.get("epistemic_confidence") or 0), 4),
-            "confidence_components": sig.get("confidence_components") or {},
-            "confidence_state": sig.get("confidence_state", ""),
-            "angle_eligibility": sig.get("angle_eligibility", ""),
-            "dominant_operation": sig.get("dominant_operation", ""),
-            "operation_profile": sig.get("operation_profile") or {},
-            "operation_basis": sig.get("operation_basis") or {},
-            "start_date":       _fmt_sandbox_date(sig.get("start_date")),
-            "peak_date":        _fmt_sandbox_date(sig.get("peak_date")),
-            "end_date":         _fmt_sandbox_date(sig.get("end_date")),
-        })
-    signals.sort(key=lambda s: s["peak_date"])
-
-    # method_family is a signal-level field only — the engine's window dicts
-    # never carry it directly (see engine/predictive_engine.py _detect_windows).
-    # Derive a representative value per window from its active signals so
-    # blocks conditioned on method_family (per taxonomy_notes.md's routing
-    # guidance) have a real field to match against.
-    _signal_method_family = {s["signal_id"]: s["method_family"] for s in signals if s["signal_id"]}
-
-    window_blocks = _load_predictive_window_blocks()
-
-    windows = []
-    for win in raw.get("windows", []):
-        window_method_family = ""
-        for _sig_id in (win.get("active_signals") or []):
-            _mf = _signal_method_family.get(_sig_id)
-            if _mf:
-                window_method_family = _mf
-                break
-
-        window_entry = {
-            "window_id":                   win.get("window_id", ""),
-            "start_date":                  win.get("start_date", ""),
-            "peak_date":                   win.get("peak_date", ""),
-            "end_date":                    win.get("end_date", ""),
-            # v0.2 intensity decomposition ──────────────────────────
-            "local_peak_intensity":        round(float(win.get("local_peak_intensity") or 0), 4),
-            "structural_field_intensity":  round(float(win.get("structural_field_intensity") or 0), 4),
-            "total_intensity":             round(float(win.get("total_intensity") or win.get("intensity") or 0), 4),
-            "intensity":                   round(float(win.get("intensity") or win.get("total_intensity") or 0), 4),
-            "prominence":                  round(float(win.get("prominence") or 0), 4),
-            # Shape ──────────────────────────────────────────────────
-            "gradient":                    win.get("gradient", ""),
-            "leading_index":               win.get("leading_index", ""),
-            # v0.2 signal breakdown ──────────────────────────────────
-            "active_slow_chapter_signals": win.get("active_slow_chapter_signals") or [],
-            "active_fast_trigger_signals": win.get("active_fast_trigger_signals") or [],
-            # Aggregate / backward-compat ───────────────────────────
-            "active_signals":              win.get("active_signals") or [],
-            "active_signal_count":         len(win.get("active_signals") or []),
-            # Phase 2+ placeholders ──────────────────────────────────
-            "coherence":                   win.get("coherence"),
-            "semantic_profile":            win.get("semantic_profile") or {},
-            "dominant_operation":          win.get("dominant_operation", ""),
-            "semantic_state":              win.get("semantic_state", ""),
-            "semantic_diagnostics":        win.get("semantic_diagnostics") or {},
-            "memory":                      win.get("memory"),
-            "memory_state":                win.get("memory_state") or {},
-            "activation_key":              win.get("activation_key", ""),
-            "pass_state":                  win.get("pass_state", ""),
-            "lifecycle_route":             win.get("lifecycle_route", ""),
-            "method_family":               window_method_family,
-            "interpretive_tags":           win.get("interpretive_tags") or [],
-        }
-        window_entry["narrative"] = _predictive_window_narrative(window_entry, window_blocks)
-        windows.append(window_entry)
-
-    predictions = sorted(
-        ({**w, **w["narrative"]} for w in windows),
-        key=lambda w: w["peak_date"],
-    )
-
-    daily_series = []
-    for day in raw.get("daily_series", []):
-        daily_series.append({
-            "date":           day.get("date", ""),
-            "raw_score":      round(float(day.get("raw_score") or 0), 4),
-            "smooth_score":   round(float(day.get("smooth_score") or 0), 4),
-            "baseline_score": round(float(day.get("baseline_score") or 0), 4),
-            "residual_score": round(float(day.get("residual_score") or 0), 4),
-            "structural_raw": round(float(day.get("structural_raw") or 0), 4),
-            "trigger_raw":    round(float(day.get("trigger_raw") or 0), 4),
-        })
-
-    debug = raw.get("debug", {})
-
-    try:
-        birth_date_display = (
-            datetime.strptime(payload.get("birth_date", ""), "%Y-%m-%d").strftime("%B %d, %Y")
-            if payload.get("birth_date") else ""
-        )
-    except ValueError:
-        birth_date_display = payload.get("birth_date", "")
-
-    return {
-        "querent_name":       payload.get("name") or variables.get("querent_name", ""),
-        "birth_date_display": birth_date_display,
-        "birth_time_display": payload.get("birth_time") or "",
-        "birth_location":     payload.get("birth_location") or "",
-        "birth_time_status":  _build_birth_metadata(payload)["birth_time_status"],
-        "forecast_start":     report_start.strftime("%Y-%m-%d") if report_start else "",
-        "forecast_end":       report_end.strftime("%Y-%m-%d") if report_end else "",
-        "formula_version":    raw.get("formula_version", "unknown"),
-        "signal_count":       len(signals),
-        "window_count":       len(windows),
-        "signals":            signals,
-        "windows":            windows,
-        "predictions":        predictions,
-        "daily_series":       daily_series,
-        "debug":              debug,
-        "generation_date":    datetime.now().strftime("%Y-%m-%d %H:%M"),
-        "palette_name":       palette_name,
-        "palette":            palette,
-    }
-
 
 # ── Template Rendering ─────────────────────────────────────────
 
@@ -8240,7 +7770,6 @@ def render_template(report_type: str, context: dict) -> str:
         "year_ahead":         "year_ahead/templates/active/year_ahead.html",
         "personal_forecast":  "personal_forecast/templates/personal_forecast.html",
         "soul_ecosystem":     "soul_ecosystem/templates/soul_ecosystem.html",
-        "predictive_sandbox": "predictive_sandbox/templates/predictive_sandbox.html",
     }
     if report_type not in template_map:
         raise ValueError(
@@ -8261,54 +7790,14 @@ def render_template(report_type: str, context: dict) -> str:
         template = env.get_template(template_name)
         return template.render(**render_context)
     except Exception as e:
-        # Sandbox errors are surfaced explicitly so template issues are never
-        # silently buried under the generic fallback during development.
+        # The full traceback is printed so the failure is actually
+        # diagnosable instead of a one-line "Template error" easy to lose
+        # in the log, but a client-facing run still degrades to the
+        # simplified fallback page rather than hard-crashing.
         import traceback as _tb
-        if report_type == "predictive_sandbox":
-            print("[Render] SANDBOX TEMPLATE ERROR — full traceback:")
-            _tb.print_exc()
-            return _render_sandbox_error(e)
-        # Other report types still degrade to the simplified fallback page
-        # (so a client-facing run doesn't hard-crash), but the full
-        # traceback is printed so the failure is actually diagnosable
-        # instead of a one-line "Template error" easy to lose in the log.
         print(f"[Render] Template error for '{report_type}': {e}")
         _tb.print_exc()
         return _render_fallback(report_type, context)
-
-
-def _render_sandbox_error(exc: Exception) -> str:
-    """
-    Returns a diagnostic HTML page showing the full sandbox template error.
-    Used only when report_type == 'predictive_sandbox' so other reports are
-    not affected.  Never silently swallows the exception.
-    """
-    import traceback as _tb
-    tb_text = _tb.format_exc().replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
-    exc_str = str(exc).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
-    return f"""<!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8">
-<title>Sandbox Template Error</title>
-<style>
-  body {{ background:#07070B; color:#E8E0D0; font-family:"Courier New",monospace;
-          padding:40px; line-height:1.6; }}
-  h1   {{ color:#FF6BAE; font-size:18px; }}
-  h2   {{ color:#FF9868; font-size:14px; margin-top:28px; }}
-  pre  {{ background:#101018; border:1px solid #242436; border-radius:4px;
-          padding:20px; font-size:12px; overflow-x:auto; white-space:pre-wrap; }}
-  .note {{ color:#6B6580; font-size:12px; margin-top:20px; }}
-</style>
-</head><body class="report-shell report-fallback">
-<h1>SANDBOX TEMPLATE ERROR</h1>
-<p>The <code>predictive_sandbox.html</code> template raised an exception.
-This diagnostic page is shown instead of the generic fallback so the error is visible.</p>
-<h2>Exception</h2>
-<pre>{exc_str}</pre>
-<h2>Full Traceback</h2>
-<pre>{tb_text}</pre>
-<p class="note">This error page is only shown for <code>predictive_sandbox</code>.
-All customer-facing reports use their own error handling and are not affected.</p>
-</body></html>"""
 
 
 _SHARED_REPORT_CSS_PATH = os.path.join(TEMPLATES_DIR, "shared", "report_visual_system.css")
@@ -8443,7 +7932,7 @@ def main():
         description="Entangled Oracle Report Generator"
     )
     parser.add_argument("report_type",
-        choices=["horoscope", "weekly_horoscope", "year_ahead", "personal_forecast", "soul_ecosystem", "predictive_sandbox"],
+        choices=["horoscope", "weekly_horoscope", "year_ahead", "personal_forecast", "soul_ecosystem"],
         help="Type of report to generate"
     )
     parser.add_argument("--name",     required=True,  help="Querent name")

@@ -2219,6 +2219,42 @@ def scan_lunations(
                 matches.append((target_name, target, distance))
 
         if not matches:
+            score = 0.15
+            label, bar = _intensity_label(score)
+            event = {
+                "event_type": "lunation",
+                "lunation_type": lunation_type,
+                "eclipse_sign": ZODIAC_SIGNS[sign_index],
+                "lunation_sign": ZODIAC_SIGNS[sign_index],
+                "eclipse_degree": round(degree, 2),
+                "lunation_degree": round(degree, 2),
+                "eclipse_longitude": round(lunation_longitude, 4),
+                "lunation_longitude": round(lunation_longitude, 4),
+                "transit_planet": "Moon",
+                "natal_target": "",
+                "natal_target_key": "",
+                "natal_target_display": "",
+                "natal_house": lunation_house,
+                "whole_sign_house": lunation_house,
+                "natal_contact": "",
+                "natal_contact_house": lunation_house,
+                "distance_to_natal_target": None,
+                "entry_datetime": lunation_datetime,
+                "peak_datetime": lunation_datetime,
+                "leave_datetime": None,
+                "entry_date": _format_event_date(lunation_datetime),
+                "peak_date": _format_event_date(lunation_datetime),
+                "leave_date": "",
+                "duration_days": 0.0,
+                "raw_score": round(score, 4),
+                "combined_intensity_score": round(score, 4),
+                "score": round(score, 4),
+                "intensity_label": label,
+                "intensity_bar": bar,
+                "priority": "C",
+                "peak_month": (lunation_datetime.year, lunation_datetime.month),
+            }
+            events.append(enrich_forecast_event(event, activation_profile))
             continue
 
         for target_name, target, distance in matches:
@@ -2263,18 +2299,49 @@ def scan_lunations(
     return events
 
 
+def _filter_moon_progression_events(progression_events: list[dict]) -> list[dict]:
+    """
+    Keeps only progressed-Moon-involved contacts/ingresses (clock_role
+    "modifier", ~2-4 week orb window per engine/progressions.py) -- the one
+    progression-family technique fast enough to fit a 90-day report.
+    Explicitly excludes progression_lunation_phase: that's the progressed
+    Sun-Moon phase cycle (~29.5 years per full cycle, quarter events roughly
+    every 7 years), a different and much slower phenomenon that happens to
+    also carry transit_planet == "Moon".
+    """
+    kept = []
+    for event in progression_events:
+        if event.get("method_variant") == "progression_lunation_phase":
+            continue
+        if event.get("transit_planet") == "Moon":
+            kept.append(event)
+            continue
+        if event.get("method_variant") in ("progressed_to_progressed", "transit_to_progressed") and event.get("natal_target") == "Moon":
+            kept.append(event)
+    return kept
+
+
 # ── Public Year-Ahead API ──────────────────────────────────────
 def compute_year_ahead_events(
     natal_payload: dict,
     start_date: datetime | None = None,
     end_date: datetime | None = None,
     step_hours: int = 12,
+    include_moon_progressions: bool = False,
 ) -> dict:
     """
     Builds the structured event timeline for the full Year Ahead report.
 
     Returns a dictionary rather than a bare list so the report-builder layer
     can access each event family separately as well as a combined chronology.
+
+    include_moon_progressions: opt-in only (Personal Forecast passes True).
+    Progressed Moon contacts run on a ~2-4 week orb window (clock_role
+    "modifier" per engine/progressions.py), fast enough to fit a 90-day
+    report. Slower progressed bodies (clock_role "chapter", ~2-4 month
+    windows) are deliberately excluded here -- that's a separate, still-
+    undecided placement question for Year Ahead, not something this flag
+    should default into for every caller.
     """
     report_start = _ensure_utc(start_date)
     report_end = _ensure_utc(end_date) if end_date else _add_year_window(report_start)
@@ -2315,15 +2382,34 @@ def compute_year_ahead_events(
         eclipse_events=eclipse_events,
     )
 
-    transit_events, ingress_events, station_events, eclipse_events = link_related_forecast_events(
+    from engine.profections import annual_profection_periods
+    profection_periods = annual_profection_periods(natal_payload, report_start, report_end)
+
+    moon_progression_events = []
+    if include_moon_progressions:
+        from engine.progressions import scan_progression_events
+        moon_progression_events = _filter_moon_progression_events(
+            scan_progression_events(natal_payload, report_start, report_end)
+        )
+
+    linked_events = link_related_forecast_events(
         transit_events,
         ingress_events,
         station_events,
         eclipse_events,
         activation_profile,
+        lunation_events=lunation_events,
+        progression_events=moon_progression_events,
+        time_lord_periods=profection_periods,
     )
+    transit_events = linked_events["transit_events"]
+    ingress_events = linked_events["ingress_events"]
+    station_events = linked_events["station_events"]
+    eclipse_events = linked_events["eclipse_events"]
+    lunation_events = linked_events["lunation_events"]
+    progression_events = linked_events["progression_events"]
 
-    all_events = transit_events + ingress_events + station_events + eclipse_events + lunation_events
+    all_events = transit_events + ingress_events + station_events + eclipse_events + lunation_events + progression_events
     all_events.sort(
         key=lambda event: (
             event["peak_datetime"],
@@ -2339,5 +2425,6 @@ def compute_year_ahead_events(
         "stations": station_events,
         "eclipses": eclipse_events,
         "lunations": lunation_events,
+        "progressions": progression_events,
         "all_events": all_events,
     }

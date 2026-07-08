@@ -6,7 +6,6 @@ from datetime import datetime, timezone
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 sys.path.insert(0, os.path.dirname(__file__))
 
-from engine.predictive_engine import _event_to_signal
 from formulas.standard.forecast_activation import (
     build_forecast_activation_profile,
     enrich_forecast_event,
@@ -142,13 +141,14 @@ class ForecastEnginePhase4Tests(unittest.TestCase):
             self.profile,
         )
 
-        transits, ingresses, stations, eclipses = link_related_forecast_events(
+        linked = link_related_forecast_events(
             [transit],
             [],
             [station],
             [],
             self.profile,
         )
+        transits, ingresses, stations, eclipses = linked["transit_events"], linked["ingress_events"], linked["station_events"], linked["eclipse_events"]
         linked_station = stations[0]
         self.assertTrue(linked_station["near_active_transit_cycle"])
         self.assertEqual(linked_station["pass_sequence"], "station_linked")
@@ -213,7 +213,7 @@ class ForecastEnginePhase4Tests(unittest.TestCase):
         self.assertGreater(long_running["structural_importance"], short_exact["structural_importance"] - 0.05)
         self.assertLess(long_running["reader_facing_activity_score"], short_exact["reader_facing_activity_score"])
 
-    def test_three_pass_transit_propagates_to_predictive_signal(self):
+    def test_three_pass_transit_sets_pass_sequence(self):
         event = enrich_forecast_event(
             {
                 "event_type": "transit",
@@ -235,10 +235,7 @@ class ForecastEnginePhase4Tests(unittest.TestCase):
             self.profile,
         )
 
-        signal = _event_to_signal(event, 0)
         self.assertEqual(event["pass_sequence"], "retrograde_three_pass")
-        self.assertEqual(signal["pass_sequence"], "retrograde_three_pass")
-        self.assertGreater(signal["signal_strength"], signal["trigger_strength"])
 
 
 if __name__ == "__main__":

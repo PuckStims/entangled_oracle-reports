@@ -71,10 +71,12 @@ def test_forecast_climate_renders_in_three_report_outputs():
         assert "Primary cycles:" in html
         assert "Field qualities" in html
         assert "No separate convergence window was isolated for this month." not in html
-        assert "VIII. Monthly chapters" in html
-        assert "IX. Cycle Ledger" in html
-        assert "X. Technical Appendix" in html
-        assert "XI. Year Integration" in html
+        # Section numbering shifted after "Annual rhythm" (VIII) and "Turning
+        # point guide" (X) were inserted ahead of these sections.
+        assert "IX. Monthly chapters" in html
+        assert "XI. Cycle ledger" in html
+        assert "XII. Technical appendix" in html
+        assert "XIII. Year integration" in html
         for text in sample["must_include"]:
             assert text in html
 

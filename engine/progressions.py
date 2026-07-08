@@ -78,11 +78,11 @@ def build_progressed_chart(natal_payload: dict, moment: datetime) -> dict:
     birth_time_state = _birth_time_status(natal_payload)
     if birth_time_state == "exact":
         for angle in ANGLE_SOURCES:
-            natal = _angle_longitude(natal_payload, angle)
-            if natal is not None:
+            progressed_angle_lon = _progressed_angle_longitude(natal_payload, angle, moment)
+            if progressed_angle_lon is not None:
                 positions[angle] = {
-                    "longitude": (natal + age_years) % 360.0,
-                    "sign": _sign_for_longitude((natal + age_years) % 360.0),
+                    "longitude": progressed_angle_lon,
+                    "sign": _sign_for_longitude(progressed_angle_lon),
                 }
     return {
         "progressed_jd": progressed_jd,
@@ -119,20 +119,62 @@ def scan_progression_events(natal_payload: dict, start_date: datetime, end_date:
 
     events.extend(_progressed_ingresses(natal_payload, start, end, sources, birth_time_state))
     events.extend(_progressed_lunation_phase_events(natal_payload, start, end))
+
+    # Progressed to Progressed
+    for source_name, source in sources.items():
+        for target_name, target in sources.items():
+            if source_name >= target_name: continue
+            aspects = ["Conjunction"] if source["kind"] == "asteroid" or target["kind"] == "asteroid" else list(ASPECTS.keys())
+            for aspect_name in aspects:
+                exact_at = _find_prog_to_prog_contact_exact(natal_payload, source_name, target_name, ASPECTS[aspect_name], start, end)
+                if exact_at is None: continue
+                source_lon = progressed_longitude(natal_payload, source_name, exact_at)
+                target_lon = progressed_longitude(natal_payload, target_name, exact_at)
+                if source_lon is None or target_lon is None: continue
+                orb = abs(_aspect_delta(source_lon, target_lon, ASPECTS[aspect_name]))
+                limit = ANGLE_ORB if source["kind"] == "angle" or target["kind"] == "angle" else CONTACT_ORB
+                if orb <= limit:
+                    evt = _progression_contact_event(source_name, target_name, source, target, aspect_name, orb, limit, exact_at, birth_time_state)
+                    evt["method_variant"] = "progressed_to_progressed"
+                    s_lon_s = progressed_longitude(natal_payload, source_name, start)
+                    t_lon_s = progressed_longitude(natal_payload, target_name, start)
+                    if s_lon_s is not None and t_lon_s is not None:
+                        s_speed = _progressed_speed(natal_payload, source_name, start)
+                        t_speed = _progressed_speed(natal_payload, target_name, start)
+                        evt["applying_state"] = _applying_state_relative_velocity(s_lon_s, s_speed, t_lon_s, t_speed, ASPECTS[aspect_name])
+                    events.append(evt)
+
+    # Transit to Progressed
+    for transit_name in PLANET_SOURCES:
+        t_source = {"kind": "planet"}
+        for prog_name, prog_target in sources.items():
+            aspects = ["Conjunction"] if prog_target["kind"] == "asteroid" else list(ASPECTS.keys())
+            for aspect_name in aspects:
+                exact_at = _find_transit_to_prog_contact_exact(natal_payload, transit_name, prog_name, ASPECTS[aspect_name], start, end)
+                if exact_at is None: continue
+                t_lon = _transit_longitude(transit_name, exact_at)
+                p_lon = progressed_longitude(natal_payload, prog_name, exact_at)
+                if t_lon is None or p_lon is None: continue
+                orb = abs(_aspect_delta(t_lon, p_lon, ASPECTS[aspect_name]))
+                limit = ANGLE_ORB if prog_target["kind"] == "angle" else CONTACT_ORB
+                if orb <= limit:
+                    evt = _progression_contact_event(transit_name, prog_name, t_source, prog_target, aspect_name, orb, limit, exact_at, birth_time_state)
+                    evt["method_variant"] = "transit_to_progressed"
+                    t_lon_s = _transit_longitude(transit_name, start)
+                    p_lon_s = progressed_longitude(natal_payload, prog_name, start)
+                    if t_lon_s is not None and p_lon_s is not None:
+                        t_speed = _transit_speed(transit_name, start)
+                        p_speed = _progressed_speed(natal_payload, prog_name, start)
+                        evt["applying_state"] = _applying_state_relative_velocity(t_lon_s, t_speed, p_lon_s, p_speed, ASPECTS[aspect_name])
+                    events.append(evt)
+
     events.sort(key=lambda event: (event["peak_datetime"], event["event_type"], event["transit_planet"]))
     return events
 
 
 def progressed_longitude(natal_payload: dict, body_name: str, moment: datetime) -> float | None:
     if body_name in ANGLE_NAMES:
-        natal = _angle_longitude(natal_payload, body_name)
-        if natal is None:
-            return None
-        birth_dt = _birth_datetime(natal_payload)
-        if birth_dt is None:
-            return None
-        age_years = max(0.0, (_ensure_utc(moment) - birth_dt).total_seconds() / 86400.0 / TROPICAL_YEAR_DAYS)
-        return (natal + age_years) % 360.0
+        return _progressed_angle_longitude(natal_payload, body_name, moment)
     if body_name in ANCHOR_ASTEROIDS:
         natal = _natal_longitude(natal_payload, body_name)
         if natal is None:
@@ -225,7 +267,7 @@ def _progression_contact_event(source_name: str, target_name: str, source: dict,
         "confidence_state": confidence_state,
         "birth_time_dependency": "hard" if angle_involved else "soft",
         "asteroid_involved": asteroid_involved,
-        "report_surface_visibility": ["internal_rd", "predictive_sandbox"],
+        "report_surface_visibility": ["internal_rd", "engineering_diagnostic"],
         "formula_version": FORMULA_VERSION,
         "policy_version": POLICY_VERSION,
     }
@@ -288,7 +330,7 @@ def _progression_ingress_event(source_name: str, sign_index: int, exact_at: date
         "confidence": min(0.90, 0.95 * angle_support * 0.80),
         "confidence_components": {"calculation_integrity": 0.95, "angle_support": angle_support, "method_maturity": 0.80},
         "confidence_state": "withheld" if angle_involved and birth_time_state != "exact" else "moderate",
-        "report_surface_visibility": ["internal_rd", "predictive_sandbox"],
+        "report_surface_visibility": ["internal_rd", "engineering_diagnostic"],
         "formula_version": FORMULA_VERSION,
         "policy_version": POLICY_VERSION,
     }
@@ -357,7 +399,7 @@ def _progressed_lunation_event(variant: str, phase_angle: float, exact_at: datet
         "confidence": 0.76,
         "confidence_components": {"calculation_integrity": 0.95, "angle_support": 1.0, "method_maturity": 0.80},
         "confidence_state": "moderate",
-        "report_surface_visibility": ["internal_rd", "predictive_sandbox"],
+        "report_surface_visibility": ["internal_rd", "engineering_diagnostic"],
         "formula_version": FORMULA_VERSION,
         "policy_version": POLICY_VERSION,
         "phase_angle": phase_angle,
@@ -455,6 +497,60 @@ def _angle_longitude(natal_payload: dict, name: str) -> float | None:
     return float(value % 360.0) if isinstance(value, (int, float)) else None
 
 
+def _natal_coordinates(natal_payload: dict) -> tuple[float, float] | None:
+    user_profile = natal_payload.get("user_profile") if isinstance(natal_payload.get("user_profile"), dict) else {}
+    coordinates = user_profile.get("resolved_coordinates") if isinstance(user_profile.get("resolved_coordinates"), dict) else {}
+    lat = coordinates.get("latitude")
+    lon = coordinates.get("longitude")
+    if isinstance(lat, (int, float)) and isinstance(lon, (int, float)):
+        return float(lat), float(lon)
+    return None
+
+
+def _progressed_angle_longitude(natal_payload: dict, angle_name: str, moment: datetime) -> float | None:
+    """
+    Computes a progressed angle (ASC/MC/IC/DSC) at genuine Swiss Ephemeris
+    precision, using the same natal_jd + age_years convention already used
+    for progressed planets (one ephemeris day per year of life), evaluated
+    at the natal birth location via swe.houses — not a flat +1 degree/year
+    approximation. Angle motion is non-linear (it depends on geographic
+    latitude and where the angle sits relative to the ecliptic), so this
+    mirrors the exact house-angle calculation and Porphyry polar fallback
+    already used in engine/natal_engine.py rather than reimplementing the
+    RA-to-ecliptic-longitude trigonometry by hand.
+    """
+    if swe is None:
+        return None
+    aliases = {"ASC": "Ascendant", "IC": "Imum Coeli", "DSC": "Descendant"}
+    base_angle = aliases.get(angle_name, angle_name)
+    natal_jd = _natal_jd(natal_payload)
+    birth_dt = _birth_datetime(natal_payload)
+    coordinates = _natal_coordinates(natal_payload)
+    if natal_jd is None or birth_dt is None or coordinates is None:
+        return None
+    lat, lon = coordinates
+    age_years = max(0.0, (_ensure_utc(moment) - birth_dt).total_seconds() / 86400.0 / TROPICAL_YEAR_DAYS)
+    progressed_jd = natal_jd + age_years
+    try:
+        _cusps, ascmc = swe.houses(progressed_jd, lat, lon, b"P")
+    except swe.Error:
+        try:
+            _cusps, ascmc = swe.houses(progressed_jd, lat, lon, b"O")
+        except swe.Error:
+            return None
+    ascendant = ascmc[0] % 360.0
+    midheaven = ascmc[1] % 360.0
+    if base_angle in ("Ascendant", "ASC"):
+        return ascendant
+    if base_angle in ("Midheaven", "MC"):
+        return midheaven
+    if base_angle in ("Descendant", "DSC"):
+        return (ascendant + 180.0) % 360.0
+    if base_angle in ("Imum Coeli", "IC"):
+        return (midheaven + 180.0) % 360.0
+    return None
+
+
 def _body_kind(name: str) -> str:
     if name in {"Sun", "Moon"}:
         return "luminary"
@@ -520,3 +616,148 @@ def _ensure_utc(value: datetime) -> datetime:
     if value.tzinfo is None:
         return value.replace(tzinfo=timezone.utc)
     return value.astimezone(timezone.utc)
+
+def _progressed_speed(natal_payload: dict, body_name: str, moment: datetime) -> float:
+    if body_name in ANGLE_NAMES:
+        moment_utc = _ensure_utc(moment)
+        lon_now = _progressed_angle_longitude(natal_payload, body_name, moment_utc)
+        lon_next = _progressed_angle_longitude(natal_payload, body_name, moment_utc + timedelta(days=1))
+        if lon_now is None or lon_next is None:
+            return 0.0
+        return _signed_angle_delta(lon_next, lon_now)
+    if body_name in ANCHOR_ASTEROIDS:
+        return 0.1 / TROPICAL_YEAR_DAYS
+    natal_jd = _natal_jd(natal_payload)
+    birth_dt = _birth_datetime(natal_payload)
+    if natal_jd is None or birth_dt is None or swe is None:
+        return 0.0
+    age_years = max(0.0, (_ensure_utc(moment) - birth_dt).total_seconds() / 86400.0 / TROPICAL_YEAR_DAYS)
+    try:
+        coordinates, _flags = swe.calc_ut(natal_jd + age_years, BODY_IDS.get(body_name, 0), CALC_FLAGS)
+        return float(coordinates[3]) / TROPICAL_YEAR_DAYS
+    except Exception:
+        return 0.0
+
+def _transit_speed(body_name: str, moment: datetime) -> float:
+    if swe is None or body_name not in BODY_IDS:
+        return 0.0
+    try:
+        y, m, d, h = moment.year, moment.month, moment.day, moment.hour + moment.minute/60.0 + moment.second/3600.0
+        jd = swe.julday(y, m, d, h)
+        coordinates, _flags = swe.calc_ut(jd, BODY_IDS[body_name], CALC_FLAGS)
+        return float(coordinates[3])
+    except Exception:
+        return 0.0
+
+def _transit_longitude(body_name: str, moment: datetime) -> float | None:
+    if swe is None or body_name not in BODY_IDS:
+        return None
+    try:
+        y, m, d, h = moment.year, moment.month, moment.day, moment.hour + moment.minute/60.0 + moment.second/3600.0
+        jd = swe.julday(y, m, d, h)
+        coordinates, _flags = swe.calc_ut(jd, BODY_IDS[body_name], CALC_FLAGS)
+        return float(coordinates[0] % 360.0)
+    except Exception:
+        return None
+
+def _applying_state_relative_velocity(
+    lon_a: float, speed_a: float, 
+    lon_b: float, speed_b: float, 
+    aspect_angle: float
+) -> str | None:
+    current_gap = min(abs((lon_a - lon_b) % 360.0), 360.0 - abs((lon_a - lon_b) % 360.0))
+    fut_a, fut_b = lon_a + speed_a, lon_b + speed_b
+    future_gap = min(abs((fut_a - fut_b) % 360.0), 360.0 - abs((fut_a - fut_b) % 360.0))
+    current_delta = abs(current_gap - aspect_angle)
+    future_delta = abs(future_gap - aspect_angle)
+    if abs(future_delta - current_delta) < 1e-6:
+        return None
+    return "applying" if future_delta < current_delta else "separating"
+
+def _find_prog_to_prog_contact_exact(natal_payload: dict, source_name: str, target_name: str, aspect_angle: float, start: datetime, end: datetime) -> datetime | None:
+    cursor = start
+    step = timedelta(days=SCAN_STEP_DAYS)
+    previous_time = cursor
+    previous_value = _prog_to_prog_delta(natal_payload, source_name, target_name, aspect_angle, previous_time)
+    best_time = None
+    best_abs = 999.0
+    while cursor <= end:
+        value = _prog_to_prog_delta(natal_payload, source_name, target_name, aspect_angle, cursor)
+        if abs(value) < best_abs:
+            best_abs = abs(value)
+            best_time = cursor
+        if _crossed_zero(previous_value, value):
+            return _bisect_prog_to_prog(natal_payload, source_name, target_name, aspect_angle, previous_time, cursor)
+        previous_time = cursor
+        previous_value = value
+        cursor += step
+    if best_time is not None and best_abs <= CONTACT_ORB:
+        return best_time
+    return None
+
+def _prog_to_prog_delta(natal_payload: dict, source_name: str, target_name: str, aspect_angle: float, moment: datetime) -> float:
+    s_lon = progressed_longitude(natal_payload, source_name, moment)
+    t_lon = progressed_longitude(natal_payload, target_name, moment)
+    if s_lon is None or t_lon is None:
+        return 999.0
+    return _aspect_delta(s_lon, t_lon, aspect_angle)
+
+def _bisect_prog_to_prog(natal_payload: dict, source_name: str, target_name: str, aspect_angle: float, low: datetime, high: datetime) -> datetime:
+    low_value = _prog_to_prog_delta(natal_payload, source_name, target_name, aspect_angle, low)
+    for _ in range(48):
+        midpoint = low + (high - low) / 2
+        mid_value = _prog_to_prog_delta(natal_payload, source_name, target_name, aspect_angle, midpoint)
+        if abs(mid_value) <= 0.05:
+            return midpoint
+        if _crossed_zero(low_value, mid_value):
+            high = midpoint
+        else:
+            low = midpoint
+            low_value = mid_value
+        if abs((high - low).total_seconds()) <= 3600:
+            break
+    return low + (high - low) / 2
+
+def _find_transit_to_prog_contact_exact(natal_payload: dict, transit_name: str, prog_name: str, aspect_angle: float, start: datetime, end: datetime) -> datetime | None:
+    cursor = start
+    step = timedelta(days=1)
+    previous_time = cursor
+    previous_value = _transit_to_prog_delta(natal_payload, transit_name, prog_name, aspect_angle, previous_time)
+    best_time = None
+    best_abs = 999.0
+    while cursor <= end:
+        value = _transit_to_prog_delta(natal_payload, transit_name, prog_name, aspect_angle, cursor)
+        if abs(value) < best_abs:
+            best_abs = abs(value)
+            best_time = cursor
+        if _crossed_zero(previous_value, value):
+            return _bisect_transit_to_prog(natal_payload, transit_name, prog_name, aspect_angle, previous_time, cursor)
+        previous_time = cursor
+        previous_value = value
+        cursor += step
+    if best_time is not None and best_abs <= CONTACT_ORB:
+        return best_time
+    return None
+
+def _transit_to_prog_delta(natal_payload: dict, transit_name: str, prog_name: str, aspect_angle: float, moment: datetime) -> float:
+    t_lon = _transit_longitude(transit_name, moment)
+    p_lon = progressed_longitude(natal_payload, prog_name, moment)
+    if t_lon is None or p_lon is None:
+        return 999.0
+    return _aspect_delta(t_lon, p_lon, aspect_angle)
+
+def _bisect_transit_to_prog(natal_payload: dict, transit_name: str, prog_name: str, aspect_angle: float, low: datetime, high: datetime) -> datetime:
+    low_value = _transit_to_prog_delta(natal_payload, transit_name, prog_name, aspect_angle, low)
+    for _ in range(48):
+        midpoint = low + (high - low) / 2
+        mid_value = _transit_to_prog_delta(natal_payload, transit_name, prog_name, aspect_angle, midpoint)
+        if abs(mid_value) <= 0.05:
+            return midpoint
+        if _crossed_zero(low_value, mid_value):
+            high = midpoint
+        else:
+            low = midpoint
+            low_value = mid_value
+        if abs((high - low).total_seconds()) <= 3600:
+            break
+    return low + (high - low) / 2

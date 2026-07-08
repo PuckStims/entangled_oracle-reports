@@ -37,7 +37,6 @@ REPORT_TYPE_VERSIONS = {
     "year_ahead": "Year Ahead v2.0",
     "personal_forecast": "Personal Forecast v1.0",
     "soul_ecosystem": "Soul Ecosystem v1.0",
-    "predictive_sandbox": "Predictive Sandbox v0.2",
 }
 
 TEMPLATE_MAP = {
@@ -46,7 +45,6 @@ TEMPLATE_MAP = {
     "year_ahead": os.path.join(PRODUCTS_DIR, "year_ahead", "templates", "active", "year_ahead.html"),
     "personal_forecast": os.path.join(PRODUCTS_DIR, "personal_forecast", "templates", "personal_forecast.html"),
     "soul_ecosystem": os.path.join(PRODUCTS_DIR, "soul_ecosystem", "templates", "soul_ecosystem.html"),
-    "predictive_sandbox": os.path.join(PRODUCTS_DIR, "predictive_sandbox", "templates", "predictive_sandbox.html"),
 }
 
 VISUAL_SYSTEM_FILES = [
@@ -132,7 +130,6 @@ def _report_block_paths(report_type: str, content_pack: str) -> list[str]:
         "horoscope": os.path.join(PRODUCTS_DIR, "daily_horoscope", "blocks"),
         "weekly_horoscope": os.path.join(PRODUCTS_DIR, "weekly_horoscope", "blocks"),
         "soul_ecosystem": os.path.join(PRODUCTS_DIR, "soul_ecosystem", "blocks"),
-        "predictive_sandbox": os.path.join(PRODUCTS_DIR, "predictive_sandbox"),
     }
     block_root = block_dirs.get(report_type)
     if not block_root or not os.path.isdir(block_root):
