@@ -785,15 +785,16 @@
     .orientation-themes li { padding:12px 14px; border-left:3px solid var(--accent); background:var(--surface-2); color:var(--text); font-size:.86rem; line-height:1.6; }
     .orientation-theme-card { padding:17px 18px; border:1px solid var(--border); border-radius:10px; background:var(--surface-2); }
     .orientation-theme-card p { margin:8px 0 0; color:var(--muted); font-size:.8rem; line-height:1.6; }
-    .curated-summary-stack { margin-top: 2px; display: grid; gap: 14px; }
-    .curated-summary-panel { padding: 18px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); }
-    .curated-summary-label { margin: 0 0 12px; color: var(--muted); font-size: .61rem; letter-spacing: 1.8px; text-transform: uppercase; }
-    .climate-highlight-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
-    .climate-highlight-card { padding: 16px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface-2); }
-    .climate-highlight-card h3 { margin: 8px 0 10px; font-size: .95rem; line-height: 1.4; }
+    .curated-summary-stack { margin-top: 8px; display: grid; gap: 30px; }
+    .curated-summary-panel { padding: 0; border: 0; background: transparent; }
+    .curated-summary-label { margin: 0 0 2px; padding-bottom: 10px; border-bottom: 1px solid var(--border); color: var(--muted); font-size: .61rem; letter-spacing: 1.8px; text-transform: uppercase; }
+    .climate-highlight-grid { display: grid; grid-template-columns: 1fr; }
+    .climate-highlight-card { display: grid; grid-template-columns: minmax(0,1.7fr) minmax(0,1fr); gap: 28px; padding: 18px 0; border: 0; border-bottom: 1px dotted var(--border); border-radius: 0; background: transparent; }
+    .climate-highlight-card:last-child { border-bottom: 0; }
+    .climate-highlight-card h3 { margin: 6px 0 8px; font-size: 1rem; line-height: 1.4; }
     .climate-highlight-card p { margin: 0; color: var(--muted); font-size: .78rem; line-height: 1.6; }
-    .climate-highlight-meta { margin-top: 12px; display: grid; gap: 8px; }
-    .climate-highlight-meta div { padding-top: 8px; border-top: 1px dotted var(--border); }
+    .climate-highlight-meta { display: grid; gap: 10px; align-content: start; }
+    .climate-highlight-meta div { padding-top: 0; border-top: 0; }
     .climate-highlight-meta span { display: block; color: var(--muted); font-size: .6rem; letter-spacing: 1.5px; text-transform: uppercase; }
     .climate-highlight-meta strong { display: block; margin-top: 5px; color: var(--text); font-size: .78rem; font-weight: normal; line-height: 1.55; }
     .archetypal-contract { margin:0 0 14px; padding:14px 17px; border-left:3px solid var(--accent); background:var(--surface-2); color:var(--muted); font-size:.84rem; line-height:1.62; }
@@ -1088,12 +1089,13 @@
     .q-row-label { font-size:.6rem; letter-spacing:2px; text-transform:uppercase; color:var(--faint); margin:0 0 5px; }
     .q-cycle { margin:0 0 4px; font-size:.92rem; color:var(--text); line-height:1.4; }
     .q-footnote { margin-top:16px; padding-top:14px; border-top:1px solid var(--border); color:var(--faint); font-size:.74rem; font-style:italic; line-height:1.5; }
-    .season-summary-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin-top:18px; }
-    .season-summary-card { padding:18px; border:1px solid var(--border); border-radius:10px; background:var(--surface); }
+    .season-summary-grid { display:grid; grid-template-columns:1fr; margin-top:0; }
+    .season-summary-card { display:grid; grid-template-columns:minmax(0,1.7fr) minmax(0,1fr); gap:28px; padding:18px 0; border:0; border-bottom:1px dotted var(--border); border-radius:0; background:transparent; }
+    .season-summary-card:last-child { border-bottom:0; }
     .season-summary-card p { margin:0; color:var(--muted); font-size:.78rem; line-height:1.6; }
-    .season-summary-card h3 { margin:8px 0 12px; font-size:1rem; }
-    .season-summary-meta { display:grid; gap:8px; margin-top:14px; }
-    .season-summary-meta div { padding-top:8px; border-top:1px dotted var(--border); }
+    .season-summary-card h3 { margin:6px 0 8px; font-size:1rem; }
+    .season-summary-meta { display:grid; gap:10px; margin-top:0; align-content:start; }
+    .season-summary-meta div { padding-top:0; border-top:0; }
     .season-summary-meta span { display:block; color:var(--muted); font-size:.62rem; letter-spacing:1.5px; text-transform:uppercase; }
     .season-summary-meta strong { display:block; margin-top:5px; color:var(--text); font-size:.84rem; font-weight:normal; line-height:1.55; }
     .turning-guide-timeline { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
@@ -1183,8 +1185,8 @@
     .notes-space { margin-top:18px; padding:18px; border:1px solid var(--border); border-radius:10px; background:var(--surface); }
     .notes-space h3 { margin:0 0 10px; font-size:.95rem; }
     .notes-space .reflection-lines { height:180px; }
-    @media (max-width: 800px) { .record-grid,.season-grid,.season-summary-grid,.month-guidance-grid,.month-guidance-layout,.characteristics-grid,.forecast-climate-list,.forecast-climate-pair,.climate-highlight-grid,.predictive-research-grid,.turning-guide-timeline { grid-template-columns:repeat(2,minmax(0,1fr)); } .integrity-panel,.characteristics-strip,.orientation-card-grid,.turning-guide-item-meta,.month-opening-flow,.month-opener-body,.arc-story-layout { grid-template-columns:1fr; } .arc-story-grid { grid-template-columns:1fr; } .orientation-notes { grid-template-columns:1fr; } .annual-rhythm-bands,.annual-rhythm-months { grid-template-columns:repeat(6,minmax(0,1fr)); } .annual-rhythm-band { grid-column:span 3; } .ledger-table, .structure-note-table { table-layout:auto; } }
-    @media (max-width: 560px) { .record-grid,.reader-principles,.forecast-climate-list,.forecast-climate-pair,.season-grid,.appendix-grid,.reflection-grid,.season-summary-grid,.month-guidance-grid,.month-guidance-layout,.characteristics-grid,.turning-guide-item-meta,.climate-highlight-grid,.predictive-research-grid,.annual-rhythm-bands,.annual-rhythm-months,.turning-guide-timeline { grid-template-columns:1fr; } .reader-principles article:nth-child(odd) { border-right:0; } .orientation-layout { grid-template-columns:1fr; } .integrity-list { grid-template-columns:1fr; } .turning-guide-item-top,.turning-guide-month-head { grid-template-columns:1fr; } .climate-field-header { display:block; } .climate-field-status { margin-top:6px; text-align:left; white-space:normal; } .annual-rhythm-band { grid-column:auto; } .ledger-table, .structure-note-table { table-layout:auto; } }
+    @media (max-width: 800px) { .record-grid,.season-grid,.month-guidance-grid,.month-guidance-layout,.characteristics-grid,.forecast-climate-list,.forecast-climate-pair,.predictive-research-grid,.turning-guide-timeline { grid-template-columns:repeat(2,minmax(0,1fr)); } .integrity-panel,.characteristics-strip,.orientation-card-grid,.turning-guide-item-meta,.month-opening-flow,.month-opener-body,.arc-story-layout { grid-template-columns:1fr; } .arc-story-grid { grid-template-columns:1fr; } .orientation-notes { grid-template-columns:1fr; } .annual-rhythm-bands,.annual-rhythm-months { grid-template-columns:repeat(6,minmax(0,1fr)); } .annual-rhythm-band { grid-column:span 3; } .ledger-table, .structure-note-table { table-layout:auto; } }
+    @media (max-width: 560px) { .record-grid,.reader-principles,.forecast-climate-list,.forecast-climate-pair,.season-grid,.appendix-grid,.reflection-grid,.month-guidance-grid,.month-guidance-layout,.characteristics-grid,.turning-guide-item-meta,.predictive-research-grid,.annual-rhythm-bands,.annual-rhythm-months,.turning-guide-timeline { grid-template-columns:1fr; } .season-summary-card,.climate-highlight-card { grid-template-columns:1fr; gap:12px; } .reader-principles article:nth-child(odd) { border-right:0; } .orientation-layout { grid-template-columns:1fr; } .integrity-list { grid-template-columns:1fr; } .turning-guide-item-top,.turning-guide-month-head { grid-template-columns:1fr; } .climate-field-header { display:block; } .climate-field-status { margin-top:6px; text-align:left; white-space:normal; } .annual-rhythm-band { grid-column:auto; } .ledger-table, .structure-note-table { table-layout:auto; } }
     /* ══════════════════════════════════════════════════════════════════
        PRINT / PDF LAYOUT — single authoritative @media print block.
        Consolidated from three previously overlapping blocks ("PDF print
@@ -1285,8 +1287,11 @@
       .appendix-grid article,
       .method-note,
       .reflection-grid article,
+      .quarter-grid,
+      .reflection-grid,
       .ledger-month,
       .season-summary-card,
+      .climate-highlight-card,
       .notes-space,
       .characteristic-card,
       .turning-guide-month,
@@ -1492,6 +1497,12 @@
         background: #fbfaf7;
         border-color: #d8d5e6;
         box-shadow: inset 0 1px 0 rgba(255,255,255,.8);
+        /* Base rule sets break-inside: avoid for on-screen card styling;
+           in print that stranded each field whole on the next page,
+           leaving large blank gaps behind it. Let fields fragment like
+           ordinary prose, matching the Phase 1.5 intent above. */
+        break-inside: auto;
+        page-break-inside: auto;
       }
       .climate-field-meta span {
         background: #f1eef8;
@@ -1510,6 +1521,18 @@
         padding-top: 8px;
         border-top: 1px dotted #d8d5e6;
       }
+
+      /* Year Integration (XIII) closing block: the 4 reflection prompts,
+         the Notes panel, and the report footer are trimmed just enough
+         in print to land together on one page instead of Notes/footer
+         spilling onto a near-empty page behind them. */
+      .reflection-grid { margin-top: 12px; gap: 12px; }
+      .reflection-grid article { padding: 16px; min-height: 0; }
+      .reflection-lines { margin-top: 10px; height: 90px; }
+      .notes-space { margin-top: 12px; padding: 14px 16px; }
+      .notes-space h3 { margin: 0 0 6px; }
+      .notes-space .reflection-lines { height: 96px; }
+      footer { margin-top: 20px; }
 
       .reader-guide-intro { background: #f7f7fa; color: #1a1a2e; }
       .reader-principles article { border-color: #d0d0dc; }
@@ -1570,7 +1593,6 @@
       .mini-track i { background: #777777; }
 
       .orientation-note,
-      .season-summary-card,
       .month-guidance-card,
       .ledger-month,
       .structure-note-section,
@@ -1881,9 +1903,11 @@
               <div class="season-summary-grid" style="margin-top: 0;">
                 {% for item in seasonal_highlights %}
                 <article class="season-summary-card">
-                  <p>{{ item.months_label }}</p>
-                  <h3>{{ item.title }}</h3>
-                  {% if item.summary %}<p>{{ item.summary }}</p>{% endif %}
+                  <div class="season-summary-main">
+                    <p>{{ item.months_label }}</p>
+                    <h3>{{ item.title }}</h3>
+                    {% if item.summary %}<p>{{ item.summary }}</p>{% endif %}
+                  </div>
                   {% if item.peak_month or item.dominant_domains %}
                   <div class="season-summary-meta">
                     {% if item.peak_month %}<div><span>Peak month</span><strong>{{ item.peak_month }}</strong></div>{% endif %}
@@ -1901,9 +1925,11 @@
               <div class="climate-highlight-grid">
                 {% for item in climate_highlights %}
                 <article class="climate-highlight-card">
-                  <p>{{ item.band_label }}</p>
-                  <h3>{{ item.field_label }}</h3>
-                  {% if item.summary_line %}<p>{{ item.summary_line }}</p>{% endif %}
+                  <div class="climate-highlight-main">
+                    <p>{{ item.band_label }}</p>
+                    <h3>{{ item.field_label }}</h3>
+                    {% if item.summary_line %}<p>{{ item.summary_line }}</p>{% endif %}
+                  </div>
                   {% if item.signal_family_label or item.supporting_event_titles %}
                   <div class="climate-highlight-meta">
                     {% if item.signal_family_label %}<div><span>Primary pattern</span><strong>{{ item.signal_family_label }}</strong></div>{% endif %}
