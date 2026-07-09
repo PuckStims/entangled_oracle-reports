@@ -1,124 +1,124 @@
 {
   "connection": {
     "most_visible": {
-      "fallback": "Connection is one of the clearest annual fields in this forecast. Existing events repeatedly gather around contact, agreements, reciprocity, and the conditions that make mutual exchange workable."
+      "fallback": "Connection is carrying a strong share of the year’s weather. The report repeatedly returns to contact, trust, reciprocity, and the agreements that make closeness honest enough to hold."
     },
     "strongly_present": {
-      "fallback": "Connection stays strongly present across the existing annual event set. The emphasis is less about predicting one relationship outcome than about showing where relational conditions keep returning to view."
+      "fallback": "Connection has a clear voice in this forecast. Relationships, collaborations, invitations, and terms of exchange keep becoming places where the year asks for attention."
     },
     "present": {
-      "fallback": "Connection remains meaningfully present in the annual field map. The score reflects recurring relational signals without claiming that every month will foreground them equally."
+      "fallback": "Connection is active without dominating the whole map. The annual pattern includes meaningful relational signals, though they may arrive through specific moments rather than a constant theme."
     },
     "background": {
-      "fallback": "Connection remains in the background of the annual field map. It is part of the year’s structure, but not the clearest area of recurring concentration."
+      "fallback": "Connection works more quietly here. Other fields may lead the forecast, but the quality of contact, response, and mutual understanding still shapes how the year is lived."
     },
     "minimal": {
-      "fallback": "Connection is the least emphasized of the seven annual fields in this forecast. That does not mean it is absent, only that fewer high-weight signals cluster there."
+      "fallback": "Connection is lightly emphasized in this annual reading. That does not remove relationships from the year; it simply means the strongest signals are gathering elsewhere."
     }
   },
   "capacity": {
     "most_visible": {
-      "fallback": "Capacity is one of the clearest annual fields in this forecast. Existing events repeatedly point toward energy, pacing, obligation, maintenance, and what can be sustained in lived reality."
+      "fallback": "Capacity is one of the year’s loudest signals. The forecast keeps circling the real texture of energy, responsibility, recovery, and the amount of life a system can honestly carry."
     },
     "strongly_present": {
-      "fallback": "Capacity stays strongly present across the existing annual event set. The emphasis shows where workload, structure, stamina, and recovery are more visibly active."
+      "fallback": "Capacity is strongly woven through the year. Workload, stamina, maintenance, and the need for durable support are likely to matter more than abstract intention."
     },
     "present": {
-      "fallback": "Capacity remains meaningfully present in the annual field map. The score reflects recurring practical and structural signals rather than a claim about constant pressure."
+      "fallback": "Capacity has a meaningful place in this forecast. The year includes practical questions about pace and obligation, without making strain the only story."
     },
     "background": {
-      "fallback": "Capacity remains in the background of the annual field map. It still contributes to the year’s conditions, but with less concentration than the stronger fields."
+      "fallback": "Capacity stays mostly behind the front line of the reading. It still matters as a condition underneath events: how much energy is available, what needs upkeep, and what must be paced."
     },
     "minimal": {
-      "fallback": "Capacity is the least emphasized of the seven annual fields in this forecast. That signals relatively fewer concentrated annual references to workload, pacing, and sustainment."
+      "fallback": "Capacity receives a lighter signal in this annual map. The report is not primarily organized around stamina, workload, or maintenance, though those realities still deserve ordinary care."
     }
   },
   "direction": {
     "most_visible": {
-      "fallback": "Direction is one of the clearest annual fields in this forecast. Existing events repeatedly gather around movement, initiative, decision-making, and practical orientation."
+      "fallback": "Direction is one of the clearest organizing forces this year. The forecast repeatedly points toward movement, choice, orientation, and the moment when a path begins to identify itself."
     },
     "strongly_present": {
-      "fallback": "Direction stays strongly present across the existing annual event set. The emphasis shows where choices, momentum, and course-setting become easier to notice."
+      "fallback": "Direction is strongly active in the annual pattern. Decisions, next steps, course corrections, and a sharper sense of where energy wants to go keep coming into view."
     },
     "present": {
-      "fallback": "Direction remains meaningfully present in the annual field map. The score reflects recurring orientation signals without implying a single fixed path."
+      "fallback": "Direction is meaningfully present without taking over the whole reading. The year offers orientation signals, but they may come through practice, response, and timing rather than one definitive answer."
     },
     "background": {
-      "fallback": "Direction remains in the background of the annual field map. It still appears in the year’s structure, but not with the strongest concentration."
+      "fallback": "Direction is quieter in this forecast. Movement still happens, but the year may be less about bold course-setting than about the other conditions that make a path possible."
     },
     "minimal": {
-      "fallback": "Direction is the least emphasized of the seven annual fields in this forecast. That reflects lower relative concentration, not a lack of meaningful choices."
+      "fallback": "Direction is lightly emphasized compared with the other annual fields. This does not mean there are no choices; it means the report’s strongest pattern is not primarily about momentum or relocation of aim."
     }
   },
   "resources": {
     "most_visible": {
-      "fallback": "Resources are one of the clearest annual fields in this forecast. Existing events repeatedly point toward support, exchange, material conditions, and what must be allocated carefully."
+      "fallback": "Resources are one of the year’s most visible themes. The report keeps returning to support, money, time, value, access, and the practical exchanges that determine what can be held."
     },
     "strongly_present": {
-      "fallback": "Resources stay strongly present across the existing annual event set. The emphasis shows where support, value, sustainability, and exchange are more visibly active."
+      "fallback": "Resources are strongly present across the forecast. Questions of availability, contribution, material support, and mutual benefit are likely to become easier to name."
     },
     "present": {
-      "fallback": "Resources remain meaningfully present in the annual field map. The score reflects recurring signals around what is available, shared, or stretched."
+      "fallback": "Resources have a meaningful role in the annual pattern. The emphasis is not constant scarcity or guaranteed abundance, but a repeated need to notice what is available, shared, requested, or protected."
     },
     "background": {
-      "fallback": "Resources remain in the background of the annual field map. They still shape the year’s conditions, but with less concentration than the stronger fields."
+      "fallback": "Resources sit more quietly in this reading. They still influence the year through money, help, time, tools, and access, but they are not the field with the strongest concentration."
     },
     "minimal": {
-      "fallback": "Resources are the least emphasized of the seven annual fields in this forecast. That reflects fewer high-weight annual references to support, exchange, and sustainability."
+      "fallback": "Resources receive a lighter signal here. Material conditions and support systems still matter, but the forecast is not chiefly organized around exchange, allocation, or financial pressure."
     }
   },
   "meaning": {
     "most_visible": {
-      "fallback": "Meaning is one of the clearest annual fields in this forecast. Existing events repeatedly gather around perspective, interpretation, belief, learning, and the wider frame that gives experience coherence."
+      "fallback": "Meaning is one of the year’s strongest currents. The forecast repeatedly turns toward interpretation, belief, learning, memory, and the larger story that makes separate events cohere."
     },
     "strongly_present": {
-      "fallback": "Meaning stays strongly present across the existing annual event set. The emphasis shows where worldview, understanding, and interpretation become more visible."
+      "fallback": "Meaning is strongly active in this annual map. Perspective, study, spiritual framing, worldview, and the need to understand what something is teaching keep returning as important threads."
     },
     "present": {
-      "fallback": "Meaning remains meaningfully present in the annual field map. The score reflects recurring signals around learning, orientation, and significance without claiming certainty."
+      "fallback": "Meaning has a steady place in the reading. The year contains moments that ask for interpretation and context, though not every event has to become a life thesis."
     },
     "background": {
-      "fallback": "Meaning remains in the background of the annual field map. It still contributes to the year’s structure, but less visibly than the stronger fields."
+      "fallback": "Meaning works in the background here. The larger story is still present, but the forecast may lead more through lived conditions than through belief, study, or interpretation."
     },
     "minimal": {
-      "fallback": "Meaning is the least emphasized of the seven annual fields in this forecast. That signals lower annual concentration, not the absence of reflection or interpretation."
+      "fallback": "Meaning is lightly emphasized in this annual field set. Reflection and learning are not absent, but they are not the primary concentration around which the year is arranged."
     }
   },
   "visibility": {
     "most_visible": {
-      "fallback": "Visibility is one of the clearest annual fields in this forecast. Existing events repeatedly point toward contribution, public legibility, recognition, and how work or identity becomes easier to witness."
+      "fallback": "Visibility is one of the year’s clearest signals. The forecast repeatedly brings attention to contribution, recognition, public legibility, and the ways your work or identity becomes easier for others to see."
     },
     "strongly_present": {
-      "fallback": "Visibility stays strongly present across the existing annual event set. The emphasis shows where public roles, recognition, or visible contribution become more active."
+      "fallback": "Visibility is strongly present in the annual pattern. Public roles, creative output, reputation, leadership, and being witnessed may become more active parts of the year’s story."
     },
     "present": {
-      "fallback": "Visibility remains meaningfully present in the annual field map. The score reflects recurring signals around contribution and recognition, not guaranteed outcomes."
+      "fallback": "Visibility is meaningfully active without defining the whole forecast. The year includes openings around contribution or recognition, but they may be selective rather than constant."
     },
     "background": {
-      "fallback": "Visibility remains in the background of the annual field map. It still appears in the year’s structure, but with less concentration than the stronger fields."
+      "fallback": "Visibility stays mostly in the background of this reading. Public presence and recognition still matter, but the stronger annual emphasis may be happening in less exposed parts of life."
     },
     "minimal": {
-      "fallback": "Visibility is the least emphasized of the seven annual fields in this forecast. That reflects fewer concentrated annual references to public presence and recognition."
+      "fallback": "Visibility is lightly emphasized here. This does not erase contribution or recognition; it only suggests that the year’s main signals are not primarily about being seen."
     }
   },
   "restoration": {
     "most_visible": {
-      "fallback": "Restoration is one of the clearest annual fields in this forecast. Existing events repeatedly gather around privacy, repair, retreat, replenishment, and the conditions that allow recovery."
+      "fallback": "Restoration is one of the year’s most visible fields. The forecast repeatedly points toward repair, privacy, grief work, replenishment, retreat, and the conditions that let the nervous system return to itself."
     },
     "strongly_present": {
-      "fallback": "Restoration stays strongly present across the existing annual event set. The emphasis shows where rest, repair, privacy, or retreat become more visible."
+      "fallback": "Restoration is strongly woven through the annual pattern. Rest, closure, quiet processing, and private recalibration may become important forms of progress rather than interruptions to it."
     },
     "present": {
-      "fallback": "Restoration remains meaningfully present in the annual field map. The score reflects recurring signals around replenishment and private recalibration."
+      "fallback": "Restoration has a meaningful place in the forecast. The year includes real signals around recovery and repair, though they may sit alongside more outward-facing movement."
     },
     "background": {
-      "fallback": "Restoration remains in the background of the annual field map. It still shapes the year’s conditions, but with less concentration than the stronger fields."
+      "fallback": "Restoration is quieter in this reading. It still matters as an underlying need for rest, solitude, and integration, but it is not the year’s most concentrated field."
     },
     "minimal": {
-      "fallback": "Restoration is the least emphasized of the seven annual fields in this forecast. That reflects fewer concentrated annual signals around repair, privacy, and retreat."
+      "fallback": "Restoration receives a lighter signal in this annual map. Recovery, privacy, and repair are still human necessities, but the forecast is not primarily built around retreat or replenishment."
     }
   },
   "fallback": {
-    "fallback": "This field remains part of the annual map, but its current concentration is limited or mixed within this forecast."
+    "fallback": "This field is present in the annual pattern, but its signal is limited, mixed, or less concentrated than the leading themes."
   }
 }
