@@ -5821,12 +5821,22 @@ def _snapshot_for_month(
     period_start: datetime,
     period_end: datetime,
     pack_paths: dict,
+    used_snapshot_blocks: set[str] | None = None,
 ) -> tuple[str, str, str]:
     """
     Returns the monthly snapshot block and its dominant planet/tone metadata.
 
     Long-running transits remain part of the context, but events peaking,
     entering, or resolving in the current month outrank background windows.
+
+    Each (planet, aspect_character) bucket in the content pack holds exactly
+    one fixed text, so when a slow-moving planet (Saturn especially) stays
+    dominant across more than one month in the same report, always taking
+    the single top-ranked candidate would repeat that text verbatim. When
+    used_snapshot_blocks is supplied, the top-ranked candidate is used only
+    if its text hasn't already appeared this report; otherwise the next-best
+    distinct candidate is used. Falls back to the top candidate's text (a
+    repeat) only once every ranked candidate has already been used.
     """
     from selectors.block_selector import select_block_from_path
 
@@ -5843,27 +5853,35 @@ def _snapshot_for_month(
     if not snapshot_candidates:
         return "", "", ""
 
-    dominant = max(
+    ranked = sorted(
         snapshot_candidates,
         key=lambda event: (
             _event_month_relevance(event, period_start, period_end),
             event.get("combined_intensity_score", 0.0),
             -float(event.get("duration_days", 0.0)),
         ),
+        reverse=True,
     )
 
-    planet = dominant.get("transit_planet", "")
-    character = dominant.get("aspect_character", "flowing")
-
-    block = _usable_block(
-        select_block_from_path(
-            pack_paths["monthly_snapshots"],
-            planet,
-            character,
+    fallback: tuple[str, str, str] | None = None
+    for candidate in ranked:
+        planet = candidate.get("transit_planet", "")
+        character = candidate.get("aspect_character", "flowing")
+        block = _usable_block(
+            select_block_from_path(
+                pack_paths["monthly_snapshots"],
+                planet,
+                character,
+            )
         )
-    )
+        if fallback is None:
+            fallback = (block, planet, character)
+        if used_snapshot_blocks is None or block not in used_snapshot_blocks:
+            if used_snapshot_blocks is not None:
+                used_snapshot_blocks.add(block)
+            return block, planet, character
 
-    return block, planet, character
+    return fallback
 
 def _build_natal_positions(payload: dict) -> list[dict]:
     """Creates compact natal-position rows for the Year Ahead audit table."""
@@ -6914,6 +6932,8 @@ def _detect_and_frame_convergences_legacy_dead(
         for candidate in dated_sorted:
             if candidate is anchor:
                 continue
+            if id(candidate) in consumed_ids:
+                continue
             candidate_dt = candidate.get("peak_datetime")
             if candidate_dt is None or candidate_dt > anchor_dt + window:
                 continue
@@ -7040,6 +7060,8 @@ def _detect_and_frame_convergences(
 
         for candidate in dated_sorted:
             if candidate is anchor:
+                continue
+            if id(candidate) in consumed_ids:
                 continue
             candidate_dt = candidate.get("peak_datetime")
             if candidate_dt is None or candidate_dt > anchor_dt + window:
@@ -7457,6 +7479,7 @@ def _build_year_ahead_context(
             )
 
     months: list[dict] = []
+    used_snapshot_blocks: set[str] = set()
 
     for offset in range(12):
         period_start = _add_months(report_start, offset)
@@ -7515,6 +7538,7 @@ def _build_year_ahead_context(
             period_start,
             period_end,
             pack,
+            used_snapshot_blocks,
         )
 
         months.append(
