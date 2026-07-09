@@ -179,6 +179,23 @@ def _bisect_contact(
     return low + (high - low) / 2
 
 
+def _format_event_date(moment: datetime) -> str:
+    """Consistent user-facing date format for report contexts (mirrors engine/transit_engine.py)."""
+    return _ensure_utc(moment).strftime("%B %d, %Y")
+
+
+def _target_display(target_name: str) -> str:
+    """Report-friendly natal target label (mirrors engine/transit_engine.py's _target_display)."""
+    angle_labels = {
+        "ASC": "your Ascendant", "Ascendant": "your Ascendant",
+        "MC": "your Midheaven", "Midheaven": "your Midheaven",
+        "DSC": "your Descendant", "Descendant": "your Descendant",
+        "IC": "your Imum Coeli", "Imum Coeli": "your Imum Coeli",
+        "Vertex": "your Vertex",
+    }
+    return angle_labels.get(target_name, f"your {target_name}")
+
+
 def _solar_arc_event(
     source_name: str,
     target_name: str,
@@ -198,14 +215,17 @@ def _solar_arc_event(
     variant = "solar_arc_asteroid_aspect" if asteroid_involved else "solar_arc_angle_aspect" if angle_involved else "solar_arc_body_aspect"
     route = "solar_arc_to_asteroid" if target["kind"] == "asteroid" else "solar_arc_to_angle" if target["kind"] == "angle" else "solar_arc_to_body"
     exact_at = _ensure_utc(exact_at)
-    
+
     is_exact = abs((start - exact_at).total_seconds()) < 3600
     arc_phase = "exact" if is_exact else "building" if start < exact_at else "receding"
-    
+    entry_at = exact_at - timedelta(days=CHAPTER_WINDOW_DAYS)
+    leave_at = exact_at + timedelta(days=CHAPTER_WINDOW_DAYS)
+
     return {
         "event_type": "solar_arc",
         "transit_planet": source_name,
         "natal_target": target_name,
+        "natal_target_display": _target_display(target_name),
         "aspect": aspect_name,
         "method_variant": variant,
         "clock_role": "chapter",
@@ -221,9 +241,12 @@ def _solar_arc_event(
         "trigger_strength": round(0.80 * target.get("relevance", 0.65) * max(0.0, 1.0 - orb / SOLAR_ARC_ORB), 5),
         "signal_strength": round(0.80 * target.get("relevance", 0.65) * max(0.0, 1.0 - orb / SOLAR_ARC_ORB), 5),
         "raw_score": round(0.80 * target.get("relevance", 0.65) * max(0.0, 1.0 - orb / SOLAR_ARC_ORB), 5),
-        "entry_datetime": exact_at - timedelta(days=CHAPTER_WINDOW_DAYS),
+        "entry_datetime": entry_at,
         "peak_datetime": exact_at,
-        "leave_datetime": exact_at + timedelta(days=CHAPTER_WINDOW_DAYS),
+        "leave_datetime": leave_at,
+        "entry_date": _format_event_date(entry_at),
+        "peak_date": _format_event_date(exact_at),
+        "leave_date": _format_event_date(leave_at),
         "exact_datetimes": [exact_at],
         "confidence": confidence,
         "confidence_components": {

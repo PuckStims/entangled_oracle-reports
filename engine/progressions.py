@@ -231,6 +231,23 @@ def _bisect_contact(natal_payload: dict, source_name: str, target_longitude: flo
     return low + (high - low) / 2
 
 
+def _format_event_date(moment: datetime) -> str:
+    """Consistent user-facing date format for report contexts (mirrors engine/transit_engine.py)."""
+    return _ensure_utc(moment).strftime("%B %d, %Y")
+
+
+def _target_display(target_name: str) -> str:
+    """Report-friendly natal target label (mirrors engine/transit_engine.py's _target_display)."""
+    angle_labels = {
+        "ASC": "your Ascendant", "Ascendant": "your Ascendant",
+        "MC": "your Midheaven", "Midheaven": "your Midheaven",
+        "DSC": "your Descendant", "Descendant": "your Descendant",
+        "IC": "your Imum Coeli", "Imum Coeli": "your Imum Coeli",
+        "Vertex": "your Vertex",
+    }
+    return angle_labels.get(target_name, f"your {target_name}")
+
+
 def _progression_contact_event(source_name: str, target_name: str, source: dict, target: dict, aspect_name: str, orb: float, limit: float, exact_at: datetime, birth_time_state: str) -> dict:
     angle_involved = source["kind"] == "angle" or target["kind"] == "angle"
     asteroid_involved = source["kind"] == "asteroid" or target["kind"] == "asteroid"
@@ -241,10 +258,14 @@ def _progression_contact_event(source_name: str, target_name: str, source: dict,
     route = "progression_to_asteroid" if target["kind"] == "asteroid" else "progression_to_angle" if target["kind"] == "angle" else "progression_to_body"
     strength = round(0.78 * target.get("relevance", 0.65) * max(0.0, 1.0 - orb / max(limit, 0.01)), 5)
     exact_at = _ensure_utc(exact_at)
+    window_days = CHAPTER_WINDOW_DAYS if not source_is_moon else 14
+    entry_at = exact_at - timedelta(days=window_days)
+    leave_at = exact_at + timedelta(days=window_days)
     return {
         "event_type": "progression",
         "transit_planet": source_name,
         "natal_target": target_name,
+        "natal_target_display": _target_display(target_name),
         "aspect": aspect_name,
         "method_variant": variant,
         "clock_role": "modifier" if source_is_moon else "chapter",
@@ -259,9 +280,12 @@ def _progression_contact_event(source_name: str, target_name: str, source: dict,
         "trigger_strength": strength,
         "signal_strength": strength,
         "raw_score": strength,
-        "entry_datetime": exact_at - timedelta(days=CHAPTER_WINDOW_DAYS if not source_is_moon else 14),
+        "entry_datetime": entry_at,
         "peak_datetime": exact_at,
-        "leave_datetime": exact_at + timedelta(days=CHAPTER_WINDOW_DAYS if not source_is_moon else 14),
+        "leave_datetime": leave_at,
+        "entry_date": _format_event_date(entry_at),
+        "peak_date": _format_event_date(exact_at),
+        "leave_date": _format_event_date(leave_at),
         "exact_datetimes": [exact_at],
         "confidence": min(0.90, 0.95 * angle_support * 0.80),
         "confidence_components": {"calculation_integrity": 0.95, "angle_support": angle_support, "method_maturity": 0.80},

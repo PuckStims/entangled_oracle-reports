@@ -2032,6 +2032,62 @@
         {% else %}
         <div class="empty-landmarks">No sustained transit cycles met the current Year Arc threshold.</div>
         {% endif %}
+
+        <h3>Progressions &amp; Solar Arc Texture</h3>
+        <p class="section-subtitle">Secondary progressions and solar arc directions move the inner clock forward by season, not by transit -- they color the year's texture rather than marking a single dated peak.</p>
+        {% if year_texture_progressions %}
+        <div class="arc-story-grid">
+          {% for event in year_texture_progressions %}
+          <article class="arc-story {{ event.tone }}">
+            <p class="arc-story-kicker">{{ event.event_label }}{% if event.date_label %} - {{ event.date_label }}{% endif %}</p>
+            <h3>{{ event.title }}</h3>
+            <div class="arc-story-layout">
+              <div class="arc-story-main">
+                {% if event.subtitle %}<p class="arc-story-subtitle">{{ event.subtitle }}</p>{% endif %}
+                {% if event.block %}<div class="arc-story-body">{{ event.block }}</div>{% endif %}
+              </div>
+              <aside class="arc-story-side">
+                {% if event.constellation_lens %}
+                <div class="arc-story-side-card">
+                  <span>Constellation lens{% if event.constellation_lens_label %} - {{ event.constellation_lens_label }}{% endif %}</span>
+                  <p>{{ event.constellation_lens }}</p>
+                </div>
+                {% endif %}
+              </aside>
+            </div>
+          </article>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-landmarks">No progression contacts fell within this forecast window.</div>
+        {% endif %}
+
+        {% if year_texture_solar_arc %}
+        <div class="arc-story-grid">
+          {% for event in year_texture_solar_arc %}
+          <article class="arc-story {{ event.tone }}">
+            <p class="arc-story-kicker">{{ event.event_label }}{% if event.date_label %} - {{ event.date_label }}{% endif %}</p>
+            <h3>{{ event.title }}</h3>
+            <div class="arc-story-layout">
+              <div class="arc-story-main">
+                {% if event.subtitle %}<p class="arc-story-subtitle">{{ event.subtitle }}</p>{% endif %}
+                {% if event.block %}<div class="arc-story-body">{{ event.block }}</div>{% endif %}
+              </div>
+              <aside class="arc-story-side">
+                {% if event.constellation_lens %}
+                <div class="arc-story-side-card">
+                  <span>Constellation lens{% if event.constellation_lens_label %} - {{ event.constellation_lens_label }}{% endif %}</span>
+                  <p>{{ event.constellation_lens }}</p>
+                </div>
+                {% endif %}
+              </aside>
+            </div>
+          </article>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-landmarks">No solar arc contacts fell within this forecast window.</div>
+        {% endif %}
       </section>
 
       <!-- VIII. ANNUAL RHYTHM -->

@@ -2846,6 +2846,26 @@ def _select_year_block(event: dict, pack_paths: dict) -> str:
             )
         )
 
+    if event_type == "progression":
+        return _usable_block(
+            select_block_from_path(
+                pack_paths["year_texture_progressions"],
+                event.get("transit_planet", "fallback"),
+                event.get("aspect", "fallback"),
+                event.get("natal_target", "fallback"),
+            )
+        )
+
+    if event_type == "solar_arc":
+        return _usable_block(
+            select_block_from_path(
+                pack_paths["year_texture_solar_arc"],
+                event.get("transit_planet", "fallback"),
+                event.get("aspect", "fallback"),
+                event.get("natal_target", "fallback"),
+            )
+        )
+
     return ""
 
 
@@ -2988,6 +3008,24 @@ def _format_timeline_event(
             print(f"[Station Event] {planet} {station_type}")
             print(f"[Station Target] {event.get('natal_target', '')} | house={event.get('natal_house', '')} | relationship={_relationship or 'none'}")
             print(f"[Station Subtitle] {result['subtitle']}")
+
+    elif raw_event_type == "progression":
+        result["event_label"] = "Progression Texture"
+        result["title"] = (
+            f"Progressed {event.get('transit_planet', '')} "
+            f"{event.get('aspect', '')} "
+            f"natal {event.get('natal_target', '')}"
+        )
+        result["subtitle"] = event.get("natal_target_display", "")
+
+    elif raw_event_type == "solar_arc":
+        result["event_label"] = "Solar Arc Texture"
+        result["title"] = (
+            f"{event.get('transit_planet', '')} solar arc "
+            f"{event.get('aspect', '')} "
+            f"natal {event.get('natal_target', '')}"
+        )
+        result["subtitle"] = event.get("natal_target_display", "")
 
     else:
         result["event_label"] = "Timing Event"
@@ -7443,6 +7481,20 @@ def _build_year_ahead_context(
         _format_timeline_event(event, HOUSE_DOMAINS, pack, standard_report_bundle, payload, index_results, lens_ctx,
                                rendered_cycle_ids=rendered_cycle_ids)
         for event in year_arc_candidates[:LANDMARK_MAX_COUNT]
+    ]
+
+    # Progressions & Solar Arc run on their own season-scale clock (chapter-role,
+    # ~60-90 day windows) and are never folded into all_events/months, so they
+    # get their own formatted card lists for a dedicated "Year Texture" section.
+    year_texture_progressions = [
+        _format_timeline_event(event, HOUSE_DOMAINS, pack, standard_report_bundle, payload, index_results, lens_ctx,
+                               rendered_cycle_ids=rendered_cycle_ids)
+        for event in year_texture_progressions
+    ]
+    year_texture_solar_arc = [
+        _format_timeline_event(event, HOUSE_DOMAINS, pack, standard_report_bundle, payload, index_results, lens_ctx,
+                               rendered_cycle_ids=rendered_cycle_ids)
+        for event in year_texture_solar_arc
     ]
 
     # Build the annual orientation from the aggregated slow-planet pattern

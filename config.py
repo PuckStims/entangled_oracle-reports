@@ -186,7 +186,9 @@ _VOID_OF_COURSE_BLOCKS = os.path.join(_PERSONAL_FORECAST_DIR, "void_of_course_mo
 
 CONTENT_PACKS = {
     "plainspeak": {
-        "transits":          os.path.join(_YEAR_AHEAD_PLAINSPEAK_DIR, "transit_blocks.json"),
+        # All transit blocks route through the single file in plainspeak/ -
+        # there is no separate entangled_oracle transit file anymore.
+        "transits":          os.path.join(_YEAR_AHEAD_PLAINSPEAK_DIR, "EO_standard_transit_blocks.json"),
         "monthly_snapshots": os.path.join(_YEAR_AHEAD_PLAINSPEAK_DIR, "monthly_snapshot.json"),
         "ingresses":         os.path.join(_YEAR_AHEAD_PLAINSPEAK_DIR, "house_ingress.json"),
         "eclipses":          os.path.join(_YEAR_AHEAD_PLAINSPEAK_DIR, "eclipse_blocks.json"),
@@ -194,6 +196,8 @@ CONTENT_PACKS = {
         "forecast_climate":  os.path.join(_YEAR_AHEAD_EO_DIR, "EO_Standard_Forecast_Climate_Blocks.json"),
         "year_overview":     os.path.join(_YEAR_AHEAD_PLAINSPEAK_DIR, "year_overview.json"),
         "year_integration":  os.path.join(_YEAR_AHEAD_PLAINSPEAK_DIR, "year_integration.json"),
+        "year_texture_progressions": os.path.join(_YEAR_AHEAD_PLAINSPEAK_DIR, "progression_blocks.json"),
+        "year_texture_solar_arc":    os.path.join(_YEAR_AHEAD_PLAINSPEAK_DIR, "solar_arc_blocks.json"),
         "standard_natal_foundation": os.path.join(_YEAR_AHEAD_SHARED_DIR, "Standard_Natal_Foundation_Blocks.json"),
         # Shared until a separate legacy Personal Forecast voice library exists.
         "personal_forecast":  _PERSONAL_FORECAST_BLOCKS,
@@ -215,14 +219,19 @@ CONTENT_PACKS = {
         },
     },
     "entangled_oracle": {
-        "transits":          os.path.join(_YEAR_AHEAD_EO_DIR, "EO_standard_transit_blocks_working.json"),
+        # Same single transit file as the plainspeak pack (see note above).
+        "transits":          os.path.join(_YEAR_AHEAD_PLAINSPEAK_DIR, "EO_standard_transit_blocks.json"),
         "monthly_snapshots": os.path.join(_YEAR_AHEAD_EO_DIR, "EO_Standard_Monthly_Snapshot_Blocks.json"),
         "ingresses":         os.path.join(_YEAR_AHEAD_EO_DIR, "EO_Standard_House_Ingress.json"),
-        "eclipses":          os.path.join(_YEAR_AHEAD_EO_DIR, "EO_Standard_Eclipse_Blocks.json"),
+        # Eclipse/year_overview/year_integration content now lives in blocks/plainspeak/
+        # (fixed content only exists there now; blocks/entangled_oracle/ no longer has these).
+        "eclipses":          os.path.join(_YEAR_AHEAD_PLAINSPEAK_DIR, "EO_Standard_Eclipse_Blocks.json"),
         "stations":          os.path.join(_YEAR_AHEAD_EO_DIR, "EO_Standard_Station_Blocks_Revised.json"),
         "forecast_climate":  os.path.join(_YEAR_AHEAD_EO_DIR, "EO_Standard_Forecast_Climate_Blocks.json"),
-        "year_overview":     os.path.join(_YEAR_AHEAD_EO_DIR, "EO_Standard_Year_Overview_Blocks.json"),
-        "year_integration":  os.path.join(_YEAR_AHEAD_EO_DIR, "EO_Standard_Year_Integration_Blocks.json"),
+        "year_overview":     os.path.join(_YEAR_AHEAD_PLAINSPEAK_DIR, "EO_Standard_Year_Overview_Blocks.json"),
+        "year_integration":  os.path.join(_YEAR_AHEAD_PLAINSPEAK_DIR, "EO_Standard_Year_Integration_Blocks.json"),
+        "year_texture_progressions": os.path.join(_YEAR_AHEAD_EO_DIR, "EO_Standard_Progression_Blocks.json"),
+        "year_texture_solar_arc":    os.path.join(_YEAR_AHEAD_EO_DIR, "EO_Standard_Solar_Arc_Blocks.json"),
         "standard_natal_foundation": os.path.join(_YEAR_AHEAD_SHARED_DIR, "Standard_Natal_Foundation_Blocks.json"),
         "personal_forecast":  _PERSONAL_FORECAST_BLOCKS,
         "retrograde_cluster_blocks": _RETROGRADE_CLUSTER_BLOCKS,
