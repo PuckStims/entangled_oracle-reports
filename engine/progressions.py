@@ -467,7 +467,24 @@ def _natal_targets(natal_payload: dict) -> dict[str, dict]:
     for name, data in standard.items():
         if isinstance(data, dict) and isinstance(data.get("longitude"), (int, float)):
             targets[name] = {"longitude": float(data["longitude"]), "kind": _body_kind(name), "relevance": 0.70}
-    for name in ("ASC", "Ascendant", "MC", "Midheaven", "IC", "Imum Coeli", "DSC", "Descendant", "Vertex"):
+    # Canonical short-form angle names only, one entry per angle. Listing
+    # both "ASC" and "Ascendant" here (as earlier code did) makes
+    # _angle_longitude resolve the same longitude twice under two
+    # different dict keys, so the contact scan below emits the same
+    # aspect as two separate events ("...natal ASC" and "...natal
+    # Ascendant"). Short form (not the long form) is required: it's the
+    # target-key convention every progression/solar-arc content library
+    # and generate.py's THEME_MAP already use ("ASC"/"MC" keys, no
+    # "Ascendant"/"Midheaven" entries exist there) — using the long form
+    # instead would still dedupe, but would silently route every angle
+    # contact to generic fallback prose instead of its written block.
+    # IC is intentionally omitted: its alias resolves to "Imum Coeli"
+    # (space) while the natal payload stores "Imum_Coeli" (underscore),
+    # so it has never actually matched here — fixing that lookup would
+    # newly include IC contacts that have never appeared in a report
+    # before, which is an event-inclusion change and needs separate
+    # sign-off rather than riding along with a dedup fix.
+    for name in ("ASC", "MC", "DSC", "Vertex"):
         longitude = _angle_longitude(natal_payload, name)
         if longitude is not None:
             targets[name] = {"longitude": longitude, "kind": "angle", "relevance": 0.85}

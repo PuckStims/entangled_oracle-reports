@@ -292,7 +292,15 @@ def _natal_targets(natal_payload: dict) -> dict[str, dict]:
     for name, data in standard.items():
         if isinstance(data, dict) and isinstance(data.get("longitude"), (int, float)):
             targets[name] = {"longitude": float(data["longitude"]), "kind": _body_kind(name), "relevance": 0.70}
-    for name in ("ASC", "Ascendant", "MC", "Midheaven", "IC", "Imum Coeli", "DSC", "Descendant", "Vertex"):
+    # Canonical short-form angle names only — see engine/progressions.py's
+    # _natal_targets for why the long form ("Ascendant"/"Midheaven") is
+    # not used here even though it would also dedupe: the content
+    # libraries and THEME_MAP key on "ASC"/"MC", not the long form.
+    # IC is intentionally omitted — its alias currently can't resolve
+    # (space vs. underscore mismatch against the natal payload), so
+    # leaving it out preserves existing behavior rather than silently
+    # changing event inclusion.
+    for name in ("ASC", "MC", "DSC", "Vertex"):
         longitude = _angle_longitude(natal_payload, name)
         if longitude is not None:
             targets[name] = {"longitude": longitude, "kind": "angle", "relevance": 0.85}
