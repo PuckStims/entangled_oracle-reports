@@ -5,6 +5,44 @@ Newest entry on top. See `agents/README.md` for the convention.
 
 ---
 
+## 2026-07-10 - Professional-grade upgrade directive added (Codex / GPT-5)
+
+**Context:** the operator asked for the speculative formula/computation
+upgrade plan to be fleshed out as durable directives for future agents,
+with professional controls, specialist branches, and locational astrology
+kept optional for now, and synastry acknowledged as necessary but
+separately daunting.
+
+**What changed:**
+
+- Added `agents/PROFESSIONAL_GRADE_UPGRADE_DIRECTIVES.md`, a tiered
+  future-agent handoff covering audit bedrock, core forecast computation
+  hardening, advanced-method internal promotion, formula intelligence,
+  synthesis backend, report-surface promotion, synastry substrate, and
+  optional professional expansion.
+- Expanded that directive with a formal builder/review-crew model:
+  Gemini/Antigravity as candidate-construction engine, Codex/ChatGPT and
+  Claude Code as alignment/detail authority.
+- Added Gemini-safe global guardrails and per-tier "allowed / do not
+  access / review required" boundaries so future high-throughput build
+  runs can be contained without flattening EO distinctions.
+- Added `agents/HIGH_THROUGHPUT_AGENT_PROMPTS.md` with reusable startup
+  prompts for Gemini/Antigravity and Claude Code, including mandatory
+  read order, file-seam placeholders, handoff requirements, and review
+  priorities for the builder-plus-review-crew model.
+- Added a pointer at the top of `agents/PLANNED_UPDATES.md` so future
+  sessions check the directive before launching large formula,
+  computation, synthesis, or synastry upgrades.
+
+**Verification:** documentation-only change. No source code, templates,
+  content blocks, generated outputs, or tests were changed.
+
+**Open, not implemented here:** the directive recommends the first real
+  project as a Forecast Computation Ledger plus Canonical Forecast Event
+  Schema/adapters, but that work has not started.
+
+---
+
 ## 2026-07-08 - Progression/solar-arc scoring gap fixed: real scores replace flat 0.0 (Claude / Sonnet 5)
 
 **Context:** surfaced during live-review of the Year Ahead texture-wiring

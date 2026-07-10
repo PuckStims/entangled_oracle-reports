@@ -5,6 +5,35 @@ item to `REVISIONS.md` when it is actually finished.
 
 ---
 
+## Professional-grade formula/computation/backend upgrade directive (2026-07-10)
+
+See `agents/PROFESSIONAL_GRADE_UPGRADE_DIRECTIVES.md` before starting any
+large formula, computation, advanced-method, synthesis-backend, or
+synastry upgrade. That file is the current high-level sequencing map for
+making EO more professionally complete while keeping specialist branches,
+professional controls, and locational astrology optional for now.
+
+The recommended first real project from that directive is:
+
+1. build or refresh a Forecast Computation Ledger
+2. define/adapt a Canonical Forecast Event Schema
+3. map current event fields and missing fields across active and partial
+   methods
+4. add serialization/trace fixtures before surfacing more methods in prose
+
+That directive also now includes a formal builder/review-crew operating
+model and Gemini-safe guardrails by tier. If a future run uses
+Gemini/Antigravity for construction, read those sections first and treat
+Gemini output as candidate construction, not final alignment authority.
+
+Reusable starter prompts for that model now live in
+`agents/HIGH_THROUGHPUT_AGENT_PROMPTS.md`.
+
+Do not treat the directive as proof that any feature is already active.
+Future agents must verify current repo state before implementation.
+
+---
+
 ## Predictive Sandbox - next slices after v0.3.1 window semantic aggregation (2026-07-06)
 
 `predictive_v0.3` core and the first bounded `predictive_v0.3.1`
