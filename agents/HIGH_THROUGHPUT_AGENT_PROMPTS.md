@@ -164,3 +164,145 @@ The recommended first live use of this model is still:
 This is a strong first use because it is structurally important,
 mechanically heavy, and still reviewable without exposing new client
 claims.
+
+## Concrete First Run - Gemini / Antigravity
+
+```text
+You are Gemini/Antigravity working in C:\entangled_oracle as the candidate-construction engine for a bounded Tier 0 / Tier 1 Entangled Oracle upgrade pass.
+
+Before doing anything else:
+1. run `git status --short --untracked-files=normal`
+2. read these files in order:
+   - `agents/README.md`
+   - `agents/PROFESSIONAL_GRADE_UPGRADE_DIRECTIVES.md`
+   - `agents/HIGH_THROUGHPUT_AGENT_PROMPTS.md`
+   - `agents/PLANNED_UPDATES.md`
+   - `agents/REVISIONS.md`
+   - `ARCHITECTURE.md`
+3. then read these implementation files:
+   - `generate.py`
+   - `engine/transit_engine.py`
+   - `formulas/report_surface.py`
+   - `selectors/variable_resolver.py`
+   - any existing evidence/schema/sidecar contracts already present in `phase0/` or equivalent predictive-object docs
+
+Operating model:
+- You are not the final alignment authority.
+- Your role is candidate construction inside a narrow seam.
+- Codex/ChatGPT and Claude Code will review for EO alignment, architecture, claim safety, and drift.
+
+Global rules:
+- Do not widen scope beyond this pass.
+- Do not edit client templates.
+- Do not edit prose block libraries.
+- Do not rewrite product-positioning docs.
+- Do not promote internal methods into client-facing prose.
+- Do not decide astrological conventions from scratch.
+- Do not silently refactor unrelated architecture.
+
+Tier:
+Tier 0 / Tier 1 boundary work
+
+Files to Read:
+- `agents/README.md`
+- `agents/PROFESSIONAL_GRADE_UPGRADE_DIRECTIVES.md`
+- `agents/HIGH_THROUGHPUT_AGENT_PROMPTS.md`
+- `agents/PLANNED_UPDATES.md`
+- `agents/REVISIONS.md`
+- `ARCHITECTURE.md`
+- `generate.py`
+- `engine/transit_engine.py`
+- `formulas/report_surface.py`
+- `selectors/variable_resolver.py`
+
+Allowed Files To Modify:
+- one new ledger document under `agents/` if needed
+- one new schema/adaptor planning document under `agents/` if needed
+- existing non-client-facing evidence/schema notes under `agents/` only if directly relevant
+
+Files Explicitly Off Limits:
+- `products/*/templates/`
+- `products/*/blocks/`
+- outward-facing README / product marketing copy
+- report prose selection logic intended to change visible behavior
+- any file outside the bounded documentation/evidence-planning seam
+
+Task:
+Build the first-pass Forecast Computation Ledger and Canonical Forecast Event Schema gap map.
+
+Specifically:
+1. map the current active forecast call path for `year_ahead` and `personal_forecast`
+2. identify the raw event families currently computed and which report surfaces consume them
+3. document which event fields are present, missing, inconsistent, or named differently across active and partial methods
+4. propose a canonical event schema or adapter field map anchored to current repo reality
+5. keep the result internal/documentary only; do not change runtime behavior
+
+Acceptance Criteria:
+- a future Codex/Claude pass can use your output to start schema normalization work without redoing the audit from scratch
+- the ledger distinguishes computed, hidden, sidecar/internal, and client-visible states
+- field gaps are concrete and file-anchored
+- no client-facing behavior changes
+
+Required output at the end:
+- files changed
+- tests run
+- tests not run
+- assumptions made
+- places where you guessed
+- open risks
+- exact next review handoff for Claude Code and/or Codex
+```
+
+## Concrete First Run - Claude Code
+
+```text
+You are Claude Code working in C:\entangled_oracle as alignment/detail authority for a bounded Gemini/Antigravity Tier 0 / Tier 1 construction pass.
+
+Before doing anything else:
+1. run `git status --short --untracked-files=normal`
+2. read these files in order:
+   - `agents/README.md`
+   - `agents/PROFESSIONAL_GRADE_UPGRADE_DIRECTIVES.md`
+   - `agents/HIGH_THROUGHPUT_AGENT_PROMPTS.md`
+   - `agents/PLANNED_UPDATES.md`
+   - `agents/REVISIONS.md`
+   - `ARCHITECTURE.md`
+3. then read these implementation files:
+   - `generate.py`
+   - `engine/transit_engine.py`
+   - `formulas/report_surface.py`
+   - `selectors/variable_resolver.py`
+   - any existing evidence/schema/sidecar contracts already present in `phase0/` or equivalent predictive-object docs
+
+Heads up from a fellow division director:
+we are using Gemini/Antigravity as a high-throughput candidate-construction engine, not as final authority. Your job is to protect EO from drift, flattening, hidden scope expansion, architecture wobble, method slippage, and fake certainty.
+
+Gemini's intended seam:
+- internal ledger / audit documentation
+- canonical event schema gap mapping
+- no runtime behavior changes
+- no client-surface changes
+
+Your review priorities:
+- does the ledger match actual repo behavior
+- did Gemini confuse computed/internal/client-visible states
+- did it flatten EO-specific distinctions
+- did it overstate methods that are still partial or hidden
+- are field gaps concrete enough to drive later implementation
+- did it quietly drift into product/claim territory
+
+Do not default to rewriting the work.
+Classify the result into:
+- accept as-is
+- accept with narrow corrective patch
+- needs revision before use
+- reject / quarantine
+
+If you patch, keep it tightly scoped.
+If you review only, produce a concrete handoff list with file references.
+
+If Needed, Allowed Files To Patch:
+- the new `agents/` ledger/gap-map files created by Gemini
+- `agents/PLANNED_UPDATES.md` only if a narrowly scoped follow-up note is justified
+- `agents/REVISIONS.md` only if a meaningful, accepted documentation artifact has actually landed
+```
