@@ -4,17 +4,15 @@ This outline tracks wiring up the new **Year Ahead Texture** events (Progression
 
 > **Framing note:** "plainspeak" phrasing and anti-monotony/variant-tracking are core product features, not add-on polish — see section 4 for why this matters and what's next.
 
-## 1. Content Block Creation (Progressions & Solar Arcs) — DONE (scaffolded)
-Four new JSON files exist and are wired into `config.py`/`generate.py`/the template. Every file has the full key structure (source planet -> aspect -> natal_target, with a `fallback` at every level) but **every leaf value is still the literal string `"TODO"`** — no real prose has been written yet. That's the only remaining step here.
+## 1. Content Block Creation (Progressions & Solar Arcs) — DONE (fully authored)
+Four JSON files exist and are wired into `config.py`/`generate.py`/the template. Every file has the full key structure (source planet -> aspect -> natal_target, with a `fallback` at every level), and every leaf value now holds authored prose — no `"TODO"` placeholders remain in any of the four files.
 
-- `blocks/entangled_oracle/EO_Standard_Progression_Blocks.json` (378 leaf placeholders)
-- `blocks/plainspeak/progression_blocks.json` (378 leaf placeholders)
-- `blocks/entangled_oracle/EO_Standard_Solar_Arc_Blocks.json` (439 leaf placeholders)
-- `blocks/plainspeak/solar_arc_blocks.json` (439 leaf placeholders)
+- `blocks/entangled_oracle/EO_Standard_Progression_Blocks.json` (378 blocks, all written)
+- `blocks/plainspeak/progression_blocks.json` (378 blocks, all written)
+- `blocks/entangled_oracle/EO_Standard_Solar_Arc_Blocks.json` (439 blocks, all written)
+- `blocks/plainspeak/solar_arc_blocks.json` (439 blocks, all written)
 
 Sources: progressions use Sun/Mercury/Venus/Mars/Ascendant/Midheaven (progressed Moon is modifier-scope and stays with Personal Forecast); solar arc adds Moon since it has no modifier tier. Targets: the 10 classical bodies + ASC/MC (asteroids and IC/DSC/Vertex fall through to `fallback`). Plainspeak and entangled_oracle copies are currently identical, matching the existing precedent (house_ingress/station files are also pack-identical today).
-
-**Still open:** write the actual prose to replace the `"TODO"` placeholders, at whatever pace/priority makes sense (doesn't have to be all 378/439 blocks before shipping — `select_block_from_path` gracefully falls back at each level, so partial coverage degrades to `fallback` text rather than breaking).
 
 ## 2. Prose Rewrite (Quarantined Files) — DONE
 These files were quarantined into `blocks/TODO/` due to highly repetitive, mad-libs style prose: `predictive_chapters.json`, `transit_blocks.json`/`EO_standard_transit_blocks_working.json`, `year_overview.json`/`EO_Standard_Year_Overview_Blocks.json`, `year_integration.json`/`EO_Standard_Year_Integration_Blocks.json`, `eclipse_blocks.json`/`EO_Standard_Eclipse_Blocks.json`.
@@ -44,9 +42,9 @@ The rewrite was done locally (not on a branch — local files are the source of 
 - **Engine-side fix required to make this work:** `engine/progressions.py` and `engine/solar_arc.py` event builders didn't set `peak_date`/`entry_date`/`leave_date`/`natal_target_display` (every other event family — transits, ingresses, stations, eclipses — already does). Without those, `date_label` and the "why this matters" plumbing came up blank. Both builders now set these fields the same way `engine/transit_engine.py` does.
 
 ### HTML Template (`products/year_ahead/templates/active/year_ahead.html`)
-Note: the outline originally said `templates/year_ahead.html`; the real path is `templates/active/year_ahead.html` (there's also a `templates/legacy/` copy that isn't live). Added a "Progressions & Solar Arc Texture" subsection inside section VII (Year Arcs) rather than a new top-level numbered section, so the existing table-of-contents roman-numeral anchors didn't need renumbering. Reuses the existing `.arc-story` card styling; loops separately over `year_texture_progressions` and `year_texture_solar_arc`, rendering title, date, subtitle, and block prose (currently the `"TODO"` placeholder text).
+Note: the outline originally said `templates/year_ahead.html`; the real path is `templates/active/year_ahead.html` (there's also a `templates/legacy/` copy that isn't live). Added a "Progressions & Solar Arc Texture" subsection inside section VII (Year Arcs) rather than a new top-level numbered section, so the existing table-of-contents roman-numeral anchors didn't need renumbering. Reuses the existing `.arc-story` card styling; loops separately over `year_texture_progressions` and `year_texture_solar_arc`, rendering title, date, subtitle, and block prose (now the authored copy from section 1).
 
-Verified via a direct `_build_year_ahead_context` + `render_template` smoke test with a full synthetic natal payload: progression/solar arc cards render with correct titles, dates, and placeholder prose, no Jinja errors, both content packs, no `MISSING BLOCK FILE`/`BLOCK NOT FOUND` anywhere in output. Full test suite passes except pre-existing, unrelated failures (missing `seas_18.se1` ephemeris asset in this environment).
+Verified via a direct `_build_year_ahead_context` + `render_template` smoke test with a full synthetic natal payload: progression/solar arc cards render with correct titles, dates, and authored prose, no Jinja errors, both content packs, no `MISSING BLOCK FILE`/`BLOCK NOT FOUND` anywhere in output. Full test suite passes except pre-existing, unrelated failures (missing `seas_18.se1` ephemeris asset in this environment).
 
 ## 4. Next Technical Overhaul: Content Pack Consolidation — not started
 

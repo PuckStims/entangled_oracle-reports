@@ -332,6 +332,10 @@ def build_report_context(
     elif report_type == "soul_ecosystem":
         ctx.update(_build_soul_ecosystem_context(variables, index_results, payload))
 
+    elif report_type == "identity_profile":
+        from products.identity_profile.runtime.identity_profile_context import build_identity_profile_context
+        ctx.update(build_identity_profile_context(variables, index_results, payload))
+
     trace = ctx.get("report_surface_trace", {})
     if isinstance(trace, dict):
         trace["template_fields_populated"] = sorted(ctx.keys())
@@ -7851,6 +7855,7 @@ def render_template(report_type: str, context: dict) -> str:
         "year_ahead":         "year_ahead/templates/active/year_ahead.html",
         "personal_forecast":  "personal_forecast/templates/personal_forecast.html",
         "soul_ecosystem":     "soul_ecosystem/templates/soul_ecosystem.html",
+        "identity_profile":   "identity_profile/templates/entangled_identity_profile.html",
     }
     if report_type not in template_map:
         raise ValueError(
@@ -8013,7 +8018,7 @@ def main():
         description="Entangled Oracle Report Generator"
     )
     parser.add_argument("report_type",
-        choices=["horoscope", "weekly_horoscope", "year_ahead", "personal_forecast", "soul_ecosystem"],
+        choices=["horoscope", "weekly_horoscope", "year_ahead", "personal_forecast", "soul_ecosystem", "identity_profile"],
         help="Type of report to generate"
     )
     parser.add_argument("--name",     required=True,  help="Querent name")
