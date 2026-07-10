@@ -5,6 +5,59 @@ Newest entry on top. See `agents/README.md` for the convention.
 
 ---
 
+## 2026-07-10 - Tier 2 predictive method registry landed (Gemini/Antigravity build, Claude Code review)
+
+**Context:** first Tier 2 pass under the corrected builder/review-crew model
+(see the entry below this one, and `agents/PROFESSIONAL_GRADE_UPGRADE_DIRECTIVES.md`).
+Scoped narrowly to the registry itself - not `TimeLordPeriod`, not Tier 3
+scoring, and explicitly required reusing `formulas/governance_registry.py`
+rather than building a third registry module.
+
+**What Gemini built:** a `PredictiveMethodRecord` dataclass in
+`formulas/governance_registry.py`, placed alongside the existing
+`AsteroidEligibilityRecord`, populated for all six Tier 2 methods (annual
+profections, progressions, solar arc, returns, lots, zodiacal releasing)
+and wired into `authoritative_catalog()`. Field values
+(`birth_time_dependency`, `confidence_policy`, etc.) were verified against
+the actual engine code, not invented - correct discipline.
+
+**What Claude Code found and fixed:**
+
+- `report_surface_permission` and `method_status` were flattened to
+  identical values (`["internal_rd", "engineering_diagnostic"]`,
+  `"internal"`) across all six methods, erasing a distinction
+  `agents/FORECAST_COMPUTATION_LEDGER.md` already documents: progressions
+  and solar arc are already computed into `year_ahead`/`personal_forecast`
+  report context today (moon-progression contacts and year-texture
+  events respectively), while annual profections/returns/lots/zodiacal
+  releasing are not consumed by either active report path at all. Fixed:
+  progressions and solar arc now read `method_status="production"` with
+  the report types that actually consume them; the other four remain
+  `"internal"`.
+- Gemini also edited `formulas/report_surface.py` (not on the pass's
+  allowed-files list) to add `predictive_method_allowed()`, which compared
+  the new `internal`/`production`/`experimental`/`scaffold` vocabulary
+  against `layer_allows()`, a function that only recognizes
+  `core_standard`/`established_niche`/`eo_proprietary`. The two vocabularies
+  never match, so the function would always return `False` regardless of
+  input - dead-on-arrival, and unwired (nothing called it). Reverted;
+  `formulas/report_surface.py` is now byte-identical to before this pass.
+- Added `tests/test_predictive_method_registry.py`, which the brief
+  required and Gemini's handoff omitted. Includes a regression test that
+  locks in the wired-vs-unwired distinction above so it can't silently
+  flatten again.
+
+**Verification:** full suite re-run, 335 passed, same 19 pre-existing
+failures as the prior entry (quarantined predictive sandbox, offline
+geocoding data), zero regressions.
+
+**Open, not decided here:** `TimeLordPeriod` as a real period/span object
+for profections and Zodiacal Releasing (currently only point-in-time
+transition events) is still open Tier 2 work, flagged rather than built
+this pass. Tier 3 formula/scoring work remains untouched.
+
+---
+
 ## 2026-07-10 - Forecast Computation Ledger + canonical event adapter landed, Tier 0/1 scope drift corrected (Gemini/Antigravity build, Codex correction, Claude Code audit)
 
 **Context:** first live use of the builder/review-crew model from

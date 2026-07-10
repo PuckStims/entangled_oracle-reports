@@ -77,6 +77,27 @@ class AsteroidEligibilityRecord:
         return data
 
 
+@dataclass(frozen=True)
+class PredictiveMethodRecord:
+    display_name: str
+    internal_key: str
+    calculation_convention: str
+    required_inputs: tuple[str, ...]
+    birth_time_dependency: str
+    supported_bodies_and_points: tuple[str, ...]
+    orb_and_window_policy: str
+    confidence_policy: str
+    report_surface_permission: tuple[str, ...]
+    method_status: str
+    notes: str = ""
+
+    def to_dict(self) -> dict[str, Any]:
+        data = asdict(self)
+        for key in ("required_inputs", "supported_bodies_and_points", "report_surface_permission"):
+            data[key] = list(data[key])
+        return data
+
+
 REPORT_LAYER_RULES = {
     REPORT_PROFILE_CORE_STANDARD_ONLY: {
         "allow_core_standard": True,
@@ -237,6 +258,94 @@ for key, display_name, catalog_number, eo_uses in (
     )
 
 
+PREDICTIVE_METHOD_REGISTRY: dict[str, PredictiveMethodRecord] = {
+    "annual_profections": PredictiveMethodRecord(
+        display_name="Annual Profections",
+        internal_key="annual_profections",
+        calculation_convention="Phase 4 whole-sign annual periods",
+        required_inputs=("birth_date", "ascendant_sign"),
+        birth_time_dependency="none",
+        supported_bodies_and_points=("Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn"),
+        orb_and_window_policy="1 year window per period",
+        confidence_policy="0.8415 if time known, 0.65 if unknown",
+        report_surface_permission=("internal_rd", "engineering_diagnostic"),
+        method_status="internal",
+    ),
+    "progressions": PredictiveMethodRecord(
+        display_name="Secondary Progressions",
+        internal_key="progressions",
+        calculation_convention="One ephemeris day per tropical year (Naibod)",
+        required_inputs=("birth_date", "julian_day", "standard_planets", "angles"),
+        birth_time_dependency="hard for angles, soft for planets",
+        supported_bodies_and_points=("Sun", "Moon", "Mercury", "Venus", "Mars", "Ascendant", "Midheaven", "Custom Asteroids"),
+        orb_and_window_policy="1.0 degree contact orb, 0.5 angle orb",
+        confidence_policy="0.90 max, withheld if angle involved without exact time",
+        report_surface_permission=("year_ahead", "personal_forecast", "internal_rd", "engineering_diagnostic"),
+        method_status="production",
+        notes=(
+            "Computed into report context today: Moon-progression contacts feed "
+            "personal_forecast (include_moon_progressions), and 'year texture' "
+            "progressions feed year_ahead (include_year_texture). Neither is "
+            "rendered by a template/prose block yet -- context presence is not "
+            "proof of client-visible copy."
+        ),
+    ),
+    "solar_arc": PredictiveMethodRecord(
+        display_name="Solar Arc Directions",
+        internal_key="solar_arc",
+        calculation_convention="Naibod secondary-Sun arc applied to natal points",
+        required_inputs=("birth_date", "julian_day", "standard_planets"),
+        birth_time_dependency="hard for angles, soft for planets",
+        supported_bodies_and_points=("Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto", "Chiron", "Ascendant", "Midheaven", "Vertex", "Custom Asteroids"),
+        orb_and_window_policy="1.0 degree orb, 90 day chapter window",
+        confidence_policy="0.90 max, withheld if angle involved without exact time",
+        report_surface_permission=("year_ahead", "internal_rd", "engineering_diagnostic"),
+        method_status="production",
+        notes=(
+            "Computed into year_ahead context today as 'year texture' "
+            "(include_year_texture); not consumed by personal_forecast, and not "
+            "rendered by a template/prose block yet."
+        ),
+    ),
+    "returns": PredictiveMethodRecord(
+        display_name="Exact Returns",
+        internal_key="returns",
+        calculation_convention="Exact longitudinal return to natal position",
+        required_inputs=("standard_planets",),
+        birth_time_dependency="none",
+        supported_bodies_and_points=("Sun", "Moon", "Jupiter", "Saturn"),
+        orb_and_window_policy="0.01 degree tolerance",
+        confidence_policy="0.833",
+        report_surface_permission=("internal_rd", "engineering_diagnostic"),
+        method_status="internal",
+    ),
+    "lots": PredictiveMethodRecord(
+        display_name="Calculated Lots",
+        internal_key="lots",
+        calculation_convention="Fortune/Spirit/Necessity with day/night sect reversal",
+        required_inputs=("Sun", "Moon", "Mercury", "Ascendant", "Sect"),
+        birth_time_dependency="hard",
+        supported_bodies_and_points=("Fortune", "Spirit", "Necessity"),
+        orb_and_window_policy="Natal position",
+        confidence_policy="1.0 if sect resolved, 0.5 if unknown",
+        report_surface_permission=("internal_rd", "engineering_diagnostic"),
+        method_status="internal",
+    ),
+    "zodiacal_releasing": PredictiveMethodRecord(
+        display_name="Zodiacal Releasing",
+        internal_key="zodiacal_releasing",
+        calculation_convention="Vettius Valens periods from Lot of Fortune/Spirit",
+        required_inputs=("birth_date", "Lot of Fortune", "Lot of Spirit"),
+        birth_time_dependency="soft",
+        supported_bodies_and_points=("L1", "L2", "L3", "L4", "Peak", "LOB"),
+        orb_and_window_policy="Valens fixed years by sign",
+        confidence_policy="0.80",
+        report_surface_permission=("internal_rd", "engineering_diagnostic"),
+        method_status="internal",
+    ),
+}
+
+
 def get_body_registry_record(internal_key: str) -> RegistryRecord | None:
     if internal_key in BODY_REGISTRY:
         return BODY_REGISTRY[internal_key]
@@ -256,6 +365,10 @@ def get_body_registry_record(internal_key: str) -> RegistryRecord | None:
 
 def get_method_registry_record(method_key: str) -> RegistryRecord | None:
     return METHOD_REGISTRY_CATALOG.get(method_key)
+
+
+def get_predictive_method_record(method_key: str) -> PredictiveMethodRecord | None:
+    return PREDICTIVE_METHOD_REGISTRY.get(method_key)
 
 
 def get_report_layer_profile(report_type: str) -> str:
@@ -284,6 +397,10 @@ def authoritative_catalog() -> dict[str, Any]:
         "methods": {
             key: value.to_dict()
             for key, value in sorted(METHOD_REGISTRY_CATALOG.items())
+        },
+        "predictive_methods": {
+            key: value.to_dict()
+            for key, value in sorted(PREDICTIVE_METHOD_REGISTRY.items())
         },
         "asteroid_eligibility": {
             key: value.to_dict()
