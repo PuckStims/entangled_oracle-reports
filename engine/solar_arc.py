@@ -19,6 +19,7 @@ except ImportError:  # pragma: no cover - no-ephemeris environments mock scanner
 
 from engine.asteroid_policy import load_asteroid_policy
 from engine.forecast_event_adapter import normalize_to_forecast_event
+from formulas.standard.normalization import normalize_angle_name
 
 
 FORMULA_VERSION = "solar_arc_phase5.0.0"
@@ -104,7 +105,12 @@ def scan_solar_arc_events(natal_payload: dict, start_date: datetime, end_date: d
 
     for source_name, source in sources.items():
         for target_name, target in targets.items():
-            if source_name == target_name:
+            # Skip a directed point against its own natal position -- see
+            # engine/progressions.py's identical check for why this needs
+            # normalized comparison rather than plain string equality
+            # (ANGLE_SOURCES uses the long form, _natal_targets' angle
+            # entries use the canonical short form).
+            if normalize_angle_name(source_name) == normalize_angle_name(target_name):
                 continue
             allowed_aspects = _allowed_aspects(source, target)
             if not allowed_aspects:

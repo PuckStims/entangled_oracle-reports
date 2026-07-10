@@ -1229,10 +1229,39 @@
       /* Repeating chapters and long-form cards fragment naturally across
          page boundaries instead of being pinned whole to one page — this
          is what stops an oversized card from stranding whitespace behind
-         it and lets an event card split only when it doesn't fit. */
-      .month-section,
+         it and lets an event card split only when it doesn't fit.
+
+         .report-shell .month-section and .report-shell .section (below)
+         match products/shared/report_visual_system.css's selector
+         specificity on purpose: that shared stylesheet's own
+         ".report-shell .month-section { break-inside: avoid }" has two
+         classes of specificity, so a bare ".month-section" override here
+         loses to it regardless of source order and silently does
+         nothing — confirmed by inspecting the computed style, not just
+         reading the rule. The intent documented in this comment already
+         existed before this section was added; it just wasn't actually
+         taking effect for .month-section. Re-declaring at matching
+         specificity is what makes the override real. */
+      .report-shell .month-section,
       .monthly-events .event-card,
       .constellation-lens {
+        break-inside: auto;
+        page-break-inside: auto;
+      }
+
+      /* Shared/report_visual_system.css marks every .section monolithic
+         (break-inside: avoid) so a short, card-less chapter like
+         Archetypal Frame never opens mid-section. But when a short
+         section like that lands with only a few inches of room left on
+         the page, "keep it together" means "push the whole thing to a
+         fresh page" -- stranding whatever room was left behind it,
+         exactly the pattern above for .month-section. Prose-only
+         sections read fine split across a page boundary (that is
+         ordinary book typesetting), so let them flow; the header itself
+         still can't be orphaned (break-after: avoid below), and every
+         card/grid type that would look wrong split mid-item keeps its
+         own explicit break-inside: avoid further down. */
+      .report-shell .section {
         break-inside: auto;
         page-break-inside: auto;
       }
