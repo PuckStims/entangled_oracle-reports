@@ -351,14 +351,289 @@ def build_report_context(
     return ctx
 
 
-def _build_predictive_report_surface(sidecar: dict, report_type: str) -> dict:
+def _dict_lookup_with_fallback(data: dict, *keys: str, fallback: str = "fallback") -> str:
+    cursor = data
+    for key in keys:
+        if not isinstance(cursor, dict):
+            return ""
+        key = str(key or fallback)
+        cursor = cursor.get(key) or cursor.get(fallback)
+    if isinstance(cursor, str):
+        return cursor
+    if isinstance(cursor, dict) and isinstance(cursor.get(fallback), str):
+        return cursor[fallback]
+    return ""
+
+
+def _raw_select_block(path: str, *keys: str, fallback: str = "fallback") -> str:
+    """Select a block without suppressing literal TODO scaffolding markers."""
+    data = _load_json_file(path)
+    return _dict_lookup_with_fallback(data, *keys, fallback=fallback)
+
+
+def _pack_path(pack: dict, key: str) -> str:
+    from config import CONTENT_PACKS
+    return pack.get(key) or CONTENT_PACKS["plainspeak"].get(key, "")
+
+
+def _display_any_date(value) -> str:
+    if isinstance(value, datetime):
+        return value.strftime("%B %d, %Y")
+    if isinstance(value, str) and value.strip():
+        text = value.strip()
+        try:
+            parsed = datetime.fromisoformat(text.replace("Z", "+00:00"))
+            return parsed.strftime("%B %d, %Y")
+        except ValueError:
+            return text[:10]
+    return ""
+
+
+def _period_date_range(period: dict) -> str:
+    start = _display_any_date(period.get("start_at"))
+    end = _display_any_date(period.get("end_at"))
+    return " - ".join(part for part in (start, end) if part)
+
+
+def _topic_to_domain_key(topic_keys: list[str], remap: dict) -> str:
+    topic_remap = remap.get("topic_key") if isinstance(remap.get("topic_key"), dict) else {}
+    for topic in topic_keys or []:
+        topic = str(topic or "")
+        if topic in topic_remap:
+            return topic_remap[topic]
+        if topic.startswith("house:") and topic_remap.get(topic):
+            return topic_remap[topic]
+    return topic_remap.get("fallback", "fallback")
+
+
+def _chapter_kind_from_tier4(chapter: dict, remap: dict) -> str:
+    chapter_remap = remap.get("chapter_type") if isinstance(remap.get("chapter_type"), dict) else {}
+    chapter_type = str(chapter.get("chapter_type") or "fallback")
+    label = str(chapter.get("label") or "fallback")
+    typed = chapter_remap.get(chapter_type)
+    if isinstance(typed, dict):
+        return typed.get(label) or typed.get("fallback") or chapter_remap.get("fallback") or "fallback"
+    if isinstance(typed, str):
+        return typed
+    return chapter_remap.get("fallback", "fallback")
+
+
+def _build_predictive_report_surface(
+    sidecar: dict,
+    report_type: str,
+    forecast_synthesis: dict | None = None,
+    pack_paths: dict | None = None,
+) -> dict:
     """
-    Was Phase 9b's report-facing cards, sourced from the now-quarantined
-    predictive_sidecar/predictive_engine/convergence apparatus (see
-    quarantine/predictive_testable_v0_1/README.md). Always returns disabled
-    so templates checking `.enabled` degrade to nothing rendered.
+    Report-facing predictive research cards remapped from the quarantined
+    Phase 9b sidecar contract onto Tier 4 forecast_synthesis output.
+
+    The authored predictive JSON remains the prose source of truth; its
+    _tier4_remap metadata translates synthesis chapter labels and method
+    families to the existing block keys.
     """
-    return {"enabled": False, "report_type": report_type, "chapters": [], "candidates": []}
+    del sidecar  # The old convergence sidecar is intentionally not trusted.
+    pack_paths = pack_paths or {}
+    synthesis = forecast_synthesis if isinstance(forecast_synthesis, dict) else {}
+    chapters_path = (
+        pack_paths.get("predictive_chapters")
+        if report_type == "year_ahead"
+        else pack_paths.get("personal_predictive_chapters")
+    )
+    if not chapters_path:
+        from config import CONTENT_PACKS
+        chapters_path = (
+            CONTENT_PACKS["plainspeak"].get("predictive_chapters")
+            if report_type == "year_ahead"
+            else CONTENT_PACKS["plainspeak"].get("personal_predictive_chapters")
+        )
+    candidates_path = pack_paths.get("personal_predictive_candidates")
+    if not candidates_path:
+        from config import CONTENT_PACKS
+        candidates_path = CONTENT_PACKS["plainspeak"].get("personal_predictive_candidates")
+    chapter_library = _load_json_file(chapters_path or "")
+    chapter_remap = chapter_library.get("_tier4_remap", {})
+
+    cards = []
+    for chapter in (synthesis.get("evidence_chapters") or [])[:6]:
+        if not isinstance(chapter, dict):
+            continue
+        chapter_kind = _chapter_kind_from_tier4(chapter, chapter_remap)
+        domain_key = _topic_to_domain_key(chapter.get("topic_keys") or [], chapter_remap)
+        block = _dict_lookup_with_fallback(chapter_library, chapter_kind, domain_key)
+        if not block:
+            block = _dict_lookup_with_fallback(chapter_library, "fallback")
+        cards.append({
+            "title": str(chapter.get("time_scope") or "Forecast chapter"),
+            "kicker": str(chapter.get("chapter_type") or "tier4_chapter"),
+            "body": block,
+            "chapter_kind": chapter_kind,
+            "domain_key": domain_key,
+            "tier4_label": str(chapter.get("label") or ""),
+            "source": "forecast_synthesis.evidence_chapters",
+            "source_event_ids": list(chapter.get("supporting_event_ids") or [])[:8],
+            "complicating_event_ids": list(chapter.get("complicating_event_ids") or [])[:8],
+            "provenance": list(chapter.get("provenance") or [])[:4],
+        })
+
+    candidates = []
+    if report_type == "personal_forecast":
+        candidate_library = _load_json_file(candidates_path or "")
+        candidate_remap = candidate_library.get("_tier4_remap", {})
+        annual = synthesis.get("annual_terrain_map") if isinstance(synthesis.get("annual_terrain_map"), dict) else {}
+        domain_key = _topic_to_domain_key(annual.get("dominant_topics") or [], candidate_remap)
+        method_remap = candidate_remap.get("method_family") if isinstance(candidate_remap.get("method_family"), dict) else {}
+        for family in (annual.get("method_families") or [])[:6]:
+            family_key = method_remap.get(str(family).upper()) or method_remap.get("fallback", "fallback")
+            block = _dict_lookup_with_fallback(candidate_library, domain_key, family_key)
+            if not block:
+                block = _dict_lookup_with_fallback(candidate_library, "fallback")
+            candidates.append({
+                "title": domain_key.replace("_", " ").title() if domain_key != "fallback" else "Predictive candidate",
+                "kicker": str(family),
+                "body": block,
+                "domain_key": domain_key,
+                "family_key": family_key,
+                "source": "forecast_synthesis.annual_terrain_map",
+            })
+
+    return {
+        "enabled": bool(cards or candidates),
+        "report_type": report_type,
+        "chapters": cards,
+        "candidates": candidates,
+        "source_contract": "forecast_synthesis.tier4_remap",
+    }
+
+
+def _zr_event_kind(event: dict) -> str:
+    variant = str(event.get("method_variant") or "").lower()
+    if "lob" in variant:
+        return "loosing_of_the_bond"
+    if "peak" in variant:
+        return "peak"
+    return "transition"
+
+
+def _build_tier5_year_ahead_surfaces(timeline: dict, forecast_synthesis: dict, pack: dict) -> dict:
+    profection_path = _pack_path(pack, "annual_profections")
+    zr_path = _pack_path(pack, "zodiacal_releasing")
+    returns_path = _pack_path(pack, "exact_returns")
+    terrain_path = _pack_path(pack, "forecast_synthesis_blocks")
+
+    annual_profections = []
+    for period in timeline.get("time_lord_periods", []):
+        if str(period.get("system") or "") != "annual_profection":
+            continue
+        house_key = str(period.get("period_house") or "fallback")
+        annual_profections.append({
+            "title": "Annual Profection",
+            "kicker": _period_date_range(period),
+            "body": _raw_select_block(profection_path, house_key, str(period.get("period_lord") or "fallback")),
+            "period_lord": period.get("period_lord", ""),
+            "period_house": period.get("period_house", ""),
+            "period_sign": period.get("period_sign", ""),
+            "confidence": period.get("confidence", 0.0),
+            "source": "time_lord_periods.annual_profection",
+        })
+
+    zr_periods_by_id = {
+        period.get("period_id"): period
+        for period in timeline.get("zodiacal_releasing_periods", [])
+        if isinstance(period, dict)
+    }
+    zodiacal_releasing = []
+    for event in timeline.get("zodiacal_releasing_events", [])[:8]:
+        period = zr_periods_by_id.get(event.get("period_id"), {})
+        level = str(period.get("level") or ("L1" if str(event.get("method_variant") or "").startswith("zr_l1") else "L2"))
+        if level not in {"L1", "L2"}:
+            continue
+        kind = _zr_event_kind(event)
+        zodiacal_releasing.append({
+            "title": "Zodiacal Releasing",
+            "kicker": _display_any_date(event.get("peak_datetime")),
+            "body": _raw_select_block(zr_path, level, kind),
+            "level": level,
+            "event_kind": kind,
+            "period_lord": event.get("period_lord", ""),
+            "period_sign": event.get("period_sign", ""),
+            "lot_name": event.get("natal_target", ""),
+            "source": "zodiacal_releasing_events",
+        })
+
+    exact_returns = []
+    for event in timeline.get("return_events", [])[:8]:
+        variant = str(event.get("method_variant") or "fallback")
+        exact_returns.append({
+            "title": "Exact Return",
+            "kicker": _display_any_date(event.get("peak_datetime")),
+            "body": _raw_select_block(returns_path, variant),
+            "return_body": event.get("return_body", event.get("transit_planet", "")),
+            "method_variant": variant,
+            "temporal_precision": event.get("temporal_precision", ""),
+            "confidence": event.get("confidence", 0.0),
+            "source": "return_events",
+        })
+
+    annual = forecast_synthesis.get("annual_terrain_map") if isinstance(forecast_synthesis, dict) else {}
+    terrain = {
+        "annual": {
+            "title": "Forecast Terrain",
+            "kicker": str(annual.get("label") or ""),
+            "body": _raw_select_block(terrain_path, "agreement_labels", str(annual.get("label") or "fallback")),
+            "method_families": list(annual.get("method_families") or []),
+            "dominant_topics": list(annual.get("dominant_topics") or [])[:6],
+            "source": "forecast_synthesis.annual_terrain_map",
+        },
+        "months": [
+            {
+                "title": month.get("month_name", ""),
+                "kicker": month.get("zone", ""),
+                "body": _raw_select_block(terrain_path, "monthly_zones", str(month.get("zone") or "fallback")),
+                "relative_intensity": month.get("relative_intensity", 0.0),
+                "method_families": list(month.get("method_families") or []),
+                "dominant_topics": list(month.get("dominant_topics") or [])[:4],
+                "source": "forecast_synthesis.monthly_terrain",
+            }
+            for month in (forecast_synthesis.get("monthly_terrain") or [])
+            if isinstance(month, dict) and month.get("zone") != "background"
+        ][:6],
+        "chapters": [
+            {
+                "title": chapter.get("time_scope", ""),
+                "kicker": chapter.get("label", ""),
+                "body": _raw_select_block(
+                    terrain_path,
+                    "chapter_types",
+                    str(chapter.get("chapter_type") or "fallback"),
+                    str(chapter.get("label") or "fallback"),
+                ),
+                "topic_keys": list(chapter.get("topic_keys") or [])[:4],
+                "source": "forecast_synthesis.evidence_chapters",
+            }
+            for chapter in (forecast_synthesis.get("evidence_chapters") or [])[:6]
+            if isinstance(chapter, dict)
+        ],
+        "contradictions": [
+            {
+                "title": "Forecast contradiction",
+                "kicker": item.get("label", ""),
+                "body": _raw_select_block(terrain_path, "contradictions", str(item.get("label") or "fallback")),
+                "method_families": list(item.get("method_families") or []),
+                "operations": list(item.get("operations") or []),
+                "source": "forecast_synthesis.contradictions",
+            }
+            for item in (forecast_synthesis.get("contradictions") or [])[:4]
+            if isinstance(item, dict)
+        ],
+    }
+
+    return {
+        "annual_profections": annual_profections,
+        "zodiacal_releasing": zodiacal_releasing,
+        "exact_returns": exact_returns,
+        "forecast_terrain": terrain,
+    }
 
 
 THEME_LABELS = {
@@ -802,7 +1077,7 @@ def _build_personal_forecast_context(
          into template-ready snapshot, cards, timing language, guidance, and
          closing integration.
     """
-    from config import CONTENT_PACKS
+    from config import CONTENT_PACKS, HOUSE_DOMAINS
     from engine.transit_engine import compute_year_ahead_events
 
     start_date = report_start or datetime.now(timezone.utc)
@@ -822,6 +1097,18 @@ def _build_personal_forecast_context(
         include_moon_progressions=True,
     )
     all_events = timeline.get("all_events", [])
+    predictive_evidence_events = (
+        all_events
+        + timeline.get("return_events", [])
+        + timeline.get("zodiacal_releasing_events", [])
+        + timeline.get("time_lord_periods", [])
+    )
+    forecast_synthesis = build_forecast_synthesis(
+        predictive_evidence_events,
+        report_start=start_date,
+        report_end=end_date,
+        house_domains=HOUSE_DOMAINS,
+    )
 
     counts = {"transits": 0, "ingresses": 0, "stations": 0, "eclipses": 0, "other": 0}
     count_keys = {
@@ -1107,9 +1394,12 @@ def _build_personal_forecast_context(
         "palette_name":        _pf_palette_name,
         "palette":             _pf_palette,
         "predictive_results":  variables.get("predictive_results", {}),
+        "forecast_synthesis":  forecast_synthesis,
         "predictive_report_surface": _build_predictive_report_surface(
             variables.get("predictive_sidecar", {}),
             "personal_forecast",
+            forecast_synthesis,
+            pack,
         ),
         "retrograde_cluster_active":  retrograde_cluster_active,
         "retrograde_cluster_tier":    retrograde_cluster_tier,
@@ -7849,12 +8139,25 @@ def _build_year_ahead_context(
         birth_meta["birth_time_status"],
         pack,
     )
+    predictive_evidence_events = (
+        all_events
+        + year_texture_progressions
+        + year_texture_solar_arc
+        + timeline.get("return_events", [])
+        + timeline.get("zodiacal_releasing_events", [])
+        + timeline.get("time_lord_periods", [])
+    )
     forecast_synthesis = build_forecast_synthesis(
-        all_events + year_texture_progressions + year_texture_solar_arc,
+        predictive_evidence_events,
         report_start=report_start,
         report_end=report_end,
         months=months,
         house_domains=HOUSE_DOMAINS,
+    )
+    tier5_predictive_surfaces = _build_tier5_year_ahead_surfaces(
+        timeline,
+        forecast_synthesis,
+        pack,
     )
     ledger_months = _build_ledger_months(months)
 
@@ -7907,6 +8210,7 @@ def _build_year_ahead_context(
         ),
         "forecast_climate": forecast_climate,
         "forecast_synthesis": forecast_synthesis,
+        "tier5_predictive_surfaces": tier5_predictive_surfaces,
         "year_arc_sort_basis": "ordinary_salience_duration_then_timing",
         "season_summaries": season_summaries,
         "annual_rhythm_quarters": annual_rhythm_quarters,
@@ -7931,6 +8235,8 @@ def _build_year_ahead_context(
         "predictive_report_surface": _build_predictive_report_surface(
             variables.get("predictive_sidecar", {}),
             "year_ahead",
+            forecast_synthesis,
+            pack,
         ),
         "report_version":     "Year Ahead v2.0",
         "show_landmark_visuals": SHOW_LANDMARK_VISUALS,

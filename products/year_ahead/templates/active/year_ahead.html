@@ -2088,6 +2088,126 @@
         {% else %}
         <div class="empty-landmarks">No solar arc contacts fell within this forecast window.</div>
         {% endif %}
+
+        {% if tier5_predictive_surfaces %}
+        <h3>Time-Lord &amp; Return Scaffolds</h3>
+        <p class="section-subtitle">Tier 5 tracking surfaces for methods now promoted into the live report layer. Placeholder TODO copy is intentional until final prose is authored.</p>
+
+        {% if tier5_predictive_surfaces.annual_profections %}
+        <div class="predictive-research-grid">
+          {% for card in tier5_predictive_surfaces.annual_profections %}
+          <article class="predictive-research-card">
+            <p class="predictive-research-kicker">{{ card.source }}{% if card.kicker %} - {{ card.kicker }}{% endif %}</p>
+            <h3>{{ card.title }}</h3>
+            <p>{{ card.body }}</p>
+            <div class="predictive-research-meta">
+              {% if card.period_lord %}<span>Lord: {{ card.period_lord }}</span>{% endif %}
+              {% if card.period_house %}<span>House {{ card.period_house }}</span>{% endif %}
+              {% if card.period_sign %}<span>{{ card.period_sign }}</span>{% endif %}
+            </div>
+          </article>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if tier5_predictive_surfaces.zodiacal_releasing %}
+        <div class="predictive-research-grid">
+          {% for card in tier5_predictive_surfaces.zodiacal_releasing %}
+          <article class="predictive-research-card">
+            <p class="predictive-research-kicker">{{ card.source }}{% if card.kicker %} - {{ card.kicker }}{% endif %}</p>
+            <h3>{{ card.title }}</h3>
+            <p>{{ card.body }}</p>
+            <div class="predictive-research-meta">
+              {% if card.level %}<span>{{ card.level }}</span>{% endif %}
+              {% if card.event_kind %}<span>{{ card.event_kind | replace('_', ' ') }}</span>{% endif %}
+              {% if card.period_lord %}<span>Lord: {{ card.period_lord }}</span>{% endif %}
+              {% if card.lot_name %}<span>Lot: {{ card.lot_name }}</span>{% endif %}
+            </div>
+          </article>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if tier5_predictive_surfaces.exact_returns %}
+        <div class="predictive-research-grid">
+          {% for card in tier5_predictive_surfaces.exact_returns %}
+          <article class="predictive-research-card">
+            <p class="predictive-research-kicker">{{ card.source }}{% if card.kicker %} - {{ card.kicker }}{% endif %}</p>
+            <h3>{{ card.title }}</h3>
+            <p>{{ card.body }}</p>
+            <div class="predictive-research-meta">
+              {% if card.return_body %}<span>{{ card.return_body }}</span>{% endif %}
+              {% if card.method_variant %}<span>{{ card.method_variant | replace('_', ' ') }}</span>{% endif %}
+              {% if card.temporal_precision %}<span>{{ card.temporal_precision }}</span>{% endif %}
+            </div>
+          </article>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if tier5_predictive_surfaces.forecast_terrain %}
+        <h3>Forecast Terrain Scaffold</h3>
+        <div class="predictive-research-grid">
+          <article class="predictive-research-card">
+            <p class="predictive-research-kicker">{{ tier5_predictive_surfaces.forecast_terrain.annual.source }}</p>
+            <h3>{{ tier5_predictive_surfaces.forecast_terrain.annual.title }}</h3>
+            <p>{{ tier5_predictive_surfaces.forecast_terrain.annual.body }}</p>
+            <div class="predictive-research-meta">
+              {% if tier5_predictive_surfaces.forecast_terrain.annual.kicker %}<span>{{ tier5_predictive_surfaces.forecast_terrain.annual.kicker }}</span>{% endif %}
+              {% for method in tier5_predictive_surfaces.forecast_terrain.annual.method_families[:4] %}<span>{{ method }}</span>{% endfor %}
+            </div>
+          </article>
+          {% for card in tier5_predictive_surfaces.forecast_terrain.months %}
+          <article class="predictive-research-card">
+            <p class="predictive-research-kicker">{{ card.source }}{% if card.kicker %} - {{ card.kicker }}{% endif %}</p>
+            <h3>{{ card.title }}</h3>
+            <p>{{ card.body }}</p>
+            <div class="predictive-research-meta">
+              {% for method in card.method_families[:3] %}<span>{{ method }}</span>{% endfor %}
+              {% if card.relative_intensity %}<span>{{ card.relative_intensity }}</span>{% endif %}
+            </div>
+          </article>
+          {% endfor %}
+          {% for card in tier5_predictive_surfaces.forecast_terrain.chapters %}
+          <article class="predictive-research-card">
+            <p class="predictive-research-kicker">{{ card.source }}{% if card.kicker %} - {{ card.kicker }}{% endif %}</p>
+            <h3>{{ card.title }}</h3>
+            <p>{{ card.body }}</p>
+            <div class="predictive-research-meta">
+              {% for topic in card.topic_keys[:3] %}<span>{{ topic }}</span>{% endfor %}
+            </div>
+          </article>
+          {% endfor %}
+          {% for card in tier5_predictive_surfaces.forecast_terrain.contradictions %}
+          <article class="predictive-research-card">
+            <p class="predictive-research-kicker">{{ card.source }}{% if card.kicker %} - {{ card.kicker }}{% endif %}</p>
+            <h3>{{ card.title }}</h3>
+            <p>{{ card.body }}</p>
+            <div class="predictive-research-meta">
+              {% for method in card.method_families[:3] %}<span>{{ method }}</span>{% endfor %}
+            </div>
+          </article>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if predictive_report_surface is defined and predictive_report_surface.enabled %}
+        <h3>Predictive Research Remap</h3>
+        <div class="predictive-research-grid">
+          {% for card in predictive_report_surface.chapters %}
+          <article class="predictive-research-card">
+            <p class="predictive-research-kicker">{{ card.source }} - {{ card.tier4_label }}</p>
+            <h3>{{ card.title }}</h3>
+            <p>{{ card.body }}</p>
+            <div class="predictive-research-meta">
+              <span>{{ card.chapter_kind }}</span>
+              <span>{{ card.domain_key }}</span>
+            </div>
+          </article>
+          {% endfor %}
+        </div>
+        {% endif %}
+        {% endif %}
       </section>
 
       <!-- VIII. ANNUAL RHYTHM -->

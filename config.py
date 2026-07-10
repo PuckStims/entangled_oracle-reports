@@ -198,6 +198,13 @@ CONTENT_PACKS = {
         "year_integration":  os.path.join(_YEAR_AHEAD_PLAINSPEAK_DIR, "year_integration.json"),
         "year_texture_progressions": os.path.join(_YEAR_AHEAD_PLAINSPEAK_DIR, "progression_blocks.json"),
         "year_texture_solar_arc":    os.path.join(_YEAR_AHEAD_PLAINSPEAK_DIR, "solar_arc_blocks.json"),
+        "annual_profections":        os.path.join(_YEAR_AHEAD_PLAINSPEAK_DIR, "annual_profection_blocks.json"),
+        "zodiacal_releasing":        os.path.join(_YEAR_AHEAD_PLAINSPEAK_DIR, "zodiacal_releasing_blocks.json"),
+        "exact_returns":             os.path.join(_YEAR_AHEAD_PLAINSPEAK_DIR, "return_blocks.json"),
+        "forecast_synthesis_blocks": os.path.join(_YEAR_AHEAD_PLAINSPEAK_DIR, "forecast_synthesis_blocks.json"),
+        "predictive_chapters":       os.path.join(_YEAR_AHEAD_PLAINSPEAK_DIR, "predictive_chapters.json"),
+        "personal_predictive_chapters": os.path.join(_PERSONAL_FORECAST_DIR, "predictive_chapters.json"),
+        "personal_predictive_candidates": os.path.join(_PERSONAL_FORECAST_DIR, "predictive_candidates.json"),
         "standard_natal_foundation": os.path.join(_YEAR_AHEAD_SHARED_DIR, "Standard_Natal_Foundation_Blocks.json"),
         # Shared until a separate legacy Personal Forecast voice library exists.
         "personal_forecast":  _PERSONAL_FORECAST_BLOCKS,

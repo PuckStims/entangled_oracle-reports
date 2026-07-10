@@ -1,6 +1,40 @@
 {
   "_note": "Phase 9b predictive-chapter scaffold for personal_forecast. Key path: chapter_kind -> domain_key -> block string (matches selectors/block_selector.py's select_block(report_type, 'predictive_chapters', chapter_kind, domain_key) once generate.py is wired to call it). ~60 words each. Second person. Must keep the Phase 9b hedged/research framing (\"the system flags\", \"research signal\", not a settled claim) -- this is the one section of the product that is NOT supposed to read as a confident established claim, per the 2026-07-08 operator decision in EO_UPGRADE_PHASES_1_9_AGENT_PROMPTS.md Phase 9b. Real literal values pulled from engine/convergence.py's _chapter_kind_for_period/_chapter_kind_for_signal (chapter_kind) and engine/candidates.py's DOMAIN_KEYS (domain), not guessed.",
   "_version": "phase9b_scaffold_v1",
+  "_tier4_remap": {
+    "chapter_type": {
+      "monthly_terrain": {
+        "opening": "long_transit_cycle",
+        "trigger": "sustained_transit_chapter",
+        "pressure": "sustained_transit_chapter",
+        "aftermath": "sustained_transit_chapter",
+        "recovery": "sustained_transit_chapter",
+        "chapter": "long_transit_cycle",
+        "background": "long_transit_cycle",
+        "fallback": "long_transit_cycle"
+      },
+      "repeating_theme": {
+        "chapter": "sustained_transit_chapter",
+        "fallback": "sustained_transit_chapter"
+      },
+      "fallback": "sustained_transit_chapter"
+    },
+    "topic_key": {
+      "house:1": "identity",
+      "house:2": "resources",
+      "house:3": "communication",
+      "house:4": "home",
+      "house:5": "creativity",
+      "house:6": "work",
+      "house:7": "partnership",
+      "house:8": "transformation",
+      "house:9": "meaning",
+      "house:10": "vocation",
+      "house:11": "community",
+      "house:12": "spirit",
+      "fallback": "fallback"
+    }
+  },
   "fallback": "The system flags a predictive chapter that may be relevant, but this should be treated as a research signal rather than a settled claim. Use it as a lens for noticing where attention keeps returning, which decisions feel loaded, and which ordinary moments seem to carry more weight than they would in a neutral season.",
   "profection_year": {
     "fallback": "The system flags this as an annual emphasis, not a guarantee of events. A particular life area may keep asking for attention through ordinary choices, repeated invitations, or small frictions that become harder to dismiss. Treat the research signal as a way to notice what the year keeps highlighting before it becomes urgent.",

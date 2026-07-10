@@ -28,8 +28,11 @@ EVENT_METHOD_FAMILY = {
     "convergence_window": "CONVERGENCE",
     "progression": "PROGRESSION",
     "solar_arc": "SOLAR_ARC",
+    "return": "RETURN",
     "annual_profection": "TIME_LORD",
     "zodiacal_releasing": "TIME_LORD",
+    "zodiacal_releasing_fortune": "ZODIACAL_RELEASING_FORTUNE",
+    "zodiacal_releasing_spirit": "ZODIACAL_RELEASING_SPIRIT",
 }
 
 SUPPORTIVE_OPERATIONS = {"support", "stabilize", "amplify", "reveal", "flow"}
@@ -76,17 +79,31 @@ def _iso_datetime(value: datetime | None) -> str | None:
 
 
 def _event_type(event: dict) -> str:
-    return str(
+    value = str(
         event.get("event_type")
         or event.get("legacy_event_type")
         or event.get("source_event_type")
+        or event.get("system")
         or ""
     ).strip().lower()
+    if value.startswith("zodiacal_releasing_"):
+        return value
+    return value
 
 
 def _method_family(event: dict) -> str:
     explicit = str(event.get("method_family") or "").strip().upper()
     if explicit:
+        if explicit == "RETURN":
+            body = str(event.get("return_body") or event.get("transit_planet") or "").strip().upper()
+            if body in {"SUN", "MOON", "JUPITER", "SATURN"}:
+                return f"RETURN_{body}"
+        if explicit == "ZODIACAL_RELEASING":
+            system = str(event.get("system") or "").strip().upper()
+            if system.endswith("_FORTUNE"):
+                return "ZODIACAL_RELEASING_FORTUNE"
+            if system.endswith("_SPIRIT"):
+                return "ZODIACAL_RELEASING_SPIRIT"
         return explicit
     return EVENT_METHOD_FAMILY.get(_event_type(event), _event_type(event).upper() or "UNKNOWN")
 

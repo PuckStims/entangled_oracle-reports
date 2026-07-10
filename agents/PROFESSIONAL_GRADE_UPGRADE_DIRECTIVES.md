@@ -750,28 +750,20 @@ Gemini-safe guardrails:
   - Codex or Claude must verify directional logic, privacy framing, and
     missing-birth-time behavior before promotion.
 
-## Tier 7 - Optional Professional Expansion
+## Tier 7 - Specialist Branches And Deep-Cut Research
 
 Goal: widen method breadth only after the core observatory is stable.
+Sequencing decision (2026-07-10, operator): this tier finalizes
+specialist branches and advanced professional research. Locational work
+is not part of this tier - see Tier 8.
 
-Optional later suites:
+Suites in scope:
 
-- professional controls:
-  - house systems
-  - orb profiles
-  - aspect sets
-  - zodiac modes if ever desired
-  - method toggles
-  - dignity scheme toggles
 - specialist branches:
   - electional
   - horary
   - rectification
   - mundane ingress/national chart work
-- locational suite:
-  - relocation charts
-  - astrocartography
-  - relocated returns
 - advanced professional research:
   - primary directions
   - firdaria
@@ -791,14 +783,40 @@ Directive:
 Gemini-safe guardrails:
 
 - Allowed only with suite-specific authorization.
-- Do not access by default:
-  - locational suite files
-  - specialist branch docs
-  - professional control surfaces
-  - new UI/config toggles
-- Review requirement:
-  - treat each suite as its own initiative with fresh guardrails, not as
-    "extra work attached to an existing tier."
+- Do not access by default: specialist branch docs, new UI/config
+  toggles.
+- Review requirement: treat each suite as its own initiative with fresh
+  guardrails, not as "extra work attached to an existing tier."
+
+## Tier 8 - Locational Suite
+
+Goal: relocation-aware chart work, opened only after Tier 7 is settled.
+
+Suites in scope:
+
+- relocation charts
+- astrocartography
+- relocated returns
+
+Directive: same widening-move discipline as Tier 7 - operator must
+explicitly choose to open this, each piece gets its own method charter,
+confidence policy, and report-surface policy.
+
+Gemini-safe guardrails:
+
+- Allowed only with suite-specific authorization.
+- Do not access by default: locational suite files, new UI/config
+  toggles.
+- Review requirement: same as Tier 7 - its own initiative, fresh
+  guardrails.
+
+## Deprioritized indefinitely: professional controls
+
+House systems, orb profiles, aspect sets, alternate zodiac modes, method
+toggles, dignity scheme toggles - the operator has explicitly deprioritized
+this suite below Tiers 6/7/8. Do not open it speculatively. The bar to
+revisit: a concrete business case (a partner or client need), not
+"it would round out the professional feature set."
 
 ## Recommended First Real Project
 

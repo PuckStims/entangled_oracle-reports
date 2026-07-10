@@ -1,0 +1,17 @@
+{
+  "_note": "TODO",
+  "_version": "TODO",
+  "fallback": "TODO",
+  "L1": {
+    "fallback": "TODO",
+    "transition": "TODO",
+    "peak": "TODO",
+    "loosing_of_the_bond": "TODO"
+  },
+  "L2": {
+    "fallback": "TODO",
+    "transition": "TODO",
+    "peak": "TODO",
+    "loosing_of_the_bond": "TODO"
+  }
+}

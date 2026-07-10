@@ -27,12 +27,12 @@ class TestPredictiveMethodRegistry(unittest.TestCase):
     def test_get_predictive_method_record_unknown_key_returns_none(self):
         self.assertIsNone(get_predictive_method_record("not_a_real_method"))
 
-    def test_report_surface_permission_distinguishes_wired_from_unwired(self):
-        # Progressions and Solar Arc are already computed into report context
-        # today (moon-progression contacts -> personal_forecast, year-texture
-        # progressions/solar-arc -> year_ahead); returns, lots, zodiacal
-        # releasing, and annual profections are not consumed by either active
-        # report path. The registry must not flatten that distinction.
+    def test_report_surface_permission_distinguishes_production_from_scaffold(self):
+        # Progressions and Solar Arc remain production report methods where
+        # wired. Tier 5 promotes annual profections, returns, and Zodiacal
+        # Releasing as visible scaffold/tracking surfaces, while Lots remain
+        # an internal substrate for Zodiacal Releasing rather than standalone
+        # report content.
         wired = get_predictive_method_record("progressions")
         self.assertIn("personal_forecast", wired.report_surface_permission)
         self.assertIn("year_ahead", wired.report_surface_permission)
@@ -41,11 +41,16 @@ class TestPredictiveMethodRegistry(unittest.TestCase):
         self.assertIn("year_ahead", arc.report_surface_permission)
         self.assertNotIn("personal_forecast", arc.report_surface_permission)
 
-        for method_key in ("annual_profections", "returns", "lots", "zodiacal_releasing"):
+        for method_key in ("annual_profections", "returns", "zodiacal_releasing"):
             record = get_predictive_method_record(method_key)
-            self.assertNotIn("year_ahead", record.report_surface_permission)
-            self.assertNotIn("personal_forecast", record.report_surface_permission)
-            self.assertEqual(record.method_status, "internal")
+            self.assertIn("year_ahead", record.report_surface_permission)
+            self.assertIn("personal_forecast", record.report_surface_permission)
+            self.assertEqual(record.method_status, "scaffolded_report_surface")
+
+        lots = get_predictive_method_record("lots")
+        self.assertNotIn("year_ahead", lots.report_surface_permission)
+        self.assertNotIn("personal_forecast", lots.report_surface_permission)
+        self.assertEqual(lots.method_status, "internal")
 
     def test_to_dict_round_trips_list_fields(self):
         record = get_predictive_method_record("returns")

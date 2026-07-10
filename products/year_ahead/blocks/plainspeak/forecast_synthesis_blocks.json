@@ -1,0 +1,41 @@
+{
+  "_note": "TODO",
+  "_version": "TODO",
+  "fallback": "TODO",
+  "agreement_labels": {
+    "fallback": "TODO",
+    "convergent": "TODO",
+    "supportive": "TODO",
+    "isolated": "TODO",
+    "ambiguous": "TODO",
+    "contradictory": "TODO",
+    "background": "TODO"
+  },
+  "monthly_zones": {
+    "fallback": "TODO",
+    "opening": "TODO",
+    "pressure": "TODO",
+    "recovery": "TODO",
+    "chapter": "TODO",
+    "background": "TODO"
+  },
+  "chapter_types": {
+    "fallback": "TODO",
+    "monthly_terrain": {
+      "fallback": "TODO",
+      "opening": "TODO",
+      "pressure": "TODO",
+      "recovery": "TODO",
+      "chapter": "TODO",
+      "background": "TODO"
+    },
+    "repeating_theme": {
+      "fallback": "TODO",
+      "chapter": "TODO"
+    }
+  },
+  "contradictions": {
+    "fallback": "TODO",
+    "contradictory": "TODO"
+  }
+}

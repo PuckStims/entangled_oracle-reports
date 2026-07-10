@@ -2396,6 +2396,31 @@ def compute_year_ahead_events(
     from engine.profections import annual_profection_periods
     profection_periods = annual_profection_periods(natal_payload, report_start, report_end)
 
+    return_events = []
+    try:
+        from engine.returns import scan_return_events
+        return_events = scan_return_events(natal_payload, report_start, report_end)
+    except Exception:
+        return_events = []
+
+    zodiacal_releasing_events = []
+    zodiacal_releasing_periods = []
+    try:
+        from engine.zodiacal_releasing import (
+            zodiacal_releasing_events as _scan_zodiacal_releasing_events,
+            zodiacal_releasing_periods as _scan_zodiacal_releasing_periods,
+        )
+        for lot_name in ("Fortune", "Spirit"):
+            zodiacal_releasing_events.extend(
+                _scan_zodiacal_releasing_events(natal_payload, report_start, report_end, lot_name=lot_name)
+            )
+            zodiacal_releasing_periods.extend(
+                _scan_zodiacal_releasing_periods(natal_payload, report_start, report_end, lot_name=lot_name)
+            )
+    except Exception:
+        zodiacal_releasing_events = []
+        zodiacal_releasing_periods = []
+
     moon_progression_events = []
     if include_moon_progressions:
         from engine.progressions import scan_progression_events
@@ -2472,6 +2497,16 @@ def compute_year_ahead_events(
         "eclipses": eclipse_events,
         "lunations": lunation_events,
         "progressions": progression_events,
+        "return_events": return_events,
+        "zodiacal_releasing_events": sorted(
+            zodiacal_releasing_events,
+            key=lambda event: event.get("peak_datetime") or report_end,
+        ),
+        "time_lord_periods": linked_events["time_lord_periods"],
+        "zodiacal_releasing_periods": sorted(
+            zodiacal_releasing_periods,
+            key=lambda period: (period.get("start_at") or "", period.get("level") or ""),
+        ),
         "year_texture_progressions": year_texture_progressions_enriched,
         "year_texture_solar_arc": year_texture_solar_arc_enriched,
         "all_events": all_events,

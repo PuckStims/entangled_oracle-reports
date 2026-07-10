@@ -5,41 +5,45 @@ item to `REVISIONS.md` when it is actually finished.
 
 ---
 
-## Professional-grade formula/computation/backend upgrade directive (2026-07-10)
+## Professional-grade formula/computation/backend upgrade - status (2026-07-10)
 
-See `agents/PROFESSIONAL_GRADE_UPGRADE_DIRECTIVES.md` before starting any
-large formula, computation, advanced-method, synthesis-backend, or
-synastry upgrade. That file is the current high-level sequencing map for
-making EO more professionally complete while keeping specialist branches,
-professional controls, and locational astrology optional for now.
+See `agents/PROFESSIONAL_GRADE_UPGRADE_DIRECTIVES.md` for the tier
+sequencing model and `agents/HIGH_THROUGHPUT_AGENT_PROMPTS.md` for
+reusable builder/review prompts. **Tiers 0 through 5 are done** - see
+`agents/REVISIONS.md` for the full history of each.
 
-The recommended first real project from that directive is:
+**Content-writing is now the open work, not a tier.** Tier 5's scaffolding
+is live: TODO-placeholder JSON block files exist in the correct locations
+for annual profections, Zodiacal Releasing, exact returns, and Tier 4
+forecast-synthesis terrain, all confirmed rendering in real report output.
+The remapped `predictive_chapters.json`/`predictive_candidates.json`
+content is wired to the current vocabulary. What's left is the operator
+dropping finished prose in over the TODO placeholders - not a build task.
 
-1. build or refresh a Forecast Computation Ledger
-2. define/adapt a Canonical Forecast Event Schema
-3. map current event fields and missing fields across active and partial
-   methods
-4. add serialization/trace fixtures before surfacing more methods in prose
+**Sequencing decision (2026-07-10):** Tier 6 (Synastry) is next, as
+originally scoped - its own architecture, two-chart grammar, not started.
+After that, Tier 7 is now specialist branches + deep-cut research only
+(electional, horary, rectification, primary directions, firdaria,
+decennials, fixed stars, midpoints, harmonics). Tier 8 is the locational
+suite (relocation, astrocartography, relocated returns), split out of what
+was previously bundled with Tier 7. Professional controls (house systems,
+orb profiles, method/dignity toggles) are deprioritized indefinitely below
+all three - do not open that suite without a concrete business case.
 
-That directive also now includes a formal builder/review-crew operating
-model and Gemini-safe guardrails by tier. If a future run uses
-Gemini/Antigravity for construction, read those sections first and treat
-Gemini output as candidate construction, not final alignment authority.
+**Still open, not tied to a specific tier:**
+- De-duplication overview of Year Ahead. Section count has grown a lot
+  across this upgrade (Year Overview, Year Integration, Monthly Snapshot,
+  Progressions/Solar Arc Texture, Forecast Climate, Archetypal Opening,
+  Refraction Bridges, Convergence Blocks, and now profections/ZR/returns/
+  predictive chapters/synthesis terrain on top). Audit whether each
+  section earns its place or restates another in a different voice.
+- Delete the `entangled_oracle` content pack. Not a second voice - a
+  copy-paste stand-in for `plainspeak` kept in sync only because deleting
+  it properly is a bigger cleanup than duplicating files.
 
-Reusable starter prompts for that model now live in
-`agents/HIGH_THROUGHPUT_AGENT_PROMPTS.md`.
-
-Do not treat the directive as proof that any feature is already active.
-Future agents must verify current repo state before implementation.
-
-**Status as of 2026-07-10:** Tiers 0, 1, 2, Tier 3 scaffolding, and Tier 4
-synthesis backend scaffolding have landed; see `agents/REVISIONS.md`. The
-core-five confidence/visibility follow-up is complete, the existing forecast
-activation path now emits named score components plus machine-readable
-ranking diagnostics, and Year Ahead context now carries a traceable
-`forecast_synthesis` object for terrain/clustering/contradiction review.
-Tier 5 report-surface promotion remains out of scope until explicitly
-started.
+Verify any "is this live" question by generating a real report and reading
+the output, not by grepping code - see the 2026-07-10 correction entry in
+`agents/REVISIONS.md` for why that matters.
 
 ---
 

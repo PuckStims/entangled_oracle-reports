@@ -1,6 +1,43 @@
 {
   "_note": "Phase 9b predictive-candidate scaffold for personal_forecast (candidates do not surface in Year Ahead -- Personal Forecast only, per phase0/04_convergence_and_candidate_protocol.md section 10). Key path: candidate_domain -> leading independent_method_family -> block string (matches select_block('personal_forecast', 'predictive_candidates', domain, leading_family) once wired). ~50 words each. Second person. Same hedged/research framing requirement as predictive_chapters.json -- candidates specifically must never read as a settled prediction (phase0/04 section 4.3, section 10). Family list is the real independence_group values from engine/returns.py (return_family_<body>, not the charter prose's return_family_solar/lunar -- a documentation mismatch found during scaffolding, code is ground truth), engine/zodiacal_releasing.py (zr_family_<lot>), and engine/progressions.py / solar_arc.py / predictive_engine.py (the flat *_family names). return_family_generic and zr_family_generic exist as rare code fallbacks (secondary-body returns, unmatched clock roles) and are intentionally NOT given a full domain grid here -- they route through the family-level fallback below instead, consistent with select_block's own fallback-key mechanism, so nothing 404s at runtime for the rare case without doubling the scaffold size.",
   "_version": "phase9b_scaffold_v1",
+  "_tier4_remap": {
+    "topic_key": {
+      "house:1": "identity",
+      "house:2": "resources",
+      "house:3": "communication",
+      "house:4": "home",
+      "house:5": "creativity",
+      "house:6": "work",
+      "house:7": "partnership",
+      "house:8": "transformation",
+      "house:9": "meaning",
+      "house:10": "vocation",
+      "house:11": "community",
+      "house:12": "spirit",
+      "fallback": "fallback"
+    },
+    "method_family": {
+      "TRANSIT": "transit_family",
+      "PROPRIETARY_TRANSIT": "proprietary_transit_family",
+      "TRANSIT_STATION": "transit_family",
+      "INGRESS": "transit_family",
+      "LUNATION": "lunation_family",
+      "RETURN": "return_family_sun",
+      "RETURN_SUN": "return_family_sun",
+      "RETURN_MOON": "return_family_moon",
+      "RETURN_JUPITER": "return_family_jupiter",
+      "RETURN_SATURN": "return_family_saturn",
+      "PROGRESSION": "progression_family",
+      "SOLAR_ARC": "solar_arc_family",
+      "TIME_LORD": "profection_family",
+      "ANNUAL_PROFECTION": "profection_family",
+      "ZODIACAL_RELEASING_FORTUNE": "zr_family_fortune",
+      "ZODIACAL_RELEASING_SPIRIT": "zr_family_spirit",
+      "ZODIACAL_RELEASING": "zr_family_fortune",
+      "fallback": "fallback"
+    }
+  },
   "fallback": "A candidate signal is present, but the available pathway does not narrow it to one life domain or timing family. Use it as a research marker rather than a conclusion: notice what repeats in events, choices, and body feedback before treating the period as meaningful.",
   "identity": {
     "fallback": "Signals around identity, confidence, and how you enter the room are present, though the pathway is not specific enough to call this a settled development. Use the period to gather evidence: changes in appearance, name, tone, visibility, confidence, or the way people respond before you explain yourself. The candidate strengthens when the same theme repeats through both circumstances and choices.",

@@ -268,8 +268,8 @@ PREDICTIVE_METHOD_REGISTRY: dict[str, PredictiveMethodRecord] = {
         supported_bodies_and_points=("Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn"),
         orb_and_window_policy="1 year window per period",
         confidence_policy="0.8415 if time known, 0.65 if unknown",
-        report_surface_permission=("internal_rd", "engineering_diagnostic"),
-        method_status="internal",
+        report_surface_permission=("year_ahead", "personal_forecast", "internal_rd", "engineering_diagnostic"),
+        method_status="scaffolded_report_surface",
         notes=(
             "Calculates: a full TimeLordPeriod span per year (not just a "
             "window) -- profected sign/house from the natal Ascendant, the "
@@ -281,9 +281,9 @@ PREDICTIVE_METHOD_REGISTRY: dict[str, PredictiveMethodRecord] = {
             "fallen; no monthly-profection period logic exists in this file. "
             "Can claim: which planet is time lord for a given year, and "
             "whether it's angular/retrograde/in a known house. Merely "
-            "contextualizes: currently consumed only as an internal transit-"
-            "scoring weight via time_lord_periods; no standalone 'Lord of "
-            "the Year' content exists in any report."
+            "contextualizes: consumed as a transit-scoring weight via "
+            "time_lord_periods and promoted in Tier 5 as a live TODO "
+            "scaffold/report-surface tracking card, not finished prose."
         ),
     ),
     "progressions": PredictiveMethodRecord(
@@ -354,8 +354,8 @@ PREDICTIVE_METHOD_REGISTRY: dict[str, PredictiveMethodRecord] = {
         supported_bodies_and_points=("Sun", "Moon", "Jupiter", "Saturn"),
         orb_and_window_policy="0.01 degree tolerance",
         confidence_policy="0.833",
-        report_surface_permission=("internal_rd", "engineering_diagnostic"),
-        method_status="internal",
+        report_surface_permission=("year_ahead", "personal_forecast", "internal_rd", "engineering_diagnostic"),
+        method_status="scaffolded_report_surface",
         notes=(
             "Calculates: the exact moment (0.01-degree tolerance) a body "
             "returns to its natal longitude. Does not calculate: anything "
@@ -364,8 +364,9 @@ PREDICTIVE_METHOD_REGISTRY: dict[str, PredictiveMethodRecord] = {
             "return-chart interpretation is 'intentionally deferred.' Can "
             "claim: the date/time of a return, with a confidence score for "
             "that timing. Merely contextualizes: a bare timestamp today, "
-            "nothing about what the return 'means' beyond that moment; not "
-            "consumed by any report path."
+            "nothing about what the return 'means' beyond that moment; "
+            "promoted in Tier 5 as a live TODO scaffold/report-surface "
+            "tracking card, not finished return-chart interpretation."
         ),
     ),
     "lots": PredictiveMethodRecord(
@@ -402,8 +403,8 @@ PREDICTIVE_METHOD_REGISTRY: dict[str, PredictiveMethodRecord] = {
         supported_bodies_and_points=("L1", "L2", "L3", "L4", "Peak", "LOB"),
         orb_and_window_policy="Valens fixed years by sign",
         confidence_policy="0.80",
-        report_surface_permission=("internal_rd", "engineering_diagnostic"),
-        method_status="internal",
+        report_surface_permission=("year_ahead", "personal_forecast", "internal_rd", "engineering_diagnostic"),
+        method_status="scaffolded_report_surface",
         notes=(
             "Calculates: a full L1-L4 TimeLordPeriod tree from Lot of "
             "Fortune/Spirit using the Vettius Valens year-per-sign table, "
@@ -417,8 +418,8 @@ PREDICTIVE_METHOD_REGISTRY: dict[str, PredictiveMethodRecord] = {
             "exalted/fallen. Can claim: which sign/lord governs a given "
             "span at each of the four levels, whether that span is a peak "
             "or Loosing-of-the-Bond moment, and that lord's real house/"
-            "retrograde placement. Merely contextualizes: not consumed by "
-            "any report path yet; L3/L4 are "
+            "retrograde placement. Merely contextualizes: promoted in Tier "
+            "5 as a live TODO scaffold/report-surface tracking card; L3/L4 are "
             "explicitly modifier-scale only per the module's own docstring, "
             "not meant to justify a candidate on their own."
         ),

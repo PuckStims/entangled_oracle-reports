@@ -743,6 +743,46 @@
 
   <hr>
 
+  <!-- ── Predictive Research Surface ── -->
+  {% if predictive_report_surface is defined and predictive_report_surface.enabled %}
+  <div class="predictive-research-section">
+    <div class="section-label">Predictive Research Surface</div>
+    <p class="predictive-research-note">Research-facing timing material is remapped from the current forecast synthesis layer and remains observational, not determinative.</p>
+    {% if predictive_report_surface.chapters %}
+    <div class="predictive-card-list">
+      {% for card in predictive_report_surface.chapters %}
+      <div class="predictive-card">
+        <div class="predictive-card-kicker">{{ card.source }} - {{ card.tier4_label }}</div>
+        <h3>{{ card.title }}</h3>
+        <p>{{ card.body }}</p>
+        <div class="predictive-meta">
+          <span>{{ card.chapter_kind }}</span>
+          <span>{{ card.domain_key }}</span>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+    {% if predictive_report_surface.candidates %}
+    <div class="predictive-card-list">
+      {% for card in predictive_report_surface.candidates %}
+      <div class="predictive-card">
+        <div class="predictive-card-kicker">{{ card.kicker }}</div>
+        <h3>{{ card.title }}</h3>
+        <p>{{ card.body }}</p>
+        <div class="predictive-meta">
+          <span>{{ card.domain_key }}</span>
+          <span>{{ card.family_key }}</span>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+
+  <hr>
+  {% endif %}
+
   <!-- ── Practical Guidance ── -->
   <div class="guidance-section">
     <div class="section-label">Best Use of This Forecast Window</div>

@@ -5,6 +5,70 @@ Newest entry on top. See `agents/README.md` for the convention.
 
 ---
 
+## 2026-07-10 - Tier 5 report-surface promotion scaffolded, tiered upgrade Tiers 0-5 complete (Codex, accepted by operator, spot-verified by Claude Code)
+
+**Context:** governing product decision this session: everything the
+upgrade has built eventually gets promoted client-facing - no permanent
+hiding of complexity behind transits. Workflow is scaffold-first per the
+operator's methodology: JSON block files with literal `TODO` placeholder
+content go in first, in the correct locations, rendering live in real
+reports (no dev-only gate, since there are no active customers yet);
+finished prose gets dropped in later by the operator.
+
+**What changed:**
+
+- New TODO-scaffolded block files:
+  `products/year_ahead/blocks/plainspeak/annual_profection_blocks.json`,
+  `zodiacal_releasing_blocks.json`, `return_blocks.json`,
+  `forecast_synthesis_blocks.json` - registered in `config.py`'s
+  `CONTENT_PACKS["plainspeak"]` under new keys (`annual_profections`,
+  `zodiacal_releasing`, `exact_returns`, `forecast_synthesis_blocks`).
+  `entangled_oracle`'s pack section untouched, as instructed.
+- Remapped (not rewrote) the existing written content in
+  `products/year_ahead/blocks/plainspeak/predictive_chapters.json` and
+  `products/personal_forecast/blocks/shared/predictive_chapters.json`/
+  `predictive_candidates.json` off the retired
+  `engine/convergence.py`/`engine/candidates.py` vocabulary and onto the
+  current Tier 4 `forecast_synthesis`/Tier 2 registry vocabulary, so that
+  real, already-written prose is reachable again instead of orphaned.
+- Wired new template sections into
+  `products/year_ahead/templates/active/year_ahead.html` and
+  `products/personal_forecast/templates/personal_forecast.html`.
+- Added `tests/test_tier5_report_scaffolding.py`; extended
+  `tests/test_predictive_method_registry.py` with a
+  `method_status="scaffolded_report_surface"` distinction for
+  profections/returns/ZR (visible-but-placeholder) versus `"internal"`
+  (Lots, still a substrate only) versus `"production"` (progressions/solar
+  arc, already fully live).
+
+**Verification:** operator reviewed and accepted the pass directly. Claude
+Code spot-verified rather than doing a full line-by-line trace (given the
+operator's sign-off): confirmed TODO placeholders are literal (not
+accidentally real prose or broken schema), confirmed `entangled_oracle`'s
+config section has zero diff, full suite re-run (353 passed, same 19
+pre-existing failures, no regressions), and generated a real report to
+confirm the new sections actually render - 27 live TODO markers present
+in real output HTML, not just traced in code.
+
+**Open:** the scaffolding is done; the actual content-writing (dropping
+finished prose over the TODO placeholders) is now the long pole, and it's
+the operator's own workflow step, not a build task. Tier 3
+ranking-transparency copy was deliberately held back this pass - still
+undecided whether/how it becomes client-facing. De-duplication overview of
+Year Ahead's now-larger section count and the `entangled_oracle` pack
+deletion remain open, tracked in `agents/PLANNED_UPDATES.md`.
+
+**Tiered upgrade status:** Tiers 0-5 of
+`agents/PROFESSIONAL_GRADE_UPGRADE_DIRECTIVES.md` are complete. Tier 6
+(Synastry) is next. The tier sequence below Tier 6 was re-planned this
+session: Tier 7 is now specialist branches + deep-cut research only; Tier
+8 is the locational suite (previously bundled with Tier 7); professional
+controls are deprioritized indefinitely pending a concrete business case.
+`agents/PROFESSIONAL_GRADE_UPGRADE_DIRECTIVES.md` has been updated in
+place to reflect this restructure.
+
+---
+
 ## 2026-07-10 - Correction: Year Ahead progressions/solar-arc texture is already client-facing, not backend-only (Claude Code)
 
 **Context:** while inventorying `products/*/blocks/plainspeak/` for the
