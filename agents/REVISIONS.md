@@ -5,6 +5,51 @@ Newest entry on top. See `agents/README.md` for the convention.
 
 ---
 
+## 2026-07-10 - Correction: Year Ahead progressions/solar-arc texture is already client-facing, not backend-only (Claude Code)
+
+**Context:** while inventorying `products/*/blocks/plainspeak/` for the
+Tier 5 content-planning conversation, found that
+`progression_blocks.json` and `solar_arc_blocks.json` contain full,
+polished, written prose (all 6/7 progressed-body sources, not a stub),
+and that `config.py`'s `CONTENT_PACKS["plainspeak"]` already registers
+both under the correct `year_texture_progressions`/`year_texture_solar_arc`
+keys. Traced the call path: `_select_year_block()` already handles
+`event_type in {"progression", "solar_arc"}`, and
+`products/year_ahead/templates/active/year_ahead.html` already has a full
+"Progressions & Solar Arc Texture" section (heading, subtitle, card
+layout) rendering `event.block`.
+
+**Verified, not just traced:** generated a real `year_ahead` report
+(`--name "Test Verification" --date 1990-06-15 --time 14:30 --location
+"Austin, TX"`) and read the actual output HTML. The "Progressions & Solar
+Arc Texture" section renders with 191 distinct progression-texture cards
+and 9 distinct solar-arc cards, real varied content, not fallback text
+repeated.
+
+**What this corrects:** the 2026-07-08 entry below ("wired backend-only...
+no templates or new prose yet") was accurate *at the time*. It no longer
+is - someone completed the template/content wiring since then, outside
+any AI session logged in this file, and nothing recorded it. The
+`formulas/governance_registry.py` `PredictiveMethodRecord` notes for
+`progressions` and `solar_arc` (written during Tier 2, 2026-07-10) also
+carried the stale "not rendered by a template/prose block yet" claim -
+fixed in place, since those are living documentation, not a historical
+log entry.
+
+**Still accurate:** Moon-progression contacts (the `personal_forecast`
+side, `include_moon_progressions=True`) remain computed but genuinely
+unused - `_build_personal_forecast_context()` never reads them back out
+of the timeline dict. Solar arc is still not consumed by
+`personal_forecast` at all. Don't assume parity between the two
+`include_*` flags just because both exist.
+
+**Lesson for future passes:** verify claims like "not yet rendered" by
+generating a real report and reading the output, not by grepping code and
+assuming a stale doc is still true. This file and the registry notes can
+drift behind real repo state when work lands outside a logged session.
+
+---
+
 ## 2026-07-10 - Tier 4 synthesis backend scaffolding landed (Sol / GPT-5, reviewed and accepted as-is by Claude Code)
 
 **Context:** Tier 4 called for backend synthesis objects that can describe

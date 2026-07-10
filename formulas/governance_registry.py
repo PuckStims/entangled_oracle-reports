@@ -306,12 +306,17 @@ PREDICTIVE_METHOD_REGISTRY: dict[str, PredictiveMethodRecord] = {
             "progressed-chart interpretation beyond these three event types. "
             "Can claim: the date a progressed contact/ingress/phase becomes "
             "exact, and a confidence score gated on birth-time exactness for "
-            "angle-involved contacts. Merely contextualizes: computed into "
-            "report context today -- Moon-progression contacts feed "
-            "personal_forecast (include_moon_progressions), 'year texture' "
-            "progressions feed year_ahead (include_year_texture) -- but "
-            "neither is rendered by a template/prose block yet; context "
-            "presence is not proof of client-visible copy."
+            "angle-involved contacts. Merely contextualizes: 'year texture' "
+            "progressions (year_ahead, include_year_texture) ARE rendered "
+            "client-facing today -- a real 'Progressions & Solar Arc "
+            "Texture' template section, confirmed 2026-07-10 by generating "
+            "a live report and reading the output HTML, not just tracing "
+            "code. Moon-progression contacts (personal_forecast, "
+            "include_moon_progressions) remain computed but genuinely "
+            "unused -- personal_forecast's context builder never reads "
+            "them back out of the timeline dict. Don't assume parity "
+            "between the two consumers just because both set an "
+            "include_* flag."
         ),
     ),
     "solar_arc": PredictiveMethodRecord(
@@ -334,10 +339,10 @@ PREDICTIVE_METHOD_REGISTRY: dict[str, PredictiveMethodRecord] = {
             "the same formula version). Can claim: the date a solar-arc "
             "contact becomes exact, and a confidence score gated on "
             "birth-time exactness for angle-involved contacts. Merely "
-            "contextualizes: computed into year_ahead context today as "
-            "'year texture' (include_year_texture); not consumed by "
-            "personal_forecast, and not rendered by a template/prose block "
-            "yet."
+            "contextualizes: rendered client-facing today in year_ahead's "
+            "'Progressions & Solar Arc Texture' section (include_year_texture) "
+            "-- confirmed 2026-07-10 by generating a live report and reading "
+            "the output HTML. Not consumed by personal_forecast at all."
         ),
     ),
     "returns": PredictiveMethodRecord(
