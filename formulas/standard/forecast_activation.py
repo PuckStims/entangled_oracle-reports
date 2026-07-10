@@ -76,6 +76,68 @@ EVENT_TYPE_BASELINES = {
     "solar_arc": 0.20,
 }
 
+SCORE_COMPONENT_KEYS = (
+    "timing_exactness",
+    "natal_relevance",
+    "method_weight",
+    "time_lord_support",
+    "repetition_echo",
+    "house_topic_relevance",
+    "angularity",
+    "dignity_condition",
+    "convergence",
+    "counterforce_conflict",
+    "confidence",
+)
+
+READER_ACTIVITY_COMPONENT_WEIGHTS = {
+    "transit": {
+        "house_topic_relevance": 0.70,
+        "timing_exactness": 0.10,
+        "natal_relevance": 0.15,
+        "convergence": 0.05,
+    },
+    "station": {
+        "house_topic_relevance": 0.42,
+        "timing_exactness": 0.10,
+        "natal_relevance": 0.30,
+        "convergence": 0.18,
+    },
+    "eclipse": {
+        "house_topic_relevance": 0.36,
+        "timing_exactness": 0.08,
+        "natal_relevance": 0.34,
+        "convergence": 0.22,
+    },
+    "ingress": {
+        "house_topic_relevance": 0.28,
+        "timing_exactness": 0.10,
+        "natal_relevance": 0.36,
+        "convergence": 0.26,
+    },
+    "progression": {
+        "house_topic_relevance": 0.22,
+        "timing_exactness": 0.08,
+        "natal_relevance": 0.40,
+        "convergence": 0.30,
+    },
+    "solar_arc": {
+        "house_topic_relevance": 0.22,
+        "timing_exactness": 0.08,
+        "natal_relevance": 0.40,
+        "convergence": 0.30,
+    },
+    "default": {
+        "house_topic_relevance": 1.00,
+    },
+}
+
+READER_ACTIVITY_SCORE_CEILINGS = {
+    "ingress": 0.62,
+    "progression": 0.55,
+    "solar_arc": 0.55,
+}
+
 CORE_REPORT_EVENT_TYPES = {"transit", "ingress", "station", "eclipse", "lunation"}
 CORE_REPORT_SURFACES = ["year_ahead", "personal_forecast"]
 
@@ -90,6 +152,13 @@ CORE_CONFIDENCE_POLICY = {
 
 def _clamp(value: float, low: float = 0.0, high: float = 1.0) -> float:
     return max(low, min(high, value))
+
+
+def _safe_float(value: Any, default: float = 0.0) -> float:
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return default
 
 
 def _birth_time_status(natal_payload: dict) -> str:
@@ -395,6 +464,267 @@ def _event_pass_sequence(event: dict) -> str:
     return "standalone"
 
 
+def _event_conflict_value(event: dict) -> tuple[float, str]:
+    for key in (
+        "counterforce_conflict",
+        "counterforce_score",
+        "conflict_score",
+        "conflict",
+    ):
+        if key in event and event.get(key) is not None:
+            return _clamp(abs(_safe_float(event.get(key)))), key
+    return 0.0, ""
+
+
+def _score_component(
+    value: float,
+    weight: float = 0.0,
+    *,
+    contribution: float | None = None,
+    status: str = "supported",
+    source: str = "",
+    direction: str = "support",
+) -> dict[str, Any]:
+    value = round(_clamp(value), 4)
+    if contribution is None:
+        contribution = value * weight
+    return {
+        "value": value,
+        "weight": round(weight, 4),
+        "contribution": round(contribution, 4),
+        "status": status,
+        "source": source,
+        "direction": direction,
+    }
+
+
+def _score_component_totals(
+    event_type: str,
+    score_components: dict[str, dict[str, Any]],
+) -> dict[str, Any]:
+    raw_total = sum(
+        _safe_float(component.get("contribution"))
+        for component in score_components.values()
+        if isinstance(component, dict)
+    )
+    ceiling = READER_ACTIVITY_SCORE_CEILINGS.get(event_type)
+    aggregate = _clamp(raw_total, high=ceiling if ceiling is not None else 1.0)
+    return {
+        "raw_total": round(raw_total, 4),
+        "aggregate_score": round(aggregate, 4),
+        "ceiling": ceiling,
+        "component_version": "tier3_score_components_v1",
+    }
+
+
+def _top_component_summaries(
+    score_components: dict[str, dict[str, Any]],
+    limit: int = 4,
+) -> list[dict[str, Any]]:
+    ranked = sorted(
+        [
+            (name, component)
+            for name, component in score_components.items()
+            if isinstance(component, dict)
+            and _safe_float(component.get("contribution")) > 0
+        ],
+        key=lambda item: (
+            _safe_float(item[1].get("contribution")),
+            _safe_float(item[1].get("value")),
+            item[0],
+        ),
+        reverse=True,
+    )
+    return [
+        {
+            "component": name,
+            "value": component.get("value", 0.0),
+            "weight": component.get("weight", 0.0),
+            "contribution": component.get("contribution", 0.0),
+            "status": component.get("status", ""),
+            "source": component.get("source", ""),
+        }
+        for name, component in ranked[:limit]
+    ]
+
+
+def build_ranking_diagnostics(
+    event: dict,
+    *,
+    context: str,
+    rank_score: float | None = None,
+    rank_basis: str = "combined_intensity_score",
+    local_relevance: float | None = None,
+) -> dict[str, Any]:
+    """Return machine-readable ranking diagnostics from score components."""
+    score_components = event.get("score_components")
+    if not isinstance(score_components, dict):
+        score_components = {}
+    totals = event.get("score_component_totals")
+    if not isinstance(totals, dict):
+        totals = _score_component_totals(
+            str(event.get("event_type") or "").strip().lower(),
+            score_components,
+        )
+    aggregate = (
+        _safe_float(rank_score)
+        if rank_score is not None
+        else _safe_float(event.get(rank_basis), _safe_float(event.get("score")))
+    )
+    unsupported = [
+        name for name, component in score_components.items()
+        if isinstance(component, dict)
+        and str(component.get("status") or "").startswith("unsupported")
+    ]
+    conflict = score_components.get("counterforce_conflict", {})
+    return {
+        "context": context,
+        "rank_score": round(aggregate, 4),
+        "rank_basis": rank_basis,
+        "aggregate_score": totals.get("aggregate_score", round(aggregate, 4)),
+        "raw_component_total": totals.get("raw_total", round(aggregate, 4)),
+        "score_component_version": totals.get("component_version", "tier3_score_components_v1"),
+        "top_components": _top_component_summaries(score_components),
+        "conflict_component": {
+            "value": conflict.get("value", 0.0) if isinstance(conflict, dict) else 0.0,
+            "contribution": conflict.get("contribution", 0.0) if isinstance(conflict, dict) else 0.0,
+            "status": conflict.get("status", "unsupported_no_conflict_data") if isinstance(conflict, dict) else "unsupported_no_conflict_data",
+        },
+        "unsupported_components": unsupported,
+        "local_relevance": round(local_relevance, 4) if local_relevance is not None else None,
+    }
+
+
+def _sync_event_score_from_components(event: dict, context: str = "reader_activity") -> None:
+    score_components = event.get("score_components")
+    if not isinstance(score_components, dict):
+        return
+    event_type = str(event.get("event_type") or "").strip().lower()
+    totals = _score_component_totals(event_type, score_components)
+    score = round(_safe_float(totals.get("aggregate_score")), 4)
+    event["score_component_totals"] = totals
+    event["reader_facing_activity_score"] = score
+    event["combined_intensity_score"] = score
+    event["score"] = score
+    event["ranking_diagnostics"] = build_ranking_diagnostics(
+        event,
+        context=context,
+    )
+
+
+def _event_angularity_value(event: dict, target_name: str, house_number: int) -> float:
+    if target_name in {"Ascendant", "Midheaven", "Descendant", "Imum_Coeli", "Vertex"}:
+        return 1.0
+    if house_number in {1, 4, 7, 10}:
+        return 0.82
+    return 0.0
+
+
+def _reader_activity_score_components(
+    event: dict,
+    event_type: str,
+    concentration: float,
+    exactness: float,
+    natal_relevance: float,
+    theme_convergence: float,
+    *,
+    target_name: str = "",
+    house_number: int = 0,
+) -> tuple[float, dict[str, dict[str, Any]], dict[str, Any]]:
+    weights = READER_ACTIVITY_COMPONENT_WEIGHTS.get(
+        event_type,
+        READER_ACTIVITY_COMPONENT_WEIGHTS["default"],
+    )
+    method_baseline = EVENT_TYPE_BASELINES.get(event_type, 0.24)
+    max_baseline = max(EVENT_TYPE_BASELINES.values()) if EVENT_TYPE_BASELINES else 1.0
+    confidence = _clamp(_safe_float(event.get("confidence")))
+    conflict_value, conflict_source = _event_conflict_value(event)
+    conflict_weight = -0.10 if conflict_source else 0.0
+    pass_sequence = _event_pass_sequence(event)
+    repetition_value = {
+        "retrograde_three_pass": 0.82,
+        "multi_pass": 0.58,
+        "station_linked": 0.48,
+        "single_pass": 0.22,
+        "standalone": 0.0,
+    }.get(pass_sequence, 0.0)
+    dignity_value = _safe_float(
+        event.get("dignity_condition", event.get("condition_score", event.get("dignity_score"))),
+        default=-1.0,
+    )
+    dignity_supported = dignity_value >= 0.0
+    if not dignity_supported:
+        dignity_value = 0.0
+
+    score_components = {
+        "timing_exactness": _score_component(
+            exactness,
+            weights.get("timing_exactness", 0.0),
+            source="exactness",
+        ),
+        "natal_relevance": _score_component(
+            natal_relevance,
+            weights.get("natal_relevance", 0.0),
+            source="activation_profile",
+        ),
+        "method_weight": _score_component(
+            method_baseline / max_baseline if max_baseline else 0.0,
+            0.0,
+            status="diagnostic_structural_baseline",
+            source="EVENT_TYPE_BASELINES",
+        ),
+        "time_lord_support": _score_component(
+            0.0,
+            0.0,
+            status="unsupported_no_active_time_lord_link",
+            source="time_lord_periods",
+        ),
+        "repetition_echo": _score_component(
+            repetition_value,
+            0.0,
+            status="diagnostic_structural_repetition",
+            source="pass_sequence",
+        ),
+        "house_topic_relevance": _score_component(
+            concentration,
+            weights.get("house_topic_relevance", 0.0),
+            source="concentration_score",
+        ),
+        "angularity": _score_component(
+            _event_angularity_value(event, target_name, house_number),
+            0.0,
+            status="diagnostic_angularity",
+            source="target_or_house",
+        ),
+        "dignity_condition": _score_component(
+            dignity_value,
+            0.0,
+            status="diagnostic_supported" if dignity_supported else "unsupported_no_condition_data",
+            source="condition_score" if dignity_supported else "not_available",
+        ),
+        "convergence": _score_component(
+            theme_convergence,
+            weights.get("convergence", 0.0),
+            source="theme_convergence",
+        ),
+        "counterforce_conflict": _score_component(
+            conflict_value,
+            conflict_weight,
+            status="supported" if conflict_source else "unsupported_no_conflict_data",
+            source=conflict_source or "not_available",
+            direction="counterforce",
+        ),
+        "confidence": _score_component(
+            confidence,
+            0.0,
+            status="diagnostic_confidence",
+            source="confidence",
+        ),
+    }
+    totals = _score_component_totals(event_type, score_components)
+    return totals["aggregate_score"], score_components, totals
+
+
 def _theme_matches(profile: dict[str, Any], target_name: str, house_number: int) -> list[dict[str, Any]]:
     matches: list[dict[str, Any]] = []
     for theme in profile.get("theme_records", []):
@@ -435,49 +765,15 @@ def _reader_activity_score(
     natal_relevance: float,
     theme_convergence: float,
 ) -> float:
-    if event_type == "transit":
-        return _clamp(
-            concentration * 0.70
-            + exactness * 0.10
-            + natal_relevance * 0.15
-            + theme_convergence * 0.05
-        )
-    if event_type == "station":
-        return _clamp(
-            concentration * 0.42
-            + exactness * 0.10
-            + natal_relevance * 0.30
-            + theme_convergence * 0.18
-        )
-    if event_type == "eclipse":
-        return _clamp(
-            concentration * 0.36
-            + exactness * 0.08
-            + natal_relevance * 0.34
-            + theme_convergence * 0.22
-        )
-    if event_type == "ingress":
-        return _clamp(
-            concentration * 0.28
-            + exactness * 0.10
-            + natal_relevance * 0.36
-            + theme_convergence * 0.26,
-            high=0.62,
-        )
-    if event_type in {"progression", "solar_arc"}:
-        # Season-scale "texture" per phase0/03_method_charters.md: ambient
-        # developmental terrain, not a point-forecast driver. Weighted toward
-        # natal relevance/theme over raw concentration, and capped below the
-        # ingress ceiling so texture events cannot outrank the point-event
-        # methods they're meant to contextualize.
-        return _clamp(
-            concentration * 0.22
-            + exactness * 0.08
-            + natal_relevance * 0.40
-            + theme_convergence * 0.30,
-            high=0.55,
-        )
-    return _clamp(concentration)
+    score, _, _ = _reader_activity_score_components(
+        {"event_type": event_type},
+        event_type,
+        concentration,
+        exactness,
+        natal_relevance,
+        theme_convergence,
+    )
+    return score
 
 
 def enrich_forecast_event(event: dict, profile: dict[str, Any]) -> dict[str, Any]:
@@ -550,12 +846,15 @@ def enrich_forecast_event(event: dict, profile: dict[str, Any]) -> dict[str, Any
         )
     )
 
-    activity_score = _reader_activity_score(
+    activity_score, score_components, score_totals = _reader_activity_score_components(
+        enriched,
         event_type,
         concentration,
         exactness,
         natal_relevance,
         theme_convergence,
+        target_name=target_name,
+        house_number=house_number,
     )
 
     enriched["natal_relevance"] = round(natal_relevance, 4)
@@ -565,6 +864,8 @@ def enrich_forecast_event(event: dict, profile: dict[str, Any]) -> dict[str, Any
     enriched["reader_facing_activity_score"] = round(activity_score, 4)
     enriched["combined_intensity_score"] = round(activity_score, 4)
     enriched["score"] = round(activity_score, 4)
+    enriched["score_components"] = score_components
+    enriched["score_component_totals"] = score_totals
     enriched["exactness"] = round(exactness, 4)
     enriched["duration_factor"] = round(duration_factor, 4)
     enriched["pass_sequence"] = pass_sequence
@@ -587,6 +888,10 @@ def enrich_forecast_event(event: dict, profile: dict[str, Any]) -> dict[str, Any
         ]
         if is_active
     ]
+    enriched["ranking_diagnostics"] = build_ranking_diagnostics(
+        enriched,
+        context="reader_activity",
+    )
     return enriched
 
 
@@ -750,18 +1055,43 @@ def link_related_forecast_events(
                 ]
                 if is_active
             ]
+            components = transit.get("score_components")
+            if isinstance(components, dict) and "time_lord_support" in components:
+                components["time_lord_support"] = _score_component(
+                    min(1.0, max(0.0, weight_modifier - 1.0) / 0.35 if weight_modifier > 1.0 else 0.0),
+                    0.0,
+                    status="diagnostic_annual_profection_support",
+                    source="annual_profection",
+                )
+                transit["ranking_diagnostics"] = build_ranking_diagnostics(
+                    transit,
+                    context="reader_activity",
+                )
 
     for station in stations:
         if not bool(station.get("near_active_transit_cycle")):
             continue
+        pre_softened = float(station.get("reader_facing_activity_score", station.get("combined_intensity_score", 0.0)) or 0.0)
+        softening = float(station.get("_linked_station_softening", 0.0) or 0.0)
         softened = max(
             0.0,
-            float(station.get("reader_facing_activity_score", station.get("combined_intensity_score", 0.0)) or 0.0)
-            - float(station.get("_linked_station_softening", 0.0) or 0.0),
+            pre_softened - softening,
         )
-        station["reader_facing_activity_score"] = round(softened, 4)
-        station["combined_intensity_score"] = round(softened, 4)
-        station["score"] = round(softened, 4)
+        components = station.get("score_components")
+        if isinstance(components, dict) and "repetition_echo" in components:
+            components["repetition_echo"] = _score_component(
+                min(1.0, softening / 0.14 if softening else 0.0),
+                0.0,
+                contribution=-softening,
+                status="linked_cycle_softening",
+                source="near_active_transit_cycle",
+                direction="redundancy",
+            )
+            _sync_event_score_from_components(station, context="reader_activity")
+        else:
+            station["reader_facing_activity_score"] = round(softened, 4)
+            station["combined_intensity_score"] = round(softened, 4)
+            station["score"] = round(softened, 4)
         station["theme_convergence"] = round(
             _clamp(float(station.get("theme_convergence", 0.0) or 0.0) + 0.10),
             4,
@@ -773,6 +1103,10 @@ def link_related_forecast_events(
         station["structural_score"] = station["structural_importance"]
         station["routing_state"] = "supporting event"
         station["pass_sequence"] = "station_linked"
+        station["ranking_diagnostics"] = build_ranking_diagnostics(
+            station,
+            context="reader_activity",
+        )
 
     return {
         "transit_events": transits,

@@ -5,6 +5,73 @@ Newest entry on top. See `agents/README.md` for the convention.
 
 ---
 
+## 2026-07-10 - Phase B: Tier 3 score components and ranking diagnostics landed (Sol / GPT-5.6, reviewed and accepted as-is by Claude Code)
+
+**Context:** Tier 3 called for formula intelligence scaffolding: named score
+components, traceable ranking diagnostics, and distribution tests so ranked
+forecast events and monthly peaks can explain their position without
+invented prose or premature production thresholds.
+
+**What changed:**
+
+- Extended `formulas/standard/forecast_activation.py` so the existing
+  `_reader_activity_score()` path now emits a complete
+  `score_components` contract for timing exactness, natal relevance,
+  method weight, time-lord support, repetition/echo, house/topic
+  relevance, angularity, dignity/condition, convergence,
+  counterforce/conflict, and confidence.
+- Preserved the aggregate event score by deriving it from the same
+  component contributions that reproduce the existing reader-activity
+  formulas. Components not yet supported by current event data are present
+  with explicit unsupported or diagnostic-only statuses rather than hidden
+  guesses.
+- Added `score_component_totals` and `ranking_diagnostics`, including top
+  contributing components, unsupported components, conflict state, and
+  local rank context. The existing station-linked-cycle softening is now
+  represented through the component contract instead of remaining an
+  unexplained post-score mutation.
+- Threaded diagnostics through `generate.py` for Personal Forecast timing
+  windows, Year Ahead formatted events/turning-point timeline entries,
+  ranked monthly timing windows, and monthly peak diagnostics beside
+  `arc_score`.
+- Added dense synthetic-period tests in `tests/test_tier3_score_components.py`
+  covering component completeness, aggregate traceability, non-trivial
+  score distribution, ceiling-cluster avoidance, counterforce reduction,
+  single-strong-component restraint, and ranked/monthly diagnostics derived
+  from the same component records.
+
+**Verification:** focused Tier 3 / Phase A / Personal Forecast suite:
+17 passed. Focused pytest suite for Tier 3 plus Year Ahead diagnostic
+neighbors: 11 passed. Unfiltered `pytest` still stops at the same five
+documented collection errors. Full importable suite in the repository
+virtual environment: 345 passed / 19 failed / 1 skipped. The 19 failures
+match the documented predictive-sandbox quarantine and offline-location
+baseline; the pass count rose by five because of the new Tier 3 tests.
+
+**Open:** the component plumbing is intentionally scaffolding, not final
+production policy. Time-lord support, method baseline, repetition/echo,
+angularity, dignity/condition, and confidence are visible as diagnostic or
+unsupported where they are not currently part of the reader-activity
+aggregate. Future calibration can decide which of those become weighted
+inputs, but no low/medium/high/peak thresholds or client-facing labels were
+changed in this pass.
+
+**Claude Code review:** accepted as-is, no patch needed - the highest-stakes
+pass yet (it touches the live scoring formula feeding both report types) and
+it held up. Rather than sample the diff, worked through
+`_reader_activity_score_components()` by hand against every deleted inline
+formula (transit, station, eclipse, ingress, progression/solar_arc, and the
+bare `default` fallback) and confirmed numerically identical output for
+every event type currently in production, including both ceilings. Grepped
+for existing scanner usage of `counterforce_conflict`/`conflict_score`/
+`dignity_condition`/`condition_score`/`dignity_score` on forecast events -
+none exists, so those components are genuinely dormant today, not silently
+activating something unreviewed. Grepped every template for the new
+diagnostic field names - zero hits, confirming nothing became
+client-visible. Re-ran the full suite independently: same 345/19/1 result.
+
+---
+
 ## 2026-07-10 - Phase A: core-five confidence and report visibility completed (Sol / GPT-5.6, reviewed and accepted as-is by Claude Code)
 
 **Context:** the five event families supplying the live Year Ahead and

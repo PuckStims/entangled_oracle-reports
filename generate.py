@@ -28,6 +28,7 @@ from pathlib import Path
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from config import OUTPUT_DIR, TEMPLATES_DIR, PRODUCTS_DIR
+from formulas.standard.forecast_activation import build_ranking_diagnostics
 from formulas.standard.methodology_profiles import get_active_methodology_metadata
 from product_versions import (
     REPORT_MANIFEST_SCHEMA_VERSION,
@@ -558,6 +559,46 @@ def _personal_forecast_score(event: dict) -> float:
         return 0.0
 
 
+PERSONAL_FORECAST_TYPE_BONUS = {
+    "eclipse": 0.18,
+    "station": 0.12,
+    "ingress": 0.08,
+    "transit": 0.00,
+    "proprietary_transit": 0.10,
+}
+
+
+def _event_ranking_diagnostics(
+    event: dict,
+    *,
+    context: str,
+    rank_score: float | None = None,
+    rank_basis: str = "combined_intensity_score",
+    local_relevance: float | None = None,
+) -> dict:
+    try:
+        return build_ranking_diagnostics(
+            event,
+            context=context,
+            rank_score=rank_score,
+            rank_basis=rank_basis,
+            local_relevance=local_relevance,
+        )
+    except Exception:
+        return {
+            "context": context,
+            "rank_score": round(float(rank_score or 0.0), 4),
+            "rank_basis": rank_basis,
+            "top_components": [],
+            "unsupported_components": ["score_components"],
+            "local_relevance": round(local_relevance, 4) if local_relevance is not None else None,
+        }
+
+
+def _personal_forecast_rank_score(event: dict) -> float:
+    return _personal_forecast_score(event) + PERSONAL_FORECAST_TYPE_BONUS.get(event.get("event_type"), 0.0)
+
+
 def _personal_forecast_event_identity(event: dict) -> tuple:
     """Creates a stable identity used to mark the featured timing window."""
     return (
@@ -615,14 +656,6 @@ def _select_personal_forecast_timing_events(
     limits density for the compact Personal Forecast table, then restores the
     engine's chronological order for display.
     """
-    type_bonus = {
-        "eclipse": 0.18,
-        "station": 0.12,
-        "ingress": 0.08,
-        "transit": 0.00,
-        "proprietary_transit": 0.10,
-    }
-
     candidates = [
         event for event in all_events
         if _personal_forecast_score(event) >= 0.20
@@ -632,7 +665,7 @@ def _select_personal_forecast_timing_events(
     ranked = sorted(
         candidates,
         key=lambda event: (
-            _personal_forecast_score(event) + type_bonus.get(event.get("event_type"), 0.0),
+            _personal_forecast_rank_score(event),
             _personal_forecast_score(event),
         ),
         reverse=True,
@@ -991,6 +1024,12 @@ def _build_personal_forecast_context(
                 event,
                 start_date,
                 end_date,
+            ),
+            "ranking_diagnostics": _event_ranking_diagnostics(
+                event,
+                context="personal_forecast_timing_window",
+                rank_score=_personal_forecast_rank_score(event),
+                rank_basis="combined_intensity_score_plus_type_bonus",
             ),
         })
 
@@ -3042,6 +3081,10 @@ def _format_timeline_event(
         pack_paths,
         house_domains,
     )
+    result["ranking_diagnostics"] = _event_ranking_diagnostics(
+        result,
+        context="year_ahead_timeline_event",
+    )
 
     return _canonicalize_year_ahead_event(result, house_domains)
 
@@ -3142,6 +3185,51 @@ def _monthly_peak_score(
         ),
         default=0.0,
     )
+
+
+def _monthly_peak_diagnostics(
+    active_events: list[dict],
+    period_start: datetime,
+    period_end: datetime,
+) -> dict:
+    scored = sorted(
+        [
+            (event, _event_month_relevance(event, period_start, period_end))
+            for event in active_events
+        ],
+        key=lambda item: item[1],
+        reverse=True,
+    )
+    contributors = [
+        {
+            "event_id": _year_ahead_event_id(
+                event,
+                _year_ahead_primary_event_type(event),
+            ),
+            "event_type": _year_ahead_primary_event_type(event),
+            "title": str(event.get("title") or event.get("event_label") or ""),
+            "local_relevance": round(score, 4),
+            "ranking_diagnostics": _event_ranking_diagnostics(
+                event,
+                context="year_ahead_monthly_peak_contributor",
+                rank_score=score,
+                rank_basis="monthly_local_relevance",
+                local_relevance=score,
+            ),
+        }
+        for event, score in scored[:3]
+        if score > 0
+    ]
+    peak_score = scored[0][1] if scored else 0.0
+    return {
+        "context": "year_ahead_monthly_peak",
+        "peak_score": round(peak_score, 4),
+        "rank_basis": "max_monthly_local_relevance",
+        "period_start": period_start.isoformat(),
+        "period_end": period_end.isoformat(),
+        "top_contributors": contributors,
+        "top_event_diagnostics": contributors[0]["ranking_diagnostics"] if contributors else {},
+    }
 
 
 def _derive_forecast_shape(months: list[dict]) -> str:
@@ -4179,6 +4267,7 @@ def _build_turning_point_timeline(months: list[dict], landmarks: list[dict]) -> 
                     str(landmark.get("why_it_matters") or landmark.get("block") or landmark.get("subtitle") or "")
                 ),
                 "tone": str(landmark.get("tone") or ""),
+                "ranking_diagnostics": landmark.get("ranking_diagnostics", {}),
             }
         )
 
@@ -4222,6 +4311,11 @@ def _build_month_timing_windows(month: dict) -> list[dict]:
             "event_label": event.get("event_label", ""),
             "intensity_label": event.get("intensity_label", ""),
             "subtitle": event.get("subtitle", ""),
+            "ranking_diagnostics": _event_ranking_diagnostics(
+                event,
+                context="year_ahead_month_timing_window",
+                rank_score=float(event.get("combined_intensity_score", 0.0) or 0.0),
+            ),
         }
         for event in ranked[:3]
     ]
@@ -7571,6 +7665,11 @@ def _build_year_ahead_context(
             period_start,
             period_end,
         )
+        monthly_peak_diagnostics = _monthly_peak_diagnostics(
+            events_active,
+            period_start,
+            period_end,
+        )
         intensity_label, intensity_bar = _intensity_label(peak_score)
 
         if _SCORE_TRACE:
@@ -7608,6 +7707,7 @@ def _build_year_ahead_context(
                     f"{(period_end - timedelta(days=1)).strftime('%B %d, %Y')}"
                 ),
                 "arc_score": round(peak_score, 4),
+                "monthly_peak_diagnostics": monthly_peak_diagnostics,
                 "arc_percent": max(2, round(peak_score * 100)),
                 "arc_label": intensity_label,
                 "arc_bar": intensity_bar,

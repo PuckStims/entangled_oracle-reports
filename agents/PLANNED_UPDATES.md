@@ -32,12 +32,12 @@ Reusable starter prompts for that model now live in
 Do not treat the directive as proof that any feature is already active.
 Future agents must verify current repo state before implementation.
 
-**Status as of 2026-07-10:** Tiers 0, 1, and 2 have landed; see
-`agents/REVISIONS.md`. The core-five confidence/visibility follow-up is also
-complete: centralized enrichment now gives transits, house ingresses,
-stations, eclipses, and lunations explicit confidence components plus the
-two report surfaces that currently render them. Tier 3 formula intelligence
-and signal hierarchy is the next open tier.
+**Status as of 2026-07-10:** Tiers 0, 1, 2, and Tier 3 scaffolding have
+landed; see `agents/REVISIONS.md`. The core-five confidence/visibility
+follow-up is complete, and the existing forecast activation path now emits
+named score components plus machine-readable ranking diagnostics for ranked
+timelines and monthly peaks. Tier 4 synthesis backend work remains out of
+scope until explicitly started.
 
 ---
 
