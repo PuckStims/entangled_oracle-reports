@@ -789,7 +789,7 @@
     .curated-summary-panel { padding: 18px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); }
     .curated-summary-label { margin: 0 0 12px; color: var(--muted); font-size: .61rem; letter-spacing: 1.8px; text-transform: uppercase; }
     .climate-highlight-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
-    .climate-highlight-card { padding: 16px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface-2); }
+    .climate-highlight-card { padding: 16px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface-2); break-inside: avoid; page-break-inside: avoid; }
     .climate-highlight-card h3 { margin: 8px 0 10px; font-size: .95rem; line-height: 1.4; }
     .climate-highlight-card p { margin: 0; color: var(--muted); font-size: .78rem; line-height: 1.6; }
     .climate-highlight-meta { margin-top: 12px; display: grid; gap: 8px; }
@@ -1287,6 +1287,7 @@
       .reflection-grid article,
       .ledger-month,
       .season-summary-card,
+      .climate-highlight-card,
       .notes-space,
       .characteristic-card,
       .turning-guide-month,
@@ -1903,13 +1904,6 @@
                 <article class="climate-highlight-card">
                   <p>{{ item.band_label }}</p>
                   <h3>{{ item.field_label }}</h3>
-                  {% if item.summary_line %}<p>{{ item.summary_line }}</p>{% endif %}
-                  {% if item.signal_family_label or item.supporting_event_titles %}
-                  <div class="climate-highlight-meta">
-                    {% if item.signal_family_label %}<div><span>Primary pattern</span><strong>{{ item.signal_family_label }}</strong></div>{% endif %}
-                    {% if item.supporting_event_titles %}<div><span>Representative cycles</span><strong>{{ item.supporting_event_titles | join(' - ') }}</strong></div>{% endif %}
-                  </div>
-                  {% endif %}
                 </article>
                 {% endfor %}
               </div>

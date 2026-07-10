@@ -1,41 +1,41 @@
 {
-  "_note": "TODO",
-  "_version": "TODO",
-  "fallback": "TODO",
+  "_note": "Annual profection fallback block library. Numbered keys map to the twelve life arenas; user-facing copy keeps the machinery hidden and translates the year focus into lived experience.",
+  "_version": "1.0.0",
+  "fallback": "This year has a central room it keeps asking you to enter. The details may arrive through different people, choices, delays, or invitations, but the pattern is not random: one life arena is becoming louder so you can meet it with more authorship. Treat the year as a focused apprenticeship. Notice what repeats, where your attention keeps being pulled, and which responsibilities or desires no longer let you stay vague. The work is not to force a dramatic reinvention; it is to become more honest about the part of life that is asking for your full participation now.",
   "1": {
-    "fallback": "TODO"
+    "fallback": "This is a year of self-definition. Your body, presence, choices, image, and immediate direction may feel harder to ignore because life is asking you to become more visible to yourself first. You may notice old identities feeling too small, old reflexes becoming obvious, or new desires asking for a cleaner yes. The focus is not performance; it is authorship. Pay attention to how you enter rooms, how quickly you abandon your own signal, and what changes when you stop waiting for permission to take up the shape your life is already trying to give you."
   },
   "2": {
-    "fallback": "TODO"
+    "fallback": "This year brings your relationship with value into sharper focus. Money may be part of the story, but the deeper theme is what you treat as worth protecting, developing, and receiving. Your resources, skills, possessions, pricing, appetite, comfort, and self-trust may all ask for more deliberate care. Look for the places where scarcity has been making decisions for you, or where generosity has become disconnected from replenishment. The year supports a steadier relationship with enough: enough support, enough compensation, enough confidence to stop bargaining against your own value."
   },
   "3": {
-    "fallback": "TODO"
+    "fallback": "This is a year of messages, movement, and everyday connection. Your local world may become busier: conversations, short trips, neighbors, siblings, learning curves, writing, planning, and small agreements can carry more weight than expected. The invitation is to listen for what is being revealed through ordinary exchanges. A casual comment may clarify a pattern; a repeated errand may point to a neglected need; a conversation may become the hinge of a larger decision. Practice precision with language. The year rewards noticing, asking better questions, and letting small information change the map."
   },
   "4": {
-    "fallback": "TODO"
+    "fallback": "This year turns the volume up on your private life. Home, family, ancestry, belonging, emotional safety, and the place you return to when no one is watching may need more attention than the outside world can see. Some of the work may be practical: repairs, moves, caregiving, household rhythms, or boundaries around your sanctuary. Some of it may be interior: understanding what you inherited, what still lives in the walls, and what kind of rootedness you are ready to choose for yourself. The aim is not nostalgia; it is a more honest foundation."
   },
   "5": {
-    "fallback": "TODO"
+    "fallback": "This year asks what makes you feel alive before it asks what makes sense on paper. Creativity, romance, pleasure, children, play, performance, desire, and risk may become more central because your vitality needs somewhere to go. You may be invited to make something, show something, want something, or let joy become less theoretical. Watch the difference between seeking attention and letting yourself be witnessed. The year does not require constant celebration, but it does ask you to stop treating delight as optional background noise. Your spark needs room, practice, and a little dramatic honesty."
   },
   "6": {
-    "fallback": "TODO"
+    "fallback": "This year works through the texture of daily life. Routines, labor, health, service, time management, coworkers, pets, maintenance, and the systems that keep your life functioning may become the main classroom. The growth here is often quiet but unmistakable: the schedule that finally tells the truth, the habit that either supports you or drains you, the responsibility that needs clearer ownership. Rather than chasing a total overhaul, study the repeatable pieces. What happens every day is not small; it is the place where your future becomes physical through practice, care, and honest limits."
   },
   "7": {
-    "fallback": "TODO"
+    "fallback": "This year brings other people into the foreground. Partnerships, clients, collaborators, close friendships, commitments, agreements, and open conflicts may become mirrors for what you are learning about reciprocity. You may see more clearly who meets you, who competes with you, who needs clearer terms, and who helps you become more fully yourself. The lesson is not to merge or withdraw; it is to relate with cleaner truth. Notice the contracts, spoken and unspoken. The year asks for more mature contact: less guessing, less performing harmony, and more willingness to name what connection actually requires."
   },
   "8": {
-    "fallback": "TODO"
+    "fallback": "This year moves through the material that cannot be handled on the surface. Shared money, debt, inheritance, intimacy, grief, trust, power, secrecy, and deep emotional entanglements may ask for more courage and specificity. Something may need to be named because it has been shaping the room from underneath. This is not a punishment year; it is a depth year. The gift is the chance to stop carrying invisible agreements, inherited fears, or unspoken dependencies without examination. What you face directly can become less haunting, and what is shared can become more honestly held."
   },
   "9": {
-    "fallback": "TODO"
+    "fallback": "This year stretches the horizon. Study, travel, publishing, teaching, spirituality, law, ethics, culture, and long-range vision may become the fields where your life asks for more space and meaning. A belief may outgrow its old container, or a larger question may pull you beyond familiar rooms. The point is not to collect answers as decoration. It is to let experience test what you claim to know. Follow the trail that enlarges your world without making you careless with truth. The year favors perspective: the kind earned through movement, humility, and a wider conversation with life."
   },
   "10": {
-    "fallback": "TODO"
+    "fallback": "This year brings your public direction into focus. Career, reputation, leadership, accountability, visibility, and the work you are known for may carry more consequence than usual. You may be asked to step into a role, refine a role, leave one behind, or make your contribution easier for others to recognize. Success here is not only about achievement; it is about alignment between responsibility and identity. Notice where you are being measured, where you are measuring yourself, and what kind of authority you are ready to practice. The year asks you to become more legible without becoming less real."
   },
   "11": {
-    "fallback": "TODO"
+    "fallback": "This year moves through community, friendship, audience, networks, hopes, and the future you are trying to build with other people. The right rooms may matter more than individual effort alone. You may notice which groups energize your vision, which circles keep you performing an outdated version of yourself, and which alliances make a larger plan possible. This is not simply a social year; it is a belonging-and-direction year. Pay attention to who shares the signal. The work is to place your energy where mutual recognition, shared purpose, and future-facing support can actually take root."
   },
   "12": {
-    "fallback": "TODO"
+    "fallback": "This year asks for quieter forms of honesty. Rest, solitude, closure, spiritual maintenance, hidden patterns, grief, retreat, dreams, and private processing may become more important than visible progress. Some doors may need to close without an audience. Some feelings may need room before they become language. This is a year for noticing what has been operating behind the curtain: the fear, devotion, exhaustion, longing, or protection strategy you usually outrun. Do not mistake privacy for stagnation. Something essential may be composting here, preparing you for a cleaner beginning after what no longer belongs has softened its grip."
   }
 }

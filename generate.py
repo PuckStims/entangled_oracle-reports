@@ -3297,13 +3297,14 @@ def _format_timeline_event(
     result["constellation_lens_label"] = lens_label
 
     if raw_event_type == "transit":
+        natal_target_label = _client_target_label(event.get("natal_target"))
         result["event_label"] = "Natal Transit"
         result["title"] = (
             f"{event.get('transit_planet', '')} "
             f"{event.get('aspect', '')} "
-            f"natal {event.get('natal_target', '')}"
+            f"natal {natal_target_label}"
         )
-        result["subtitle"] = event.get("natal_target_display", "")
+        result["subtitle"] = _client_target_label(event.get("natal_target_display"), possessive=True)
 
     elif raw_event_type == "ingress":
         house_number = int(event.get("house_number") or 0)
@@ -3321,7 +3322,7 @@ def _format_timeline_event(
         result["event_label"] = "Eclipse Contact"
         result["title"] = f"{eclipse_type} eclipse · {eclipse_degree}° {eclipse_sign}"
         result["subtitle"] = (
-            f"Activates {event.get('natal_target_display', 'a natal point')}"
+            f"Activates {_client_target_label(event.get('natal_target_display', 'a natal point'), possessive=True)}"
         )
 
     elif raw_event_type == "station":
@@ -3330,6 +3331,7 @@ def _format_timeline_event(
         result["event_label"] = "Planetary Station"
         result["title"] = f"{planet} stations {station_type}"
         _nat_display = event.get("natal_target_display", "")
+        _nat_display = _client_target_label(_nat_display, possessive=True)
         _relationship = event.get("relationship", "")
         if not _nat_display:
             result["subtitle"] = ""
@@ -3344,22 +3346,24 @@ def _format_timeline_event(
             print(f"[Station Subtitle] {result['subtitle']}")
 
     elif raw_event_type == "progression":
+        natal_target_label = _client_target_label(event.get("natal_target"))
         result["event_label"] = "Progression Texture"
         result["title"] = (
             f"Progressed {event.get('transit_planet', '')} "
             f"{event.get('aspect', '')} "
-            f"natal {event.get('natal_target', '')}"
+            f"natal {natal_target_label}"
         )
-        result["subtitle"] = event.get("natal_target_display", "")
+        result["subtitle"] = _client_target_label(event.get("natal_target_display"), possessive=True)
 
     elif raw_event_type == "solar_arc":
+        natal_target_label = _client_target_label(event.get("natal_target"))
         result["event_label"] = "Solar Arc Texture"
         result["title"] = (
             f"{event.get('transit_planet', '')} solar arc "
             f"{event.get('aspect', '')} "
-            f"natal {event.get('natal_target', '')}"
+            f"natal {natal_target_label}"
         )
-        result["subtitle"] = event.get("natal_target_display", "")
+        result["subtitle"] = _client_target_label(event.get("natal_target_display"), possessive=True)
 
     else:
         result["event_label"] = "Timing Event"
@@ -4321,7 +4325,7 @@ def _build_annual_rhythm_quarters(
     def _format_quarter_cycle(event: dict, q_start: datetime, q_end: datetime) -> str:
         planet = str(event.get("transit_planet") or "").strip()
         aspect = str(event.get("aspect") or "").strip()
-        target = str(event.get("natal_target_display") or event.get("natal_target") or "").strip()
+        target = _client_cycle_target_label(event.get("natal_target"), event.get("natal_target_display"))
         base = " ".join(p for p in [planet, aspect, f"natal {target}" if target else ""] if p)
         entry = event.get("entry_datetime")
         leave = event.get("leave_datetime")
@@ -4463,7 +4467,7 @@ def _build_year_orientation_summary(
         "quietest_period_explanation": "This is the softest point in the current annual rhythm and often works as a recovery or integration interval.",
         "long_cycle_explanation": "This shows the sustained background cycle already carrying the most structural weight across the forecast.",
         "themes_explanation": (
-            "This summary remains intentionally withheld while EO Landmark visuals are disabled."
+            "The strongest annual themes are carried in the Year Arcs, monthly chapters, and Cycle Ledger rather than repeated in this orientation panel."
             if not SHOW_EO_LANDMARK_VISUALS
             else "These are the strongest landmark-level themes already selected elsewhere in the report."
         ),
@@ -4538,12 +4542,12 @@ def _build_turning_point_timeline(months: list[dict], landmarks: list[dict]) -> 
         if target_month not in month_lookup:
             continue
 
-        natal_target = str(
+        natal_target = _client_target_label(
             landmark.get("natal_target_display")
             or landmark.get("subtitle")
             or landmark.get("house_domain")
             or "Natal reference not surfaced"
-        ).strip()
+        )
         intensity = f"{landmark.get('intensity_bar', '')} {landmark.get('intensity_label', '')}".strip()
         month_lookup[target_month]["entries"].append(
             {
@@ -4709,6 +4713,49 @@ _DISPLAY_STATUS_METHOD_NOTE = (
     "not a ranking of importance across your whole year."
 )
 
+_CLIENT_ANGLE_LABELS = {
+    "ASC": "Ascendant",
+    "ASCENDANT": "Ascendant",
+    "MC": "Midheaven",
+    "MIDHEAVEN": "Midheaven",
+    "DSC": "Descendant",
+    "DESCENDANT": "Descendant",
+    "IC": "Imum Coeli",
+    "IMUM_COELI": "Imum Coeli",
+    "IMUM COELI": "Imum Coeli",
+}
+
+
+def _client_target_label(value: object, *, possessive: bool = False) -> str:
+    text = str(value or "").strip()
+    if not text:
+        return ""
+    if text.lower().startswith("your "):
+        rendered = _client_target_label(text[5:], possessive=False)
+        if not rendered:
+            return text
+        return f"your {rendered}"
+    rendered = _CLIENT_ANGLE_LABELS.get(text.upper(), text.replace("Imum_Coeli", "Imum Coeli"))
+    return f"your {rendered}" if possessive and not rendered.lower().startswith("your ") else rendered
+
+
+def _client_label_text(value: object) -> str:
+    text = str(value or "")
+    if not text:
+        return ""
+    text = text.replace("Imum_Coeli", "Imum Coeli")
+    for alias, label in _CLIENT_ANGLE_LABELS.items():
+        text = re.sub(rf"\b{re.escape(alias)}\b", label, text)
+    return text
+
+
+def _client_cycle_target_label(raw_value: object, display_value: object = "") -> str:
+    raw_text = str(raw_value or "").strip()
+    if raw_text.upper() in _CLIENT_ANGLE_LABELS or "Imum_Coeli" in raw_text:
+        return _client_target_label(raw_text)
+    return _client_target_label(display_value or raw_text)
+
+
 _ANGLE_TARGET_ALIASES = {
     "ASC": "Ascendant",
     "MC": "Midheaven",
@@ -4826,7 +4873,7 @@ def _humanize_climate_cycle_title(value: object) -> str:
     cleaned = re.sub(r"\bnatal\s+", "", text, flags=re.IGNORECASE)
     cleaned = re.sub(r"\byour\s+", "", cleaned, flags=re.IGNORECASE)
     cleaned = re.sub(r"\s{2,}", " ", cleaned)
-    return cleaned.strip(" -")
+    return _client_label_text(cleaned.strip(" -"))
 
 
 def _climate_event_identity(event: dict) -> str:
@@ -5251,7 +5298,7 @@ def _build_forecast_climate(
             fallback="",
         )
         top_domains = _climate_top_list(bucket["domain_scores"])
-        top_targets = _climate_top_list(bucket["target_scores"])
+        top_targets = [_client_target_label(target) for target in _climate_top_list(bucket["target_scores"])]
         top_planets = _climate_top_list(bucket["planet_scores"])
         summary_bits = []
         if top_domains:
@@ -5634,8 +5681,8 @@ def _ledger_event_title(event: dict, house_domains: dict) -> tuple[str, str]:
     event_type = _year_ahead_primary_event_type(event)
     if event_type == "natal_transit":
         return (
-            f"{event.get('transit_planet', '')} {event.get('aspect', '')} natal {event.get('natal_target', '')}".strip(),
-            event.get("natal_target_display", ""),
+            f"{event.get('transit_planet', '')} {event.get('aspect', '')} natal {_client_target_label(event.get('natal_target'))}".strip(),
+            _client_target_label(event.get("natal_target_display", ""), possessive=True),
         )
     if event_type == "house_ingress":
         house_number = int(event.get("house_number") or 0)
@@ -5646,10 +5693,10 @@ def _ledger_event_title(event: dict, house_domains: dict) -> tuple[str, str]:
     if event_type == "eclipse":
         return (
             f"{event.get('eclipse_type', '')} eclipse · {event.get('eclipse_degree', '')}° {event.get('eclipse_sign', '')}".strip(),
-            f"Activates {event.get('natal_target_display', 'a natal point')}".strip(),
+            f"Activates {_client_target_label(event.get('natal_target_display', 'a natal point'), possessive=True)}".strip(),
         )
     if event_type == "planetary_station":
-        target = event.get("natal_target_display", "")
+        target = _client_target_label(event.get("natal_target_display", ""), possessive=True)
         return (
             f"{event.get('transit_planet', '')} stations {event.get('station_type', '')}".strip(),
             f"Activating {target}".strip() if target else "",
@@ -5714,7 +5761,7 @@ def _ledger_technical_fields(event: dict, house_domains: dict) -> list[dict]:
                 {"label": "Intensity", "value": f"{event.get('intensity_bar', '')} {event.get('intensity_label', '')}".strip()},
                 {"label": "Timing note", "value": _ledger_timing_note(event)},
                 {"label": "Cycle ID", "value": str(event.get("cycle_id") or "Unavailable")},
-                {"label": "Target", "value": str(event.get("natal_target_display") or event.get("natal_target") or "Unavailable")},
+                {"label": "Target", "value": _client_target_label(event.get("natal_target_display") or event.get("natal_target") or "Unavailable")},
                 {"label": "House", "value": house_domains.get(natal_house, _ordinal(natal_house)) if natal_house else "Unavailable"},
                 {"label": "Aspect", "value": f"{event.get('transit_planet', '')} {event.get('aspect', '')}".strip()},
                 {"label": "Orb", "value": f"{float(event.get('orb', 0.0) or 0.0):.3f}°"},
@@ -5731,7 +5778,7 @@ def _ledger_technical_fields(event: dict, house_domains: dict) -> list[dict]:
                 {"label": "Intensity", "value": f"{event.get('intensity_bar', '')} {event.get('intensity_label', '')}".strip()},
                 {"label": "Timing note", "value": _ledger_timing_note(event)},
                 {"label": "Station", "value": str(event.get("station_type") or "Unavailable")},
-                {"label": "Nearest target", "value": str(event.get("natal_target_display") or event.get("natal_target") or "No natal target recorded")},
+                {"label": "Nearest target", "value": _client_target_label(event.get("natal_target_display") or event.get("natal_target") or "No natal target recorded")},
                 {"label": "House", "value": house_domains.get(natal_house, _ordinal(natal_house)) if natal_house else "Unavailable"},
                 {"label": "Distance", "value": f"{float(event.get('distance_to_natal_target', 0.0) or 0.0):.3f}°"},
             ]
@@ -5761,7 +5808,7 @@ def _ledger_technical_fields(event: dict, house_domains: dict) -> list[dict]:
                 {"label": "Intensity", "value": f"{event.get('intensity_bar', '')} {event.get('intensity_label', '')}".strip()},
                 {"label": "Timing note", "value": _ledger_timing_note(event)},
                 {"label": "Eclipse type", "value": str(event.get("eclipse_type") or "Unavailable")},
-                {"label": "Target", "value": str(event.get("natal_target_display") or event.get("natal_target") or "Unavailable")},
+                {"label": "Target", "value": _client_target_label(event.get("natal_target_display") or event.get("natal_target") or "Unavailable")},
                 {"label": "House", "value": house_domains.get(natal_house, _ordinal(natal_house)) if natal_house else "Unavailable"},
                 {"label": "Distance", "value": f"{float(event.get('distance_to_natal_target', 0.0) or 0.0):.3f}°"},
             ]
@@ -5855,7 +5902,7 @@ def _ledger_astrological_status(event: dict) -> str:
 
 def _ledger_target_house(event: dict, house_domains: dict) -> str:
     event_type = _year_ahead_primary_event_type(event)
-    target = str(event.get("natal_target_display") or event.get("natal_target") or "").strip()
+    target = _client_target_label(event.get("natal_target_display") or event.get("natal_target"))
     natal_house = int(event.get("natal_house") or 0) if str(event.get("natal_house") or "").strip() else 0
     transit_house = int(event.get("house_number") or 0) if str(event.get("house_number") or "").strip() else 0
 
@@ -6012,7 +6059,7 @@ def _build_convergence_index(source_events: list[dict]) -> list[dict]:
 def _append_structure_note_row(sections: list[dict], section_key: str, row: list[str]) -> None:
     for section in sections:
         if section.get("key") == section_key:
-            section.setdefault("rows", []).append(row)
+            section.setdefault("rows", []).append([_client_label_text(cell) for cell in row])
             return
 
 
@@ -6678,7 +6725,7 @@ def _build_event_why_this_matters(
     chart_ruler = ((standard_bundle.get("chart_ruler") or {}).get("traceable_source_data") or {})
     top_targets = forecast_priority.get("top_target_weights") or {}
     top_houses = forecast_priority.get("top_house_weights") or {}
-    target_label = str(event.get("natal_target_display") or event.get("natal_target") or "").strip()
+    target_label = _client_target_label(event.get("natal_target_display") or event.get("natal_target"))
     target_key = str(event.get("natal_target") or "").strip()
     house_number = int(event.get("natal_house") or event.get("house_number") or 0)
     house_domain = _house_domain_label(house_number, house_domains)

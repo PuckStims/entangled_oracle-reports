@@ -1011,9 +1011,10 @@ def render_natal_wheel_svg(
     for body in angle_bodies:
         sa = _svg_angle(body["longitude"], asc_lon)
         lx, ly = _pt(CX, CY, R_ZIN - 14, sa)
+        angle_label = body["name"].replace("_", " ")
         lines.append(
             f'<text class="cw-angle-label" x="{lx:.2f}" y="{ly:.2f}" '
-            f'font-size="{FONT_PL + 1}">{body["abbrev"]}</text>'
+            f'font-size="{FONT_PL + 1}">{angle_label}</text>'
         )
         dx, dy = _pt(CX, CY, R_TICK, sa)
         lines.append(
@@ -1033,7 +1034,7 @@ def render_natal_wheel_svg(
     lines.append(
         f'<text font-family="Arial,sans-serif" font-size="{FONT_HN}" fill="#47516A" '
         f'text-anchor="middle" dominant-baseline="central" '
-        f'x="{CX}" y="{CY + 7}">ASC {asc_sign[:3].upper()}</text>'
+        f'x="{CX}" y="{CY + 7}">Ascendant {asc_sign[:3].upper()}</text>'
     )
 
     lines.append("</svg>")

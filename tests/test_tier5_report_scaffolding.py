@@ -21,7 +21,14 @@ def _all_string_values(value):
 
 
 class TestTier5ReportScaffolding(unittest.TestCase):
-    def test_new_tier5_block_files_are_literal_todo_scaffolds(self):
+    def test_tier5_block_files_have_no_remaining_todo_placeholders(self):
+        """These four files started as literal "TODO" scaffolds (see git
+        history) and have since been filled in with real interpretive
+        copy. This replaces the old assertion that every string equaled
+        "TODO" -- that was correct while the content was genuinely
+        unwritten, but would now silently pass again if a placeholder
+        were ever reintroduced by mistake, which is the opposite of what
+        this test should guard against."""
         paths = [
             PROJECT_ROOT / "products/year_ahead/blocks/plainspeak/annual_profection_blocks.json",
             PROJECT_ROOT / "products/year_ahead/blocks/plainspeak/zodiacal_releasing_blocks.json",
@@ -31,11 +38,22 @@ class TestTier5ReportScaffolding(unittest.TestCase):
 
         for path in paths:
             data = json.loads(path.read_text(encoding="utf-8"))
-            strings = list(_all_string_values(data))
-            self.assertTrue(strings, path)
-            self.assertTrue(all(value == "TODO" for value in strings), path)
+            strings = [
+                value for key, value in data.items()
+                if key not in ("_note", "_version")
+            ]
+            leaf_strings = list(_all_string_values(strings))
+            self.assertTrue(leaf_strings, path)
+            self.assertTrue(
+                all(value != "TODO" for value in leaf_strings),
+                f"{path} still has an unfilled TODO placeholder",
+            )
+            self.assertTrue(
+                all(len(value) > 40 for value in leaf_strings),
+                f"{path} has a suspiciously short block (placeholder-like, not real prose)",
+            )
 
-    def test_year_ahead_tier5_surface_selects_todo_blocks_from_live_pack_paths(self):
+    def test_year_ahead_tier5_surface_selects_real_content_from_live_pack_paths(self):
         synthesis = {
             "annual_terrain_map": {
                 "label": "convergent",
@@ -103,12 +121,16 @@ class TestTier5ReportScaffolding(unittest.TestCase):
             CONTENT_PACKS["plainspeak"],
         )
 
-        self.assertEqual(surface["annual_profections"][0]["body"], "TODO")
-        self.assertEqual(surface["zodiacal_releasing"][0]["body"], "TODO")
-        self.assertEqual(surface["exact_returns"][0]["body"], "TODO")
-        self.assertEqual(surface["forecast_terrain"]["annual"]["body"], "TODO")
-        self.assertEqual(surface["forecast_terrain"]["months"][0]["body"], "TODO")
-        self.assertEqual(surface["forecast_terrain"]["chapters"][0]["body"], "TODO")
+        for body in (
+            surface["annual_profections"][0]["body"],
+            surface["zodiacal_releasing"][0]["body"],
+            surface["exact_returns"][0]["body"],
+            surface["forecast_terrain"]["annual"]["body"],
+            surface["forecast_terrain"]["months"][0]["body"],
+            surface["forecast_terrain"]["chapters"][0]["body"],
+        ):
+            self.assertNotEqual(body, "TODO")
+            self.assertGreater(len(body), 40)
 
     def test_predictive_chapters_remap_tier4_synthesis_to_existing_prose(self):
         synthesis = {

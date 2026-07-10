@@ -1,17 +1,17 @@
 {
-  "_note": "TODO",
-  "_version": "TODO",
-  "fallback": "TODO",
+  "_note": "Completed baseline copy for Zodiacal Releasing timing blocks. All placeholders were replaced while preserving the original JSON schema exactly.",
+  "_version": "1.0.0",
+  "fallback": "This timing layer describes the rhythm of a life chapter rather than a fixed prediction. Read it as a pacing map: what is becoming louder, what is ready to be reorganized, and where your choices may need a different kind of attention.",
   "L1": {
-    "fallback": "TODO",
-    "transition": "TODO",
-    "peak": "TODO",
-    "loosing_of_the_bond": "TODO"
+    "fallback": "This is a major chapter in the larger story of your life. Its themes may not announce themselves through one dramatic event; they often arrive as a repeated pull, a changing priority, or a field of responsibility that keeps asking for your presence. Notice what becomes harder to ignore, especially when the same question appears in different rooms.",
+    "transition": "A long-range handoff is underway. One chapter has not vanished, but it may no longer be the place where your strongest development is happening. Pay attention to the roles, relationships, ambitions, or private needs that feel newly charged. The shift is less about forcing a decision and more about recognizing where the story has already started moving.",
+    "peak": "This chapter is speaking at a higher volume now. What has been building in the background may ask for visibility, commitment, or a clearer form. A peak does not mean everything becomes easy; it means the pattern is easier to see. Use the increased signal to name what matters, what is ready to mature, and what can no longer remain theoretical.",
+    "loosing_of_the_bond": "This is a hinge point in the larger chapter: a release, reversal, or unexpected opening can change the shape of the story. Plans may need room to breathe. Rather than treating disruption as failure, watch for the part of your life that is trying to break out of an old sequence. The useful question is not what went off-script, but what the interruption reveals."
   },
   "L2": {
-    "fallback": "TODO",
-    "transition": "TODO",
-    "peak": "TODO",
-    "loosing_of_the_bond": "TODO"
+    "fallback": "This shorter chapter shows how the larger timing pattern moves through everyday life. Its message may appear through conversations, scheduling changes, small decisions, or a shift in what feels urgent. Let the details matter. They are often the first place the larger story becomes practical.",
+    "transition": "The pace inside the larger chapter is changing. A smaller handoff may redirect your attention from one task, mood, or relationship dynamic toward another. You do not need to solve the whole arc at once. Track what is asking for a fresh response now, especially where an old rhythm no longer fits the current moment.",
+    "peak": "A specific thread inside the larger chapter is active and visible. This may bring a decision, encounter, deadline, invitation, or emotional realization into sharper focus. The point is not to make the moment bigger than it is. The point is to notice what it clarifies, because a small event may reveal the true pressure or promise of the chapter around it.",
+    "loosing_of_the_bond": "A short-range release point can rearrange the immediate path. Something may loosen, detour, repeat, or flip just enough to show you where the old script has become too tight. Keep your response nimble. The value of this window is in the information it exposes, not in perfect control over how it arrives."
   }
 }

@@ -1,41 +1,41 @@
 {
-  "_note": "TODO",
-  "_version": "TODO",
-  "fallback": "TODO",
+  "_note": "Forecast synthesis copy library for agreement labels, monthly zones, chapter framing, and contradiction handling. Schema preserved; values are user-facing ultra-plainspeak blocks.",
+  "_version": "1.0.0",
+  "fallback": "Several signals are present here, but the cleanest pattern has not fully declared itself. Treat this section as orientation rather than instruction: notice what keeps repeating, what feels newly available, and what still needs more lived evidence.",
   "agreement_labels": {
-    "fallback": "TODO",
-    "convergent": "TODO",
-    "supportive": "TODO",
-    "isolated": "TODO",
-    "ambiguous": "TODO",
-    "contradictory": "TODO",
-    "background": "TODO"
+    "fallback": "The signals are mixed enough that no single agreement pattern should be forced.",
+    "convergent": "Multiple signals point toward the same lived theme. This is not one isolated event asking for attention; it is a pattern gaining enough weight to become recognizable.",
+    "supportive": "These signals do not say the exact same thing, but they are compatible. One gives the context, another adds the practical detail, and together they make the theme easier to use.",
+    "isolated": "This signal stands mostly on its own. It may still matter, but it should be read as a specific note rather than the whole story.",
+    "ambiguous": "The message is still blurry. More than one interpretation could fit, so look for concrete evidence before turning this into a conclusion.",
+    "contradictory": "Two signals are pulling in different directions. That does not make either one wrong; it means the real work is in the trade-off between them.",
+    "background": "This is background atmosphere rather than the main plot. It may color the month without asking you to reorganize your choices around it."
   },
   "monthly_zones": {
-    "fallback": "TODO",
-    "opening": "TODO",
-    "pressure": "TODO",
-    "recovery": "TODO",
-    "chapter": "TODO",
-    "background": "TODO"
+    "fallback": "The month has movement, but its dominant rhythm is not cleanly sorted. Let lived evidence show whether this period is asking for action, recovery, adjustment, or simply closer attention.",
+    "opening": "Something begins to open, but it may arrive as contact, curiosity, or a small invitation rather than a finished path. Respond to what is actually offered before building a whole future around it.",
+    "pressure": "A mismatch becomes harder to ignore. The point is not to force an instant fix; it is to see where demand, desire, timing, or responsibility no longer fit together cleanly.",
+    "recovery": "The month gives more room to restore your senses and gather yourself. Recovery here is not withdrawal from the story; it is how the next choice becomes less reactive.",
+    "chapter": "This month belongs to a longer arc. The single events may matter less than the pattern they reveal once several moments are placed beside each other.",
+    "background": "The month carries quieter conditions. They may not announce themselves loudly, but they can shape mood, pacing, and the kinds of choices that feel easier to reach."
   },
   "chapter_types": {
-    "fallback": "TODO",
+    "fallback": "This chapter is not defined by one clean mood. Read it through what repeats in ordinary life: where your energy goes, where friction appears, and what keeps asking for a different response.",
     "monthly_terrain": {
-      "fallback": "TODO",
-      "opening": "TODO",
-      "pressure": "TODO",
-      "recovery": "TODO",
-      "chapter": "TODO",
-      "background": "TODO"
+      "fallback": "This terrain is not defined by one clean mood. Read the month through what repeats in ordinary life: where your energy goes, where friction appears, and what keeps asking for a different response.",
+      "opening": "This terrain begins by widening access. Pay attention to doors that open through conversation, invitation, curiosity, or a small change in your usual route.",
+      "pressure": "This terrain clarifies itself through friction. Something may need renegotiation because the old terms are no longer accurate enough for the life around them.",
+      "recovery": "This terrain works through restoration. What returns slowly may be just as important as what arrives dramatically.",
+      "chapter": "This terrain has continuity. Do not judge it by one event; watch the sequence, because the meaning becomes clearer as several moments connect.",
+      "background": "This terrain develops in the background. Small adjustments, private realizations, and repeated atmospheres may carry more weight than any single headline moment."
     },
     "repeating_theme": {
-      "fallback": "TODO",
-      "chapter": "TODO"
+      "fallback": "A theme repeats, but its meaning is still forming. Notice whether each recurrence is a copy of the last one or a new angle on the same unfinished question.",
+      "chapter": "A repeating theme is becoming a chapter. The same question is returning in different clothes so you can recognize the pattern without collapsing every instance into the same answer."
     }
   },
   "contradictions": {
-    "fallback": "TODO",
-    "contradictory": "TODO"
+    "fallback": "Not every signal agrees cleanly here. Let contradiction function as information: it can show where two needs are both real, where timing is uneven, or where a choice requires more than one kind of truth.",
+    "contradictory": "This is a genuine cross-current. One part of the picture asks for movement while another asks for care, precision, or restraint; the useful answer will come from honoring the tension instead of pretending it is simple."
   }
 }
