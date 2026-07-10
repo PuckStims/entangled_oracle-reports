@@ -29,6 +29,7 @@ from pathlib import Path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from config import OUTPUT_DIR, TEMPLATES_DIR, PRODUCTS_DIR
 from formulas.standard.forecast_activation import build_ranking_diagnostics
+from formulas.standard.forecast_synthesis import build_forecast_synthesis
 from formulas.standard.methodology_profiles import get_active_methodology_metadata
 from product_versions import (
     REPORT_MANIFEST_SCHEMA_VERSION,
@@ -7848,6 +7849,13 @@ def _build_year_ahead_context(
         birth_meta["birth_time_status"],
         pack,
     )
+    forecast_synthesis = build_forecast_synthesis(
+        all_events + year_texture_progressions + year_texture_solar_arc,
+        report_start=report_start,
+        report_end=report_end,
+        months=months,
+        house_domains=HOUSE_DOMAINS,
+    )
     ledger_months = _build_ledger_months(months)
 
     from config import PALETTES as _PALETTES
@@ -7898,6 +7906,7 @@ def _build_year_ahead_context(
             forecast_climate,
         ),
         "forecast_climate": forecast_climate,
+        "forecast_synthesis": forecast_synthesis,
         "year_arc_sort_basis": "ordinary_salience_duration_then_timing",
         "season_summaries": season_summaries,
         "annual_rhythm_quarters": annual_rhythm_quarters,

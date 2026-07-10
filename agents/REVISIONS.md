@@ -5,6 +5,65 @@ Newest entry on top. See `agents/README.md` for the convention.
 
 ---
 
+## 2026-07-10 - Tier 4 synthesis backend scaffolding landed (Sol / GPT-5, reviewed and accepted as-is by Claude Code)
+
+**Context:** Tier 4 called for backend synthesis objects that can describe
+forecast terrain without adding prose, modifying templates, or flattening
+method disagreement into a generic summary.
+
+**What changed:**
+
+- Added `formulas/standard/forecast_synthesis.py`, a JSON-safe synthesis
+  layer that consumes event-like evidence and normalizes it into terrain
+  evidence records with method family, independence group, declared
+  operation, score, confidence, topics, timing, score components, ranking
+  diagnostics, and source provenance.
+- Built Tier 4 objects for:
+  annual terrain map, monthly terrain zones, peak-window clusters,
+  contradiction records, technique-agreement labels, repeating natal
+  themes, evidence chapters, and debug trace data.
+- Preserved disagreement instead of smoothing it: cross-method conflicts
+  are detected by declared operation compatibility and explicit
+  counterforce/conflict values, with supporting and complicating event IDs
+  kept separate.
+- Wired the synthesis object into Year Ahead context as
+  `forecast_synthesis` after existing forecast climate/convergence
+  assembly. This is data-only plumbing; no templates, visual hierarchy,
+  client-facing prose, or report labels were changed.
+- Added `tests/test_tier4_forecast_synthesis.py` for evidence
+  normalization, provenance, multi-method agreement clusters,
+  contradiction preservation, monthly pressure/opening terrain, repeating
+  themes, evidence chapter assembly, and JSON-serializable debug output.
+
+**Verification:** focused Tier 4/Tier 3 unittest suite: 9 passed. Focused
+pytest suite for Tier 4/Tier 3/forecast climate: 13 passed. Year Ahead
+context/render-neighbor suite in the repository virtual environment:
+10 passed. Full importable suite in the repository virtual environment:
+349 passed / 19 failed / 1 skipped. The 19 failures match the accepted
+predictive-sandbox quarantine and offline-location baseline; the pass count
+rose by four because of the new Tier 4 synthesis tests.
+
+**Open:** operation compatibility is intentionally conservative. Events
+with no declared operation are marked as derived from structured event
+fields, not as final interpretive truth. The synthesis object is now
+available for review and trace inspection, but Tier 5 report-surface
+promotion remains out of scope until explicitly started.
+
+**Claude Code review:** accepted as-is, no patch needed. The main risk
+checked was whether this repeated the project's two prior
+"invent-a-competing-system" mistakes (a duplicate method registry, a
+parallel scoring module) - it doesn't. `forecast_synthesis` is a genuinely
+different analytical axis from the existing `forecast_climate` system:
+climate scores annual domain/topic intensity and is already client-facing
+via block selection; synthesis detects cross-method agreement/contradiction
+and renders nothing. Confirmed both pull from the same `HOUSE_DOMAINS`
+constant in `config.py` rather than each maintaining an independent domain
+vocabulary. Grepped every template for the new object's field names - zero
+hits, nothing became client-visible. Re-ran the full suite independently:
+same 349/19/1 result.
+
+---
+
 ## 2026-07-10 - Phase B: Tier 3 score components and ranking diagnostics landed (Sol / GPT-5.6, reviewed and accepted as-is by Claude Code)
 
 **Context:** Tier 3 called for formula intelligence scaffolding: named score

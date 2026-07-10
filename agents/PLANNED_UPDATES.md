@@ -32,12 +32,14 @@ Reusable starter prompts for that model now live in
 Do not treat the directive as proof that any feature is already active.
 Future agents must verify current repo state before implementation.
 
-**Status as of 2026-07-10:** Tiers 0, 1, 2, and Tier 3 scaffolding have
-landed; see `agents/REVISIONS.md`. The core-five confidence/visibility
-follow-up is complete, and the existing forecast activation path now emits
-named score components plus machine-readable ranking diagnostics for ranked
-timelines and monthly peaks. Tier 4 synthesis backend work remains out of
-scope until explicitly started.
+**Status as of 2026-07-10:** Tiers 0, 1, 2, Tier 3 scaffolding, and Tier 4
+synthesis backend scaffolding have landed; see `agents/REVISIONS.md`. The
+core-five confidence/visibility follow-up is complete, the existing forecast
+activation path now emits named score components plus machine-readable
+ranking diagnostics, and Year Ahead context now carries a traceable
+`forecast_synthesis` object for terrain/clustering/contradiction review.
+Tier 5 report-surface promotion remains out of scope until explicitly
+started.
 
 ---
 
