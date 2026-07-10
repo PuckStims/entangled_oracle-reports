@@ -237,6 +237,86 @@ class ForecastEnginePhase4Tests(unittest.TestCase):
 
         self.assertEqual(event["pass_sequence"], "retrograde_three_pass")
 
+    def test_core_five_receive_confidence_contract_and_live_visibility(self):
+        peak_dt = datetime(2026, 7, 14, tzinfo=timezone.utc)
+        fixtures = [
+            self._base_transit("Sun"),
+            {
+                "event_type": "ingress", "transit_planet": "Jupiter",
+                "house_number": 1, "peak_datetime": peak_dt, "raw_score": 0.5,
+            },
+            {
+                "event_type": "station", "transit_planet": "Saturn",
+                "natal_target": "Moon", "distance_to_natal_target": 1.0,
+                "peak_datetime": peak_dt, "raw_score": 0.5,
+            },
+            {
+                "event_type": "eclipse", "eclipse_type": "Solar",
+                "natal_target": "Sun", "distance_to_natal_target": 0.5,
+                "peak_datetime": peak_dt, "raw_score": 0.5,
+            },
+            {
+                "event_type": "lunation", "lunation_type": "NEW_MOON",
+                "natal_target": "Moon", "distance_to_natal_target": 0.5,
+                "peak_datetime": peak_dt, "raw_score": 0.5,
+            },
+        ]
+
+        for fixture in fixtures:
+            with self.subTest(event_type=fixture["event_type"]):
+                enriched = enrich_forecast_event(fixture, self.profile)
+                self.assertGreater(enriched["confidence"], 0.0)
+                self.assertEqual(
+                    set(enriched["confidence_components"]),
+                    {
+                        "calculation_integrity", "method_maturity",
+                        "exactness_support", "angle_support",
+                        "birth_time_state", "target_uncertainty",
+                    },
+                )
+                self.assertEqual(
+                    enriched["report_surface_visibility"],
+                    ["year_ahead", "personal_forecast"],
+                )
+
+    def test_core_enrichment_preserves_supplied_confidence_metadata(self):
+        event = self._base_transit("Sun")
+        event.update(
+            {
+                "confidence": 0.77,
+                "confidence_components": {"calculation_integrity": 0.88},
+                "report_surface_visibility": ["engineering_diagnostic"],
+            }
+        )
+
+        enriched = enrich_forecast_event(event, self.profile)
+
+        self.assertEqual(enriched["confidence"], 0.77)
+        self.assertEqual(
+            enriched["confidence_components"],
+            {"calculation_integrity": 0.88},
+        )
+        self.assertEqual(
+            enriched["report_surface_visibility"],
+            ["engineering_diagnostic"],
+        )
+
+    def test_unknown_birth_time_reduces_house_dependent_confidence(self):
+        unknown_payload = dict(self.payload)
+        unknown_payload["user_profile"] = {"birth_time_confidence": "unknown_birth_time"}
+        unknown_profile = build_forecast_activation_profile(unknown_payload)
+        ingress = {
+            "event_type": "ingress", "transit_planet": "Jupiter",
+            "house_number": 1, "peak_datetime": datetime(2026, 8, 1, tzinfo=timezone.utc),
+            "raw_score": 0.5,
+        }
+
+        exact = enrich_forecast_event(ingress, self.profile)
+        unknown = enrich_forecast_event(ingress, unknown_profile)
+
+        self.assertLess(unknown["confidence"], exact["confidence"])
+        self.assertEqual(unknown["confidence_components"]["birth_time_state"], 0.65)
+
 
 if __name__ == "__main__":
     unittest.main()

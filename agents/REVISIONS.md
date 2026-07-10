@@ -5,6 +5,54 @@ Newest entry on top. See `agents/README.md` for the convention.
 
 ---
 
+## 2026-07-10 - Phase A: core-five confidence and report visibility completed (Sol / GPT-5.6, reviewed and accepted as-is by Claude Code)
+
+**Context:** the five event families supplying the live Year Ahead and
+Personal Forecast timelines reached the canonical adapter without explicit
+confidence or report-surface metadata, so the adapter conservatively marked
+them zero-confidence and internal-only.
+
+**What changed:**
+
+- Centralized confidence enrichment for transits, house ingresses, stations,
+  eclipses, and lunations in
+  `formulas/standard/forecast_activation.py::enrich_forecast_event()`.
+- Reused the established confidence-component vocabulary: calculation
+  integrity, method maturity, exactness support, angle support, birth-time
+  state, and target uncertainty. Birth-time state follows the same
+  exact/approximate/unknown payload detection pattern used by the advanced
+  engines; house- or angle-dependent evidence is reduced accordingly.
+- Assigned `year_ahead` and `personal_forecast` visibility to these five
+  families after tracing both live context builders and templates. Existing
+  scanner-supplied confidence, component, or visibility metadata remains
+  untouched via additive fill-only behavior.
+- Added focused regression coverage for all five families, metadata
+  preservation, and unknown-birth-time confidence reduction.
+
+**Verification:** focused confidence/adapter suite: 14 passed. Full importable
+suite in the repository virtual environment: 340 passed / 19 failed / 1
+skipped. The 19 failures exactly match the most recent documented baseline
+(quarantined predictive-sandbox tests and offline-location tests); zero new
+failures. The five separately documented broken-import modules still stop an
+unfiltered collection before test execution.
+
+**Open:** the exact numeric confidence policy is now explicit and auditable,
+but remains a candidate policy for Codex/Claude calibration. Phase B / Tier 3
+score-component and ranking-diagnostics work has not started.
+
+**Claude Code review:** accepted as-is, no patch needed - the tightest pass
+this project has had. Verified rather than trusted: re-ran the full suite
+independently (same 340/19/1 result) and confirmed `generate.py`'s
+`_build_personal_forecast_context()` does call `compute_year_ahead_events()`,
+the same source `year_ahead` uses, so the `["year_ahead", "personal_forecast"]`
+visibility claim is accurate rather than assumed. Resolved the one open
+question from the handoff rather than leaving it open: Vertex belongs in
+`angle_involved` - it's derived from local sidereal time at the exact birth
+moment plus latitude, the same dependency shape as Ascendant/Midheaven, not
+a looser point.
+
+---
+
 ## 2026-07-10 - Tier 2 completed: self-answering method notes, TimeLordPeriod correction, ZR lord_natal_state activated (Claude Code)
 
 **Context:** closing out Tier 2 per the directive's own checklist, which

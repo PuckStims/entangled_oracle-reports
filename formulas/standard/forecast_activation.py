@@ -76,9 +76,40 @@ EVENT_TYPE_BASELINES = {
     "solar_arc": 0.20,
 }
 
+CORE_REPORT_EVENT_TYPES = {"transit", "ingress", "station", "eclipse", "lunation"}
+CORE_REPORT_SURFACES = ["year_ahead", "personal_forecast"]
+
+CORE_CONFIDENCE_POLICY = {
+    "transit": {"calculation_integrity": 0.96, "method_maturity": 0.90},
+    "ingress": {"calculation_integrity": 0.94, "method_maturity": 0.90},
+    "station": {"calculation_integrity": 0.97, "method_maturity": 0.90},
+    "eclipse": {"calculation_integrity": 0.98, "method_maturity": 0.90},
+    "lunation": {"calculation_integrity": 0.97, "method_maturity": 0.90},
+}
+
 
 def _clamp(value: float, low: float = 0.0, high: float = 1.0) -> float:
     return max(low, min(high, value))
+
+
+def _birth_time_status(natal_payload: dict) -> str:
+    """Return the shared exact/approximate/unknown birth-time state."""
+    user_profile = (
+        natal_payload.get("user_profile")
+        if isinstance(natal_payload.get("user_profile"), dict)
+        else {}
+    )
+    raw = str(
+        user_profile.get("birth_time_state")
+        or user_profile.get("birth_time_confidence")
+        or natal_payload.get("birth_time_state")
+        or ""
+    ).lower()
+    if "unknown" in raw:
+        return "unknown"
+    if "approx" in raw:
+        return "approximate"
+    return "exact"
 
 
 def normalize_forecast_target_name(name: str | None) -> str:
@@ -215,6 +246,7 @@ def build_forecast_activation_profile(payload: dict) -> dict[str, Any]:
     }
 
     return {
+        "birth_time_state": _birth_time_status(payload),
         "chart_ruler": chart_ruler_name,
         "target_weights": target_weights,
         "house_weights": house_weights,
@@ -225,6 +257,56 @@ def build_forecast_activation_profile(payload: dict) -> dict[str, Any]:
         "focal_points": focal_points,
         "central_planets": central_planets,
     }
+
+
+def _core_confidence_metadata(
+    event: dict,
+    event_type: str,
+    exactness: float,
+    profile: dict[str, Any],
+) -> tuple[float, dict[str, float]]:
+    """Build auditable epistemic confidence for the five live event families.
+
+    Exactness contributes as support rather than acting as a zero-or-one gate:
+    a broadly placed eclipse or a house ingress is still a real computed sky
+    event. Birth-time support is reduced only where the event relies on a
+    natal angle or house placement.
+    """
+    policy = CORE_CONFIDENCE_POLICY[event_type]
+    birth_time_state = str(profile.get("birth_time_state") or "exact")
+    birth_time_support = {
+        "exact": 1.0,
+        "approximate": 0.80,
+        "unknown": 0.65,
+    }.get(birth_time_state, 0.65)
+
+    target_name = normalize_forecast_target_name(
+        event.get("natal_target") or event.get("natal_contact") or ""
+    )
+    angle_involved = target_name in {
+        "Ascendant", "Midheaven", "Descendant", "Imum_Coeli", "Vertex"
+    }
+    house_dependent = event_type == "ingress" or bool(_event_house_number(event))
+    angle_support = birth_time_support if angle_involved or house_dependent else 1.0
+
+    # Retain a floor because exactness here measures contact/proximity support,
+    # not whether the ephemeris event itself exists.
+    exactness_support = _clamp(0.75 + (0.25 * exactness))
+    components = {
+        "calculation_integrity": policy["calculation_integrity"],
+        "method_maturity": policy["method_maturity"],
+        "exactness_support": round(exactness_support, 4),
+        "angle_support": round(angle_support, 4),
+        "birth_time_state": round(birth_time_support, 4),
+        "target_uncertainty": round(1.0 - angle_support, 4),
+    }
+    confidence = (
+        components["calculation_integrity"]
+        * components["method_maturity"]
+        * components["exactness_support"]
+        * components["angle_support"]
+    )
+    return round(_clamp(confidence), 4), components
 
 
 def _event_target_name(event: dict) -> str:
@@ -433,6 +515,17 @@ def enrich_forecast_event(event: dict, profile: dict[str, Any]) -> dict[str, Any
         )
     )
     exactness = _event_exactness(enriched, event_type)
+
+    if event_type in CORE_REPORT_EVENT_TYPES:
+        confidence, confidence_components = _core_confidence_metadata(
+            enriched,
+            event_type,
+            exactness,
+            profile,
+        )
+        enriched.setdefault("confidence", confidence)
+        enriched.setdefault("confidence_components", confidence_components)
+        enriched.setdefault("report_surface_visibility", list(CORE_REPORT_SURFACES))
     duration_factor = _event_duration_factor(enriched)
     pass_sequence = _event_pass_sequence(enriched)
     pass_bonus = {

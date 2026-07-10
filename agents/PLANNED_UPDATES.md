@@ -32,45 +32,12 @@ Reusable starter prompts for that model now live in
 Do not treat the directive as proof that any feature is already active.
 Future agents must verify current repo state before implementation.
 
-**Status as of 2026-07-10:** Tier 0 (Forecast Computation Ledger) and Tier
-1 (canonical `ForecastEvent` adapter, wired additively into the scanners
-feeding `year_ahead`/`personal_forecast`) have landed - see REVISIONS.md.
-Tier 2 (promoting profections, progressions, Solar Arc, returns, Lots, and
-Zodiacal Releasing to first-class internals) is the next open tier and
-was confirmed ready to start: every Tier 2-scope method except Lots
-(a static chart point, not an event) already produces real `confidence`
-and `confidence_components` at the source.
-
-Two follow-ups surfaced during that readiness check, not yet done:
-
-1. **Core-five confidence/visibility gap.** `scan_transit_windows`,
-   `scan_house_ingresses`, `scan_stations`, `scan_eclipses`, and
-   `scan_lunations` never set `confidence`, `confidence_components`, or
-   `report_surface_visibility` - these are the families that actually make
-   up the live content of `year_ahead`/`personal_forecast` today. The
-   adapter's conservative fallback therefore gives every one of those
-   events `confidence = 0.0` and `report_surface_visibility =
-   ["internal_rd"]`, which mislabels currently-shipping client content as
-   internal-only. Real `exactness` is already computed for these families
-   in `formulas/standard/forecast_activation.py::enrich_forecast_event`
-   and could inform a real `confidence` value; nothing currently does.
-   Not a live bug (nothing reads `report_surface_visibility` yet outside
-   `quarantine/` and `engine/profections.py`), but it needs fixing before
-   any Tier 5 report-surface adapter trusts that field, and ideally before
-   Tier 3 scoring work treats confidence as meaningful across all families.
-2. **Registry placement decided in advance, not yet built.** Tier 2 asks
-   to "create or reuse a method registry." Two already exist -
-   `formulas/standard/method_registry.py`'s `MethodRegistry` (shaped for
-   static natal-chart techniques: sect, dignity, dispositors) and
-   `formulas/governance_registry.py` (bodies/methods/report-layer policy,
-   already feeds `formulas/report_surface.py`). Neither is predictive-event
-   shaped. Decision: Tier 2's predictive-method registry should be a new
-   record type inside `formulas/governance_registry.py` (parallel to the
-   existing `AsteroidEligibilityRecord`), not a third top-level module and
-   not shoehorned into `formulas/standard/method_registry.py`. This
-   supersedes the removed `engine/method_registry.py` from the first
-   Tier 0/1 pass, which duplicated both existing registries without
-   checking either.
+**Status as of 2026-07-10:** Tiers 0, 1, and 2 have landed; see
+`agents/REVISIONS.md`. The core-five confidence/visibility follow-up is also
+complete: centralized enrichment now gives transits, house ingresses,
+stations, eclipses, and lunations explicit confidence components plus the
+two report surfaces that currently render them. Tier 3 formula intelligence
+and signal hierarchy is the next open tier.
 
 ---
 
