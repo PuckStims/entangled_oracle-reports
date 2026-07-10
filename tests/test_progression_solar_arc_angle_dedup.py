@@ -22,6 +22,17 @@ but would silently route every angle contact to generic fallback prose
 instead of the block actually written for it. TestNatalTargetsUsesShortForm
 guards specifically against re-introducing that mistake.
 
+This file also covers a second, related bug that keeping the short form
+uncovered: each scanner's main loop is supposed to skip a progressed/
+directed point against its own natal position (e.g. progressed Sun vs
+natal Sun), but the skip check compared source_name and target_name as
+raw strings. ANGLE_SOURCES lists the long form ("Ascendant", "Midheaven")
+while _natal_targets' angle entries use the short form ("ASC", "MC"), so
+"Ascendant" was never seen as equal to "ASC" even though they're the same
+point -- letting a spurious "Progressed Ascendant [aspect] natal ASC"
+event through as the progressed angle drifted from its own starting
+position. TestScannersExcludeAngleSelfAspects covers this.
+
 Run with:
     python -m pytest tests/test_progression_solar_arc_angle_dedup.py -v
 """
@@ -30,6 +41,7 @@ import os
 import sys
 import unittest
 from datetime import datetime, timezone
+from unittest.mock import patch
 
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, PROJECT_ROOT)
@@ -176,6 +188,85 @@ class TestScannersEmitOneEventPerContact(unittest.TestCase):
             payload, _dt("2026-01-01T00:00:00"), _dt("2036-01-01T00:00:00")
         )
         self._assert_no_duplicate_angle_contacts(events)
+
+
+class TestScannersExcludeAngleSelfAspects(unittest.TestCase):
+    """A progressed/directed Ascendant must never be reported aspecting
+    natal ASC (nor Midheaven vs natal MC) -- that is the same point
+    compared to itself, which the scanners are supposed to skip.
+
+    ANGLE_SOURCES lists the long form ("Ascendant", "Midheaven");
+    _natal_targets' angle entries use the canonical short form ("ASC",
+    "MC", "DSC") -- see TestNatalTargetsUsesShortForm above for why. The
+    self-exclusion check in each scanner's main loop used to compare
+    those raw strings directly, so "Ascendant" (source) was never seen
+    as equal to "ASC" (target) even though they're the same natal point,
+    and a spurious "Progressed Ascendant Trine natal ASC"-style event
+    leaked through as the progressed angle drifted from its own natal
+    position over the scan window. Comparing normalized forms
+    (normalize_angle_name) fixes this without touching the display
+    strings, content-routing keys, or ANGLE_SOURCES itself.
+
+    A wide real-ephemeris scan window doesn't reliably hit this: whether
+    a progressed angle happens to drift into aspect with its own natal
+    position within a given window depends on chart-specific geometry
+    (confirmed empirically -- it fires 7 times on one real chart within
+    a single year, zero times on this file's synthetic fixture across a
+    10-year window). So this test forces the condition deterministically
+    instead of hoping a real search finds it: every relevant longitude is
+    pinned to 0.0 and the progressed/directed longitude lookup is patched
+    to always return 0.0 too, so every source/target pair sits at an
+    exact 0.0-orb Conjunction. If the self-exclusion check works, the
+    Ascendant/ASC and Midheaven/MC pairs are the only ones missing from
+    an otherwise-full grid of Conjunction events.
+    """
+
+    SELF_PAIRS = {("Ascendant", "ASC"), ("Midheaven", "MC")}
+
+    def _zeroed_payload(self):
+        payload = _payload_with_angles()
+        for angle in payload["angles"].values():
+            angle["longitude"] = 0.0
+        for body in payload["standard_planets"].values():
+            body["longitude"] = 0.0
+        return payload
+
+    def _assert_no_angle_self_aspects(self, events, *, expect_some_conjunctions):
+        conjunctions = [e for e in events if e.get("aspect") == "Conjunction"]
+        if expect_some_conjunctions:
+            self.assertTrue(
+                conjunctions,
+                "test fixture didn't force any Conjunction events at all -- "
+                "the mocked longitude lookup isn't wired the way this test "
+                "assumes, so it can't actually exercise the exclusion check",
+            )
+        offenders = [
+            e for e in conjunctions
+            if (e.get("transit_planet"), e.get("natal_target")) in self.SELF_PAIRS
+        ]
+        self.assertEqual(
+            offenders, [],
+            f"progressed/directed angle reported aspecting its own natal "
+            f"position: {[(e.get('transit_planet'), e.get('aspect'), e.get('natal_target')) for e in offenders]}",
+        )
+
+    def test_progression_scan_excludes_angle_self_aspects(self):
+        payload = self._zeroed_payload()
+        with patch("engine.progressions.progressed_longitude", return_value=0.0), \
+             patch("engine.progressions._find_contact_exact", return_value=_dt("2026-01-01T00:00:00")):
+            events = progressions.scan_progression_events(
+                payload, _dt("2026-01-01T00:00:00"), _dt("2026-01-08T00:00:00")
+            )
+        self._assert_no_angle_self_aspects(events, expect_some_conjunctions=True)
+
+    def test_solar_arc_scan_excludes_angle_self_aspects(self):
+        payload = self._zeroed_payload()
+        with patch("engine.solar_arc.directed_longitude", return_value=0.0), \
+             patch("engine.solar_arc._find_contact_exact", return_value=_dt("2026-01-01T00:00:00")):
+            events = solar_arc.scan_solar_arc_events(
+                payload, _dt("2026-01-01T00:00:00"), _dt("2026-01-08T00:00:00")
+            )
+        self._assert_no_angle_self_aspects(events, expect_some_conjunctions=True)
 
 
 if __name__ == "__main__":

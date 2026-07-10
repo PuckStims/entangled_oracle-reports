@@ -17,6 +17,7 @@ except ImportError:  # pragma: no cover
 
 from engine.asteroid_policy import load_asteroid_policy
 from engine.forecast_event_adapter import normalize_to_forecast_event
+from formulas.standard.normalization import normalize_angle_name
 
 
 FORMULA_VERSION = "progressions_phase5.0.0"
@@ -103,7 +104,17 @@ def scan_progression_events(natal_payload: dict, start_date: datetime, end_date:
 
     for source_name, source in sources.items():
         for target_name, target in targets.items():
-            if source_name == target_name:
+            # Skip a progressed point against its own natal position (e.g.
+            # progressed Sun vs natal Sun). Angle sources use the long form
+            # ("Ascendant", "Midheaven" -- see ANGLE_SOURCES) while angle
+            # targets use the canonical short form ("ASC", "MC", "DSC" --
+            # see _natal_targets), so a plain string comparison here misses
+            # that they're the same point and lets a spurious "Progressed
+            # Ascendant [aspect] natal ASC" event through as the progressed
+            # angle drifts from its own starting position. Comparing
+            # normalized forms catches that regardless of which alias each
+            # side happens to use.
+            if normalize_angle_name(source_name) == normalize_angle_name(target_name):
                 continue
             aspects = ["Conjunction"] if source["kind"] == "asteroid" or target["kind"] == "asteroid" else list(ASPECTS.keys())
             for aspect_name in aspects:
