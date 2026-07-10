@@ -136,6 +136,7 @@ def _build_context(natal_payload: dict, lot_name: str) -> dict | None:
         "birth_dt": birth_dt,
         "independence_group": independence_group,
         "system": system,
+        "natal_payload": natal_payload,
     }
 
 
@@ -260,6 +261,20 @@ def _is_peak(context: dict, sign: str) -> bool:
     return ((sign_index - lot_index) % 12) in _ANGULAR_OFFSETS
 
 
+def _lord_natal_state(natal_payload: dict, time_lord: str) -> dict:
+    # Mirrors engine/profections.py::_lord_natal_state -- same natal-payload
+    # shape, same conservative "available"/"unavailable" convention.
+    standard = natal_payload.get("standard_planets") if isinstance(natal_payload.get("standard_planets"), dict) else {}
+    data = standard.get(time_lord) if isinstance(standard.get(time_lord), dict) else {}
+    return {
+        "condition": "available" if data else "unavailable",
+        "house": int(data.get("house") or 0) if data else 0,
+        "sign": str(data.get("sign") or "") if data else "",
+        "retrograde": bool(data.get("retrograde", False)) if data else False,
+        "aspects": [],
+    }
+
+
 def _period_record(
     context: dict,
     level: int,
@@ -283,7 +298,7 @@ def _period_record(
         "period_lord": lord,
         "period_sign": sign,
         "period_house": None,
-        "lord_natal_state": {"condition": "unavailable", "house": 0, "sign": "", "retrograde": False, "aspects": []},
+        "lord_natal_state": _lord_natal_state(context["natal_payload"], lord),
         "is_peak": is_peak,
         "is_loosing_of_the_bond": is_loosing_of_the_bond,
         "activated_house_topics": [],

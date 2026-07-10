@@ -5,6 +5,62 @@ Newest entry on top. See `agents/README.md` for the convention.
 
 ---
 
+## 2026-07-10 - Tier 2 completed: self-answering method notes, TimeLordPeriod correction, ZR lord_natal_state activated (Claude Code)
+
+**Context:** closing out Tier 2 per the directive's own checklist, which
+requires each registered method to answer: what does it calculate, what
+does it not calculate, what can it claim, what does it merely
+contextualize.
+
+**Correction to the prior entry below:** that entry said `TimeLordPeriod`
+as a real period/span object for profections and Zodiacal Releasing was
+"still open Tier 2 work." That was wrong - both already existed and are
+already tested (`engine/profections.py::annual_profection_periods()`,
+`engine/zodiacal_releasing.py::zodiacal_releasing_periods()`), predating
+this upgrade entirely. No web search or new astrological research was
+needed to confirm this; the existing Vettius Valens year-per-sign table in
+`zodiacal_releasing.py` already matches the standard published values and
+sums to the correct traditional 211-year cycle.
+
+**What changed:**
+
+- Added the four self-answering notes to all six `PredictiveMethodRecord`
+  entries in `formulas/governance_registry.py` (`annual_profections`,
+  `progressions`, `solar_arc`, `returns`, `lots`, `zodiacal_releasing`).
+  Added a regression test (`test_every_method_answers_the_four_scope_questions`
+  in `tests/test_predictive_method_registry.py`) that enforces this for any
+  future entry. That test immediately caught that the `progressions` and
+  `solar_arc` notes (written during the prior Tier 2 corrective patch) only
+  covered report-surface context, not the four questions - fixed both.
+- **Standing rule going forward:** the operator asked that any dormant
+  stub/placeholder discovered during wiring work that would materially
+  change computed output gets activated in the same pass, not just flagged
+  - see the memory note this created for future sessions. Applying it
+    immediately: while writing `zodiacal_releasing`'s notes, found
+    `lord_natal_state` was a hardcoded stub
+    (`condition: "unavailable"`, house 0, no sign, no aspects, always,
+    regardless of the real chart) even though the equivalent field in
+    `annual_profections` already pulls real house/sign/retrograde data.
+    Activated it: `_build_context()` now carries `natal_payload` through,
+    and a new `_lord_natal_state()` helper in `engine/zodiacal_releasing.py`
+    (mirroring `engine/profections.py`'s function of the same name and
+    convention) computes real house/sign/retrograde for the period lord.
+    Added `test_lord_natal_state_reflects_real_chart_not_a_stub` in
+    `tests/test_phase6_lots_zodiacal_releasing.py`. The lord's aspects
+    remain unpopulated and `condition` remains a data-presence flag rather
+    than a real dignity read - both now documented as the actual remaining
+    gap, not conflated with the fixed stub.
+
+**Verification:** full suite re-run, same 19 pre-existing failures as
+every prior entry this cycle, zero regressions.
+
+**Open, not decided here:** `lord_natal_state.aspects` and a real dignity/
+essential-condition read remain unimplemented for both annual profections
+and Zodiacal Releasing - noted in the registry, not built this pass.
+Tier 3 (formula intelligence/signal hierarchy) remains untouched.
+
+---
+
 ## 2026-07-10 - Tier 2 predictive method registry landed (Gemini/Antigravity build, Claude Code review)
 
 **Context:** first Tier 2 pass under the corrected builder/review-crew model

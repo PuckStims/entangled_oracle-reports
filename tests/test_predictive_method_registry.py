@@ -54,6 +54,18 @@ class TestPredictiveMethodRegistry(unittest.TestCase):
         self.assertIsInstance(data["supported_bodies_and_points"], list)
         self.assertIsInstance(data["report_surface_permission"], list)
 
+    def test_every_method_answers_the_four_scope_questions(self):
+        # Tier 2 requires each method to self-answer what it calculates, what
+        # it doesn't, what it can claim, and what it merely contextualizes.
+        # Enforce that the notes field actually carries this, not just a
+        # generic description, so a future entry can't skip it silently.
+        for method_key, record in PREDICTIVE_METHOD_REGISTRY.items():
+            for phrase in ("Calculates:", "Does not calculate:", "Can claim:", "Merely contextualizes:"):
+                self.assertIn(
+                    phrase, record.notes,
+                    f"{method_key} notes missing '{phrase}'",
+                )
+
 
 if __name__ == "__main__":
     unittest.main()

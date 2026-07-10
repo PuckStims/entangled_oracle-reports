@@ -130,6 +130,43 @@ class TestZodiacalReleasing(unittest.TestCase):
         end = datetime.fromisoformat(l1[0]["end_at"].replace("Z", "+00:00"))
         self.assertAlmostEqual((end - start).days / 365.2425, 25.0, delta=0.01)
 
+    def test_lord_natal_state_reflects_real_chart_not_a_stub(self):
+        # Cancer's traditional ruler is the Moon. Give the Moon a real
+        # house/sign/retrograde so we can prove lord_natal_state is
+        # computed, not the old hardcoded stub.
+        payload = self._cancer_fortune_payload()
+        payload["standard_planets"]["Moon"] = {
+            "longitude": 0.0, "house": 4, "sign": "Cancer", "retrograde": False,
+        }
+        import formulas.standard.sect as sect_mod
+
+        original = sect_mod.evaluate_chart_sect
+        sect_mod.evaluate_chart_sect = lambda p: "day"
+        try:
+            import importlib
+
+            import engine.lots as lots_mod
+            import engine.zodiacal_releasing as zr_mod
+
+            importlib.reload(lots_mod)
+            importlib.reload(zr_mod)
+
+            periods = zr_mod.zodiacal_releasing_periods(
+                payload, _dt("2000-01-01"), _dt("2000-06-01"), lot_name="Fortune",
+            )
+        finally:
+            sect_mod.evaluate_chart_sect = original
+            importlib.reload(lots_mod)
+            importlib.reload(zr_mod)
+
+        l1 = next(p for p in periods if p["level"] == "L1")
+        self.assertEqual(l1["period_lord"], "Moon")
+        state = l1["lord_natal_state"]
+        self.assertEqual(state["condition"], "available")
+        self.assertEqual(state["house"], 4)
+        self.assertEqual(state["sign"], "Cancer")
+        self.assertFalse(state["retrograde"])
+
     def test_cancer_l1_contains_l2_loosing_of_the_bond_at_expected_boundary(self):
         payload = self._cancer_fortune_payload()
         periods = zodiacal_releasing_periods(payload, _dt("2000-01-01"), _dt("2025-01-02"), lot_name="Fortune")

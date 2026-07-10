@@ -270,6 +270,21 @@ PREDICTIVE_METHOD_REGISTRY: dict[str, PredictiveMethodRecord] = {
         confidence_policy="0.8415 if time known, 0.65 if unknown",
         report_surface_permission=("internal_rd", "engineering_diagnostic"),
         method_status="internal",
+        notes=(
+            "Calculates: a full TimeLordPeriod span per year (not just a "
+            "window) -- profected sign/house from the natal Ascendant, the "
+            "traditional ruler of that sign as time lord, and that lord's "
+            "real house/sign/retrograde state pulled from the natal payload. "
+            "Does not calculate: the time lord's aspects (always empty) or a "
+            "real dignity/essential-condition read -- 'condition' is only "
+            "available/unavailable (data presence), not domicile/exalted/"
+            "fallen; no monthly-profection period logic exists in this file. "
+            "Can claim: which planet is time lord for a given year, and "
+            "whether it's angular/retrograde/in a known house. Merely "
+            "contextualizes: currently consumed only as an internal transit-"
+            "scoring weight via time_lord_periods; no standalone 'Lord of "
+            "the Year' content exists in any report."
+        ),
     ),
     "progressions": PredictiveMethodRecord(
         display_name="Secondary Progressions",
@@ -283,11 +298,20 @@ PREDICTIVE_METHOD_REGISTRY: dict[str, PredictiveMethodRecord] = {
         report_surface_permission=("year_ahead", "personal_forecast", "internal_rd", "engineering_diagnostic"),
         method_status="production",
         notes=(
-            "Computed into report context today: Moon-progression contacts feed "
-            "personal_forecast (include_moon_progressions), and 'year texture' "
-            "progressions feed year_ahead (include_year_texture). Neither is "
-            "rendered by a template/prose block yet -- context presence is not "
-            "proof of client-visible copy."
+            "Calculates: three distinct variants -- progressed body-to-natal "
+            "contacts, progressed sign ingresses, and progressed lunation "
+            "phase events (new/full moon in the progressed chart) -- one "
+            "ephemeris day per year of life. Does not calculate: anything "
+            "about progressed houses beyond Ascendant/Midheaven contacts; no "
+            "progressed-chart interpretation beyond these three event types. "
+            "Can claim: the date a progressed contact/ingress/phase becomes "
+            "exact, and a confidence score gated on birth-time exactness for "
+            "angle-involved contacts. Merely contextualizes: computed into "
+            "report context today -- Moon-progression contacts feed "
+            "personal_forecast (include_moon_progressions), 'year texture' "
+            "progressions feed year_ahead (include_year_texture) -- but "
+            "neither is rendered by a template/prose block yet; context "
+            "presence is not proof of client-visible copy."
         ),
     ),
     "solar_arc": PredictiveMethodRecord(
@@ -302,9 +326,18 @@ PREDICTIVE_METHOD_REGISTRY: dict[str, PredictiveMethodRecord] = {
         report_surface_permission=("year_ahead", "internal_rd", "engineering_diagnostic"),
         method_status="production",
         notes=(
-            "Computed into year_ahead context today as 'year texture' "
-            "(include_year_texture); not consumed by personal_forecast, and not "
-            "rendered by a template/prose block yet."
+            "Calculates: Naibod-adjusted solar-arc contacts -- the natal "
+            "Sun's progressed daily motion applied uniformly to all natal "
+            "points, then checked for aspect contacts to natal targets. Does "
+            "not calculate: any arc convention other than the single Naibod "
+            "one declared above (no alternate arc conventions are mixed in "
+            "the same formula version). Can claim: the date a solar-arc "
+            "contact becomes exact, and a confidence score gated on "
+            "birth-time exactness for angle-involved contacts. Merely "
+            "contextualizes: computed into year_ahead context today as "
+            "'year texture' (include_year_texture); not consumed by "
+            "personal_forecast, and not rendered by a template/prose block "
+            "yet."
         ),
     ),
     "returns": PredictiveMethodRecord(
@@ -318,6 +351,17 @@ PREDICTIVE_METHOD_REGISTRY: dict[str, PredictiveMethodRecord] = {
         confidence_policy="0.833",
         report_surface_permission=("internal_rd", "engineering_diagnostic"),
         method_status="internal",
+        notes=(
+            "Calculates: the exact moment (0.01-degree tolerance) a body "
+            "returns to its natal longitude. Does not calculate: anything "
+            "about the return chart itself -- no return-chart houses, "
+            "angles, or aspects; the module's own docstring states "
+            "return-chart interpretation is 'intentionally deferred.' Can "
+            "claim: the date/time of a return, with a confidence score for "
+            "that timing. Merely contextualizes: a bare timestamp today, "
+            "nothing about what the return 'means' beyond that moment; not "
+            "consumed by any report path."
+        ),
     ),
     "lots": PredictiveMethodRecord(
         display_name="Calculated Lots",
@@ -330,6 +374,19 @@ PREDICTIVE_METHOD_REGISTRY: dict[str, PredictiveMethodRecord] = {
         confidence_policy="1.0 if sect resolved, 0.5 if unknown",
         report_surface_permission=("internal_rd", "engineering_diagnostic"),
         method_status="internal",
+        notes=(
+            "Calculates: Fortune/Spirit/Necessity longitude, sign, and house "
+            "via the day/night sect formulas; when sect can't be resolved "
+            "(Sun exactly on the horizon axis) it falls back to the day "
+            "formula and flags sect_state='unknown' with reduced confidence "
+            "rather than guessing. Does not calculate: any event or period "
+            "of its own -- Lots are static natal points with no timing, so "
+            "they never enter the ForecastEvent/TimeLordPeriod pipeline "
+            "directly. Can claim: a chart position, exactly like a natal "
+            "point. Merely contextualizes: they exist to feed Zodiacal "
+            "Releasing's period math; no standalone Lots content exists in "
+            "any report today."
+        ),
     ),
     "zodiacal_releasing": PredictiveMethodRecord(
         display_name="Zodiacal Releasing",
@@ -342,6 +399,24 @@ PREDICTIVE_METHOD_REGISTRY: dict[str, PredictiveMethodRecord] = {
         confidence_policy="0.80",
         report_surface_permission=("internal_rd", "engineering_diagnostic"),
         method_status="internal",
+        notes=(
+            "Calculates: a full L1-L4 TimeLordPeriod tree from Lot of "
+            "Fortune/Spirit using the Vettius Valens year-per-sign table, "
+            "including peak and Loosing-of-the-Bond detection; the period "
+            "lord's real house/sign/retrograde state (lord_natal_state, "
+            "same convention as annual_profections -- previously a "
+            "hardcoded stub, activated 2026-07-10). Does not calculate: the "
+            "lord's aspects (always empty, same limit as annual_profections) "
+            "or a real dignity/essential-condition read -- 'condition' is "
+            "only available/unavailable (data presence), not domicile/"
+            "exalted/fallen. Can claim: which sign/lord governs a given "
+            "span at each of the four levels, whether that span is a peak "
+            "or Loosing-of-the-Bond moment, and that lord's real house/"
+            "retrograde placement. Merely contextualizes: not consumed by "
+            "any report path yet; L3/L4 are "
+            "explicitly modifier-scale only per the module's own docstring, "
+            "not meant to justify a candidate on their own."
+        ),
     ),
 }
 
