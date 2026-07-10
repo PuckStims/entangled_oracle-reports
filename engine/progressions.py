@@ -16,6 +16,7 @@ except ImportError:  # pragma: no cover
     swe = None
 
 from engine.asteroid_policy import load_asteroid_policy
+from engine.forecast_event_adapter import normalize_to_forecast_event
 
 
 FORMULA_VERSION = "progressions_phase5.0.0"
@@ -169,7 +170,7 @@ def scan_progression_events(natal_payload: dict, start_date: datetime, end_date:
                     events.append(evt)
 
     events.sort(key=lambda event: (event["peak_datetime"], event["event_type"], event["transit_planet"]))
-    return events
+    return [normalize_to_forecast_event(e) for e in events]
 
 
 def progressed_longitude(natal_payload: dict, body_name: str, moment: datetime) -> float | None:

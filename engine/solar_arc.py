@@ -18,6 +18,7 @@ except ImportError:  # pragma: no cover - no-ephemeris environments mock scanner
     swe = None
 
 from engine.asteroid_policy import load_asteroid_policy
+from engine.forecast_event_adapter import normalize_to_forecast_event
 
 
 FORMULA_VERSION = "solar_arc_phase5.0.0"
@@ -121,7 +122,7 @@ def scan_solar_arc_events(natal_payload: dict, start_date: datetime, end_date: d
                 events.append(_solar_arc_event(source_name, target_name, source, target, aspect_name, orb, exact_at, birth_time_state, start))
 
     events.sort(key=lambda event: (event["peak_datetime"], event["transit_planet"], event["natal_target"]))
-    return events
+    return [normalize_to_forecast_event(e) for e in events]
 
 
 def _find_contact_exact(

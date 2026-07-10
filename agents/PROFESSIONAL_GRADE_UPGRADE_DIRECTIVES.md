@@ -90,6 +90,25 @@ useful, the preferred role split is:
 
 This is a valid operating model only if the split is explicit.
 
+### Powerhouse-then-refine, not propose-then-build
+
+Gemini/Antigravity's job is to power through and build real scaffolding and
+pathways inside its assigned tier -- including runtime code -- even in
+places everyone already expects it to get partially wrong. The point of
+the crew model is that Codex/ChatGPT and Claude Code refine and correct
+what Gemini actually built, in place, rather than Gemini staying confined
+to planning documents until someone else builds the real thing from
+scratch. Treat every Gemini pass as a working first draft of runtime code
+to be hardened, not merely a proposal to be approved or rejected wholesale.
+
+Tier boundaries still gate *what* Gemini is allowed to build -- a Tier 0/1
+pass should not create a Tier 2 method registry or a Tier 3 scoring
+formula -- they do not gate *whether* Gemini may touch runtime code within
+its assigned tier. A containment brief that reduces a Tier 1-inclusive run
+to "documentation only, do not change runtime behavior" is under-scoping
+the model, not correctly applying it; see `agents/HIGH_THROUGHPUT_AGENT_PROMPTS.md`
+for the corrected concrete brief.
+
 Gemini/Antigravity is well suited for:
 
 - large mechanical scaffolds
@@ -170,6 +189,12 @@ Unless the operator says otherwise, Gemini/Antigravity should not:
 - replace nuanced EO distinctions with flattened generalized wording
 - change policy/contract docs while another builder is implementing from
   them
+- invent a new registry, schema, or contract module without first
+  searching the repo for one that already covers the same concept and
+  reusing or extending it (this is the specific failure mode from the
+  first Tier 0/1 run: a new `engine/method_registry.py` duplicated both
+  `formulas/standard/method_registry.py` and
+  `formulas/governance_registry.py` without checking either)
 
 Preferred Gemini/Antigravity lane:
 
@@ -213,6 +238,13 @@ Optional second-pass reviewers:
 
 Goal: make the current system impossible to misunderstand before adding
 more method weight.
+
+Note: Tier 0 alone is audit-only by definition, not by distrust -- there
+is nothing to build yet, only to inventory. In practice the recommended
+first real project spans Tier 0 and Tier 1 together (see below); when a
+run is scoped that way, Tier 1's guardrails govern the buildable half of
+it. Don't downgrade Tier-1-appropriate implementation work to
+documentation-only just because "Tier 0" is in the run's label.
 
 Required directives:
 

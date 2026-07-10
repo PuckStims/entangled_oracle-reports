@@ -22,6 +22,7 @@ from zoneinfo import ZoneInfo
 
 import swisseph as swe
 
+from engine.forecast_event_adapter import normalize_to_forecast_event
 from formulas.standard.forecast_activation import (
     build_forecast_activation_profile,
     enrich_forecast_event,
@@ -2442,6 +2443,17 @@ def compute_year_ahead_events(
             progression_events.append(e)
             
     year_texture_solar_arc_enriched = linked_events["solar_arc_events"]
+
+    # progression_events and year_texture_solar_arc_enriched already passed
+    # through normalize_to_forecast_event inside scan_progression_events() /
+    # scan_solar_arc_events(); re-normalizing here would silently redo that
+    # work every call. Only the five families whose scanners predate the
+    # adapter need it applied at this seam.
+    transit_events = [normalize_to_forecast_event(e) for e in transit_events]
+    ingress_events = [normalize_to_forecast_event(e) for e in ingress_events]
+    station_events = [normalize_to_forecast_event(e) for e in station_events]
+    eclipse_events = [normalize_to_forecast_event(e) for e in eclipse_events]
+    lunation_events = [normalize_to_forecast_event(e) for e in lunation_events]
 
     all_events = transit_events + ingress_events + station_events + eclipse_events + lunation_events + progression_events
     all_events.sort(

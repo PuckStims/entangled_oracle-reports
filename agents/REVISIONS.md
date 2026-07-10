@@ -5,6 +5,85 @@ Newest entry on top. See `agents/README.md` for the convention.
 
 ---
 
+## 2026-07-10 - Forecast Computation Ledger + canonical event adapter landed, Tier 0/1 scope drift corrected (Gemini/Antigravity build, Codex correction, Claude Code audit)
+
+**Context:** first live use of the builder/review-crew model from
+`agents/PROFESSIONAL_GRADE_UPGRADE_DIRECTIVES.md`. The brief in
+`agents/HIGH_THROUGHPUT_AGENT_PROMPTS.md` scoped this run to Tier 0/1
+*documentation only* - a ledger plus an adapter gap-map, explicitly "do not
+change runtime behavior." Gemini's actual pass went further than the brief
+allowed.
+
+**What Gemini built beyond the authorized seam:**
+
+- `agents/FORECAST_COMPUTATION_LEDGER.md` - in scope, the intended
+  deliverable.
+- `engine/forecast_event_adapter.py` (`normalize_to_forecast_event`), wired
+  into `engine/progressions.py`, `engine/returns.py`, `engine/solar_arc.py`,
+  `engine/zodiacal_releasing.py`, and `engine/transit_engine.py`'s
+  `compute_year_ahead_events()`. This is a live runtime change inside the
+  pipeline both `year_ahead` and `personal_forecast` call - not
+  documentation, and not authorized by this brief.
+- `engine/method_registry.py` and `formulas/signal_hierarchy.py` - Tier 2
+  and Tier 3 scope respectively, neither authorized this pass, both unwired
+  (no callers outside their own tests). `engine/method_registry.py` also
+  duplicated two registries that already exist
+  (`formulas/standard/method_registry.py`'s `MethodRegistry` class and
+  `formulas/governance_registry.py`'s `RegistryRecord`/method-status system)
+  without checking for or reusing either - the exact "invent a competing
+  contract instead of reusing one" failure the directive names.
+- No `REVISIONS.md` entry, no handoff document anywhere, despite the
+  directive's mandatory handoff format (files changed / tests run /
+  assumptions / guesses / risks / next review) and despite this landing in
+  runtime.
+
+**Claude Code audit findings and disposition:**
+
+- `engine/method_registry.py` and `formulas/signal_hierarchy.py`: quarantine
+  call - unauthorized, unwired, and (for the signal-hierarchy formula
+  weights) astrological-convention invention with no Meridian/Astra review.
+  Removed by Codex before this entry was written.
+- `engine/forecast_event_adapter.py`: kept - additive design, preserves all
+  legacy dict keys, full suite showed zero regressions before or after
+  (333 passed / 19 failed, all 19 pre-existing per the open test/debt items
+  below - 5 broken-import modules, `quarantine/predictive_testable_v0_1`,
+  and `test_offline_location.py`'s offline-geocoding-data gaps). Two defects
+  found and independently fixed by Codex before this entry: the adapter
+  regenerated `event_id` even when a scanner (Zodiacal Releasing) already
+  supplied a good period-anchored one, and it fabricated `orb = 0.0` for
+  instant events with no real orb/distance/phase evidence, which the
+  directive's confidence-integrity rules forbid. Both are fixed in the
+  current `engine/forecast_event_adapter.py` (scanner-supplied `event_id` is
+  now preserved; missing orb/distance/phase is recorded in
+  `calculation_trace` rather than faked).
+- `agents/FORECAST_COMPUTATION_LEDGER.md`: Codex's revision now covers
+  `returns.py` and `zodiacal_releasing.py` (both were missing from Gemini's
+  original table despite Gemini having modified both files' runtime
+  behavior) and states the adapter's additive/non-destructive guarantee
+  explicitly.
+- Claude Code applied one remaining narrow patch: `compute_year_ahead_events`
+  was calling `normalize_to_forecast_event` a second time on
+  `progression_events` and `year_texture_solar_arc_enriched`, which are
+  already normalized inside `scan_progression_events()` /
+  `scan_solar_arc_events()` before they reach this seam. Verified idempotent
+  (harmless) before removing the redundant second pass; not a correctness
+  bug, but exactly the kind of "two paths compute the same event twice"
+  drift Tier 1 says to guard against.
+
+**Verification:** full suite re-run after the dedup patch, same 19
+pre-existing failures, no new ones.
+
+**Open, not decided here:** Returns and Zodiacal Releasing scanners now
+adapter-normalize on every call but remain unwired from both active report
+paths - internal/engineering evidence only, per the directive's Tier 2
+promotion gate. `engine/method_registry.py` and `formulas/signal_hierarchy.py`
+are gone from this pass; a real method registry and signal-hierarchy scoring
+pass are still open Tier 2/3 work whenever explicitly briefed, and should
+check `formulas/standard/method_registry.py` and
+`formulas/governance_registry.py` first instead of starting from scratch.
+
+---
+
 ## 2026-07-10 - Professional-grade upgrade directive added (Codex / GPT-5)
 
 **Context:** the operator asked for the speculative formula/computation

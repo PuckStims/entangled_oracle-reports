@@ -51,12 +51,13 @@ Before doing anything else:
 
 Operating model:
 - You are not the final alignment authority.
-- Your role is candidate construction inside a narrow seam.
+- Your role is candidate construction inside a narrow seam -- and that seam is meant to include real runtime code, not just planning documents. Power through and build working scaffolding even where you expect some of it will need correction; that correction is Codex/ChatGPT's and Claude Code's job, done in place on what you built, not a reason to stop short of building it.
 - Codex/ChatGPT and Claude Code will review for EO alignment, architecture, claim safety, and drift.
 
 Global rules:
-- Do not widen scope beyond the assigned tier.
+- Do not widen scope beyond the assigned tier (this gates *what* you build -- e.g. don't add Tier 2/3 deliverables during a Tier 0/1 run -- not *whether* you may write runtime code within your assigned tier).
 - Do not edit files outside the allowed seam.
+- Before creating any new registry, schema, or contract module, search the repo for one that already covers the same concept and reuse or extend it instead of building a competing one.
 - Do not promote internal methods into client-facing prose unless the brief explicitly says report-surface work is authorized.
 - Do not rewrite product-positioning docs.
 - Do not decide astrological conventions from scratch.
@@ -216,31 +217,47 @@ Files to Read:
 - `selectors/variable_resolver.py`
 
 Allowed Files To Modify:
-- one new ledger document under `agents/` if needed
-- one new schema/adaptor planning document under `agents/` if needed
-- existing non-client-facing evidence/schema notes under `agents/` only if directly relevant
+- one new ledger document under `agents/` (the Forecast Computation Ledger)
+- one new canonical-event-adapter module under `engine/` (e.g.
+  `engine/forecast_event_adapter.py`) implementing the schema/adapter map
+- the minimal import/call-site wiring needed to apply that adapter inside
+  the existing scanners it normalizes (e.g. `engine/progressions.py`,
+  `engine/returns.py`, `engine/solar_arc.py`, `engine/zodiacal_releasing.py`,
+  `engine/transit_engine.py`) -- additive only: every legacy dict key a
+  scanner already produced must still be present and unchanged in value,
+  no signature or call-order changes beyond wrapping return values
+- test scaffolds for the new adapter module
 
 Files Explicitly Off Limits:
 - `products/*/templates/`
 - `products/*/blocks/`
 - outward-facing README / product marketing copy
 - report prose selection logic intended to change visible behavior
-- any file outside the bounded documentation/evidence-planning seam
+- a method registry, signal-hierarchy/scoring module, or any other Tier
+  2/3 deliverable -- if you believe one is needed, say so in the handoff
+  instead of building it this pass
+- any new registry/schema/contract module without first searching for and
+  reusing an existing one covering the same concept (check
+  `formulas/standard/method_registry.py` and `formulas/governance_registry.py`
+  before proposing anything registry-shaped)
 
 Task:
-Build the first-pass Forecast Computation Ledger and Canonical Forecast Event Schema gap map.
+Build the first-pass Forecast Computation Ledger, and implement the
+canonical Forecast Event adapter it maps out, wired additively into the
+scanners that feed `year_ahead` and `personal_forecast`.
 
 Specifically:
 1. map the current active forecast call path for `year_ahead` and `personal_forecast`
-2. identify the raw event families currently computed and which report surfaces consume them
+2. identify the raw event families currently computed and which report surfaces consume them -- including families not yet wired into either active report path (e.g. returns, zodiacal releasing); document them as internal/engineering-only rather than omitting them
 3. document which event fields are present, missing, inconsistent, or named differently across active and partial methods
-4. propose a canonical event schema or adapter field map anchored to current repo reality
-5. keep the result internal/documentary only; do not change runtime behavior
+4. implement a canonical event schema adapter anchored to current repo reality, and wire it additively into the scanners it normalizes -- this is real runtime code, not a plan; it is expected to need a follow-up refinement pass from Codex/Claude Code, and that is the point of the crew model, not a failure to avoid
+5. do not touch templates, prose blocks, or anything client-visible; do not add new scoring/registry modules beyond the adapter itself
 
 Acceptance Criteria:
-- a future Codex/Claude pass can use your output to start schema normalization work without redoing the audit from scratch
-- the ledger distinguishes computed, hidden, sidecar/internal, and client-visible states
+- a future Codex/Claude pass can refine the adapter in place without rebuilding it from scratch
+- the ledger distinguishes computed, hidden, sidecar/internal, and client-visible states, and covers every event family the adapter touches, including ones not yet wired to a client-visible report
 - field gaps are concrete and file-anchored
+- the adapter is additive: existing selectors/templates continue to receive their current dict shapes unchanged; full test suite shows no new regressions
 - no client-facing behavior changes
 
 Required output at the end:
@@ -279,30 +296,45 @@ we are using Gemini/Antigravity as a high-throughput candidate-construction engi
 
 Gemini's intended seam:
 - internal ledger / audit documentation
-- canonical event schema gap mapping
-- no runtime behavior changes
+- a real, working canonical-event-adapter module, wired additively into
+  the scanners it normalizes
 - no client-surface changes
+- real runtime code is expected and correct here -- your job is to refine
+  it in place, not to reject it for existing. Treat it as a first draft to
+  harden, not a scope violation to undo.
 
 Your review priorities:
-- does the ledger match actual repo behavior
+- does the ledger match actual repo behavior, and does it cover every
+  event family the adapter touches (including internal-only ones like
+  returns/zodiacal-releasing, not just the two client-visible report paths)
 - did Gemini confuse computed/internal/client-visible states
 - did it flatten EO-specific distinctions
 - did it overstate methods that are still partial or hidden
-- are field gaps concrete enough to drive later implementation
+- is the adapter genuinely additive -- run the full suite before assuming so
+- did it drift into Tier 2/3 scope (a method registry, formula-scoring
+  module, or anything else beyond the adapter and ledger)
+- did it invent a new registry/schema/contract instead of reusing
+  `formulas/standard/method_registry.py` or `formulas/governance_registry.py`
+  if either already covers the concept
 - did it quietly drift into product/claim territory
 
-Do not default to rewriting the work.
+Do not default to rewriting the work. Refine what Gemini built in place
+where it's close; only rebuild the pieces that are actually wrong.
 Classify the result into:
 - accept as-is
 - accept with narrow corrective patch
 - needs revision before use
-- reject / quarantine
+- reject / quarantine (reserve this for genuine tier-boundary jumps or
+  unauthorized architecture invention, not for "this is runtime code and
+  I expected documentation")
 
 If you patch, keep it tightly scoped.
 If you review only, produce a concrete handoff list with file references.
 
 If Needed, Allowed Files To Patch:
 - the new `agents/` ledger/gap-map files created by Gemini
+- the new adapter module and its call-site wiring inside the scanners it normalizes
 - `agents/PLANNED_UPDATES.md` only if a narrowly scoped follow-up note is justified
-- `agents/REVISIONS.md` only if a meaningful, accepted documentation artifact has actually landed
+- `agents/REVISIONS.md` -- required once real runtime code has landed from
+  this pass, not just for documentation artifacts
 ```

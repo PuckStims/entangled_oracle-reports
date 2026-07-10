@@ -37,6 +37,7 @@ from datetime import datetime, timedelta, timezone
 from typing import Any
 
 from engine.lots import lot_longitude
+from engine.forecast_event_adapter import normalize_to_forecast_event
 
 FORMULA_VERSION = "zr_phase6.0.0"
 POLICY_VERSION = "phase0.1.1"
@@ -118,7 +119,7 @@ def zodiacal_releasing_events(
             if window_start <= event["peak_datetime"] <= window_end:
                 events.append(event)
     events.sort(key=lambda e: e["peak_datetime"])
-    return events
+    return [normalize_to_forecast_event(e) for e in events]
 
 
 def _build_context(natal_payload: dict, lot_name: str) -> dict | None:

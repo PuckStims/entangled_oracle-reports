@@ -16,6 +16,8 @@ try:
 except ImportError:  # pragma: no cover - exercised by no-ephemeris test environments
     swe = None
 
+from engine.forecast_event_adapter import normalize_to_forecast_event
+
 
 FORMULA_VERSION = "returns_phase4.0.0"
 POLICY_VERSION = "phase0.1.1"
@@ -84,7 +86,7 @@ def scan_return_events(
             events.append(_return_event(body, natal_longitude, exact_at))
 
     events.sort(key=lambda event: (event["peak_datetime"], event["return_body"]))
-    return events
+    return [normalize_to_forecast_event(e) for e in events]
 
 
 def _find_return_moments(
