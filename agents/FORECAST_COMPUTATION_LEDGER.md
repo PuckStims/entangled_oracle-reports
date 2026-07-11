@@ -34,24 +34,28 @@ The engine currently emits several raw event families, enriched synchronously vi
 | **Stations** | `scan_stations` | Yes | `year_ahead`, `personal_forecast` |
 | **Eclipses** | `scan_eclipses` | Yes | `year_ahead`, `personal_forecast` |
 | **Lunations** | `scan_lunations` | Yes | `year_ahead`, `personal_forecast` |
-| **Profection Periods** | `annual_profection_periods` | Yes (Internal) | Alters transit weights internally; no template consumes standalone profection periods. |
+| **Profection Periods** | `annual_profection_periods` | Yes | Alters transit weights internally and surfaces as compact annual timing-focus notes in Year Ahead. |
 | **Moon Progressions** | `scan_progression_events` | No | `personal_forecast` (when `include_moon_progressions=True`) |
 | **Texture Progressions** | `scan_progression_events` | No | `year_ahead` (when `include_year_texture=True`) |
 | **Solar Arcs** | `scan_solar_arc_events` | No | `year_ahead` (when `include_year_texture=True`) |
-| **Returns** | `scan_return_events` | No | Internal/engineering evidence only; not called by the two active report-context paths above. |
-| **Zodiacal Releasing events** | `zodiacal_releasing_events` | No | Internal/engineering evidence only; not called by the two active report-context paths above. |
+| **Returns** | `scan_return_events` | Yes | Surfaces in Year Ahead as grouped return timing notes when present. |
+| **Zodiacal Releasing events** | `zodiacal_releasing_events` | Yes | Surfaces in Year Ahead as grouped chapter timing notes when present. |
 
 ### State distinctions
 
 - Transits, ingresses, stations, eclipses, and lunations are computed and
   consumed by both forecast context builders.
-- Annual profections are computed as internal weighting/linkage. Their periods
-  are not standalone client prose.
+- Annual profections are computed as weighting/linkage evidence and can also
+  surface in Year Ahead as compact annual timing-focus notes. They should not
+  render as raw `time_lord_periods` scaffolding or as a full repeated forecast
+  chapter.
 - Progressed Moon events are computed for Personal Forecast context. Broader
   progression and Solar Arc events are computed for Year Ahead texture context.
   Context presence is not, by itself, proof of template consumption.
-- Returns and Zodiacal Releasing are implemented scanners with internal or
-  engineering visibility. This pass does not promote them into an active report.
+- Returns and Zodiacal Releasing are implemented scanners with compact Year
+  Ahead timing-note visibility when present in the timeline. Repeating return
+  cycles or time-lord handoffs should be grouped with date tags rather than
+  expanded into one full prose card per occurrence.
 - The canonical adapter is additive and preserves legacy keys so existing
   selectors/templates continue to receive their current shapes.
 

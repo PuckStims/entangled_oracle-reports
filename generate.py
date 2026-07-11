@@ -395,6 +395,26 @@ def _period_date_range(period: dict) -> str:
     return " - ".join(part for part in (start, end) if part)
 
 
+def _append_unique(values: list[str], value: str) -> None:
+    value = str(value or "").strip()
+    if value and value not in values:
+        values.append(value)
+
+
+def _timing_group_title(label: str, fallback: str) -> str:
+    label = str(label or "").strip()
+    titles = {
+        "trigger": "Trigger Periods",
+        "chapter": "Repeating Theme",
+        "opening": "Opening Periods",
+        "pressure": "Pressure Periods",
+        "recovery": "Recovery Periods",
+        "background": "Background Conditions",
+        "fallback": fallback,
+    }
+    return titles.get(label, f"{label.replace('_', ' ').title()} Periods" if label else fallback)
+
+
 def _topic_to_domain_key(topic_keys: list[str], remap: dict) -> str:
     topic_remap = remap.get("topic_key") if isinstance(remap.get("topic_key"), dict) else {}
     for topic in topic_keys or []:
@@ -454,8 +474,8 @@ def _build_predictive_report_surface(
     chapter_library = _load_json_file(chapters_path or "")
     chapter_remap = chapter_library.get("_tier4_remap", {})
 
-    cards = []
-    for chapter in (synthesis.get("evidence_chapters") or [])[:6]:
+    chapter_groups = {}
+    for chapter in (synthesis.get("evidence_chapters") or []):
         if not isinstance(chapter, dict):
             continue
         chapter_kind = _chapter_kind_from_tier4(chapter, chapter_remap)
@@ -463,18 +483,27 @@ def _build_predictive_report_surface(
         block = _dict_lookup_with_fallback(chapter_library, chapter_kind, domain_key)
         if not block:
             block = _dict_lookup_with_fallback(chapter_library, "fallback")
-        cards.append({
-            "title": str(chapter.get("time_scope") or "Forecast chapter"),
+        tier4_label = str(chapter.get("label") or "")
+        group_key = (chapter_kind, domain_key, tier4_label, block)
+        card = chapter_groups.setdefault(group_key, {
+            "title": _timing_group_title(tier4_label, "Forecast Chapter"),
             "kicker": str(chapter.get("chapter_type") or "tier4_chapter"),
             "body": block,
             "chapter_kind": chapter_kind,
             "domain_key": domain_key,
-            "tier4_label": str(chapter.get("label") or ""),
+            "tier4_label": tier4_label,
             "source": "forecast_synthesis.evidence_chapters",
-            "source_event_ids": list(chapter.get("supporting_event_ids") or [])[:8],
-            "complicating_event_ids": list(chapter.get("complicating_event_ids") or [])[:8],
+            "date_labels": [],
+            "source_event_ids": [],
+            "complicating_event_ids": [],
             "provenance": list(chapter.get("provenance") or [])[:4],
         })
+        _append_unique(card["date_labels"], chapter.get("time_scope", ""))
+        for event_id in list(chapter.get("supporting_event_ids") or []):
+            _append_unique(card["source_event_ids"], event_id)
+        for event_id in list(chapter.get("complicating_event_ids") or []):
+            _append_unique(card["complicating_event_ids"], event_id)
+    cards = list(chapter_groups.values())
 
     candidates = []
     if report_type == "personal_forecast":
@@ -534,7 +563,7 @@ def _build_tier5_year_ahead_surfaces(timeline: dict, forecast_synthesis: dict, p
             "period_house": period.get("period_house", ""),
             "period_sign": period.get("period_sign", ""),
             "confidence": period.get("confidence", 0.0),
-            "source": "time_lord_periods.annual_profection",
+            "source_label": "Annual timing focus",
         })
 
     zr_periods_by_id = {
@@ -543,39 +572,110 @@ def _build_tier5_year_ahead_surfaces(timeline: dict, forecast_synthesis: dict, p
         if isinstance(period, dict)
     }
     zodiacal_releasing = []
-    for event in timeline.get("zodiacal_releasing_events", [])[:8]:
+    zr_groups = {}
+    for event in timeline.get("zodiacal_releasing_events", []):
         period = zr_periods_by_id.get(event.get("period_id"), {})
         level = str(period.get("level") or ("L1" if str(event.get("method_variant") or "").startswith("zr_l1") else "L2"))
         if level not in {"L1", "L2"}:
             continue
         kind = _zr_event_kind(event)
-        zodiacal_releasing.append({
+        body = _raw_select_block(zr_path, level, kind)
+        group_key = (level, kind, body)
+        card = zr_groups.setdefault(group_key, {
             "title": "Zodiacal Releasing",
-            "kicker": _display_any_date(event.get("peak_datetime")),
-            "body": _raw_select_block(zr_path, level, kind),
+            "kicker": f"{level} {kind.replace('_', ' ')}",
+            "body": body,
             "level": level,
             "event_kind": kind,
-            "period_lord": event.get("period_lord", ""),
-            "period_sign": event.get("period_sign", ""),
-            "lot_name": event.get("natal_target", ""),
-            "source": "zodiacal_releasing_events",
+            "period_lords": [],
+            "period_signs": [],
+            "lot_names": [],
+            "period_lord": "",
+            "period_sign": "",
+            "lot_name": "",
+            "date_labels": [],
+            "source_label": "Chapter timing note",
         })
+        _append_unique(card["date_labels"], _display_any_date(event.get("peak_datetime")))
+        _append_unique(card["period_lords"], event.get("period_lord", ""))
+        _append_unique(card["period_signs"], event.get("period_sign", ""))
+        _append_unique(card["lot_names"], event.get("natal_target", ""))
+        card["period_lord"] = ", ".join(card["period_lords"])
+        card["period_sign"] = ", ".join(card["period_signs"])
+        card["lot_name"] = ", ".join(card["lot_names"])
+    zodiacal_releasing = list(zr_groups.values())[:6]
 
     exact_returns = []
-    for event in timeline.get("return_events", [])[:8]:
+    return_groups = {}
+    for event in timeline.get("return_events", []):
         variant = str(event.get("method_variant") or "fallback")
-        exact_returns.append({
-            "title": "Exact Return",
-            "kicker": _display_any_date(event.get("peak_datetime")),
-            "body": _raw_select_block(returns_path, variant),
-            "return_body": event.get("return_body", event.get("transit_planet", "")),
+        body = _raw_select_block(returns_path, variant)
+        return_body = event.get("return_body", event.get("transit_planet", ""))
+        title = {
+            "solar_return": "Solar Return",
+            "lunar_return": "Lunar Return",
+            "jupiter_return": "Jupiter Return",
+            "saturn_return": "Saturn Return",
+        }.get(variant, "Return Cycle")
+        card = return_groups.setdefault(variant, {
+            "title": title,
+            "kicker": variant.replace("_", " "),
+            "body": body,
+            "return_body": return_body,
             "method_variant": variant,
             "temporal_precision": event.get("temporal_precision", ""),
             "confidence": event.get("confidence", 0.0),
-            "source": "return_events",
+            "date_labels": [],
+            "source_label": "Return timing note",
         })
+        _append_unique(card["date_labels"], _display_any_date(event.get("peak_datetime")))
+    exact_returns = list(return_groups.values())[:6]
 
     annual = forecast_synthesis.get("annual_terrain_map") if isinstance(forecast_synthesis, dict) else {}
+    terrain_month_groups = {}
+    for month in (forecast_synthesis.get("monthly_terrain") or []):
+        if not isinstance(month, dict) or month.get("zone") == "background":
+            continue
+        zone = str(month.get("zone") or "fallback")
+        body = _raw_select_block(terrain_path, "monthly_zones", zone)
+        group_key = (zone, body)
+        card = terrain_month_groups.setdefault(group_key, {
+            "title": f"{zone.replace('_', ' ').title()} Months" if zone != "fallback" else "Monthly Terrain",
+            "kicker": zone,
+            "body": body,
+            "relative_intensity": 0.0,
+            "method_families": [],
+            "dominant_topics": [],
+            "date_labels": [],
+            "source_label": "Monthly pattern",
+        })
+        card["relative_intensity"] = max(float(card.get("relative_intensity") or 0.0), float(month.get("relative_intensity") or 0.0))
+        for family in list(month.get("method_families") or []):
+            _append_unique(card["method_families"], family)
+        for topic in list(month.get("dominant_topics") or []):
+            _append_unique(card["dominant_topics"], topic)
+        _append_unique(card["date_labels"], month.get("month_name", ""))
+
+    terrain_chapter_groups = {}
+    for chapter in (forecast_synthesis.get("evidence_chapters") or []):
+        if not isinstance(chapter, dict):
+            continue
+        chapter_type = str(chapter.get("chapter_type") or "fallback")
+        label = str(chapter.get("label") or "fallback")
+        body = _raw_select_block(terrain_path, "chapter_types", chapter_type, label)
+        group_key = (chapter_type, label, body)
+        card = terrain_chapter_groups.setdefault(group_key, {
+            "title": _timing_group_title(label, "Forecast Chapter"),
+            "kicker": label,
+            "body": body,
+            "topic_keys": [],
+            "date_labels": [],
+            "source_label": "Chapter pattern",
+        })
+        for topic in list(chapter.get("topic_keys") or []):
+            _append_unique(card["topic_keys"], topic)
+        _append_unique(card["date_labels"], chapter.get("time_scope", ""))
+
     terrain = {
         "annual": {
             "title": "Forecast Terrain",
@@ -583,37 +683,10 @@ def _build_tier5_year_ahead_surfaces(timeline: dict, forecast_synthesis: dict, p
             "body": _raw_select_block(terrain_path, "agreement_labels", str(annual.get("label") or "fallback")),
             "method_families": list(annual.get("method_families") or []),
             "dominant_topics": list(annual.get("dominant_topics") or [])[:6],
-            "source": "forecast_synthesis.annual_terrain_map",
+            "source_label": "Annual pattern",
         },
-        "months": [
-            {
-                "title": month.get("month_name", ""),
-                "kicker": month.get("zone", ""),
-                "body": _raw_select_block(terrain_path, "monthly_zones", str(month.get("zone") or "fallback")),
-                "relative_intensity": month.get("relative_intensity", 0.0),
-                "method_families": list(month.get("method_families") or []),
-                "dominant_topics": list(month.get("dominant_topics") or [])[:4],
-                "source": "forecast_synthesis.monthly_terrain",
-            }
-            for month in (forecast_synthesis.get("monthly_terrain") or [])
-            if isinstance(month, dict) and month.get("zone") != "background"
-        ][:6],
-        "chapters": [
-            {
-                "title": chapter.get("time_scope", ""),
-                "kicker": chapter.get("label", ""),
-                "body": _raw_select_block(
-                    terrain_path,
-                    "chapter_types",
-                    str(chapter.get("chapter_type") or "fallback"),
-                    str(chapter.get("label") or "fallback"),
-                ),
-                "topic_keys": list(chapter.get("topic_keys") or [])[:4],
-                "source": "forecast_synthesis.evidence_chapters",
-            }
-            for chapter in (forecast_synthesis.get("evidence_chapters") or [])[:6]
-            if isinstance(chapter, dict)
-        ],
+        "months": list(terrain_month_groups.values())[:6],
+        "chapters": list(terrain_chapter_groups.values())[:6],
         "contradictions": [
             {
                 "title": "Forecast contradiction",
@@ -621,7 +694,7 @@ def _build_tier5_year_ahead_surfaces(timeline: dict, forecast_synthesis: dict, p
                 "body": _raw_select_block(terrain_path, "contradictions", str(item.get("label") or "fallback")),
                 "method_families": list(item.get("method_families") or []),
                 "operations": list(item.get("operations") or []),
-                "source": "forecast_synthesis.contradictions",
+                "source_label": "Mixed signal",
             }
             for item in (forecast_synthesis.get("contradictions") or [])[:4]
             if isinstance(item, dict)

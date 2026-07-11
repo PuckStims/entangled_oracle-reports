@@ -132,6 +132,98 @@ class TestTier5ReportScaffolding(unittest.TestCase):
             self.assertNotEqual(body, "TODO")
             self.assertGreater(len(body), 40)
 
+    def test_tier5_recurring_methods_are_grouped_as_timing_notes(self):
+        synthesis = {
+            "annual_terrain_map": {
+                "label": "convergent",
+                "method_families": ["RETURN_MOON", "TIME_LORD"],
+                "dominant_topics": ["house:4"],
+            },
+            "monthly_terrain": [],
+            "evidence_chapters": [],
+            "contradictions": [],
+        }
+        timeline = {
+            "time_lord_periods": [],
+            "zodiacal_releasing_periods": [
+                {"period_id": "zr1", "level": "L2"},
+            ],
+            "zodiacal_releasing_events": [
+                {
+                    "period_id": "zr1",
+                    "method_variant": "zr_peak",
+                    "peak_datetime": "2027-02-01T00:00:00+00:00",
+                    "period_lord": "Venus",
+                    "period_sign": "Libra",
+                    "natal_target": "Fortune",
+                },
+                {
+                    "period_id": "zr1",
+                    "method_variant": "zr_peak",
+                    "peak_datetime": "2027-03-01T00:00:00+00:00",
+                    "period_lord": "Venus",
+                    "period_sign": "Libra",
+                    "natal_target": "Fortune",
+                },
+            ],
+            "return_events": [
+                {
+                    "method_variant": "lunar_return",
+                    "peak_datetime": "2027-01-05T00:00:00+00:00",
+                    "return_body": "Moon",
+                    "temporal_precision": "instant",
+                    "confidence": 0.81,
+                },
+                {
+                    "method_variant": "lunar_return",
+                    "peak_datetime": "2027-02-02T00:00:00+00:00",
+                    "return_body": "Moon",
+                    "temporal_precision": "instant",
+                    "confidence": 0.82,
+                },
+                {
+                    "method_variant": "solar_return",
+                    "peak_datetime": "2027-09-24T00:00:00+00:00",
+                    "return_body": "Sun",
+                    "temporal_precision": "instant",
+                    "confidence": 0.9,
+                },
+            ],
+        }
+
+        surface = generate._build_tier5_year_ahead_surfaces(
+            timeline,
+            synthesis,
+            CONTENT_PACKS["plainspeak"],
+        )
+
+        self.assertEqual(len(surface["exact_returns"]), 2)
+        lunar = next(card for card in surface["exact_returns"] if card["method_variant"] == "lunar_return")
+        self.assertEqual(lunar["title"], "Lunar Return")
+        self.assertEqual(lunar["source_label"], "Return timing note")
+        self.assertEqual(lunar["date_labels"], ["January 05, 2027", "February 02, 2027"])
+        self.assertNotIn("return_events", lunar.values())
+
+        self.assertEqual(len(surface["zodiacal_releasing"]), 1)
+        zr = surface["zodiacal_releasing"][0]
+        self.assertEqual(zr["source_label"], "Chapter timing note")
+        self.assertEqual(zr["date_labels"], ["February 01, 2027", "March 01, 2027"])
+        self.assertNotIn("zodiacal_releasing_events", zr.values())
+
+    def test_year_ahead_template_has_no_client_visible_scaffold_or_raw_sources(self):
+        template = (PROJECT_ROOT / "products/year_ahead/templates/active/year_ahead.html").read_text(encoding="utf-8")
+        prohibited = [
+            "Time-Lord &amp; Return Scaffolds",
+            "Forecast Terrain Scaffold",
+            "Placeholder TODO",
+            "{{ card.source }}",
+            "{{ tier5_predictive_surfaces.forecast_terrain.annual.source }}",
+            "{{ card.source }} - {{ card.tier4_label }}",
+        ]
+
+        for text in prohibited:
+            self.assertNotIn(text, template)
+
     def test_predictive_chapters_remap_tier4_synthesis_to_existing_prose(self):
         synthesis = {
             "annual_terrain_map": {
