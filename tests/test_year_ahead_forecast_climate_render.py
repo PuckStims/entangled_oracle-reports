@@ -25,7 +25,7 @@ def _html(path: Path) -> str:
     return path.read_text(encoding="utf-8", errors="replace")
 
 
-def test_forecast_climate_renders_in_three_report_outputs():
+def test_client_report_omits_forecast_climate_section_in_three_report_outputs():
     samples = [
         {
             "args": [
@@ -36,7 +36,7 @@ def test_forecast_climate_renders_in_three_report_outputs():
                 "--report-date", "2026-06-28",
                 "--output-filename", "test_noah_forecast_climate.html",
             ],
-            "must_include": ["Primary pattern:", "Most activated territory:"],
+            "must_include": [],
         },
         {
             "args": [
@@ -58,28 +58,26 @@ def test_forecast_climate_renders_in_three_report_outputs():
                 "--report-date", "2026-06-28",
                 "--output-filename", "test_puck_forecast_climate.html",
             ],
-            "must_include": ["These field qualities organize the recurring conditions already visible across the report"],
+            "must_include": [],
         },
     ]
 
     for sample in samples:
         html_path = _generate(sample["args"])
         html = _html(html_path)
-        assert "Forecast climate" in html
-        assert "forecast-climate-list" in html
-        assert "Primary pattern:" in html
-        assert "Primary cycles:" in html
-        assert "Field qualities" in html
+        assert "Forecast climate" not in html
+        assert 'id="forecast-climate"' not in html
+        assert "Primary pattern:" not in html
+        assert "Primary cycles:" not in html
+        assert "Field qualities" not in html
         assert "No separate convergence window was isolated for this month." not in html
-        # Section numbering shifted after "Annual rhythm" (VIII) and "Turning
-        # point guide" (X) were inserted ahead of these sections.
-        assert "IX. Monthly chapters" in html
-        assert "XI. Cycle ledger" in html
-        assert "XII. Technical appendix" in html
-        assert "XIII. Year integration" in html
+        assert "VII. Monthly chapters" in html
+        assert "IX. Cycle ledger" in html
+        assert "X. Technical appendix" in html
+        assert "XI. Year integration" in html
         for text in sample["must_include"]:
             assert text in html
 
 
 if __name__ == "__main__":
-    test_forecast_climate_renders_in_three_report_outputs()
+    test_client_report_omits_forecast_climate_section_in_three_report_outputs()

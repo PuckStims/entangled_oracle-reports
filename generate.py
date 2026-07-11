@@ -47,6 +47,24 @@ def _env_flag(name: str) -> bool:
 
 _EO_CONTENT_TRACE = _env_flag("EO_CONTENT_TRACE")
 
+YEAR_TEXTURE_CLIENT_TARGETS = {
+    "Sun",
+    "Moon",
+    "Mercury",
+    "Venus",
+    "Mars",
+    "Jupiter",
+    "Saturn",
+    "Uranus",
+    "Neptune",
+    "Pluto",
+    "ASC",
+    "MC",
+}
+YEAR_TEXTURE_PROGRESSIONS_MAX_COUNT = 4
+YEAR_TEXTURE_SOLAR_ARC_MAX_COUNT = 3
+YEAR_TEXTURE_MIN_CLIENT_SCORE = 0.42
+
 try:
     from jinja2 import Environment, FileSystemLoader, select_autoescape
     JINJA2_AVAILABLE = True
@@ -4193,16 +4211,13 @@ def _build_chart_characteristics(payload: dict) -> dict:
         )
         if top_house_count >= 2 and concentrated_houses:
             house_value = f"{_format_house_list(concentrated_houses)} house{'s' if len(concentrated_houses) > 1 else ''} ({top_house_count})"
-        else:
-            house_value = "No house concentration above one tracked planet"
-
-        cards.append(
-            _make_characteristic_card(
-                "House concentration",
-                house_value,
-                "Highlights the house or houses containing the largest number of the ten tracked planets.",
+            cards.append(
+                _make_characteristic_card(
+                    "House concentration",
+                    house_value,
+                    "Highlights the house or houses containing the largest number of the ten tracked planets.",
+                )
             )
-        )
     else:
         qualification = "With birth time unknown or approximate, angle- and house-dependent distributions are withheld rather than inferred from the noon placeholder chart."
         cards.extend(
@@ -4241,16 +4256,13 @@ def _build_chart_characteristics(payload: dict) -> dict:
     )
     if sign_stelliums:
         sign_value = "; ".join(f"{sign} ({count})" for sign, count in sign_stelliums)
-    else:
-        sign_value = "No sign stellium at the 3-planet threshold"
-
-    cards.append(
-        _make_characteristic_card(
-            "Sign stellium indicator",
-            sign_value,
-            "Flags any sign containing three or more of the ten tracked planets.",
+        cards.append(
+            _make_characteristic_card(
+                "Sign stellium indicator",
+                sign_value,
+                "Flags any sign containing three or more of the ten tracked planets.",
+            )
         )
-    )
 
     if has_exact_time:
         house_stelliums = sorted(
@@ -4263,15 +4275,13 @@ def _build_chart_characteristics(payload: dict) -> dict:
         )
         if house_stelliums:
             house_stellium_value = "; ".join(f"{_ordinal(house)} house ({count})" for house, count in house_stelliums)
-        else:
-            house_stellium_value = "No house stellium at the 3-planet threshold"
-        cards.append(
-            _make_characteristic_card(
-                "House stellium indicator",
-                house_stellium_value,
-                "Flags any house containing three or more of the ten tracked planets in the exact-time chart.",
+            cards.append(
+                _make_characteristic_card(
+                    "House stellium indicator",
+                    house_stellium_value,
+                    "Flags any house containing three or more of the ten tracked planets in the exact-time chart.",
+                )
             )
-        )
     else:
         cards.append(
             _make_characteristic_card(
@@ -7832,6 +7842,122 @@ def _build_year_ahead_curated_summaries(
     }
 
 
+def _canonical_year_texture_target(event: dict) -> str:
+    target = str(event.get("natal_target") or "").strip()
+    normalized = {
+        "Ascendant": "ASC",
+        "Midheaven": "MC",
+        "Imum Coeli": "IC",
+        "Descendant": "DSC",
+    }.get(target, target)
+    return normalized
+
+
+def _year_texture_client_score(event: dict) -> float:
+    score = float(
+        event.get("reader_facing_activity_score")
+        or event.get("combined_intensity_score")
+        or event.get("score")
+        or event.get("raw_score")
+        or 0.0
+    )
+    source = str(event.get("transit_planet") or "")
+    target = _canonical_year_texture_target(event)
+    exactness = float(event.get("exactness") or 0.0)
+
+    if source in {"Sun", "Moon", "Ascendant", "Midheaven"}:
+        score += 0.05
+    if target in {"Sun", "Moon", "ASC", "MC"}:
+        score += 0.05
+    if exactness >= 0.85:
+        score += 0.03
+    if event.get("method_variant") in {"transit_to_progressed", "progressed_to_progressed"}:
+        score -= 0.25
+    if target not in YEAR_TEXTURE_CLIENT_TARGETS:
+        score -= 0.20
+    return score
+
+
+def _select_client_year_texture_events(
+    progression_events: list[dict],
+    solar_arc_events: list[dict],
+) -> tuple[list[dict], list[dict]]:
+    """Selects the small directed-clock set that belongs in the client report.
+
+    The scanners intentionally stay high-recall. This helper is the report
+    boundary: it keeps only direct, specifically authored contacts and limits
+    repeated source/target/date clusters before prose cards are created.
+    """
+
+    def eligible(event: dict, event_type: str) -> bool:
+        if event.get("event_type") != event_type:
+            return False
+        if event.get("clock_role") != "chapter":
+            return False
+        if _canonical_year_texture_target(event) not in YEAR_TEXTURE_CLIENT_TARGETS:
+            return False
+        if event_type == "progression" and event.get("method_variant") != "progression_body_aspect":
+            return False
+        if event_type == "solar_arc" and event.get("method_variant") not in {
+            "solar_arc_body_aspect",
+            "solar_arc_angle_aspect",
+        }:
+            return False
+        return _year_texture_client_score(event) >= YEAR_TEXTURE_MIN_CLIENT_SCORE
+
+    def select(events: list[dict], event_type: str, max_count: int) -> list[dict]:
+        ranked = sorted(
+            [event for event in events if eligible(event, event_type)],
+            key=lambda event: (
+                _year_texture_client_score(event),
+                float(event.get("exactness") or 0.0),
+                str(event.get("peak_datetime") or event.get("peak_date") or ""),
+            ),
+            reverse=True,
+        )
+        selected: list[dict] = []
+        source_counts: dict[str, int] = {}
+        target_counts: dict[str, int] = {}
+        month_counts: dict[str, int] = {}
+        seen_pairs: set[tuple[str, str]] = set()
+
+        for event in ranked:
+            source = str(event.get("transit_planet") or "")
+            target = _canonical_year_texture_target(event)
+            pair = (source, target)
+            month_key = _year_month_key(event)
+            if pair in seen_pairs:
+                continue
+            if source_counts.get(source, 0) >= 2:
+                continue
+            if target_counts.get(target, 0) >= 2:
+                continue
+            if month_counts.get(month_key, 0) >= 2:
+                continue
+            selected.append(event)
+            seen_pairs.add(pair)
+            source_counts[source] = source_counts.get(source, 0) + 1
+            target_counts[target] = target_counts.get(target, 0) + 1
+            month_counts[month_key] = month_counts.get(month_key, 0) + 1
+            if len(selected) >= max_count:
+                break
+        selected.sort(key=lambda event: event.get("peak_datetime") or event.get("peak_date") or "")
+        return selected
+
+    return (
+        select(progression_events, "progression", YEAR_TEXTURE_PROGRESSIONS_MAX_COUNT),
+        select(solar_arc_events, "solar_arc", YEAR_TEXTURE_SOLAR_ARC_MAX_COUNT),
+    )
+
+
+def _year_month_key(event: dict) -> str:
+    value = event.get("peak_datetime") or event.get("entry_datetime") or event.get("peak_date") or ""
+    if isinstance(value, datetime):
+        return value.strftime("%Y-%m")
+    text = str(value)
+    return text[:7] if len(text) >= 7 else text
+
+
 def _build_year_ahead_context(
     variables: dict,
     index_results: dict,
@@ -7992,9 +8118,13 @@ def _build_year_ahead_context(
         for event in year_arc_candidates[:LANDMARK_MAX_COUNT]
     ]
 
-    # Progressions & Solar Arc run on their own season-scale clock (chapter-role,
-    # ~60-90 day windows) and are never folded into all_events/months, so they
-    # get their own formatted card lists for a dedicated "Year Texture" section.
+    # Progressions & Solar Arc run on their own season-scale clock. The scanners
+    # stay high-recall for diagnostics; the client report receives only a small
+    # curated highlight set rather than the full raw contact inventory.
+    year_texture_progressions, year_texture_solar_arc = _select_client_year_texture_events(
+        year_texture_progressions,
+        year_texture_solar_arc,
+    )
     year_texture_progressions = [
         _format_timeline_event(event, HOUSE_DOMAINS, pack, standard_report_bundle, payload, index_results, lens_ctx,
                                rendered_cycle_ids=rendered_cycle_ids)
@@ -8482,14 +8612,6 @@ def _render_fallback(report_type: str, context: dict) -> str:
                             continue
                         sections.append(
                             f"<div class=\"block\"><strong>{_escape(item.get('title', ''))}</strong><br>{_escape(item.get('summary', ''))}</div>"
-                        )
-                if climate:
-                    sections.append("<h3>Field Highlights</h3>")
-                    for item in climate:
-                        if not isinstance(item, dict):
-                            continue
-                        sections.append(
-                            f"<div class=\"block\"><strong>{_escape(item.get('field_label', ''))}</strong><br>{_escape(item.get('summary_line', ''))}</div>"
                         )
                 orientation = curated.get("orientation", {})
                 if isinstance(orientation, dict) and orientation.get("long_cycle_emphasis"):

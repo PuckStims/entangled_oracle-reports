@@ -722,8 +722,8 @@ class TestVariableResolverExtensions(unittest.TestCase):
         )
 
         self.assertIn("Seasonal Highlights", html)
-        self.assertIn("Field Highlights", html)
-        self.assertIn("Identity and Vitality", html)
+        self.assertNotIn("Field Highlights", html)
+        self.assertNotIn("Identity and Vitality", html)
         self.assertNotIn("field_key", html)
         self.assertEqual(html.count("Dominant long cycle"), 1)
 
@@ -809,6 +809,7 @@ class TestVariableResolverExtensions(unittest.TestCase):
 
         self.assertNotIn("Seasonal Highlights", html)
         self.assertNotIn("Field Highlights", html)
+        self.assertNotIn("Identity and Vitality", html)
 
 
 if __name__ == "__main__":

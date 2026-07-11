@@ -697,6 +697,860 @@
       border-radius: 7px;
     }
 
+    /* Magazine redesign layer: applies only to the middle client-report body.
+       Section I and the closing guide/ledger/appendix/integration sections keep
+       their existing layouts. */
+    :root {
+      --mag-paper: #fbfaf6;
+      --mag-page-edge: #e9e5da;
+      --mag-ink: #201c2c;
+      --mag-soft: #5b5770;
+      --mag-faint: #918c9f;
+      --mag-rule: #d9d4e6;
+      --mag-rule-soft: #ece8f2;
+      --mag-gold: #8b6200;
+      --mag-flowing: #1a7a4a;
+      --mag-challenging: #8b5000;
+      --mag-eclipse: #7a1a8a;
+      --mag-converge: #4a4090;
+      --mag-blue: #1a6b9a;
+      --mag-shadow: 0 1px 3px rgba(40,30,60,.06), 0 12px 40px rgba(40,30,60,.07);
+      --mag-sans: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+    }
+
+    #natal-reference,
+    #reading-this-report,
+    #year-orientation,
+    #archetypal-frame,
+    #forecast-climate,
+    #year-arcs,
+    #annual-rhythm,
+    #monthly-chapters,
+    .month-section {
+      color: var(--mag-ink);
+      background: var(--mag-paper);
+      box-shadow: var(--mag-shadow);
+      padding: 34px 56px 44px;
+      margin-left: -20px;
+      margin-right: -20px;
+    }
+
+    #natal-reference .section-header,
+    #reading-this-report .section-header,
+    #year-orientation .section-header,
+    #archetypal-frame .section-header,
+    #forecast-climate .section-header,
+    #year-arcs .section-header,
+    #annual-rhythm .section-header,
+    #monthly-chapters .section-header {
+      align-items: baseline;
+      margin-bottom: 30px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--mag-rule);
+    }
+
+    #natal-reference .eyebrow,
+    #reading-this-report .eyebrow,
+    #year-orientation .eyebrow,
+    #archetypal-frame .eyebrow,
+    #forecast-climate .eyebrow,
+    #year-arcs .eyebrow,
+    #annual-rhythm .eyebrow,
+    #monthly-chapters .eyebrow {
+      color: var(--mag-gold);
+      font-family: var(--mag-sans);
+      font-size: .64rem;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      font-variant-caps: normal;
+    }
+
+    #natal-reference h2,
+    #reading-this-report h2,
+    #year-orientation h2,
+    #archetypal-frame h2,
+    #forecast-climate h2,
+    #year-arcs h2,
+    #annual-rhythm h2,
+    #monthly-chapters h2,
+    .month-heading {
+      color: var(--mag-ink);
+      font-size: 2rem;
+      font-weight: normal;
+      letter-spacing: 0;
+      line-height: 1.08;
+    }
+
+    #natal-reference .section-subtitle,
+    #reading-this-report .section-subtitle,
+    #year-orientation .section-subtitle,
+    #archetypal-frame .section-subtitle,
+    #forecast-climate .section-subtitle,
+    #year-arcs .section-subtitle,
+    #annual-rhythm .section-subtitle,
+    #monthly-chapters .section-subtitle {
+      max-width: 60ch;
+      color: var(--mag-soft);
+      font-size: .95rem;
+      line-height: 1.55;
+      font-style: italic;
+    }
+
+    #natal-reference .snapshot-table {
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      font-family: var(--mag-sans);
+    }
+
+    #natal-reference .snapshot-table th {
+      color: var(--mag-faint);
+      font-size: .62rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      font-variant-caps: normal;
+    }
+
+    #natal-reference .snapshot-table td,
+    #natal-reference .snapshot-table th {
+      border-bottom: 1px dotted var(--mag-rule);
+      color: var(--mag-soft);
+    }
+
+    #natal-reference .snapshot-table td:first-child {
+      color: var(--mag-ink);
+      font-weight: 600;
+    }
+
+    #natal-reference .characteristics-strip,
+    #reading-this-report .reader-principles article,
+    #year-orientation .orientation-note,
+    #year-orientation .orientation-theme-card,
+    #forecast-climate .climate-field,
+    #annual-rhythm .quarter-card {
+      border: 0;
+      border-top: 1px solid var(--mag-rule-soft);
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    #natal-reference .characteristics-grid,
+    #reading-this-report .reader-principles,
+    #forecast-climate .forecast-climate-pairs {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+
+    #natal-reference .characteristic-card,
+    #reading-this-report .reader-principles article,
+    #forecast-climate .climate-field {
+      display: grid;
+      grid-template-columns: 190px minmax(0, 1fr);
+      column-gap: 34px;
+      padding: 22px 0;
+    }
+
+    #natal-reference .characteristic-label,
+    #reading-this-report .reader-principles h3,
+    #archetypal-frame .narrative-subcard h3,
+    #forecast-climate .climate-field-name {
+      margin: 0;
+      color: var(--mag-gold);
+      font-family: var(--mag-sans);
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      line-height: 1.45;
+    }
+
+    #natal-reference .characteristic-value {
+      margin: 0 0 8px;
+      color: var(--mag-ink);
+      font-size: 1.08rem;
+      line-height: 1.35;
+    }
+
+    #natal-reference .characteristic-explainer,
+    #natal-reference .characteristic-note,
+    #reading-this-report .reader-principles p,
+    #archetypal-frame .narrative-subcard p,
+    #forecast-climate .climate-field-body {
+      margin: 0;
+      color: var(--mag-ink);
+      font-size: .92rem;
+      line-height: 1.72;
+    }
+
+    #reading-this-report .reader-guide {
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      overflow: visible;
+    }
+
+    #reading-this-report .reader-guide-intro,
+    #archetypal-frame .archetypal-contract,
+    #forecast-climate .forecast-climate-intro {
+      margin: 0 0 22px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: var(--mag-soft);
+      font-size: .98rem;
+      line-height: 1.78;
+      font-style: italic;
+    }
+
+    #year-orientation .overview {
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      color: var(--mag-ink);
+      font-size: .98rem;
+      line-height: 1.82;
+      font-style: normal;
+      max-width: 64ch;
+    }
+
+    #year-orientation .overview::first-letter {
+      float: left;
+      padding: 3px 7px 0 0;
+      color: var(--mag-gold);
+      font-size: 2.7rem;
+      line-height: .78;
+    }
+
+    #year-orientation .orientation-card-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 28px;
+      margin-top: 34px;
+    }
+
+    #year-orientation .shape-card,
+    #annual-rhythm .annual-rhythm-visual {
+      padding: 18px 0 0;
+      border: 0;
+      border-top: 1px solid var(--mag-rule);
+      border-radius: 0;
+      background: transparent;
+    }
+
+    #year-orientation .orientation-notes {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0 28px;
+    }
+
+    #year-orientation .orientation-note,
+    #year-orientation .orientation-theme-card {
+      padding: 16px 0;
+    }
+
+    #year-orientation .orientation-note span,
+    #year-orientation .record-label,
+    #annual-rhythm .q-row-label,
+    #annual-rhythm .q-index,
+    #annual-rhythm .q-months {
+      color: var(--mag-faint);
+      font-family: var(--mag-sans);
+      font-size: .62rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      font-variant-caps: normal;
+    }
+
+    #year-orientation .orientation-note strong {
+      color: var(--mag-ink);
+      font-family: var(--mag-sans);
+      font-size: .86rem;
+      font-weight: 600;
+    }
+
+    #year-orientation .orientation-note p,
+    #year-orientation .orientation-theme-card p,
+    #annual-rhythm .annual-rhythm-caption,
+    #annual-rhythm .q-footnote {
+      color: var(--mag-soft);
+      font-size: .82rem;
+      line-height: 1.65;
+    }
+
+    #year-orientation .curated-summary-panel {
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+    }
+
+    #year-orientation .curated-summary-label,
+    #year-arcs > h3 {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin: 40px 0 24px;
+      color: var(--mag-faint);
+      font-family: var(--mag-sans);
+      font-size: .62rem;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      font-variant-caps: normal;
+    }
+
+    #year-orientation .curated-summary-label::before,
+    #year-orientation .curated-summary-label::after,
+    #year-arcs > h3::before,
+    #year-arcs > h3::after {
+      content: "";
+      height: 1px;
+      background: var(--mag-rule);
+      flex: 1;
+    }
+
+    #year-orientation .season-summary-card {
+      display: grid;
+      grid-template-columns: 190px minmax(0, 1fr);
+      column-gap: 34px;
+      padding: 22px 0;
+    }
+
+    #year-orientation .season-summary-card > p:first-child {
+      margin: 0;
+      color: var(--mag-soft);
+      font-family: var(--mag-sans);
+      font-size: .72rem;
+      line-height: 1.6;
+    }
+
+    #year-orientation .season-summary-card h3 {
+      margin: 0 0 8px;
+      color: var(--mag-ink);
+      font-size: 1.12rem;
+    }
+
+    #year-orientation .climate-highlight-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 28px;
+    }
+
+    #year-orientation .climate-highlight-card {
+      padding: 0 0 4px;
+      border: 0;
+      border-bottom: 1px solid var(--mag-rule);
+      border-radius: 0;
+      background: transparent;
+    }
+
+    #archetypal-frame .narrative-subcard h3::before,
+    #forecast-climate .climate-field-name::before {
+      content: "";
+      display: block;
+      width: 30px;
+      height: 3px;
+      margin-bottom: 10px;
+      background: var(--mag-gold);
+    }
+
+    #forecast-climate .climate-field-header,
+    #forecast-climate .climate-field-meta,
+    #forecast-climate .climate-field-definition,
+    #forecast-climate .climate-field-evidence,
+    #forecast-climate .climate-field-support {
+      grid-column: 1;
+    }
+
+    #forecast-climate .climate-field-body {
+      grid-column: 2;
+      grid-row: 1 / span 5;
+    }
+
+    #forecast-climate .climate-field-meta,
+    #forecast-climate .climate-field-support {
+      margin-top: 12px;
+    }
+
+    #forecast-climate .climate-field-meta span,
+    #forecast-climate .climate-field-support {
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      color: var(--mag-soft);
+      font-family: var(--mag-sans);
+      font-size: .72rem;
+      line-height: 1.6;
+    }
+
+    #forecast-climate .section-note,
+    #forecast-climate .climate-note-panel {
+      color: var(--mag-faint);
+    }
+
+    #year-arcs .arc-story-grid,
+    #year-arcs .predictive-research-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0;
+      padding-top: 0;
+    }
+
+    #year-arcs .arc-story,
+    #year-arcs .predictive-research-card {
+      display: grid;
+      grid-template-columns: 190px minmax(0, 1fr);
+      column-gap: 34px;
+      min-height: 0;
+      padding: 24px 0;
+      border: 0;
+      border-top: 1px solid var(--mag-rule-soft);
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    #year-arcs .arc-story + .arc-story {
+      break-before: auto;
+      page-break-before: auto;
+    }
+
+    #year-arcs .arc-story-kicker,
+    #year-arcs .predictive-research-kicker {
+      margin: 0 0 14px;
+      padding-top: 10px;
+      border-top: 3px solid var(--mag-faint);
+      color: var(--mag-soft);
+      font-family: var(--mag-sans);
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      font-variant-caps: normal;
+      line-height: 1.45;
+    }
+
+    #year-arcs .arc-story.flowing .arc-story-kicker { border-top-color: var(--mag-flowing); color: var(--mag-flowing); }
+    #year-arcs .arc-story.challenging .arc-story-kicker { border-top-color: var(--mag-challenging); color: var(--mag-challenging); }
+
+    #year-arcs .arc-story > h3,
+    #year-arcs .predictive-research-card > h3 {
+      grid-column: 2;
+      grid-row: 1;
+      color: var(--mag-ink);
+      font-size: 1.22rem;
+      line-height: 1.32;
+    }
+
+    #year-arcs .arc-story-layout {
+      display: contents;
+    }
+
+    #year-arcs .arc-story-main,
+    #year-arcs .predictive-research-card > p:not(.predictive-research-kicker) {
+      grid-column: 2;
+    }
+
+    #year-arcs .arc-story-subtitle {
+      color: var(--mag-soft);
+      font-size: .86rem;
+      font-style: italic;
+    }
+
+    #year-arcs .arc-story-body,
+    #year-arcs .predictive-research-card p {
+      color: var(--mag-ink);
+      font-size: .92rem;
+      line-height: 1.72;
+    }
+
+    #year-arcs .arc-story-side,
+    #year-arcs .predictive-research-meta,
+    #year-arcs .predictive-research-dates {
+      grid-column: 1;
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+    }
+
+    #year-arcs .arc-story-side-card,
+    #year-arcs .predictive-research-meta span,
+    #year-arcs .predictive-research-dates span {
+      padding: 7px 0 0;
+      border: 0;
+      border-top: 1px dotted var(--mag-rule);
+      border-radius: 0;
+      background: transparent;
+      color: var(--mag-soft);
+      font-family: var(--mag-sans);
+      font-size: .72rem;
+      line-height: 1.5;
+    }
+
+    #annual-rhythm .annual-rhythm-month {
+      grid-template-columns: 52px 1fr 74px;
+      border-top: 1px dotted var(--mag-rule);
+      color: var(--mag-soft);
+    }
+
+    #annual-rhythm .quarter-grid {
+      grid-template-columns: 1fr;
+      gap: 0;
+      margin-top: 28px;
+    }
+
+    #annual-rhythm .quarter-card {
+      padding: 20px 0;
+      display: grid;
+      grid-template-columns: 190px minmax(0, 1fr);
+      column-gap: 34px;
+      border-left: 0;
+    }
+
+    #annual-rhythm .q-top {
+      display: block;
+      margin: 0;
+    }
+
+    #annual-rhythm .q-title,
+    #annual-rhythm .q-row,
+    #annual-rhythm .q-footnote {
+      grid-column: 2;
+    }
+
+    #annual-rhythm .q-title {
+      color: var(--mag-ink);
+      font-size: 1.12rem;
+    }
+
+    .month-section {
+      margin-top: 38px;
+    }
+
+    .month-opener {
+      display: grid;
+      grid-template-columns: 200px minmax(0, 1fr);
+      column-gap: 36px;
+      margin: 0 0 34px;
+      padding: 0 0 34px;
+      border: 0;
+      border-bottom: 1px solid var(--mag-rule);
+      border-radius: 0;
+      background: transparent;
+      overflow: visible;
+    }
+
+    .month-opener::after { display: none; }
+
+    .month-opener-top {
+      display: contents;
+    }
+
+    .month-index-wrap {
+      grid-column: 2;
+      display: block;
+    }
+
+    .month-index {
+      display: none;
+    }
+
+    .month-kicker {
+      margin: 0 0 6px;
+      color: var(--mag-faint);
+      font-family: var(--mag-sans);
+      font-size: .68rem;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      font-variant-caps: normal;
+    }
+
+    .month-heading {
+      font-size: 3.1rem;
+    }
+
+    .month-range {
+      grid-column: 1;
+      grid-row: 1 / span 2;
+      max-width: none;
+      color: var(--mag-soft);
+      font-family: var(--mag-sans);
+      font-size: .72rem;
+      line-height: 1.55;
+      text-align: left;
+    }
+
+    .month-range::before {
+      content: "Chapter window";
+      display: block;
+      margin-bottom: 10px;
+      color: var(--mag-gold);
+      font-size: .62rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .month-opener-body {
+      grid-column: 2;
+      display: block;
+      margin-top: 18px;
+    }
+
+    .month-snapshot {
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      color: var(--mag-ink);
+      font-size: 1.08rem;
+      font-style: italic;
+      line-height: 1.62;
+    }
+
+    .month-brief-label,
+    .domains-label {
+      color: var(--mag-gold);
+      font-family: var(--mag-sans);
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      font-variant-caps: normal;
+    }
+
+    .month-opener-aside {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+      margin-top: 22px;
+    }
+
+    .month-opener-aside-card,
+    .month-map-card {
+      padding: 12px 0 0;
+      border: 0;
+      border-top: 1px dotted var(--mag-rule);
+      border-radius: 0;
+      background: transparent;
+    }
+
+    .month-opener-aside-card span,
+    .month-map-card h3 {
+      color: var(--mag-faint);
+      font-family: var(--mag-sans);
+      font-size: .62rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      font-variant-caps: normal;
+    }
+
+    .month-opener-aside-card strong,
+    .month-map-card strong {
+      color: var(--mag-ink);
+      font-family: var(--mag-sans);
+      font-weight: 600;
+    }
+
+    .domain-chip {
+      border: 0;
+      border-bottom: 1px solid var(--mag-rule);
+      border-radius: 0;
+      background: transparent;
+      color: var(--mag-soft);
+      font-family: var(--mag-sans);
+    }
+
+    .month-map {
+      grid-template-columns: 1fr;
+      gap: 16px;
+      margin-top: 0;
+    }
+
+    .month-map-stack {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .chronology-divider {
+      margin: 40px 0 22px;
+    }
+
+    .monthly-events {
+      display: grid;
+      gap: 0;
+    }
+
+    .monthly-events .event-card {
+      display: grid;
+      grid-template-columns: 200px minmax(0, 1fr);
+      column-gap: 36px;
+      padding: 30px 0;
+      border: 0;
+      border-top: 1px solid var(--mag-rule-soft);
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .monthly-events .event-card:first-child {
+      border-top: 0;
+    }
+
+    .monthly-events .card-top {
+      grid-column: 1;
+      grid-row: 1 / span 6;
+      display: block;
+    }
+
+    .monthly-events .card-kind {
+      display: block;
+      margin: 0 0 14px;
+      padding-top: 10px;
+      border-top: 3px solid var(--mag-faint);
+      color: var(--mag-soft);
+      font-family: var(--mag-sans);
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      font-variant-caps: normal;
+      line-height: 1.45;
+    }
+
+    .monthly-events .event-card.flowing .card-kind { border-top-color: var(--mag-flowing); color: var(--mag-flowing); }
+    .monthly-events .event-card.challenging .card-kind { border-top-color: var(--mag-challenging); color: var(--mag-challenging); }
+    .monthly-events .event-card.eclipse .card-kind { border-top-color: var(--mag-eclipse); color: var(--mag-eclipse); }
+    .monthly-events .event-card.convergence .card-kind { border-top-color: var(--mag-converge); color: var(--mag-converge); }
+    .monthly-events .event-card.ingress .card-kind { border-top-color: var(--mag-blue); color: var(--mag-blue); }
+
+    .monthly-events .card-date {
+      display: block;
+      margin: 0;
+      padding-top: 8px;
+      border-top: 1px dotted var(--mag-rule);
+      color: var(--mag-soft);
+      font-family: var(--mag-sans);
+      font-size: .76rem;
+      letter-spacing: 0;
+      line-height: 1.55;
+    }
+
+    .monthly-events .event-card h3,
+    .monthly-events .card-subtitle,
+    .monthly-events .timing-line,
+    .monthly-events .convergence-line,
+    .monthly-events .event-block,
+    .monthly-events .constellation-lens {
+      grid-column: 2;
+    }
+
+    .monthly-events .event-card h3 {
+      margin: 0;
+      color: var(--mag-ink);
+      font-size: 1.36rem;
+      line-height: 1.3;
+    }
+
+    .monthly-events .card-subtitle {
+      color: var(--mag-soft);
+      font-size: .86rem;
+      font-style: italic;
+    }
+
+    .monthly-events .timing-line,
+    .monthly-events .convergence-line {
+      color: var(--mag-soft);
+      font-size: .76rem;
+      letter-spacing: 0;
+      line-height: 1.6;
+    }
+
+    .monthly-events .event-block,
+    .monthly-events .lens-block {
+      color: var(--mag-ink);
+      font-size: .95rem;
+      line-height: 1.78;
+    }
+
+    .monthly-events .constellation-lens {
+      padding-left: 20px;
+      border-top: 0;
+      border-left: 3px solid var(--mag-gold);
+      color: var(--mag-ink);
+    }
+
+    @media (max-width: 800px) {
+      #natal-reference,
+      #reading-this-report,
+      #year-orientation,
+      #archetypal-frame,
+      #forecast-climate,
+      #year-arcs,
+      #annual-rhythm,
+      #monthly-chapters,
+      .month-section {
+        margin-left: 0;
+        margin-right: 0;
+        padding: 28px 24px 38px;
+      }
+
+      #natal-reference .characteristic-card,
+      #reading-this-report .reader-principles article,
+      #year-orientation .season-summary-card,
+      #archetypal-frame .narrative-subcard,
+      #forecast-climate .climate-field,
+      #year-arcs .arc-story,
+      #year-arcs .predictive-research-card,
+      #annual-rhythm .quarter-card,
+      .month-opener,
+      .monthly-events .event-card {
+        grid-template-columns: 1fr;
+      }
+
+      #forecast-climate .climate-field-body,
+      #year-arcs .arc-story > h3,
+      #year-arcs .predictive-research-card > h3,
+      #year-arcs .arc-story-main,
+      #year-arcs .arc-story-side,
+      #year-arcs .predictive-research-meta,
+      #year-arcs .predictive-research-dates,
+      #annual-rhythm .q-title,
+      #annual-rhythm .q-row,
+      #annual-rhythm .q-footnote,
+      .month-index-wrap,
+      .month-opener-body,
+      .monthly-events .event-card h3,
+      .monthly-events .card-subtitle,
+      .monthly-events .timing-line,
+      .monthly-events .convergence-line,
+      .monthly-events .event-block,
+      .monthly-events .constellation-lens {
+        grid-column: 1;
+        grid-row: auto;
+      }
+
+      .month-range,
+      .monthly-events .card-top {
+        grid-column: 1;
+        grid-row: auto;
+        margin-bottom: 16px;
+      }
+
+      .month-heading {
+        font-size: 2.35rem;
+      }
+
+      .month-opener-aside,
+      .month-map-stack,
+      #year-orientation .orientation-notes {
+        grid-template-columns: 1fr;
+      }
+    }
+
     footer {
       margin-top: 70px;
       color: var(--faint);
@@ -748,6 +1602,7 @@
     .record-value { margin-top:9px; color:var(--gold); font-size:1rem; line-height:1.45; }
     .record-detail { margin-top:10px; color:var(--muted); font-size:.78rem; line-height:1.55; }
     .integrity-panel { margin-top:16px; padding:22px; display:grid; grid-template-columns:180px 1fr; gap:20px; }
+    .integrity-print-compact { display:none; }
     .integrity-list { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:0 24px; margin:0; }
     .integrity-list div { display:grid; grid-template-columns:42% 58%; padding:8px 0; border-bottom:1px dotted var(--border); }
     .integrity-list dt { color:var(--muted); font-size:.73rem; }
@@ -763,13 +1618,14 @@
     .characteristic-explainer { margin:0; color:var(--muted); font-size:.82rem; line-height:1.6; }
     .characteristic-note { margin:10px 0 0; color:var(--muted); font-size:.74rem; line-height:1.5; }
     .characteristic-card.unavailable .characteristic-value { color:var(--muted); }
-    .reader-guide { overflow:hidden; }
-    .reader-guide-intro { padding:24px 26px; background:linear-gradient(135deg,rgba(255,255,255,.055),rgba(255,255,255,0)),var(--surface-2); font-size:1rem; font-style:italic; }
+    .reader-guide { overflow:hidden; border-radius:10px; }
+    .reader-guide-kicker { margin:0; padding:14px 20px 0; color:var(--muted); font-size:.6rem; letter-spacing:.08em; text-transform:uppercase; font-variant-caps:normal; }
+    .reader-guide-intro { padding:10px 20px 16px; background:linear-gradient(135deg,rgba(255,255,255,.055),rgba(255,255,255,0)),var(--surface-2); color:var(--text); font-size:.88rem; line-height:1.65; font-style:italic; }
     .reader-principles { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); }
-    .reader-principles article { padding:20px 24px; border-top:1px solid var(--border); }
+    .reader-principles article { padding:16px 20px; border-top:1px solid var(--border); }
     .reader-principles article:nth-child(odd) { border-right:1px solid var(--border); }
-    .reader-principles h3 { font-size:.96rem; }
-    .reader-principles p { margin:8px 0 0; color:var(--muted); font-size:.85rem; line-height:1.65; }
+    .reader-principles h3 { font-size:.82rem; line-height:1.4; }
+    .reader-principles p { margin:7px 0 0; color:var(--muted); font-size:.78rem; line-height:1.6; }
     .orientation-layout { grid-template-columns:1fr; align-items:stretch; gap:18px; }
     .orientation-layout .overview { margin:0; }
     .orientation-card-grid { display:grid; grid-template-columns:minmax(0,1.18fr) minmax(0,.82fr); gap:14px; align-items:start; }
@@ -1136,7 +1992,7 @@
     .q-cycle { margin:0 0 4px; font-size:.92rem; color:var(--text); line-height:1.4; }
     .q-footnote { margin-top:16px; padding-top:14px; border-top:1px solid var(--border); color:var(--faint); font-size:.74rem; font-style:italic; line-height:1.5; }
     .season-summary-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin-top:18px; }
-    .season-summary-card { padding:18px; border:1px solid var(--border); border-radius:10px; background:var(--surface); }
+    .season-summary-card { padding:18px; border:1px solid var(--border); border-radius:10px; background:var(--surface); break-inside:avoid; page-break-inside:avoid; }
     .season-summary-card p { margin:0; color:var(--muted); font-size:.78rem; line-height:1.6; }
     .season-summary-card h3 { margin:8px 0 12px; font-size:1rem; }
     .season-summary-meta { display:grid; gap:8px; margin-top:14px; }
@@ -1167,44 +2023,47 @@
     .month-guidance-card p { margin:0; color:var(--muted); font-size:.84rem; line-height:1.7; }
     .month-map {
       display:grid;
-      grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);
+      grid-template-columns:repeat(2,minmax(0,1fr));
       gap:var(--report-gap-card);
       margin-top:var(--report-gap-card);
       break-inside:avoid;
       page-break-inside:avoid;
     }
     .month-map-card {
-      padding:15px 16px;
+      padding:13px 14px;
       border:1px solid var(--border);
       border-radius:10px;
-      background:var(--surface);
+      background:var(--surface-2);
       break-inside:avoid;
       page-break-inside:avoid;
     }
     .month-map-card h3 {
-      margin:0 0 9px;
-      color:var(--gold);
-      font-size:.9rem;
+      margin:0 0 8px;
+      color:var(--muted);
+      font-size:.65rem;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+      font-variant-caps:normal;
       line-height:1.4;
     }
     .month-map-card p {
       margin:0;
-      color:var(--muted);
-      font-size:.8rem;
-      line-height:1.62;
+      color:var(--text);
+      font-size:.77rem;
+      line-height:1.58;
     }
-    .month-map-card.is-wide { grid-row:span 2; }
-    .month-map-stack { display:grid; gap:var(--report-gap-card); }
+    .month-map-card.is-wide { grid-row:auto; }
+    .month-map-stack { display:grid; gap:10px; }
     .timing-window-list { display:grid; gap:10px; }
     .timing-window-item { padding-top:10px; border-top:1px dotted var(--border); }
     .timing-window-item:first-child { padding-top:0; border-top:0; }
-    .timing-window-item strong { display:block; color:var(--text); font-size:.87rem; font-weight:normal; line-height:1.55; }
-    .timing-window-item span { display:block; margin-top:4px; color:var(--muted); font-size:.75rem; line-height:1.55; }
+    .timing-window-item strong { display:block; color:var(--text); font-size:.79rem; font-weight:normal; line-height:1.5; }
+    .timing-window-item span { display:block; margin-top:4px; color:var(--muted); font-size:.71rem; line-height:1.5; }
     .convergence-window-list { display:grid; gap:10px; }
     .convergence-window-item { padding-top:10px; border-top:1px dotted var(--border); }
     .convergence-window-item:first-child { padding-top:0; border-top:0; }
-    .convergence-window-item strong { display:block; color:var(--gold); font-size:.87rem; font-weight:normal; line-height:1.55; }
-    .convergence-window-item span { display:block; margin-top:4px; color:var(--muted); font-size:.75rem; line-height:1.55; }
+    .convergence-window-item strong { display:block; color:var(--text); font-size:.79rem; font-weight:normal; line-height:1.5; }
+    .convergence-window-item span { display:block; margin-top:4px; color:var(--muted); font-size:.71rem; line-height:1.5; }
     .month-section + .month-section { margin-top:22px; }
     .month-opening-flow { display:grid; gap:14px; }
     .month-opener, .month-guidance-grid-opening, .chronology-divider { break-inside:avoid; page-break-inside:avoid; }
@@ -1382,25 +2241,12 @@
       }
 
       /* ── Intentional chapter / page starts ────────────────────────────
-         Major reading chapters now begin on a fresh printed page so a
-         heading never starts low on the previous page without its first
-         real content block. The monthly index heading is left with the
-         surrounding flow because it is a navigational doorway, not a full
-         prose chapter by itself. */
+         Only the technical back matter keeps a hard new-page contract.
+         The middle reading spine is allowed to flow so a short chapter,
+         month opener, or table block can use remaining space instead of
+         manufacturing a nearly empty page. */
       #cycle-ledger,
       #technical-appendix {
-        break-before: page;
-        page-break-before: always;
-      }
-      #reading-this-report,
-      #year-orientation,
-      #archetypal-frame,
-      #forecast-climate,
-      #year-arcs,
-      #annual-rhythm,
-      #turning-point-guide,
-      #year-integration,
-      .report-shell .month-section {
         break-before: page;
         page-break-before: always;
       }
@@ -1410,10 +2256,6 @@
       }
       #year-integration {
         page: auto;
-      }
-      .report-shell #monthly-chapters + .month-section {
-        break-before: auto;
-        page-break-before: auto;
       }
 
       /* ── Protected indivisible units ──────────────────────────────────
@@ -1461,6 +2303,134 @@
       .ledger-table-wrap {
         break-inside: auto;
         page-break-inside: auto;
+      }
+
+      /* ── Opening-page packing / long-fragment wrapper cleanup ────────
+         The large section shells look good on single pages, but when a
+         long wrapper fragments across pages Chrome can emit a nearly blank
+         carry-over page that contains only the shell background. Let the
+         long wrappers flatten in print while preserving the interior cards,
+         tables, and typography. */
+      header {
+        margin-bottom: 12px;
+      }
+      .name {
+        font-size: 1.45rem;
+        letter-spacing: 2px;
+      }
+      .report-title {
+        margin-top: 6px;
+        font-size: 0.58rem;
+        letter-spacing: 1.8px;
+      }
+      .meta {
+        margin-top: 4px;
+        font-size: 0.66rem;
+      }
+      #report-record .section-header {
+        margin-bottom: 14px;
+        padding-bottom: 8px;
+      }
+      #report-record .record-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+      }
+      #report-record .record-card {
+        min-height: 0;
+        padding: 10px 11px;
+      }
+      #report-record .record-label {
+        font-size: 0.57rem;
+      }
+      #report-record .record-value {
+        margin-top: 6px;
+        font-size: 0.88rem;
+        line-height: 1.35;
+      }
+      #report-record .record-detail {
+        margin-top: 7px;
+        font-size: 0.71rem;
+        line-height: 1.45;
+      }
+      #report-record .report-record-integrity {
+        display: none;
+      }
+      #report-record .integrity-print-compact {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 7px 10px;
+        margin-top: 9px;
+        padding: 10px 11px;
+        border: 1px solid #d0d0dc;
+        border-radius: 10px;
+        background: #f7f7fa;
+      }
+      #report-record .integrity-print-compact-head {
+        grid-column: 1 / -1;
+        display: grid;
+        gap: 2px;
+        padding-bottom: 4px;
+        border-bottom: 1px solid #d8d8e4;
+      }
+      #report-record .integrity-print-compact-head span,
+      #report-record .integrity-print-compact-item span {
+        color: var(--muted);
+        font-size: 0.56rem;
+        letter-spacing: 0.06em;
+        font-variant-caps: all-small-caps;
+        text-transform: none;
+      }
+      #report-record .integrity-print-compact-head strong {
+        color: #8b6200;
+        font-weight: normal;
+        font-size: 0.82rem;
+        line-height: 1.25;
+      }
+      #report-record .integrity-print-compact-item {
+        display: grid;
+        gap: 2px;
+        padding-top: 2px;
+      }
+      #report-record .integrity-print-compact-item strong {
+        color: #1a1a2e;
+        font-weight: normal;
+        font-size: 0.67rem;
+        line-height: 1.35;
+      }
+      #natal-reference,
+      .report-shell .month-section,
+      .report-shell #cycle-ledger .ledger-month {
+        padding-left: 0;
+        padding-right: 0;
+        margin-left: 0;
+        margin-right: 0;
+        background: transparent;
+        box-shadow: none;
+      }
+      #natal-reference .snapshot-table {
+        break-before: page;
+        page-break-before: always;
+      }
+      #natal-reference .wheel-wrap {
+        max-width: 430px;
+        margin-bottom: 16px;
+      }
+      #natal-reference .chart-note {
+        margin-top: 6px;
+        font-size: 0.74rem;
+        line-height: 1.45;
+      }
+      .report-shell #cycle-ledger .ledger-month {
+        padding-top: 0;
+        padding-bottom: 0;
+        border: 0;
+        border-radius: 0;
+      }
+      .report-shell #cycle-ledger .ledger-month + .ledger-month {
+        margin-top: 12px;
+      }
+      .report-shell #cycle-ledger .ledger-month h3 {
+        margin-bottom: 10px;
       }
 
       .card-top,
@@ -1711,9 +2681,14 @@
          start, but individual arcs no longer reserve a fixed tall box or
          force the next arc onto a new page — each keeps its natural
          height and a subtle rule (not a page break) separates one arc
-         from the next, so short arcs can share a page. */
-      .arc-story-grid { grid-template-columns: 1fr; gap: 18px; }
-      .arc-story {
+         from the next, so short arcs can share a page. The recurring
+         timing cards below use the same print narrative layout so the
+         section reads as one continuous visual language instead of
+         abruptly switching into a separate left-rail component system. */
+      .arc-story-grid,
+      .predictive-research-grid { grid-template-columns: 1fr; gap: 18px; }
+      .arc-story,
+      #year-arcs .predictive-research-card {
         background: #f7f7fa;
         border: 1px solid #d0d0dc;
         border-radius: 12px;
@@ -1751,6 +2726,55 @@
       .arc-story-side-card span { color: var(--print-ink-muted); }
       .arc-story-side-card strong,
       .arc-story-side-card p { color: #2b2840; }
+      #year-arcs .predictive-research-card {
+        display: block;
+        margin: 0;
+        padding: 16px 16px 0.14in;
+        background: #fbfaf7;
+        border-color: #d8d5e6;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.8);
+      }
+      #year-arcs .predictive-research-card > h3,
+      #year-arcs .predictive-research-card > p:not(.predictive-research-kicker),
+      #year-arcs .predictive-research-meta,
+      #year-arcs .predictive-research-dates {
+        grid-column: auto;
+        grid-row: auto;
+      }
+      #year-arcs .predictive-research-kicker {
+        margin: 0 0 10px;
+        padding-top: 8px;
+        border-top: 3px solid #8e879e;
+        color: var(--print-ink-muted);
+        background: transparent;
+      }
+      #year-arcs .predictive-research-card > h3 {
+        margin: 0;
+      }
+      #year-arcs .predictive-research-card > p:not(.predictive-research-kicker) {
+        margin: 14px 0 0;
+        color: #1a1a2e;
+      }
+      #year-arcs .predictive-research-meta,
+      #year-arcs .predictive-research-dates {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 0;
+        margin: 14px 0 0;
+      }
+      #year-arcs .predictive-research-meta span,
+      #year-arcs .predictive-research-dates span {
+        padding: 8px 0 0;
+        border: 0;
+        border-top: 1px dotted #d8d5e6;
+        border-radius: 0;
+        background: transparent;
+        color: var(--print-ink-muted);
+        font-family: var(--mag-sans);
+        font-size: .72rem;
+        line-height: 1.5;
+        text-align: left;
+      }
 
       .mini-track { background: #dddddd; }
       .mini-track i { background: #777777; }
@@ -1817,6 +2841,261 @@
       .turning-guide-month { padding: 16px; }
     }
 
+    /* Magazine final pass: keep the redesign layer after the legacy print and
+       component rules so the middle report body renders consistently. */
+    .report-shell #year-orientation .orientation-card-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 24px;
+      margin-top: 28px;
+    }
+
+    .report-shell #year-orientation .shape-card,
+    .report-shell #annual-rhythm .annual-rhythm-visual {
+      position: static;
+      top: auto;
+      height: auto;
+      min-height: 0;
+      overflow: visible;
+      padding: 16px 0 0;
+      border: 0;
+      border-top: 1px solid var(--mag-rule);
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .report-shell #year-orientation .shape-map {
+      margin-top: 14px;
+      padding: 14px 0 10px;
+      border: 0;
+      border-top: 1px solid var(--mag-rule-soft);
+      border-bottom: 1px solid var(--mag-rule-soft);
+      border-radius: 0;
+      background: transparent;
+    }
+
+    .report-shell #year-orientation .shape-month-label,
+    .report-shell #year-orientation .shape-month-text,
+    .report-shell #year-orientation .shape-legend,
+    .report-shell #year-orientation .shape-confidence-note {
+      color: var(--mag-soft);
+    }
+
+    .report-shell #year-orientation .shape-meta {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0;
+      margin-top: 12px;
+      border-top: 1px solid var(--mag-rule-soft);
+    }
+
+    .report-shell #year-orientation .shape-meta div {
+      padding: 10px 12px 0 0;
+      border: 0;
+      background: transparent;
+    }
+
+    .report-shell .month-section .month-map {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 0;
+    }
+
+    .report-shell .month-section .month-opener-aside {
+      position: static;
+      top: auto;
+      height: auto;
+      min-height: 0;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      overflow: visible;
+    }
+
+    .report-shell .month-section .month-map-stack {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    .report-shell .month-section .month-map-card,
+    .report-shell .month-section .month-opener-aside-card,
+    .report-shell .month-section .month-snapshot {
+      padding: 12px 14px;
+      border: 1px solid var(--mag-rule-soft);
+      border-radius: 8px;
+      background: rgba(247, 247, 250, 0.78);
+      color: var(--mag-ink);
+      box-shadow: none;
+    }
+
+    .report-shell .month-section .month-map-card.is-wide {
+      grid-row: auto;
+    }
+
+    .report-shell .month-section .month-map-card h3,
+    .report-shell .month-section .month-opener-aside-card span {
+      color: var(--mag-faint);
+      font-family: var(--mag-sans);
+      font-size: .62rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      font-variant-caps: normal;
+    }
+
+    .report-shell .month-section .month-map-card p,
+    .report-shell .month-section .month-opener-aside-card p,
+    .report-shell .month-section .month-snapshot,
+    .report-shell .month-section .timing-window-item span,
+    .report-shell .month-section .convergence-window-item span {
+      color: var(--mag-soft);
+    }
+
+    .report-shell .month-section .month-map-card strong,
+    .report-shell .month-section .month-opener-aside-card strong,
+    .report-shell .month-section .timing-window-item strong,
+    .report-shell .month-section .convergence-window-item strong {
+      color: var(--mag-ink);
+    }
+
+    .report-shell #natal-reference .characteristics-grid,
+    .report-shell #year-orientation .season-summary-grid,
+    .report-shell #archetypal-frame .narrative-subcards {
+      gap: 14px;
+    }
+
+    .report-shell #natal-reference .characteristic-card,
+    .report-shell #year-orientation .season-summary-card,
+    .report-shell #archetypal-frame .narrative-subcard {
+      display: block;
+      padding: 16px 18px;
+      border: 1px solid var(--mag-rule-soft);
+      border-radius: 8px;
+      background: rgba(247, 247, 250, 0.78);
+    }
+
+    .report-shell #natal-reference .characteristic-label,
+    .report-shell #year-orientation .season-summary-card > p:first-child,
+    .report-shell #archetypal-frame .narrative-subcard h3 {
+      color: var(--mag-faint);
+      font-family: var(--mag-sans);
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      font-variant-caps: normal;
+    }
+
+    .report-shell #archetypal-frame .narrative-subcard h3 {
+      margin-bottom: 8px;
+      font-size: .62rem;
+    }
+
+    .report-shell #archetypal-frame .narrative-subcard p,
+    .report-shell #natal-reference .characteristic-explainer,
+    .report-shell #year-orientation .season-summary-card p {
+      color: var(--mag-soft);
+    }
+
+    .report-shell .monthly-events .event-card {
+      display: grid;
+      grid-template-columns: 200px minmax(0, 1fr);
+      column-gap: 36px;
+      padding: 30px 0;
+      border: 0;
+      border-top: 1px solid var(--mag-rule-soft);
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+      color: var(--mag-ink);
+    }
+
+    .report-shell .monthly-events .event-card:first-child {
+      border-top: 0;
+    }
+
+    .report-shell .monthly-events .event-card h3,
+    .report-shell .monthly-events .card-subtitle,
+    .report-shell .monthly-events .timing-line,
+    .report-shell .monthly-events .convergence-line,
+    .report-shell .monthly-events .event-block,
+    .report-shell .monthly-events .constellation-lens {
+      grid-column: 2;
+    }
+
+    .report-shell .monthly-events .card-top {
+      grid-column: 1;
+      grid-row: 1 / span 6;
+      display: block;
+    }
+
+    .report-shell .monthly-events .card-kind {
+      display: block;
+      margin: 0 0 14px;
+      padding-top: 10px;
+      border-top: 3px solid var(--mag-faint);
+      color: var(--mag-soft);
+      background: transparent;
+      font-family: var(--mag-sans);
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      font-variant-caps: normal;
+      line-height: 1.45;
+    }
+
+    .report-shell .monthly-events .event-card.flowing .card-kind { border-top-color: var(--mag-flowing); color: var(--mag-flowing); }
+    .report-shell .monthly-events .event-card.challenging .card-kind { border-top-color: var(--mag-challenging); color: var(--mag-challenging); }
+    .report-shell .monthly-events .event-card.eclipse .card-kind { border-top-color: var(--mag-eclipse); color: var(--mag-eclipse); }
+    .report-shell .monthly-events .event-card.convergence .card-kind { border-top-color: var(--mag-converge); color: var(--mag-converge); }
+    .report-shell .monthly-events .event-card.ingress .card-kind { border-top-color: var(--mag-blue); color: var(--mag-blue); }
+
+    .report-shell .monthly-events .card-date {
+      display: block;
+      margin: 0;
+      padding-top: 8px;
+      border-top: 1px dotted var(--mag-rule);
+      color: var(--mag-soft);
+      font-family: var(--mag-sans);
+      font-size: .76rem;
+      letter-spacing: 0;
+      line-height: 1.55;
+    }
+
+    @media (max-width: 800px) {
+      .report-shell #year-orientation .shape-meta,
+      .report-shell .month-section .month-map-stack {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .report-shell .monthly-events .event-card {
+        grid-template-columns: 1fr;
+        row-gap: 10px;
+      }
+
+      .report-shell .monthly-events .card-top,
+      .report-shell .monthly-events .event-card h3,
+      .report-shell .monthly-events .card-subtitle,
+      .report-shell .monthly-events .timing-line,
+      .report-shell .monthly-events .convergence-line,
+      .report-shell .monthly-events .event-block,
+      .report-shell .monthly-events .constellation-lens {
+        grid-column: 1;
+        grid-row: auto;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .report-shell #year-orientation .shape-meta,
+      .report-shell .month-section .month-map-stack {
+        grid-template-columns: 1fr;
+      }
+
+      .report-shell #year-orientation .shape-map {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        row-gap: 18px;
+      }
+    }
   </style>
 </head>
 <body class="report-shell report-year-ahead" data-palette="{{ palette_name | default('vibrant') }}">
@@ -1829,17 +3108,15 @@
       <nav aria-label="Year Ahead report sections">
         <a href="#report-record">I. Report Record</a>
         <a href="#natal-reference">II. Natal Reference</a>
-        <a href="#reading-this-report">III. Reading This Forecast</a>
-        <a href="#year-orientation">IV. Year Orientation</a>
-        <a href="#archetypal-frame">V. Archetypal Frame</a>
-        <a href="#forecast-climate">VI. Forecast Climate</a>
-        <a href="#year-arcs">VII. Year Arcs</a>
-        <a href="#annual-rhythm">VIII. Annual Rhythm</a>
-        <a href="#monthly-chapters">IX. Monthly Chapters</a>
-        <a href="#turning-point-guide">X. Turning Point Guide</a>
-        <a href="#cycle-ledger">XI. Cycle Ledger</a>
-        <a href="#technical-appendix">XII. Technical Appendix</a>
-        <a href="#year-integration">XIII. Year Integration</a>
+        <a href="#year-orientation">III. Year Orientation</a>
+        <a href="#archetypal-frame">IV. Archetypal Frame</a>
+        <a href="#year-arcs">V. Year Arcs</a>
+        <a href="#annual-rhythm">VI. Annual Rhythm</a>
+        <a href="#monthly-chapters">VII. Monthly Chapters</a>
+        <a href="#turning-point-guide">VIII. Turning Point Guide</a>
+        <a href="#cycle-ledger">IX. Cycle Ledger</a>
+        <a href="#technical-appendix">X. Technical Appendix</a>
+        <a href="#year-integration">XI. Year Integration</a>
       </nav>
     </aside>
 
@@ -1877,7 +3154,20 @@
           </article>
         </div>
 
-        <div class="integrity-panel">
+        <div class="integrity-print-compact">
+          <div class="integrity-print-compact-head">
+            <span>Data integrity</span>
+            <strong>Calculation record</strong>
+          </div>
+          {% for item in calculation_record %}
+          <div class="integrity-print-compact-item">
+            <span>{{ item.label }}</span>
+            <strong>{{ item.value }}</strong>
+          </div>
+          {% endfor %}
+        </div>
+
+        <div class="integrity-panel report-record-integrity">
           <div class="integrity-heading">
             <p class="eyebrow">Data integrity</p>
             <h3>Calculation record</h3>
@@ -1958,6 +3248,7 @@
 
         {% if standard_natal_foundation and standard_natal_foundation.sections %}
         <div class="reader-guide" style="margin-top: 2rem;">
+          <p class="reader-guide-kicker">How to Use This Book</p>
           <div class="reader-guide-intro">{{ standard_natal_foundation.intro }}</div>
           <div class="reader-principles">
             {% for section in standard_natal_foundation.sections %}
@@ -1970,36 +3261,16 @@
         {% endif %}
       </section>
 
-      <!-- III. READING THIS FORECAST -->
-      <section class="section" id="reading-this-report">
-        <div class="section-header">
-          <div>
-            <p class="eyebrow">III. Reading this forecast</p>
-            <h2>How to Use This Book</h2>
-          </div>
-        </div>
-        <div class="reader-guide">
-          <div class="reader-guide-intro">You do not need to read this report from beginning to end. Start with the Year Orientation, return to the current Monthly Chapter as the year arrives, and use the Cycle Ledger or Technical Appendix whenever you want the astrological detail behind a pattern.</div>
-          <div class="reader-principles">
-            <article><h3>Timing is a condition, not a command.</h3><p>Dated windows describe changing symbolic conditions and concentration points. They do not guarantee a single external event.</p></article>
-            <article><h3>Long cycles matter more than one day.</h3><p>An exact contact is often a peak inside a larger cycle that may already be active, developing, or still integrating.</p></article>
-            <article><h3>Quiet is not unimportant.</h3><p>A softer month can be restorative, preparatory, private, or structurally necessary. A quieter chapter can still be meaningful.</p></article>
-            <article><h3>Your life remains part of the meaning.</h3><p>Relationships, material reality, health, choice, context, and capacity shape how any forecast condition is lived.</p></article>
-          </div>
-        </div>
-      </section>
-
-      <!-- IV. YEAR ORIENTATION -->
+      <!-- III. YEAR ORIENTATION -->
       <section class="section" id="year-orientation">
         <div class="section-header">
           <div>
-            <p class="eyebrow">IV. Year orientation</p>
+            <p class="eyebrow">III. Year orientation</p>
             <h2>The Year in Context</h2>
           </div>
         </div>
         {% set ya_summary = year_ahead_curated_summaries | default({}, true) %}
         {% set seasonal_highlights = ya_summary.seasonal_highlights | default([], true) %}
-        {% set climate_highlights = ya_summary.climate_highlights | default([], true) %}
         <div class="orientation-layout">
           {% set orientation_text = year_overview_block if year_overview_block else 'The strongest sustained patterns in this forecast gather here as a practical orientation for the year ahead.' %}
           {% set orientation_parts = orientation_text.split('\n\n') %}
@@ -2072,25 +3343,22 @@
                 <strong>{{ ya_summary.orientation.quietest_period if ya_summary.orientation and ya_summary.orientation.quietest_period else orientation_summary.quietest_period }}</strong>
                 <p>{{ orientation_summary.quietest_period_explanation }}</p>
               </article>
+              {% if orientation_summary.strongest_annual_themes %}
               <article class="orientation-theme-card">
                 <span class="record-label">Strongest themes</span>
-                {% if orientation_summary.strongest_annual_themes %}
                 <ul class="orientation-themes">
                   {% for theme in orientation_summary.strongest_annual_themes %}
                   <li>{{ theme }}</li>
                   {% endfor %}
                 </ul>
-                {% else %}
-                <p>No landmark themes rose above the current threshold.</p>
-                {% endif %}
                 <p>{{ orientation_summary.themes_explanation }}</p>
               </article>
               {% endif %}
+              {% endif %}
             </div>
           </div>
-          {% if seasonal_highlights or climate_highlights %}
+          {% if seasonal_highlights %}
           <div class="curated-summary-stack">
-            {% if seasonal_highlights %}
             <div class="curated-summary-panel">
               <p class="curated-summary-label">Seasonal Highlights</p>
               <div class="season-summary-grid" style="margin-top: 0;">
@@ -2109,30 +3377,16 @@
                 {% endfor %}
               </div>
             </div>
-            {% endif %}
-            {% if climate_highlights %}
-            <div class="curated-summary-panel">
-              <p class="curated-summary-label">Field Highlights</p>
-              <div class="climate-highlight-grid">
-                {% for item in climate_highlights %}
-                <article class="climate-highlight-card">
-                  <p>{{ item.band_label }}</p>
-                  <h3>{{ item.field_label }}</h3>
-                </article>
-                {% endfor %}
-              </div>
-            </div>
-            {% endif %}
           </div>
           {% endif %}
         </div>
       </section>
 
-      <!-- V. ARCHETYPAL FRAME -->
+      <!-- IV. ARCHETYPAL FRAME -->
       <section class="section" id="archetypal-frame">
         <div class="section-header">
           <div>
-            <p class="eyebrow">V. Archetypal frame</p>
+            <p class="eyebrow">IV. Archetypal frame</p>
             <h2>{% if archetypal_opening_section %}{{ archetypal_opening_section.title }}{% else %}Your Archetypal Year{% endif %}</h2>
             {% if archetypal_opening_section and archetypal_opening_section.subtitle %}<p class="section-subtitle">{{ archetypal_opening_section.subtitle }}</p>{% endif %}
           </div>
@@ -2158,64 +3412,11 @@
         {% endif %}
       </section>
 
-      <!-- VI. FORECAST CLIMATE -->
-      <section class="section" id="forecast-climate">
-        <div class="section-header">
-          <div>
-            <p class="eyebrow">VI. Forecast climate</p>
-            <h2>The Conditions Around the Year</h2>
-            <p class="section-subtitle">Field qualities, not isolated life-area horoscopes.</p>
-          </div>
-        </div>
-        <p class="forecast-climate-intro">{{ forecast_climate.prominence_note }} {{ forecast_climate.certainty_note }}</p>
-        <div class="forecast-climate-pairs">
-          {% for field in forecast_climate.fields %}
-          <article class="climate-field">
-            <div class="climate-field-header">
-              <h3 class="climate-field-name">{{ field.field_label }}</h3>
-            </div>
-            <div class="climate-field-meta">
-              <span>{{ field.band_label }}</span>
-              <span>{{ field.signal_family_label }}</span>
-              {% if field.top_domains %}<span>{{ field.top_domains[:2] | join(' - ') }}</span>{% endif %}
-            </div>
-            <p class="climate-field-definition">{{ field.description }}</p>
-            <p class="climate-field-body">{% if field.block %}{{ field.block }}{% elif field.top_domains %}This field gathers most clearly around {{ field.top_domains[:2] | join(' and ') }}, without needing every supporting transit to be foregrounded here.{% else %}This field remains part of the year's background climate, with fuller technical provenance retained in the ledger and appendix.{% endif %}</p>
-            <div class="climate-field-evidence">
-              <span><strong>Primary pattern:</strong> {{ field.signal_family_label }}</span>
-              {% if field.top_domains %}
-              <span><strong>Most activated territory:</strong> {{ field.top_domains[:2] | join(' - ') }}</span>
-              {% endif %}
-              {% if field.supporting_events %}
-              <span><strong>Primary cycles:</strong> {% for event in field.supporting_events[:2] %}{{ event.title }}{% if not loop.last %} - {% endif %}{% endfor %}</span>
-              {% endif %}
-            </div>
-            {% if field.supporting_events %}
-            <div class="climate-field-support">
-              {% for event in field.supporting_events[:2] %}
-              <div class="climate-field-support-item">
-                <strong>{{ event.title }}</strong>
-                <span>{{ event.event_label }}{% if event.intensity_label %} - {{ event.intensity_label }}{% endif %}</span>
-              </div>
-              {% endfor %}
-            </div>
-            {% endif %}
-          </article>
-          {% endfor %}
-        </div>
-        <div class="climate-note-stack">
-          {% if forecast_climate.confidence_note %}
-          <div class="climate-note-panel">{{ forecast_climate.confidence_note }}</div>
-          {% endif %}
-        </div>
-        <p class="section-note">These field qualities organize the recurring conditions already visible across the report's retained annual event set.</p>
-      </section>
-
-      <!-- VII. YEAR ARCS -->
+      <!-- V. YEAR ARCS -->
       <section class="section" id="year-arcs">
         <div class="section-header">
           <div>
-            <p class="eyebrow">VII. Year arcs</p>
+            <p class="eyebrow">V. Year arcs</p>
             <h2>Long Stories in Motion</h2>
             <p class="section-subtitle">Longer cycles provide the deeper backdrop for the dated events and turning points that follow.</p>
           </div>
@@ -2254,8 +3455,9 @@
         <div class="empty-landmarks">No sustained transit cycles met the current Year Arc threshold.</div>
         {% endif %}
 
-        <h3>Progressions &amp; Solar Arc Texture</h3>
-        <p class="section-subtitle">Secondary progressions and solar arc directions move the inner clock forward by season, not by transit -- they color the year's texture rather than marking a single dated peak.</p>
+        {% if year_texture_progressions or year_texture_solar_arc %}
+        <h3>Directed Clock Highlights</h3>
+        <p class="section-subtitle">Secondary progressions and solar arc directions appear here only when they sharpen the year's main story.</p>
         {% if year_texture_progressions %}
         <div class="arc-story-grid">
           {% for event in year_texture_progressions %}
@@ -2279,8 +3481,6 @@
           </article>
           {% endfor %}
         </div>
-        {% else %}
-        <div class="empty-landmarks">No progression contacts fell within this forecast window.</div>
         {% endif %}
 
         {% if year_texture_solar_arc %}
@@ -2306,8 +3506,7 @@
           </article>
           {% endfor %}
         </div>
-        {% else %}
-        <div class="empty-landmarks">No solar arc contacts fell within this forecast window.</div>
+        {% endif %}
         {% endif %}
 
         {% if tier5_predictive_surfaces %}
@@ -2456,11 +3655,11 @@
         {% endif %}
       </section>
 
-      <!-- VIII. ANNUAL RHYTHM -->
+      <!-- VI. ANNUAL RHYTHM -->
       <section class="section" id="annual-rhythm">
         <div class="section-header">
           <div>
-            <p class="eyebrow">VIII. Annual rhythm</p>
+            <p class="eyebrow">VI. Annual rhythm</p>
             <h2>The Year at a Glance</h2>
             <p class="section-subtitle">Relative concentration by month — not a ranking of importance.</p>
           </div>
@@ -2515,11 +3714,11 @@
         {% endif %}
       </section>
 
-      <!-- IX. MONTHLY CHAPTERS -->
+      <!-- VII. MONTHLY CHAPTERS -->
       <section class="section" id="monthly-chapters">
         <div class="section-header">
           <div>
-            <p class="eyebrow">IX. Monthly chapters</p>
+            <p class="eyebrow">VII. Monthly chapters</p>
             <h2>The Year as It Arrives</h2>
             <p class="section-subtitle">Return here month by month. The dated forecast is anchored inside a broader seasonal and narrative context.</p>
           </div>
@@ -2645,9 +3844,9 @@
       </section>
       {% endfor %}
 
-      <!-- X. TURNING POINT GUIDE -->
+      <!-- VIII. TURNING POINT GUIDE -->
       <section class="section" id="turning-point-guide">
-        <div class="section-header"><div><p class="eyebrow">X. Turning point guide</p><h2>Windows Worth Returning To</h2><p class="section-subtitle">A compact guide to the most sustained or concentrated cycles in this report.</p></div></div>
+        <div class="section-header"><div><p class="eyebrow">VIII. Turning point guide</p><h2>Windows Worth Returning To</h2><p class="section-subtitle">A compact guide to the most sustained or concentrated cycles in this report.</p></div></div>
         <div class="activity-legend"><p class="activity-legend-heading">Understanding activity levels</p><p class="activity-legend-intro">These markers describe relative symbolic concentration in this report, not certainty, inevitability, or the importance of a life event.</p><ul class="activity-legend-list"><li><span class="legend-symbol">BG</span><span class="legend-item-label">Background</span> - gentle supporting influences</li><li><span class="legend-symbol">AC</span><span class="legend-item-label">Active</span> - noticeable movement or change</li><li><span class="legend-symbol">SG</span><span class="legend-item-label">Significant</span> - a period likely to deserve additional attention</li><li><span class="legend-symbol">KW</span><span class="legend-item-label">Key Window</span> - one of the year's strongest concentrations</li></ul></div>
         {% if turning_point_timeline %}
         <div class="turning-guide-timeline">
@@ -2688,9 +3887,9 @@
         {% endif %}
       </section>
 
-      <!-- XI. CYCLE LEDGER -->
+      <!-- IX. CYCLE LEDGER -->
       <section class="section" id="cycle-ledger">
-        <div class="section-header"><div><p class="eyebrow">XI. Cycle ledger</p><h2>{{ raw_cycle_ledger.title if raw_cycle_ledger and raw_cycle_ledger.title else 'Cycle Ledger - Forecast Event Registry' }}</h2><p class="section-subtitle">{{ raw_cycle_ledger.subtitle if raw_cycle_ledger and raw_cycle_ledger.subtitle else 'A chronological technical index of the selected forecast events.' }}</p></div></div>
+        <div class="section-header"><div><p class="eyebrow">IX. Cycle ledger</p><h2>{{ raw_cycle_ledger.title if raw_cycle_ledger and raw_cycle_ledger.title else 'Cycle Ledger - Forecast Event Registry' }}</h2><p class="section-subtitle">{{ raw_cycle_ledger.subtitle if raw_cycle_ledger and raw_cycle_ledger.subtitle else 'A chronological technical index of the selected forecast events.' }}</p></div></div>
         <p class="ledger-intro">This registry keeps event types distinct and lists them in chronological order without ranking them by hidden score, tier, or theme-strength claims.</p>
         {% if raw_cycle_ledger and raw_cycle_ledger.field_notes %}
         <div class="ledger-field-note-list">
@@ -2839,9 +4038,9 @@
         {% endif %}
       </section>
 
-      <!-- XII. TECHNICAL APPENDIX -->
+      <!-- X. TECHNICAL APPENDIX -->
       <section class="section" id="technical-appendix">
-        <div class="section-header"><div><p class="eyebrow">XII. Technical appendix</p><h2>Terms, Methods & Definitions</h2></div></div>
+        <div class="section-header"><div><p class="eyebrow">X. Technical appendix</p><h2>Terms, Methods & Definitions</h2></div></div>
         <div class="appendix-grid">
           <article><h3>Transit</h3><p>A moving planet's relationship to a natal placement or chart angle.</p></article>
           <article><h3>Exact contact</h3><p>The closest point of an aspect inside a larger timing window.</p></article>
@@ -2860,9 +4059,9 @@
         <div class="method-note"><h3>Method note</h3><p>This forecast is calculated with the Swiss Ephemeris using the {{ methodology_label | default('Tropical zodiac + Whole Sign houses') }} methodology. The report draws on natal transits, Whole Sign house ingresses, planetary stations, and eclipses that contact selected natal targets. It does not claim to predict one fixed future; it maps changing symbolic conditions, timing concentrations, and recurring developmental patterns.</p>{% if raw_cycle_ledger and raw_cycle_ledger.status_method_note %}<p>{{ raw_cycle_ledger.status_method_note }}</p>{% endif %}</div>
       </section>
 
-      <!-- XIII. YEAR INTEGRATION -->
+      <!-- XI. YEAR INTEGRATION -->
       <section class="section" id="year-integration">
-        <div class="section-header"><div><p class="eyebrow">XIII. Year integration</p><h2>What You Carry Forward</h2></div></div>
+        <div class="section-header"><div><p class="eyebrow">XI. Year integration</p><h2>What You Carry Forward</h2></div></div>
         {% if year_integration_block %}<div class="integration">{{ year_integration_block }}</div>{% else %}<div class="empty-landmarks">No end-of-year integration synthesis is available for this forecast.</div>{% endif %}
         <div class="integration-intro">Use these closing pages to register what the year clarified, what changed shape over time, and what still feels alive as the next cycle begins.</div>
         <div class="reflection-grid">
