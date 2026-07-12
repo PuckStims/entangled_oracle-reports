@@ -1449,7 +1449,9 @@ def _build_personal_forecast_context(
                 payload, report_type="personal_forecast", current_retrograde=transit_rx
             )
             if chart_wheel_data:
-                chart_wheel_svg = render_natal_wheel_svg(chart_wheel_data, compact=True)
+                chart_wheel_svg = render_natal_wheel_svg(
+                    chart_wheel_data, compact=True, config={"theme": "parchment_ink"}
+                )
                 wheel_transit_retrograde_planets = sorted(
                     b["name"] for b in chart_wheel_data.get("bodies", [])
                     if b.get("currently_retrograde")
@@ -1808,7 +1810,10 @@ def _build_soul_ecosystem_context(variables, index_results, payload) -> dict:
                 payload, "soul_ecosystem", current_retrograde=transit_rx
             )
             if chart_wheel_data:
-                chart_wheel_svg = render_natal_wheel_svg(chart_wheel_data)
+                # cosmic_sage matches the report's earthy, subtle tone.
+                chart_wheel_svg = render_natal_wheel_svg(
+                    chart_wheel_data, config={"theme": "cosmic_sage"}
+                )
                 wheel_transit_retrograde_planets = sorted(
                     b["name"] for b in chart_wheel_data.get("bodies", [])
                     if b.get("currently_retrograde")
@@ -8281,7 +8286,9 @@ def _build_year_ahead_context(
                 payload, report_type="year_ahead", current_retrograde=transit_rx
             )
             if chart_wheel_data:
-                chart_wheel_svg = render_natal_wheel_svg(chart_wheel_data, compact=False)
+                chart_wheel_svg = render_natal_wheel_svg(
+                    chart_wheel_data, compact=False, config={"theme": "cosmic_rose"}
+                )
                 wheel_transit_retrograde_planets = sorted(
                     b["name"] for b in chart_wheel_data.get("bodies", [])
                     if b.get("currently_retrograde")

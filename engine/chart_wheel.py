@@ -58,6 +58,9 @@ render_natal_wheel_svg(chart_wheel_data, compact=False, config=None)
 
 Toggle the aspect web via the config dict:
     render_natal_wheel_svg(data, config={"show_aspect_web": False})
+
+Swap the visual identity via the same dict — see THEMES for the full list:
+    render_natal_wheel_svg(data, config={"theme": "parchment_ink"})
 """
 
 import math
@@ -171,9 +174,107 @@ _DEFAULT_BODY_WEIGHT = 0.35
 # Bodies that always elevate an aspect to at least the Structural layer
 LUMINARIES_ANGLES = {"Sun", "Moon", "Ascendant", "Midheaven"}
 
+# ── Themes ───────────────────────────────────────────────────
+#
+# A theme is a flat palette. Geometry, layout, and the aspect-web scoring
+# model never read from here — only color. Adding a theme is adding an
+# entry to this dict; it never requires touching render_natal_wheel_svg's
+# drawing logic.
+#
+# aspect_colors reuses the same hue as the matching accent token (gold =
+# Conjunction, cyan = Opposition, amber = Square, green = Trine, purple =
+# Sextile) so a theme only has to pick 4-6 hues, not color each aspect
+# family independently.
+
+THEMES: dict = {
+    "midnight_indigo": {
+        "bg": "#0d0d1a", "ring": "#25253a", "div": "#25253a", "div_major": "#3a3a55",
+        "hn": "#8390AB", "tick": "#47516A", "pl_text": "#E7E9F1", "pl_dot": "#C8CDE8",
+        "center_glyph": "#5A607A",
+        "gold": "#FFD080", "purple": "#C0A0FF", "cyan": "#88DDFF",
+        "amber": "#FFBB66", "green": "#88FFCC",
+        "fire": "#FF9966", "earth": "#88CCAA", "air": "#88DDFF", "water": "#BB99FF",
+        "element_fill": dict(ELEMENT_FILL),
+        "aspect_colors": dict(ASPECT_COLORS),
+    },
+    "parchment_ink": {
+        "bg": "#f3ead9", "ring": "#c9b89a", "div": "#c9b89a", "div_major": "#a68f6b",
+        "hn": "#8a7458", "tick": "#8a7458", "pl_text": "#4a3f31", "pl_dot": "#4a3f31",
+        "center_glyph": "#8a7458",
+        "gold": "#b3652f", "purple": "#5c6a52", "cyan": "#3f6e73",
+        "amber": "#a8763c", "green": "#5f7d4f",
+        "fire": "#b3652f", "earth": "#5f7d4f", "air": "#3f6e73", "water": "#5c6a52",
+        "element_fill": {
+            "Fire": "rgba(179,101,47,0.16)", "Earth": "rgba(95,125,79,0.16)",
+            "Air": "rgba(63,110,115,0.16)", "Water": "rgba(92,106,82,0.16)",
+        },
+        "aspect_colors": {
+            "Conjunction": "#b3652f", "Opposition": "#3f6e73",
+            "Square": "#a8763c", "Trine": "#5f7d4f", "Sextile": "#5c6a52",
+        },
+    },
+    "cosmic_rose": {
+        "bg": "#241a20", "ring": "#3d2436", "div": "#3d2436", "div_major": "#5c3650",
+        "hn": "#a8809c", "tick": "#6b4a5e", "pl_text": "#f4e2ef", "pl_dot": "#f4e2ef",
+        "center_glyph": "#8a6478",
+        "gold": "#f0b088", "purple": "#e79bc9", "cyan": "#f2879e",
+        "amber": "#e8a06a", "green": "#c9a2e0",
+        "fire": "#f0b088", "earth": "#c9a2e0", "air": "#f2879e", "water": "#e79bc9",
+        "element_fill": {
+            "Fire": "rgba(240,176,136,0.22)", "Earth": "rgba(201,162,224,0.22)",
+            "Air": "rgba(242,135,158,0.22)", "Water": "rgba(231,155,201,0.22)",
+        },
+        "aspect_colors": {
+            "Conjunction": "#f0b088", "Opposition": "#f2879e",
+            "Square": "#e8a06a", "Trine": "#c9a2e0", "Sextile": "#e79bc9",
+        },
+    },
+    "cosmic_sage": {
+        # Soul Ecosystem's theme — same dark-field-plus-accent structure
+        # as Cosmic Rose, but moss/sage/clay instead of rose/orchid, to
+        # match the product's subtle, earthy-fae register.
+        "bg": "#161d19", "ring": "#2c3832", "div": "#2c3832", "div_major": "#425244",
+        "hn": "#8fa08f", "tick": "#5c6b5c", "pl_text": "#e6ece2", "pl_dot": "#e6ece2",
+        "center_glyph": "#7c8f7a",
+        "gold": "#a8c17e", "purple": "#8a7ba0", "cyan": "#7fb8ab",
+        "amber": "#c99a5b", "green": "#7a9c6f",
+        "fire": "#c99a5b", "earth": "#7a9c6f", "air": "#7fb8ab", "water": "#8a7ba0",
+        "element_fill": {
+            "Fire": "rgba(201,154,91,0.20)", "Earth": "rgba(122,156,111,0.20)",
+            "Air": "rgba(127,184,171,0.20)", "Water": "rgba(138,123,160,0.20)",
+        },
+        "aspect_colors": {
+            "Conjunction": "#a8c17e", "Opposition": "#7fb8ab",
+            "Square": "#c99a5b", "Trine": "#7a9c6f", "Sextile": "#8a7ba0",
+        },
+    },
+    "monochrome_line": {
+        "bg": "#ffffff", "ring": "#d8d5cd", "div": "#d8d5cd", "div_major": "#a8a49a",
+        "hn": "#8a8578", "tick": "#8a8578", "pl_text": "#1a1a16", "pl_dot": "#1a1a16",
+        "center_glyph": "#8a8578",
+        "gold": "#1a1a16", "purple": "#4a463c", "cyan": "#b34724",
+        "amber": "#4a463c", "green": "#8a8578",
+        "fire": "#b34724", "earth": "#8a8578", "air": "#b34724", "water": "#4a463c",
+        "element_fill": {
+            "Fire": "rgba(179,71,36,0.10)", "Earth": "rgba(138,133,120,0.10)",
+            "Air": "rgba(74,70,60,0.10)", "Water": "rgba(26,26,22,0.06)",
+        },
+        "aspect_colors": {
+            "Conjunction": "#1a1a16", "Opposition": "#b34724",
+            "Square": "#4a463c", "Trine": "#8a8578", "Sextile": "#4a463c",
+        },
+    },
+}
+_DEFAULT_THEME = "midnight_indigo"
+
+
 # ── Default chart configuration ───────────────────────────────
 
 DEFAULT_CHART_CONFIG: dict = {
+    # Named palette from THEMES — swap the visual identity per report
+    # without touching geometry. Unknown names fall back to the default.
+    "theme":                   _DEFAULT_THEME,
+
     # Master switch — set False to render without any aspect web
     "show_aspect_web":        True,
     "aspect_web_mode":        "layered",   # "layered" is the only mode right now
@@ -613,8 +714,9 @@ def _render_aspect_lines(
     filter_attr = ' filter="url(#aw-glow)"' if use_glow else ""
     lines.append(f'<g id="{gid}"{class_attr} opacity="{opacity}"{filter_attr}>')
 
+    theme_aspect_colors = config.get("_theme", {}).get("aspect_colors", {})
     for asp in filtered:
-        color = asp["color"]
+        color = theme_aspect_colors.get(asp["aspect"], asp["color"])
         b1, b2 = asp["body_1"], asp["body_2"]
 
         if b1 in body_pos_map:
@@ -670,6 +772,8 @@ def render_natal_wheel_svg(
         Override keys from DEFAULT_CHART_CONFIG.
         Example — disable the web entirely:
             render_natal_wheel_svg(data, config={"show_aspect_web": False})
+        Example — swap the palette (see THEMES for all names):
+            render_natal_wheel_svg(data, config={"theme": "parchment_ink"})
 
     Rendering layers (painter's algorithm, back to front)
     ─────────────────────────────────────────────────────
@@ -689,6 +793,8 @@ def render_natal_wheel_svg(
 
     # Merge caller config over defaults
     cfg: dict = {**DEFAULT_CHART_CONFIG, **(config or {})}
+    th: dict = THEMES.get(cfg.get("theme"), THEMES[_DEFAULT_THEME])
+    cfg["_theme"] = th   # threaded through to _render_aspect_lines
 
     asc_lon = (
         chart_wheel_data["asc_lon"]
@@ -753,21 +859,21 @@ def render_natal_wheel_svg(
 
     lines.append(
         "<style>"
-        ".cw-bg{fill:#0d0d1a;}"
-        ".cw-ring{fill:none;stroke:#25253a;stroke-width:0.8;}"
-        ".cw-div{stroke:#25253a;stroke-width:0.9;fill:none;}"
-        ".cw-div-major{stroke:#3a3a55;stroke-width:1.4;fill:none;}"
+        f".cw-bg{{fill:{th['bg']};}}"
+        f".cw-ring{{fill:none;stroke:{th['ring']};stroke-width:0.8;}}"
+        f".cw-div{{stroke:{th['div']};stroke-width:0.9;fill:none;}}"
+        f".cw-div-major{{stroke:{th['div_major']};stroke-width:1.4;fill:none;}}"
         ".cw-sign{font-family:serif;dominant-baseline:central;text-anchor:middle;}"
         ".cw-pl{font-family:Arial,sans-serif;dominant-baseline:central;text-anchor:middle;}"
-        ".cw-hn{fill:#8390AB;font-family:Arial,sans-serif;"
+        f".cw-hn{{fill:{th['hn']};font-family:Arial,sans-serif;"
         "dominant-baseline:central;text-anchor:middle;}"
-        ".cw-angle-label{fill:#FFD080;font-family:Arial,sans-serif;font-weight:bold;"
+        f".cw-angle-label{{fill:{th['gold']};font-family:Arial,sans-serif;font-weight:bold;"
         "dominant-baseline:central;text-anchor:middle;}"
-        ".cw-pl-dot{fill:#C8CDE8;}"
-        ".cw-angle-dot{fill:#FFD080;}"
-        ".cw-asc-line{stroke:#FFD080;stroke-width:1.6;}"
-        ".cw-mc-line{stroke:#C0A0FF;stroke-width:1.2;}"
-        ".cw-horizon{stroke:#3a3a55;stroke-width:0.7;stroke-dasharray:4,3;}"
+        f".cw-pl-dot{{fill:{th['pl_dot']};}}"
+        f".cw-angle-dot{{fill:{th['gold']};}}"
+        f".cw-asc-line{{stroke:{th['gold']};stroke-width:1.6;}}"
+        f".cw-mc-line{{stroke:{th['purple']};stroke-width:1.2;}}"
+        f".cw-horizon{{stroke:{th['div_major']};stroke-width:0.7;stroke-dasharray:4,3;}}"
         "@media print{"
         ".cw-bg{fill:#fff;}"
         ".cw-ring{stroke:#ccc;}"
@@ -794,7 +900,7 @@ def render_natal_wheel_svg(
         lon_start = float(i * 30)
         lon_end = float((i + 1) * 30)
         elem = SIGN_ELEMENT.get(sign, "Air")
-        fill = ELEMENT_FILL[elem]
+        fill = th["element_fill"][elem]
         d = _arc_sector(CX, CY, R_OUT, R_ZIN, lon_start, lon_end, asc_lon)
         lines.append(f'<path d="{d}" fill="{fill}" stroke="none"/>')
 
@@ -827,8 +933,8 @@ def render_natal_wheel_svg(
     r_text = glyph_r - sign_font * 0.25
 
     sign_color_map = {
-        "Fire": "#FF9966", "Earth": "#88CCAA",
-        "Air": "#88DDFF",  "Water": "#BB99FF",
+        "Fire": th["fire"], "Earth": th["earth"],
+        "Air": th["air"],  "Water": th["water"],
     }
 
     for i, sign in enumerate(ZODIAC_SIGNS):
@@ -975,7 +1081,7 @@ def render_natal_wheel_svg(
         tx1, ty1 = _pt(CX, CY, R_TICK - 4, sa)
         tx2, ty2 = _pt(CX, CY, R_TICK + 4, sa)
         lines.append(
-            f'<line stroke="#47516A" stroke-width="0.8" '
+            f'<line stroke="{th["tick"]}" stroke-width="0.8" '
             f'x1="{tx1:.2f}" y1="{ty1:.2f}" x2="{tx2:.2f}" y2="{ty2:.2f}"/>'
         )
 
@@ -993,10 +1099,10 @@ def render_natal_wheel_svg(
             )
 
         lx, ly = _pt(CX, CY, r_place + 11, sa)
-        text_col = "#E7E9F1"
+        text_col = th["pl_text"]
         if body.get("retrograde"):
             abbrev = f'{body["abbrev"]}r'
-            text_col = "#FF9966"
+            text_col = th["fire"]
         else:
             abbrev = body["abbrev"]
 
@@ -1027,12 +1133,12 @@ def render_natal_wheel_svg(
     asc_sign = chart_wheel_data.get("asc_sign", "")
     glyph = SIGN_GLYPHS.get(asc_sign, "")
     lines.append(
-        f'<text font-family="serif" font-size="{FONT_SIGN - 1}" fill="#5A607A" '
+        f'<text font-family="serif" font-size="{FONT_SIGN - 1}" fill="{th["center_glyph"]}" '
         f'text-anchor="middle" dominant-baseline="central" '
         f'x="{CX}" y="{CY - 6}">{glyph}</text>'
     )
     lines.append(
-        f'<text font-family="Arial,sans-serif" font-size="{FONT_HN}" fill="#47516A" '
+        f'<text font-family="Arial,sans-serif" font-size="{FONT_HN}" fill="{th["tick"]}" '
         f'text-anchor="middle" dominant-baseline="central" '
         f'x="{CX}" y="{CY + 7}">Ascendant {asc_sign[:3].upper()}</text>'
     )
