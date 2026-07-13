@@ -32,8 +32,8 @@ PACKAGE_VERSIONS = {
 }
 
 REPORT_TYPE_VERSIONS = {
-    "horoscope": "Horoscope v1.0",
-    "weekly_horoscope": "Weekly Horoscope v0.1",
+    "horoscope": "Daily Horoscope v1.0",
+    "weekly_horoscope": "Weekly Horoscope v1.0",
     "year_ahead": "Year Ahead v2.0",
     "personal_forecast": "Personal Forecast v1.0",
     "soul_ecosystem": "Soul Ecosystem v1.0",
