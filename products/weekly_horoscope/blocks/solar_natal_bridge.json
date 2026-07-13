@@ -1,0 +1,8 @@
+{
+  "_note": "Key path: relation between weekly solar-house theme and natalized exact-contact layer. Used by the synthesized Weekly Horoscope bridge.",
+  "same_house": "This week's Sun-sign theme and the selected exact contacts gather around the same territory, so the broad solar weather and the personal timing notes reinforce each other. Read the solar section as the week's headline, then use the exact contacts to pace your response.",
+  "supportive": "The Sun-sign theme and the exact-contact layer are close enough to support one another without collapsing into the same message. The solar layer gives the week a familiar horoscope frame; the personal timing notes show where that frame becomes more specific in your chart.",
+  "different_fields": "The Sun-sign theme names the broad weekly weather, while the selected exact contacts move through a more personal set of chart areas. Use the solar section for orientation, then let the timing notes show which conversations, moods, or decisions deserve attention on particular days.",
+  "tension": "The Sun-sign theme and the selected exact contacts pull toward different fields of life this week. That can be useful: the solar layer describes the public-facing weather, while the personal contacts show where your chart asks for more immediate adjustment.",
+  "fallback": "The Sun-sign theme gives the week a familiar horoscope frame, and the exact-contact layer personalizes it. Let the solar section orient the week, then use the timing notes to decide where the signal becomes practical."
+}

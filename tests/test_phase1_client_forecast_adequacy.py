@@ -82,6 +82,42 @@ class TestWeeklyHoroscopeChronology(unittest.TestCase):
         self.assertGreater(ctx["weekly_prose_ledger"]["total_selections"], 0)
         self.assertGreater(len(ctx["weekly_prose_ledger"]["contact_selector_traces"]), 0)
 
+    def test_weekly_context_merges_solar_house_layer(self):
+        monday = datetime(2025, 12, 29, tzinfo=timezone.utc)
+        fake_moments = [_moment(datetime(2025, 12, 29, 10, tzinfo=timezone.utc), "Saturn", score=0.95)]
+        weekly_solar_context = {
+            "weekly_solar_layer_available": True,
+            "weekly_solar_days": [{"solar_activation_house": 5}],
+            "weekly_solar_sign": "Aries",
+            "weekly_solar_feature_planet": "Sun",
+            "weekly_solar_theme_house_name": "creativity",
+            "weekly_solar_theme_block": "Solar week text.",
+            "weekly_solar_bridge_block": "Weekly bridge text.",
+        }
+
+        transit_engine_stub = types.ModuleType("engine.transit_engine")
+        transit_engine_stub.compute_daily_timeline = lambda *args, **kwargs: fake_moments
+
+        with patch.dict(sys.modules, {"engine.transit_engine": transit_engine_stub}):
+            with patch(
+                "products.sun_sign_horoscope.runtime.solar_context.build_weekly_solar_context",
+                return_value=weekly_solar_context,
+            ) as solar_builder:
+                ctx = generate._build_weekly_horoscope_context(
+                    variables={"palette": "vibrant"},
+                    index_results={},
+                    payload={"simple_mode": False},
+                    report_start=monday,
+                    report_end=monday + timedelta(days=7),
+                )
+
+        solar_builder.assert_called_once()
+        self.assertEqual(solar_builder.call_args.args[1], monday)
+        self.assertEqual(solar_builder.call_args.args[2], monday + timedelta(days=7))
+        self.assertTrue(ctx["weekly_solar_layer_available"])
+        self.assertEqual(ctx["weekly_solar_sign"], "Aries")
+        self.assertEqual(ctx["weekly_solar_bridge_block"], "Weekly bridge text.")
+
     def test_weekly_selection_caps_each_day_and_prefers_nonduplicate_contacts(self):
         monday = datetime(2025, 12, 29, tzinfo=timezone.utc)
         monday_first = datetime(2025, 12, 29, 10, tzinfo=timezone.utc)

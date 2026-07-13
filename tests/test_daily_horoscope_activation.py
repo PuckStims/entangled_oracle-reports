@@ -39,6 +39,7 @@ from engine.transit_engine import (
     compute_daily_activation_transits,
 )
 from selectors.variable_resolver import resolve_all
+import generate
 
 
 def _payload_stub(ascendant_longitude=25.0):
@@ -236,6 +237,49 @@ class TestActivationPriorityChain(unittest.TestCase):
 
         activation_moment = activation_scan.call_args.args[1]
         self.assertEqual(activation_moment, report_date)
+
+    def test_daily_context_merges_solar_house_layer_from_report_date(self):
+        report_date = datetime(2026, 1, 1, tzinfo=timezone.utc)
+        solar_context = {
+            "solar_layer_available": True,
+            "solar_sign": "Aries",
+            "solar_feature_planet": "Sun",
+            "solar_activation_house_name": "identity",
+            "solar_activation_block": "Solar frame text.",
+            "solar_bridge_relation": "same_house",
+            "solar_natal_bridge_block": "Bridge text.",
+        }
+        variables = {
+            "simple_mode": False,
+            "moon_phase_descriptor": "New Moon",
+            "sky_moon_sign_element": "fire",
+            "activation_planet": "Moon",
+            "activation_house_number": 1,
+            "day_ruler_name": "Jupiter",
+            "dominant_eas_dimension": "",
+            "dimension_names": {},
+            "activation_source": "moon_house_fallback",
+            "activation_basis_line": "Moon fallback localized through the current house.",
+            "palette": "vibrant",
+        }
+
+        with patch(
+            "products.sun_sign_horoscope.runtime.solar_context.build_solar_day_context",
+            return_value=solar_context,
+        ) as solar_builder:
+            ctx = generate._build_horoscope_context(
+                variables,
+                index_results={},
+                payload=_payload_stub(),
+                report_start=report_date,
+            )
+
+        solar_builder.assert_called_once()
+        self.assertEqual(solar_builder.call_args.args[1], report_date)
+        self.assertEqual(solar_builder.call_args.kwargs["natal_activation_house"], 1)
+        self.assertTrue(ctx["solar_layer_available"])
+        self.assertEqual(ctx["solar_sign"], "Aries")
+        self.assertEqual(ctx["solar_natal_bridge_block"], "Bridge text.")
 
 
 if __name__ == "__main__":

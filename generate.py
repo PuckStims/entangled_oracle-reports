@@ -330,7 +330,7 @@ def build_report_context(
     ctx.setdefault("report_version", report_version(report_type))
 
     if report_type == "horoscope":
-        ctx.update(_build_horoscope_context(variables, index_results, payload))
+        ctx.update(_build_horoscope_context(variables, index_results, payload, report_start))
 
     elif report_type == "weekly_horoscope":
         ctx.update(_build_weekly_horoscope_context(variables, index_results, payload, report_start, report_end))
@@ -1524,12 +1524,28 @@ def _build_personal_forecast_context(
         "voc_next_block":          voc_next_block,
     }
 
-def _build_horoscope_context(variables, index_results, payload) -> dict:
+def _build_horoscope_context(variables, index_results, payload, report_start: datetime | None = None) -> dict:
     from selectors.block_selector import select_block
     v = variables
     ctx = {}
     birth_meta = _build_birth_metadata(payload)
     methodology = _build_methodology_metadata(payload, v)
+    solar_context = {
+        "solar_layer_available": False,
+        "solar_bridge_relation": "fallback",
+        "solar_natal_bridge_block": "",
+    }
+    try:
+        from products.sun_sign_horoscope.runtime.solar_context import build_solar_day_context
+
+        solar_context = build_solar_day_context(
+            payload,
+            report_start or datetime.now(timezone.utc),
+            natal_activation_house=v.get("activation_house_number"),
+            bridge_report_type="daily_horoscope",
+        )
+    except Exception as exc:
+        _log_verbose(f"[Solar] Daily solar layer unavailable: {exc}")
 
     # Today's Sky block
     ctx["todays_sky_block"] = select_block(
@@ -1585,6 +1601,7 @@ def _build_horoscope_context(variables, index_results, payload) -> dict:
     )
     ctx["horoscope_complexity_capacity"] = [
         "Moon phase and Moon sign are calculated from the report date.",
+        "The Sun-sign section maps current sky movement through the native Sun sign as a solar first house.",
         "The day ruler is calculated from the report date.",
         (
             "The activation section is suppressed because birth-time-dependent "
@@ -1608,6 +1625,7 @@ def _build_horoscope_context(variables, index_results, payload) -> dict:
         "birth_time_status": birth_meta["birth_time_status"],
         "birth_time_confidence": birth_meta["birth_time_confidence"],
         "birth_time_state": birth_meta["birth_time_state"],
+        **solar_context,
         **methodology,
     })
 
@@ -2594,6 +2612,30 @@ def _build_weekly_horoscope_context(
         simple_mode,
         weekly_prose_ledger,
     )
+    weekly_solar_context = {
+        "weekly_solar_layer_available": False,
+        "weekly_solar_days": [],
+        "weekly_solar_bridge_block": "",
+    }
+    try:
+        from products.sun_sign_horoscope.runtime.solar_context import build_weekly_solar_context
+
+        weekly_natal_houses = []
+        for day in weekly_days:
+            day_moments = day.get("moments") or []
+            natal_house = day_moments[0].get("natal_house") if day_moments else None
+            try:
+                weekly_natal_houses.append(int(natal_house or 0))
+            except (TypeError, ValueError):
+                weekly_natal_houses.append(0)
+        weekly_solar_context = build_weekly_solar_context(
+            payload,
+            report_start,
+            report_end,
+            natal_houses=weekly_natal_houses,
+        )
+    except Exception as exc:
+        _log_verbose(f"[Solar] Weekly solar layer unavailable: {exc}")
 
     return {
         "simple_mode": simple_mode,
@@ -2628,6 +2670,7 @@ def _build_weekly_horoscope_context(
         "birth_time_confidence": birth_meta["birth_time_confidence"],
         "birth_time_state": birth_meta["birth_time_state"],
         **methodology,
+        **weekly_solar_context,
         **subscriber_narrative,
         "palette_name": _palette_name,
         "palette": _PALETTES.get(_palette_name, _PALETTES["vibrant"]),
@@ -5837,6 +5880,61 @@ def _build_annual_rhythm_quarters(
         if leave is not None and q_start <= leave < q_end:
             return f"{base} — resolves {leave.strftime('%b %d, %Y')}"
         return f"{base} — carries through this stretch"
+
+    def _quarter_domain_records(q_months: list[dict], limit: int = 2) -> list[dict]:
+        scores: dict[str, float] = {}
+        for month in q_months:
+            for domain in month.get("activated_domains", []) or []:
+                name = str(domain.get("domain") or "").strip()
+                if not name:
+                    continue
+                scores[name] = scores.get(name, 0.0) + float(domain.get("score", 0.0) or 0.0)
+        return [
+            {"domain": name, "score": round(score, 4)}
+            for name, score in sorted(scores.items(), key=lambda item: item[1], reverse=True)[:limit]
+        ]
+
+    def _quarter_title(q_months: list[dict], peak_month: dict, quiet_month: dict) -> str:
+        first = str(q_months[0].get("short_name") or q_months[0].get("name") or "This stretch")
+        last = str(q_months[-1].get("short_name") or q_months[-1].get("name") or "")
+        peak_score = float(peak_month.get("arc_score", 0.0) or 0.0)
+        quiet_score = float(quiet_month.get("arc_score", 0.0) or 0.0)
+        peak_label = str(peak_month.get("name") or peak_month.get("short_name") or "One month")
+        if peak_score >= max(quiet_score * 1.2, quiet_score + 0.05):
+            return f"{peak_label} Carries the Emphasis"
+        return f"{first} to {last}: Shared Rhythm"
+
+    def _quarter_summary(
+        q_months: list[dict],
+        peak_month: dict,
+        quiet_month: dict,
+        domains: list[dict],
+        dominant_cycles: list[dict],
+    ) -> str:
+        month_names = ", ".join(
+            str(month.get("name") or month.get("short_name") or "").strip()
+            for month in q_months
+        )
+        peak_score = float(peak_month.get("arc_score", 0.0) or 0.0)
+        quiet_score = float(quiet_month.get("arc_score", 0.0) or 0.0)
+        peak_name = str(peak_month.get("name") or peak_month.get("short_name") or "the strongest month")
+        quiet_name = str(quiet_month.get("name") or quiet_month.get("short_name") or "the quietest month")
+        if peak_score >= max(quiet_score * 1.2, quiet_score + 0.05):
+            sentence = (
+                f"Across {month_names}, the strongest concentration gathers in {peak_name}, "
+                f"while {quiet_name} carries the lighter part of the stretch."
+            )
+        else:
+            sentence = (
+                f"Across {month_names}, the rhythm stays comparatively even, "
+                "so the three monthly chapters are best read as a shared movement."
+            )
+        if domains:
+            domain_text = ", ".join(domain["domain"] for domain in domains[:2])
+            sentence += f" The most repeated chart area is {domain_text}."
+        if dominant_cycles:
+            sentence += f" The main carried cycle is {dominant_cycles[0]['description']}."
+        return sentence
 
     quarters: list[dict] = []
     for q_index in range(4):
