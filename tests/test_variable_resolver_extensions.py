@@ -458,6 +458,149 @@ class TestVariableResolverExtensions(unittest.TestCase):
         self.assertEqual(depth["tertiary"]["index"], "MKI")
         self.assertTrue(depth["has_optional_depth"])
 
+    def test_soul_ecosystem_context_builds_standard_support_cards_from_live_metadata(self):
+        calls = []
+
+        def fake_select_block_traced(report_type, block_file, *keys, fallback=""):
+            calls.append((report_type, block_file, tuple(keys)))
+            return ("TODO", list(keys), False)
+
+        variables = {
+            "simple_mode": True,
+            "sun_moon_relationship": "flowing",
+            "dominant_element": "fire",
+            "south_node_sign": "Gemini",
+            "south_node_house": 3,
+            "saturn_sign": "Aquarius",
+            "saturn_house": 11,
+            "pluto_sign": "Scorpio",
+            "planets_in_12th": [],
+            "north_node_sign": "Sagittarius",
+            "north_node_house": 9,
+            "mc_sign": "Capricorn",
+            "jupiter_sign": "Cancer",
+            "jupiter_house": 4,
+            "sun_sign_element": "fire",
+            "moon_sign_element": "fire",
+            "sun_moon_aspect_character": "flowing",
+            "chiron_sign": "Virgo",
+            "chiron_house": 6,
+            "north_node_element": "fire",
+            "mc_element": "earth",
+            "palette": "vibrant",
+            "querent_name": "Support Cards",
+            "chart_ruler_body": "Mars",
+            "chart_ruler_condition_label": "strong",
+            "chart_ruler_prominence_tier": "primary",
+            "dominant_eas_dimension": "KVQ",
+            "soul_ecosystem_dominant_index": "KVQ",
+            "standard_result_bundle": {
+                "chart_orientation": {
+                    "traceable_source_data": {
+                        "core_standard_distribution": {
+                            "dominance_assessment": {
+                                "elements": {"dominant_key": "fire"},
+                                "modalities": {"dominant_key": "cardinal"},
+                            }
+                        }
+                    }
+                },
+                "chart_ruler": {
+                    "traceable_source_data": {
+                        "primary_ruler": "Mars",
+                        "condition_record": {"dignity": {"classification": "strong"}},
+                    }
+                },
+                "house_emphasis": {
+                    "traceable_source_data": {
+                        "rankings": [
+                            {"house": 10},
+                            {"house": 11},
+                        ]
+                    }
+                },
+                "aspect_architecture": {
+                    "traceable_source_data": {
+                        "connections": [
+                            {
+                                "body_1": "Mars",
+                                "body_2": "Sun",
+                                "aspect": "Trine",
+                                "classification": "supportive",
+                                "connection_type": "planet_planet",
+                                "structural_importance": 0.82,
+                                "orb": 1.1,
+                            },
+                            {
+                                "body_1": "Saturn",
+                                "body_2": "Moon",
+                                "aspect": "Square",
+                                "classification": "tensional",
+                                "connection_type": "planet_planet",
+                                "structural_importance": 0.79,
+                                "orb": 1.4,
+                            },
+                        ]
+                    }
+                },
+                "natal_convergence": {
+                    "traceable_source_data": {
+                        "central_life_domains": [
+                            {"label": "vocational / public structure"},
+                            {"label": "relational structure"},
+                        ],
+                        "inner-life / restoration structure": {
+                            "label": "inner-life / restoration structure",
+                            "normalized_relevance_score": 0.41,
+                        },
+                        "vocational / public structure": {
+                            "label": "vocational / public structure",
+                            "normalized_relevance_score": 0.88,
+                        },
+                    }
+                },
+            },
+        }
+        index_results = {
+            "KVQ": _result(
+                score=0.81,
+                activation_score=8.1,
+                archetype="Vindicated Oracle",
+                expression="KVQ expression",
+                driver_body="Kassandra",
+                components={"kass_angle": 1.1},
+            ),
+            "AHL": {"fires": False},
+        }
+
+        with patch("selectors.block_selector.select_block_traced", side_effect=fake_select_block_traced):
+            with patch("engine.chart_wheel.build_chart_wheel_data", return_value=None):
+                with patch("engine.chart_wheel.render_natal_wheel_svg", return_value=""):
+                    context = generate._build_soul_ecosystem_context(
+                        variables,
+                        index_results,
+                        _payload_stub(),
+                    )
+
+        self.assertGreaterEqual(len(context["core_support_cards"]), 3)
+        self.assertGreaterEqual(len(context["growth_support_cards"]), 3)
+        self.assertGreaterEqual(len(context["world_support_cards"]), 4)
+        self.assertGreaterEqual(len(context["world_interface_support_cards"]), 2)
+        self.assertGreaterEqual(len(context["living_integration_support_cards"]), 1)
+        self.assertIn(
+            ("soul_ecosystem", "core_pattern_foundation", ("orientation", "fire", "cardinal", "flowing")),
+            calls,
+        )
+        self.assertIn(
+            ("soul_ecosystem", "growth_pattern_foundation", ("pressure_axis", "Saturn", "Square", "Moon")),
+            calls,
+        )
+        self.assertIn(
+            ("soul_ecosystem", "world_interface_foundation", ("meridian_bridge", "Capricorn", "Mars")),
+            calls,
+        )
+        self.assertEqual(context["core_support_cards"][0]["body"], "TODO")
+
     def test_year_ahead_curated_summaries_stay_reader_facing_and_small(self):
         curated = generate._build_year_ahead_curated_summaries(
             {
@@ -540,6 +683,13 @@ class TestVariableResolverExtensions(unittest.TestCase):
                 "growth_pattern_note": "",
                 "world_pattern_title": "",
                 "world_pattern_note": "",
+                "core_support_cards": [],
+                "hidden_support_cards": [],
+                "growth_support_cards": [],
+                "inherited_support_cards": [],
+                "world_support_cards": [],
+                "world_interface_support_cards": [],
+                "living_integration_support_cards": [],
                 "core_nature_block": "",
                 "sun_moon_integration_block": "",
                 "core_identity_block": "",
@@ -807,8 +957,8 @@ class TestVariableResolverExtensions(unittest.TestCase):
             },
         )
 
-        self.assertNotIn("Seasonal Highlights", html)
-        self.assertNotIn("Field Highlights", html)
+        self.assertNotIn('id="seasonal-highlights"', html)
+        self.assertNotIn('Climate intro.', html)
         self.assertNotIn("Identity and Vitality", html)
 
 

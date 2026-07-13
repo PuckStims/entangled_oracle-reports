@@ -1,0 +1,49 @@
+{
+  "_note": "Key path: transit_planet -> aspect_character. Localizes a timing note without rewriting the main theme.",
+  "fallback": "{planet} localizes the timing through {house_theme}.",
+  "Moon": {
+    "fallback": "The Moon makes this a body-level timing cue, moving through {house_theme}.",
+    "challenging": "The Moon makes this a mood-and-body cue around {house_theme}; do not confuse intensity with final truth.",
+    "flowing": "The Moon makes this a softer timing cue around {house_theme}, where response may matter more than effort."
+  },
+  "Mercury": {
+    "fallback": "Mercury localizes the timing through language around {house_theme}.",
+    "challenging": "Mercury brings the friction into interpretation around {house_theme}.",
+    "flowing": "Mercury gives language or planning more room to work around {house_theme}."
+  },
+  "Venus": {
+    "fallback": "Venus localizes the timing through value around {house_theme}.",
+    "challenging": "Venus asks for more honesty around {house_theme}; notice what the exchange is actually costing.",
+    "flowing": "Venus points toward an easier exchange, pleasure, or value cue around {house_theme}."
+  },
+  "Mars": {
+    "fallback": "Mars brings direct heat into {house_theme}.",
+    "challenging": "Mars turns up the heat around {house_theme}; aim the energy before spending it.",
+    "flowing": "Mars gives initiative more traction around {house_theme}."
+  },
+  "Jupiter": {
+    "fallback": "Jupiter tests the scale of {house_theme}.",
+    "challenging": "Jupiter tests proportion around {house_theme}; more is not automatically better.",
+    "flowing": "Jupiter opens more room around {house_theme}, especially where confidence has been too cramped."
+  },
+  "Saturn": {
+    "fallback": "Saturn puts structure around {house_theme}.",
+    "challenging": "Saturn shows where {house_theme} needs a real container rather than another push.",
+    "flowing": "Saturn offers steadier support around {house_theme} when the structure is respected."
+  },
+  "Uranus": {
+    "fallback": "Uranus brings disruption into {house_theme}.",
+    "challenging": "Uranus interrupts the usual pattern around {house_theme}; the disruption may be the information.",
+    "flowing": "Uranus gives a freer route through {house_theme}, especially where the old pattern has gone stale."
+  },
+  "Neptune": {
+    "fallback": "Neptune brings sensitivity into {house_theme}.",
+    "challenging": "Neptune blurs the edges around {house_theme}; discernment matters more than instant certainty.",
+    "flowing": "Neptune softens the week around {house_theme}, where imagination or compassion may be easier to access."
+  },
+  "Pluto": {
+    "fallback": "Pluto brings pressure into {house_theme}.",
+    "challenging": "Pluto presses on what has been managed around {house_theme}; naming the pressure is already a change.",
+    "flowing": "Pluto gives a deeper line of honesty around {house_theme}, especially where the surface answer is too small."
+  }
+}

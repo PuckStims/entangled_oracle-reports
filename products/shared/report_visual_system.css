@@ -74,9 +74,99 @@ body.report-shell {
   padding-top: var(--space-4);
 }
 
+.report-record-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-3);
+  margin: var(--space-5) 0 var(--space-6);
+}
+
+.report-record-card,
+.suite-note,
+.trust-note {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-soft);
+}
+
+.report-record-card {
+  padding: var(--space-3) var(--space-4);
+}
+
+.report-record-label {
+  color: var(--muted);
+  font-size: 0.56rem;
+  letter-spacing: 2px;
+  line-height: var(--line-tight);
+  margin-bottom: var(--space-1);
+  text-transform: uppercase;
+}
+
+.report-record-value {
+  color: var(--text);
+  font-size: 0.86rem;
+  line-height: var(--line-tight);
+}
+
+.report-record-detail {
+  color: var(--subtle);
+  font-size: var(--type-footnote-size);
+  line-height: 1.5;
+  margin-top: var(--space-1);
+}
+
+.suite-note,
+.trust-note {
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.6;
+  padding: var(--space-4);
+}
+
+.suite-note {
+  border-left: 3px solid var(--gold);
+  margin: var(--space-4) 0 var(--space-6);
+}
+
+.trust-note {
+  margin-top: var(--space-5);
+}
+
+.suite-note h3,
+.trust-note h3 {
+  color: var(--text);
+  font-size: 0.72rem;
+  font-weight: normal;
+  letter-spacing: 2px;
+  line-height: var(--line-tight);
+  margin: 0 0 var(--space-2);
+  text-transform: uppercase;
+}
+
+.suite-note p,
+.trust-note p {
+  margin: 0 0 var(--space-2);
+}
+
+.suite-note p:last-child,
+.trust-note p:last-child {
+  margin-bottom: 0;
+}
+
+.trust-note strong {
+  color: var(--text);
+  font-weight: normal;
+}
+
 .report-shell .report-page-number {
   display: none;
   margin-left: var(--space-2);
+}
+
+@media (max-width: 680px) {
+  .report-record-grid {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
 @media print {
@@ -117,6 +207,9 @@ body.report-shell {
 
   .report-shell header,
   .report-shell .section,
+  .report-shell .report-record-card,
+  .report-shell .suite-note,
+  .report-shell .trust-note,
   .report-shell .month-section,
   .report-shell .featured-section,
   .report-shell .integration,
@@ -146,5 +239,30 @@ body.report-shell {
 
   .report-shell .report-page-number::after {
     content: "";
+  }
+
+  .report-record-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .report-record-card,
+  .suite-note,
+  .trust-note {
+    background: #f8f8f8;
+    border-color: #ddd;
+  }
+
+  .report-record-label,
+  .report-record-detail,
+  .suite-note,
+  .trust-note {
+    color: var(--print-ink-muted);
+  }
+
+  .report-record-value,
+  .suite-note h3,
+  .trust-note h3,
+  .trust-note strong {
+    color: var(--print-ink-strong);
   }
 }

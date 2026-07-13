@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Personal Forecast · {{ querent_name }}</title>
+  <title>Personal Forecast - {{ querent_name }}</title>
   <style>{{ shared_report_css | safe }}</style>
   <style>
     :root {
@@ -60,11 +60,28 @@
     th {
       overflow-wrap: break-word;
       word-break: normal;
-      hyphens: auto;
+      hyphens: none;
+      font-variant-ligatures: none;
     }
 
-    /* ── Header ── */
+    /* Header */
     header { text-align: center; margin-bottom: 52px; }
+    .report-title,
+    .natal-ref-label,
+    .time-status,
+    .section-label,
+    .theme-eyebrow,
+    .theme-best-use-label,
+    .theme-support-label,
+    .timing-table th,
+    .featured-date,
+    .featured-action strong,
+    .guidance-label,
+    .supporting-events-label,
+    .predictive-card-kicker,
+    .voc-meta {
+      font-family: Arial, sans-serif;
+    }
     .name {
       font-size: 1.8rem;
       letter-spacing: 4px;
@@ -75,63 +92,123 @@
     .report-title {
       font-size: 0.78rem;
       color: var(--muted);
-      letter-spacing: 3px;
-      text-transform: uppercase;
       margin-top: 8px;
     }
     .meta { font-size: 0.72rem; color: var(--subtle); margin-top: 4px; }
-    .natal-ref-label { font-size: 0.6rem; letter-spacing: 2px; text-transform: uppercase; opacity: 0.55; margin-top: 10px; }
+    .natal-ref-label { font-size: 0.7rem; opacity: 0.7; margin-top: 10px; }
     .time-status {
       display: inline-block;
-      font-size: 0.62rem;
-      letter-spacing: 2px;
-      text-transform: uppercase;
+      font-size: 0.64rem;
       color: var(--muted);
       border: 1px solid var(--border);
       padding: 2px 8px;
-      border-radius: 3px;
+      border-radius: 999px;
       margin-top: 10px;
     }
     .time-status.exact { border-color: var(--accent); color: var(--accent); }
     .time-status.unknown { border-color: var(--subtle); color: var(--subtle); }
 
-    /* ── Dividers ── */
+    /* Dividers */
     hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
 
-    /* ── Section labels ── */
+    /* Section labels */
     .section-label {
-      font-size: 0.62rem;
+      font-size: 0.68rem;
       color: var(--muted);
-      letter-spacing: 4px;
-      text-transform: uppercase;
+      letter-spacing: 0;
       margin-bottom: 18px;
     }
 
-    /* ── Opening Snapshot ── */
+    .forecast-intro {
+      margin: 0 0 34px;
+      padding: 24px 24px 20px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-top: 2px solid var(--accent);
+      border-radius: 10px;
+    }
+    .forecast-intro .section-label { margin-bottom: 12px; }
+    .forecast-intro p {
+      font-size: 0.92rem;
+      line-height: 1.72;
+      color: var(--text);
+      margin: 0 0 10px;
+    }
+    .forecast-intro ul {
+      margin: 0;
+      padding-left: 18px;
+      display: grid;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 0.84rem;
+      line-height: 1.65;
+    }
+    .forecast-intro strong {
+      color: var(--text);
+      font-weight: normal;
+    }
+
+    /* Opening snapshot */
+    .season-overview {
+      margin-bottom: 10px;
+      padding: 26px 28px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+    .season-overview .section-label { margin-bottom: 14px; }
+    .season-overview-intro {
+      color: var(--muted);
+      font-size: 0.84rem;
+      line-height: 1.6;
+      margin-bottom: 12px;
+      max-width: 62ch;
+    }
     .opening {
       font-size: 1rem;
       color: var(--text);
-      margin-bottom: 8px;
+      margin-bottom: 0;
+    }
+    .climate-stack {
+      display: grid;
+      gap: 14px;
+      margin-top: 18px;
     }
 
-    /* ── Headline Themes ── */
-    .themes { margin-bottom: 8px; }
+    /* Headline themes */
+    .themes-section {
+      margin-bottom: 8px;
+      padding: 28px 28px 18px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+    .themes-intro {
+      color: var(--muted);
+      font-size: 0.86rem;
+      line-height: 1.62;
+      margin: 0 0 18px;
+      max-width: 64ch;
+    }
+    .themes { margin-bottom: 0; }
 
     .theme-card {
-      margin-bottom: 36px;
-      padding-left: 18px;
-      border-left: 2px solid var(--border);
-      transition: border-color 0.2s;
+      margin-bottom: 18px;
+      padding: 22px 22px 18px;
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--border);
+      border-radius: 10px;
+      background: var(--surface-2);
     }
     .theme-card.theme-1 { border-left-color: var(--color-creativity); }
     .theme-card.theme-2 { border-left-color: var(--color-growth); }
     .theme-card.theme-3 { border-left-color: var(--color-identity); }
+    .theme-card:last-child { margin-bottom: 0; }
 
     .theme-eyebrow {
       font-size: 0.60rem;
       color: var(--muted);
-      letter-spacing: 3px;
-      text-transform: uppercase;
+      letter-spacing: 0;
       margin-bottom: 5px;
     }
     .theme-card.theme-1 .theme-eyebrow { color: var(--color-creativity); }
@@ -139,28 +216,75 @@
     .theme-card.theme-3 .theme-eyebrow { color: var(--color-identity); }
 
     .theme-title {
-      font-size: 1.2rem;
+      font-size: 1.18rem;
       font-weight: normal;
       color: var(--text);
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
-    .theme-body { font-size: 0.95rem; color: var(--text); margin-bottom: 10px; }
+    .theme-body { font-size: 0.94rem; color: var(--text); margin-bottom: 14px; }
+    .theme-best-use {
+      margin-top: 14px;
+      padding: 12px 14px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
     .theme-action {
-      font-size: 0.82rem;
+      font-size: 0.83rem;
       color: var(--muted);
-      font-style: italic;
+      font-style: normal;
+    }
+    .theme-best-use-label,
+    .theme-support-label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 0.62rem;
+      color: var(--muted);
+      letter-spacing: 0;
     }
     .theme-action strong {
       color: var(--muted);
       font-style: normal;
       font-weight: normal;
-      text-transform: uppercase;
-      font-size: 0.70rem;
-      letter-spacing: 2px;
+      text-transform: none;
+      font-size: inherit;
+      letter-spacing: 0;
     }
+    .theme-support-panel {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+    }
+    .theme-anchor-row {
+      display: grid;
+      grid-template-columns: 114px minmax(0, 1fr);
+      gap: 10px;
+      align-items: baseline;
+      margin-bottom: 10px;
+      font-size: 0.82rem;
+      color: var(--text);
+    }
+    .theme-anchor-date {
+      color: var(--gold);
+      font-size: 0.74rem;
+    }
+    .theme-anchor-label { color: var(--text); }
 
-    /* ── Key Timing Windows ── */
-    .timing-section { margin-bottom: 8px; }
+    /* Key timing windows */
+    .timing-section {
+      margin-bottom: 8px;
+      padding: 28px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+    .timing-intro {
+      color: var(--muted);
+      font-size: 0.84rem;
+      line-height: 1.6;
+      margin: 0 0 16px;
+      max-width: 62ch;
+    }
 
     /* Signature element: timeline bar */
     .timeline-track {
@@ -196,27 +320,48 @@
       width: 100%;
       border-collapse: collapse;
       font-size: 0.88rem;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
     }
     .timing-table th {
       font-size: 0.60rem;
       color: var(--muted);
-      letter-spacing: 3px;
-      text-transform: uppercase;
+      letter-spacing: 0;
       text-align: left;
-      padding: 0 0 10px;
+      padding: 14px 14px 10px;
       border-bottom: 1px solid var(--border);
     }
     .timing-table td {
-      padding: 10px 0;
+      padding: 12px 14px;
       border-bottom: 1px solid var(--border);
       vertical-align: top;
     }
     .timing-table tr:last-child td { border-bottom: none; }
-    .timing-table td:first-child { color: var(--gold); width: 32%; }
-    .timing-table td:nth-child(2) { color: var(--text); width: 34%; padding-right: 12px; }
-    .timing-table td:last-child { color: var(--muted); font-style: italic; font-size: 0.82rem; }
+    .timing-table td:first-child { color: var(--gold); width: 28%; }
+    .timing-table td:nth-child(2) { color: var(--text); width: 34%; }
+    .timing-table td:last-child { width: 38%; }
+    .timing-date {
+      display: block;
+      color: var(--gold);
+      font-size: 0.82rem;
+      line-height: 1.45;
+    }
+    .timing-theme {
+      display: block;
+      color: var(--text);
+      font-size: 0.88rem;
+      line-height: 1.52;
+    }
+    .timing-best-use {
+      display: block;
+      color: var(--muted);
+      font-size: 0.82rem;
+      line-height: 1.55;
+    }
 
-    /* ── Featured Transit ── */
+    /* Turning point */
     .predictive-research-section {
       margin-bottom: 8px;
       padding: 28px;
@@ -326,8 +471,7 @@
     .featured-date {
       font-size: 0.72rem;
       color: var(--muted);
-      letter-spacing: 2px;
-      text-transform: uppercase;
+      letter-spacing: 0;
       margin-bottom: 6px;
     }
     .featured-title {
@@ -350,13 +494,13 @@
       font-size: 0.60rem;
       font-style: normal;
       font-weight: normal;
-      letter-spacing: 3px;
-      text-transform: uppercase;
+      letter-spacing: 0;
+      text-transform: none;
       color: var(--ember);
       margin-bottom: 6px;
     }
 
-    /* ── Practical Guidance ── */
+    /* Practical guidance */
     .guidance-section {
       margin-bottom: 8px;
       break-inside: avoid;
@@ -379,34 +523,31 @@
     .guidance-label {
       font-size: 0.58rem;
       color: var(--muted);
-      letter-spacing: 3px;
-      text-transform: uppercase;
+      letter-spacing: 0;
       margin-bottom: 8px;
     }
     .guidance-text { font-size: 0.88rem; color: var(--text); }
 
-    /* ── Supporting Events (beneath theme anchor) ── */
+    /* Supporting events */
     .supporting-events {
-      margin-top: 14px;
-      padding-top: 11px;
-      border-top: 1px solid var(--border);
+      display: grid;
+      gap: 6px;
     }
     .supporting-events-label {
       font-size: 0.54rem;
       color: var(--subtle);
-      letter-spacing: 2px;
-      text-transform: uppercase;
+      letter-spacing: 0;
       margin-bottom: 7px;
     }
     .supporting-event-row {
       display: flex;
       align-items: baseline;
       gap: 8px;
-      padding: 4px 0;
+      padding: 6px 0;
       font-size: 0.79rem;
       color: var(--muted);
       border-bottom: 1px solid var(--border);
-      opacity: 0.80;
+      opacity: 0.92;
     }
     .supporting-event-row:last-child { border-bottom: none; }
     .supporting-event-date {
@@ -424,12 +565,16 @@
       opacity: 0.70;
     }
 
-    /* ── Closing ── */
+    /* Closing */
     .closing { font-size: 0.95rem; color: var(--text); }
 
-    /* ── Chart Snapshot (natal reference) ── */
+    /* Chart snapshot */
     .chart-snapshot {
-      margin-bottom: 48px;
+      margin-bottom: 40px;
+      padding: 24px 24px 18px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
     }
 
     .mini-wheel-wrap {
@@ -455,11 +600,12 @@
     }
 
     .snapshot-ref-table th {
-      font-size: 0.60rem;
+      font-family: Arial, sans-serif;
+      font-size: 0.68rem;
       color: var(--muted);
-      letter-spacing: 3px;
-      text-transform: uppercase;
+      letter-spacing: 0;
       text-align: left;
+      line-height: 1.4;
       padding: 0 0 8px;
       border-bottom: 1px solid var(--border);
     }
@@ -494,7 +640,7 @@
       color: var(--subtle);
     }
 
-    /* ── Grounding Note ── */
+    /* Grounding note */
     .grounding {
       margin-top: 48px;
       font-size: 0.78rem;
@@ -504,9 +650,9 @@
       line-height: 1.7;
     }
 
-    /* ── Retrograde Climate Note ── */
+    /* Climate notes */
     .retrograde-climate {
-      margin-top: 20px;
+      margin-top: 0;
       padding: 16px 18px;
       background: var(--surface);
       border: 1px solid var(--border);
@@ -521,7 +667,7 @@
       margin-bottom: 8px;
     }
 
-    /* ── Footer ── */
+    /* Footer */
     footer {
       text-align: center;
       font-size: 0.68rem;
@@ -530,38 +676,64 @@
       letter-spacing: 1px;
     }
 
-    /* ── Responsive ── */
+    /* Responsive */
     @media (max-width: 560px) {
       .guidance-grid { grid-template-columns: 1fr; }
       .timing-table td:last-child { display: none; }
+      .theme-anchor-row { grid-template-columns: 1fr; gap: 4px; }
     }
 
-    /* ── Print ── */
+    /* Print */
     @media print {
       body { background: #fff; color: #111; padding: 24px; }
       .report-title, .meta { color: var(--print-ink-muted); }
       .section-label { color: var(--print-ink-soft); }
+      .forecast-intro,
+      .season-overview,
+      .themes-section,
+      .timing-section,
+      .chart-snapshot,
+      .featured-section,
+      .guidance-card,
+      .retrograde-climate,
+      .theme-card {
+        background: #f8f8f8;
+        border-color: #ddd;
+      }
+      .forecast-intro p,
+      .forecast-intro ul,
+      .season-overview-intro,
+      .themes-intro,
+      .timing-intro,
+      .timing-theme,
+      .timing-best-use,
+      .theme-body,
+      .theme-action,
+      .guidance-text,
+      .featured-body,
+      .closing,
+      .chart-note-pf {
+        color: var(--print-ink-strong);
+      }
       .theme-title { color: var(--print-ink-strong); }
       .theme-action { color: var(--print-ink-muted); }
       .timing-table th { color: var(--print-ink-soft); }
       .timing-table td:first-child { color: var(--print-ink-muted); }
-      .timing-table td:last-child { color: var(--print-ink-muted); }
-      .featured-section { background: #f5f5f5; border-color: #ccc; border-top-color: var(--ember); }
+      .timing-date { color: var(--print-ink-muted); }
+      .timing-best-use { color: var(--print-ink-muted); }
+      .featured-section { border-color: #ccc; border-top-color: var(--ember); }
       .featured-title { color: var(--print-ink-muted); }
       .featured-action { color: var(--print-ink-muted); }
       .featured-action strong { color: var(--print-ink-soft); }
-      .guidance-card { background: #f9f9f9; border-color: #ddd; }
       .guidance-label { color: var(--print-ink-soft); }
       .timeline-track { display: none; }
       .grounding { color: var(--print-ink-faint); border-top-color: #ddd; }
-      .retrograde-climate { background: #f9f9f9; border-color: #ddd; }
       footer { color: var(--print-ink-faint); }
       .time-status { border-color: #ccc; color: var(--print-ink-soft); }
       .mini-wheel-wrap { background: #fff; border-color: #ccc; }
       .snapshot-ref-table th { color: var(--print-ink-soft); }
       .snapshot-ref-table td:first-child { color: var(--print-ink-muted); }
       .snapshot-ref-table td:last-child { color: var(--print-ink-muted); }
-      .chart-note-pf { color: var(--print-ink-faint); }
     }
   </style>
 </head>
@@ -572,7 +744,6 @@
     <div class="name">{{ querent_name }}</div>
     <div class="report-title">Personal Forecast</div>
     <div class="meta">{{ report_start_display }} - {{ report_end_display }}</div>
-    <div class="meta natal-ref-label">Born</div>
     <div class="meta">{{ birth_date_display }}{% if birth_time_display %} - {{ birth_time_display }}{% endif %}</div>
     {% if birth_location %}<div class="meta">{{ birth_location }}</div>{% endif %}
     <div class="meta">{{ report_brand_line | default('Entangled Oracle - Ksisti-Puck LLC') }}</div>
@@ -581,13 +752,62 @@
     </div>
   </header>
 
+  <div class="report-record-grid">
+    <article class="report-record-card">
+      <p class="report-record-label">Client</p>
+      <p class="report-record-value">{{ querent_name }}</p>
+    </article>
+    <article class="report-record-card">
+      <p class="report-record-label">Report title</p>
+      <p class="report-record-value">Personal Forecast</p>
+      <p class="report-record-detail">Focused 90-day seasonal bridge.</p>
+    </article>
+    <article class="report-record-card">
+      <p class="report-record-label">Forecast span</p>
+      <p class="report-record-value">{{ report_start_display }} - {{ report_end_display }}</p>
+      <p class="report-record-detail">A 90-day seasonal bridge between annual terrain and weekly rhythm.</p>
+    </article>
+    <article class="report-record-card">
+      <p class="report-record-label">Birth data</p>
+      <p class="report-record-value">{{ birth_date_display }}{% if birth_time_display %} - {{ birth_time_display }}{% endif %}</p>
+      <p class="report-record-detail">{{ birth_location }}</p>
+    </article>
+    <article class="report-record-card">
+      <p class="report-record-label">Birth-time confidence</p>
+      <p class="report-record-value">{{ birth_time_confidence | default(birth_time_status | default('unknown')) }}</p>
+      <p class="report-record-detail">{{ house_system_label | default(house_system | default('Whole Sign')) }} houses - {{ zodiac_label | default('Tropical') }} zodiac</p>
+    </article>
+    <article class="report-record-card">
+      <p class="report-record-label">Version</p>
+      <p class="report-record-value">{{ report_version | default('Personal Forecast v1.0') }}</p>
+      <p class="report-record-detail">Generated {{ generation_date }}</p>
+    </article>
+  </div>
+
+  <div class="suite-note">
+    <h3>How This Report Fits the Suite</h3>
+    <p>Personal Forecast is the 90-day seasonal bridge in the Entangled Oracle suite, translating the larger annual arc into a focused near-term window of themes, activations, and timing.</p>
+  </div>
+
+  <div class="forecast-intro">
+    <div class="section-label">How to Use This Forecast</div>
+    <p>This forecast is designed to help you work the next 90 days in sequence rather than absorb the whole season at once.</p>
+    <ul>
+      <li><strong>Read the Season at a Glance first.</strong> It gives you the overall weather before you move into specific events.</li>
+      <li><strong>Use the three headline themes as your anchors.</strong> They carry the main interpretation of what this season is asking from you.</li>
+      <li><strong>Return to timing notes as the season unfolds.</strong> They are there to help you place pressure, openings, and turning points in time.</li>
+      <li><strong>Use Soul Ecosystem for baseline context and Year Ahead for the full annual arc.</strong> This report is the bridge between those two scales.</li>
+    </ul>
+  </div>
+
   {% if chart_wheel_svg or chart_wheel_data %}
-  <!-- ── Natal Chart Snapshot ── -->
+  <!-- Natal chart snapshot -->
   <div class="chart-snapshot">
     <div class="section-label">Natal Reference - Chart Snapshot</div>
 
     {% if chart_wheel_svg %}
     <div class="mini-wheel-wrap">{{ chart_wheel_svg | safe }}</div>
+    <p class="chart-note-pf">Natal wheel rendered in {{ zodiac_label | default('Tropical') }} zodiac and {{ house_system_label | default(house_system | default('Whole Sign')) }} houses.</p>
     {% if wheel_transit_retrograde_planets %}
     <p class="chart-note-pf">The ringed placement{{ 's' if wheel_transit_retrograde_planets | length > 1 else '' }} ({{ wheel_transit_retrograde_planets | join(', ') }}) {{ 'are' if wheel_transit_retrograde_planets | length > 1 else 'is' }} currently retrograde by transit.</p>
     {% endif %}
@@ -612,73 +832,103 @@
         {% endfor %}
       </tbody>
     </table>
-    <p class="chart-note-pf">{{ house_system_label | default(house_system | default('Whole Sign')) }} houses - {{ zodiac_label | default('Tropical') }} zodiac</p>
     {% endif %}
   </div>
 
   <hr>
   {% endif %}
 
-  <!-- ── Opening Snapshot ── -->
-  <div class="section-label">Your Season at a Glance</div>
-  <div class="opening">
-    {{ opening_snapshot | default('Opening snapshot unavailable.') }}
-  </div>
+  <!-- Opening snapshot -->
+  <div class="season-overview">
+    <div class="section-label">Your Season at a Glance</div>
+    <p class="season-overview-intro">Start here for the season-wide read before moving into theme cards and timing details.</p>
+    <div class="opening">
+      {{ opening_snapshot | default('Opening snapshot unavailable.') }}
+    </div>
 
-  {% if retrograde_cluster_active and retrograde_cluster_block %}
-  <div class="retrograde-climate">
-    <div class="section-label">Current Retrograde Climate</div>
-    {{ retrograde_cluster_block }}
-  </div>
-  {% endif %}
+    {% if retrograde_cluster_active and retrograde_cluster_block or voc_next_active and voc_next_block %}
+    <div class="climate-stack">
+      {% if retrograde_cluster_active and retrograde_cluster_block %}
+      <div class="retrograde-climate">
+        <div class="section-label">Current Retrograde Climate</div>
+        {{ retrograde_cluster_block }}
+      </div>
+      {% endif %}
 
-  {% if voc_next_active and voc_next_block %}
-  <div class="retrograde-climate">
-    <div class="section-label">Next Void-of-Course Moon</div>
-    <p class="voc-meta">Begins {{ voc_next_start_display }} - lasts about {{ voc_next_duration_hours | round(1) }} hours</p>
-    {{ voc_next_block }}
+      {% if voc_next_active and voc_next_block %}
+      <div class="retrograde-climate">
+        <div class="section-label">Next Void-of-Course Moon</div>
+        <p class="voc-meta">Begins {{ voc_next_start_display }} - lasts about {{ voc_next_duration_hours | round(1) }} hours</p>
+        {{ voc_next_block }}
+      </div>
+      {% endif %}
+    </div>
+    {% endif %}
   </div>
-  {% endif %}
 
   <hr>
 
-  <!-- ── Three Headline Themes ── -->
+  <!-- Three headline themes -->
+  <div class="themes-section">
   <div class="section-label">Three Headline Themes</div>
+  <p class="themes-intro">These three themes are the main interpretive anchors of the forecast. Read each one as a focused briefing: what is active, why it matters, what to do with it, and which timings reinforce it.</p>
   <div class="themes">
     {% for theme in themes %}
     <div class="theme-card theme-{{ loop.index }}">
       <div class="theme-eyebrow">{{ theme.theme_label }}</div>
       <div class="theme-title">{{ theme.title | default('Theme title unavailable.') }}</div>
       <div class="theme-body">{{ theme.body | default('Theme interpretation unavailable.') }}</div>
-      <div class="theme-action">
-        <strong>Best use</strong>
-        {{ theme.action | default('Practical application unavailable.') }}
+
+      <div class="theme-best-use">
+        <span class="theme-best-use-label">What to do with it</span>
+        <div class="theme-action">{{ theme.action | default('Practical application unavailable.') }}</div>
       </div>
 
-      {# Supporting events - max 3; change the slice to adjust display count #}
-      {% if theme.supporting_events and theme.supporting_events | length > 0 %}
-      <div class="supporting-events">
-        <div class="supporting-events-label">Also active</div>
-        {% for event in theme.supporting_events[:3] %}
-        <div class="supporting-event-row">
-          <span class="supporting-event-date">{{ event.peak_date }}</span>
-          <span class="supporting-event-label">{{ event.label }}</span>
-          {% if event.character == "challenging" %}
-          <span class="supporting-event-marker" aria-label="challenging">◆</span>
-          {% endif %}
+      <div class="theme-support-panel">
+        <span class="theme-support-label">Timing support</span>
+        {% if theme.anchor_event and (theme.anchor_event.label or theme.anchor_event.peak_date) %}
+        <div class="theme-anchor-row">
+          <span class="theme-anchor-date">{{ theme.anchor_event.peak_date }}</span>
+          <span class="theme-anchor-label">{{ theme.anchor_event.label or theme.theme_label }}</span>
         </div>
-        {% endfor %}
+        {% endif %}
+
+        {% if theme.supporting_events and theme.supporting_events | length > 0 %}
+        <div class="supporting-events">
+          <div class="supporting-events-label">Also active</div>
+          {% for event in theme.supporting_events[:3] %}
+            {% if event.label or event.peak_date %}
+            <div class="supporting-event-row">
+              <span class="supporting-event-date">{{ event.peak_date }}</span>
+              <span class="supporting-event-label">{{ event.label or ('Timing support for ' ~ theme.theme_label) }}</span>
+              {% if event.character == "challenging" %}
+              <span class="supporting-event-marker" aria-label="challenging">&#9670;</span>
+              {% endif %}
+            </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="supporting-events">
+          <div class="supporting-events-label">Also active</div>
+          <div class="supporting-event-row">
+            <span class="supporting-event-date">Seasonal</span>
+            <span class="supporting-event-label">This theme is carried mainly by the broader seasonal pattern rather than a dense list of dated triggers.</span>
+          </div>
+        </div>
+        {% endif %}
       </div>
-      {% endif %}
     </div>
     {% endfor %}
+  </div>
   </div>
 
   <hr>
 
-  <!-- ── Key Timing Windows ── -->
+  <!-- Key timing windows -->
   <div class="timing-section">
     <div class="section-label">Key Timing Windows</div>
+    <p class="timing-intro">Use these dated windows to place the season’s themes in time. They are most useful when you revisit them as the forecast unfolds.</p>
 
     <!-- Signature timeline bar -->
     <div class="timeline-track" aria-hidden="true">
@@ -704,9 +954,9 @@
         {% if timing_windows %}
           {% for window in timing_windows %}
           <tr>
-            <td>{{ window.date_label }}</td>
-            <td>{{ window.theme }}</td>
-            <td>{{ window.best_use }}</td>
+            <td><span class="timing-date">{{ window.date_label }}</span></td>
+            <td><span class="timing-theme">{{ window.theme }}</span></td>
+            <td><span class="timing-best-use">{{ window.best_use }}</span></td>
           </tr>
           {% endfor %}
         {% else %}
@@ -722,7 +972,7 @@
 
   <hr>
 
-  <!-- ── Featured Transit ── -->
+  <!-- Turning point -->
   <div class="featured-section">
     <div class="section-label">Turning Point</div>
     {% if featured_event %}
@@ -743,7 +993,7 @@
 
   <hr>
 
-  <!-- ── Predictive Research Surface ── -->
+  <!-- Predictive research surface -->
   {% if predictive_report_surface is defined and predictive_report_surface.enabled %}
   <div class="predictive-research-section">
     <div class="section-label">Predictive Research Surface</div>
@@ -783,7 +1033,7 @@
   <hr>
   {% endif %}
 
-  <!-- ── Practical Guidance ── -->
+  <!-- Practical guidance -->
   <div class="guidance-section">
     <div class="section-label">Best Use of This Forecast Window</div>
     <div class="guidance-grid">
@@ -810,15 +1060,23 @@
 
   <hr>
 
-  <!-- ── Closing Integration ── -->
+  <!-- Closing integration -->
   <div class="section-label">Closing Integration</div>
   <div class="closing">
     {{ closing_integration | default('Closing synthesis unavailable.') }}
   </div>
 
-  <!-- ── Grounding Note ── -->
+  <!-- Grounding note -->
   <div class="grounding">
-    Astrology describes timing, themes, and symbolic patterns. It does not replace practical judgment, professional advice, medical care, legal guidance, or lived consent. Keep what is useful, and let real-world information guide important decisions.
+    Astrology describes timing, themes, and symbolic patterns. Use what is useful, and let lived context, consent, and real-world information carry the decisions that need them.
+  </div>
+
+  <div class="trust-note">
+    <h3>Calculation Basis</h3>
+    <p><strong>Calculation basis.</strong> This forecast uses the report window, natal chart, selected transit events, timing windows, and current climate notes to describe near-term symbolic conditions.</p>
+    <p><strong>Method note.</strong> Calculated with Swiss Ephemeris using {{ methodology_label | default('Tropical zodiac + Whole Sign houses') }}. Transit, station, ingress, lunation, eclipse, and climate signals remain interpretive timing evidence, not fixed outcomes.</p>
+    <p><strong>Birth-time confidence.</strong> {{ birth_time_confidence | default('Birth-time confidence unavailable') }}. House, angle, and timing-sensitive claims should stay inside that confidence state.</p>
+    <p><strong>Proprietary EO layer.</strong> The EO synthesis layer translates selected timing evidence into personal reflection and practical next-step language. It adds context to real-life judgment rather than replacing it.</p>
   </div>
 
   <footer>{{ report_footer_text | default('Entangled Oracle - Ksisti-Puck LLC - Generated ' ~ generation_date) }} <span class="report-page-number"></span></footer>

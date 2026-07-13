@@ -607,6 +607,11 @@ def resolve_all(
 
         _winner_planet = "Moon"
         _winner_longitude = _moon_lon
+        _activation_source = "moon_house_fallback"
+        _activation_basis_line = (
+            "No rarer station or tighter same-day natal contact outranked the baseline sky; "
+            "today's activation is localized through the Moon's current Whole Sign house."
+        )
 
         try:
             _today_start = _now_utc.replace(hour=0, minute=0, second=0, microsecond=0)
@@ -619,6 +624,12 @@ def resolve_all(
             _stations_today.sort(key=lambda e: e["score"], reverse=True)
             _winner_planet = _stations_today[0]["transit_planet"]
             _winner_longitude = _live_longitude(_winner_planet)
+            _activation_source = "planetary_station"
+            _station_type = _stations_today[0].get("station_type", "station")
+            _activation_basis_line = (
+                f"{_winner_planet} stations {_station_type} today, so it outranks ordinary "
+                "same-day contact and becomes the localized activation."
+            )
         else:
             try:
                 _candidates = compute_daily_activation_transits(payload, _now_utc)
@@ -627,14 +638,24 @@ def resolve_all(
 
             if _candidates:
                 _candidates.sort(key=lambda e: e["score"], reverse=True)
-                _winner_planet = _candidates[0]["transit_planet"]
+                _selected_activation = _candidates[0]
+                _winner_planet = _selected_activation["transit_planet"]
                 _winner_longitude = _live_longitude(_winner_planet)
+                _activation_source = "same_day_natal_contact"
+                _activation_basis_line = (
+                    f"{_winner_planet} makes the strongest retained same-day natal contact "
+                    f"({ _selected_activation.get('aspect', 'aspect').lower() } "
+                    f"{ _selected_activation.get('natal_target_display') or _selected_activation.get('natal_target', 'your chart') }), "
+                    "using tight daily orbs rather than broad year-ahead windows."
+                )
 
         _activation_house = _whole_sign_house(_winner_longitude, _asc_lon)
 
         variables["activation_planet"]       = _winner_planet
         variables["activation_house_number"] = _activation_house
         variables["natal_house_name"]        = get_house_domain(_activation_house)
+        variables["activation_source"]       = _activation_source
+        variables["activation_basis_line"]   = _activation_basis_line
 
     except Exception:
         variables["moon_phase_descriptor"]   = ""
@@ -643,6 +664,8 @@ def resolve_all(
         variables["activation_planet"]       = ""
         variables["activation_house_number"] = 0
         variables["natal_house_name"]        = ""
+        variables["activation_source"]       = ""
+        variables["activation_basis_line"]   = ""
 
     # secondary_activation_line is authored content; nothing generates it yet.
     variables["secondary_activation_line"] = ""

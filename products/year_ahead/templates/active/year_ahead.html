@@ -93,6 +93,14 @@
       letter-spacing: 1.2px;
     }
 
+    .toc-title {
+      margin: 0 0 10px;
+      color: var(--faint);
+      font-size: 0.58rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
     nav a {
       display: block;
       margin: 2px 0;
@@ -718,6 +726,8 @@
       --mag-sans: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
     }
 
+    #natal-wheel,
+    #chart-reference,
     #natal-reference,
     #reading-this-report,
     #year-orientation,
@@ -735,6 +745,8 @@
       margin-right: -20px;
     }
 
+    #natal-wheel .section-header,
+    #chart-reference .section-header,
     #natal-reference .section-header,
     #reading-this-report .section-header,
     #year-orientation .section-header,
@@ -749,6 +761,8 @@
       border-bottom: 1px solid var(--mag-rule);
     }
 
+    #natal-wheel .eyebrow,
+    #chart-reference .eyebrow,
     #natal-reference .eyebrow,
     #reading-this-report .eyebrow,
     #year-orientation .eyebrow,
@@ -765,6 +779,8 @@
       font-variant-caps: normal;
     }
 
+    #natal-wheel h2,
+    #chart-reference h2,
     #natal-reference h2,
     #reading-this-report h2,
     #year-orientation h2,
@@ -781,6 +797,8 @@
       line-height: 1.08;
     }
 
+    #natal-wheel .section-subtitle,
+    #chart-reference .section-subtitle,
     #natal-reference .section-subtitle,
     #reading-this-report .section-subtitle,
     #year-orientation .section-subtitle,
@@ -803,7 +821,22 @@
       font-family: var(--mag-sans);
     }
 
+    #chart-reference .snapshot-table {
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      font-family: var(--mag-sans);
+    }
+
     #natal-reference .snapshot-table th {
+      color: var(--mag-faint);
+      font-size: .62rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      font-variant-caps: normal;
+    }
+
+    #chart-reference .snapshot-table th {
       color: var(--mag-faint);
       font-size: .62rem;
       letter-spacing: .08em;
@@ -817,7 +850,18 @@
       color: var(--mag-soft);
     }
 
+    #chart-reference .snapshot-table td,
+    #chart-reference .snapshot-table th {
+      border-bottom: 1px dotted var(--mag-rule);
+      color: var(--mag-soft);
+    }
+
     #natal-reference .snapshot-table td:first-child {
+      color: var(--mag-ink);
+      font-weight: 600;
+    }
+
+    #chart-reference .snapshot-table td:first-child {
       color: var(--mag-ink);
       font-weight: 600;
     }
@@ -1590,10 +1634,11 @@
        consolidated into a single @media print block near the end of
        this stylesheet (see "PRINT / PDF LAYOUT" below). */
 
-    /* â”€â”€ Year Ahead v2: reader-first report architecture â”€â”€â”€â”€â”€ */
+    /* Year Ahead v2: reader-first report architecture */
     :root { --faint: var(--subtle); --green: var(--color-growth); --amber: var(--ember); --eclipse: var(--purple); --surface-hi: var(--surface-2); }
     .section-opening { margin-top: 0; }
-    .record-grid, .orientation-layout { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; }
+    .record-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:14px; }
+    .orientation-layout { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; }
     .record-card, .shape-card, .characteristics-strip, .integrity-panel, .reader-guide, .climate-card, .arc-story, .season-card, .turning-guide-card, .method-note, .reflection-grid article { border:1px solid var(--border); border-radius:10px; background:var(--surface); }
     .record-card { padding:20px; min-height:160px; }
     .record-card-primary { border-top:3px solid var(--accent); }
@@ -1626,6 +1671,25 @@
     .reader-principles article:nth-child(odd) { border-right:1px solid var(--border); }
     .reader-principles h3 { font-size:.82rem; line-height:1.4; }
     .reader-principles p { margin:7px 0 0; color:var(--muted); font-size:.78rem; line-height:1.6; }
+    .reader-guide-boundary { margin: 0; padding: 14px 20px 0; color: var(--muted); font-size: .76rem; line-height: 1.58; }
+    .reader-guide-boundary strong { color: var(--text); font-weight: normal; }
+    .usage-path-links { margin-top: 9px; display: flex; flex-wrap: wrap; gap: 8px; }
+    .usage-path-links a {
+      display: inline-flex;
+      align-items: center;
+      padding: 5px 9px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--surface-2);
+      color: var(--text);
+      font-size: .68rem;
+      line-height: 1.35;
+      text-decoration: none;
+    }
+    .usage-path-links a:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
     .orientation-layout { grid-template-columns:1fr; align-items:stretch; gap:18px; }
     .orientation-layout .overview { margin:0; }
     .orientation-card-grid { display:grid; grid-template-columns:minmax(0,1.18fr) minmax(0,.82fr); gap:14px; align-items:start; }
@@ -1663,6 +1727,7 @@
     .curated-summary-stack { margin-top: 2px; display: grid; gap: 14px; }
     .curated-summary-panel { padding: 18px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); }
     .curated-summary-label { margin: 0 0 12px; color: var(--muted); font-size: .61rem; letter-spacing: .04em; font-variant-caps: all-small-caps; text-transform: none; }
+    #seasonal-highlights { scroll-margin-top: 20px; }
     .climate-highlight-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
     .climate-highlight-card { padding: 16px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface-2); break-inside: avoid; page-break-inside: avoid; }
     .climate-highlight-card h3 { margin: 8px 0 10px; font-size: .95rem; line-height: 1.4; }
@@ -1877,6 +1942,45 @@
       text-transform: none;
       line-height: 1.35;
     }
+    .timing-notes-compact .predictive-research-grid,
+    #year-arcs .timing-notes-compact .predictive-research-grid {
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+    .timing-notes-compact .predictive-research-card,
+    #year-arcs .timing-notes-compact .predictive-research-card {
+      display: block;
+      padding: 13px 0;
+      border-top: 1px solid var(--mag-rule-soft);
+      background: transparent;
+      box-shadow: none;
+    }
+    .timing-notes-compact .predictive-research-kicker,
+    #year-arcs .timing-notes-compact .predictive-research-kicker {
+      margin: 0 0 4px;
+      padding: 0;
+      border: 0;
+      color: var(--mag-faint);
+    }
+    .timing-notes-compact .predictive-research-card h3,
+    #year-arcs .timing-notes-compact .predictive-research-card h3 {
+      margin: 0 0 5px;
+      font-size: .96rem;
+      line-height: 1.3;
+    }
+    .timing-notes-compact .predictive-research-card > p:not(.predictive-research-kicker):not(.predictive-research-note),
+    #year-arcs .timing-notes-compact .predictive-research-card > p:not(.predictive-research-kicker):not(.predictive-research-note) {
+      margin: 0;
+      font-size: .8rem;
+      line-height: 1.5;
+    }
+    .predictive-research-note {
+      margin: 6px 0 0;
+      color: var(--mag-soft);
+      font-size: .69rem;
+      font-style: italic;
+      line-height: 1.42;
+    }
     .predictive-research-details {
       margin-top: 10px;
       color: var(--muted);
@@ -2068,7 +2172,6 @@
     .month-opening-flow { display:grid; gap:14px; }
     .month-opener, .month-guidance-grid-opening, .chronology-divider { break-inside:avoid; page-break-inside:avoid; }
     .chronology-divider { margin-top:20px; }
-    .monthly-events .event-card:first-child { break-before:avoid; page-break-before:avoid; }
     .event-card { break-inside:avoid; page-break-inside:avoid; }
     .ledger-intro { margin:0 0 18px; color:var(--muted); font-size:.87rem; line-height:1.7; }
     .convergence-line { margin-top:10px; color:var(--text); font-size:.78rem; line-height:1.65; }
@@ -2269,7 +2372,6 @@
          their headings stay paired with their first line via the
          break-after rules below. */
       .month-opener,
-      .monthly-events .event-card:first-child,
       .ledger-table-wrap,
       .arc-story,
       .shape-card,
@@ -2294,8 +2396,7 @@
       .turning-guide-item,
       .structure-note-section,
       .orientation-note,
-      .ledger-entry,
-      .chronology-divider {
+      .ledger-entry {
         break-inside: avoid;
         page-break-inside: avoid;
       }
@@ -2327,77 +2428,97 @@
         margin-top: 4px;
         font-size: 0.66rem;
       }
-      #report-record .section-header {
-        margin-bottom: 14px;
-        padding-bottom: 8px;
+      #chart-reference .section-header {
+        margin-bottom: 8px;
+        padding-bottom: 6px;
       }
-      #report-record .record-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 8px;
+      #chart-reference h2 {
+        font-size: 1.45rem;
+        line-height: 1.08;
       }
-      #report-record .record-card {
-        min-height: 0;
-        padding: 10px 11px;
-      }
-      #report-record .record-label {
-        font-size: 0.57rem;
-      }
-      #report-record .record-value {
-        margin-top: 6px;
-        font-size: 0.88rem;
+      #chart-reference .section-subtitle {
+        margin: 4px 0 0;
+        font-size: 0.78rem;
         line-height: 1.35;
       }
-      #report-record .record-detail {
-        margin-top: 7px;
-        font-size: 0.71rem;
-        line-height: 1.45;
+      #chart-reference .record-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 6px;
       }
-      #report-record .report-record-integrity {
+      #chart-reference .record-card {
+        min-height: 0;
+        padding: 7px 9px;
+      }
+      #chart-reference .record-label {
+        font-size: 0.57rem;
+      }
+      #chart-reference .record-value {
+        margin-top: 4px;
+        font-size: 0.78rem;
+        line-height: 1.25;
+      }
+      #chart-reference .record-detail {
+        margin-top: 4px;
+        font-size: 0.62rem;
+        line-height: 1.3;
+      }
+      #chart-reference .report-record-integrity {
         display: none;
       }
-      #report-record .integrity-print-compact {
+      #chart-reference .integrity-print-compact {
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 7px 10px;
-        margin-top: 9px;
-        padding: 10px 11px;
+        gap: 5px 8px;
+        margin-top: 6px;
+        padding: 7px 9px;
         border: 1px solid #d0d0dc;
         border-radius: 10px;
         background: #f7f7fa;
       }
-      #report-record .integrity-print-compact-head {
+      #chart-reference .integrity-print-compact-head {
         grid-column: 1 / -1;
         display: grid;
         gap: 2px;
         padding-bottom: 4px;
         border-bottom: 1px solid #d8d8e4;
       }
-      #report-record .integrity-print-compact-head span,
-      #report-record .integrity-print-compact-item span {
+      #chart-reference .integrity-print-compact-head span,
+      #chart-reference .integrity-print-compact-item span {
         color: var(--muted);
         font-size: 0.56rem;
         letter-spacing: 0.06em;
         font-variant-caps: all-small-caps;
         text-transform: none;
       }
-      #report-record .integrity-print-compact-head strong {
+      #chart-reference .integrity-print-compact-head strong {
         color: #8b6200;
         font-weight: normal;
-        font-size: 0.82rem;
+        font-size: 0.74rem;
         line-height: 1.25;
       }
-      #report-record .integrity-print-compact-item {
+      #chart-reference .integrity-print-compact-item {
         display: grid;
         gap: 2px;
         padding-top: 2px;
       }
-      #report-record .integrity-print-compact-item strong {
+      #chart-reference .integrity-print-compact-item strong {
         color: #1a1a2e;
         font-weight: normal;
-        font-size: 0.67rem;
-        line-height: 1.35;
+        font-size: 0.6rem;
+        line-height: 1.25;
+      }
+      #natal-wheel {
+        break-after: page;
+        page-break-after: always;
+      }
+      #chart-reference {
+        break-after: page;
+        page-break-after: always;
+        margin-top: 0;
       }
       #natal-reference,
+      #natal-wheel,
+      #chart-reference,
       .report-shell .month-section,
       .report-shell #cycle-ledger .ledger-month {
         padding-left: 0;
@@ -2407,15 +2528,22 @@
         background: transparent;
         box-shadow: none;
       }
-      #natal-reference .snapshot-table {
-        break-before: page;
-        page-break-before: always;
-      }
-      #natal-reference .wheel-wrap {
-        max-width: 430px;
+      #natal-wheel .wheel-wrap {
+        max-width: 5.25in;
+        margin-top: 0.1in;
         margin-bottom: 16px;
       }
-      #natal-reference .chart-note {
+      #chart-reference .snapshot-table {
+        margin-top: 8px;
+        font-size: 0.61rem;
+      }
+      #chart-reference .snapshot-table th,
+      #chart-reference .snapshot-table td {
+        padding: 3px 7px;
+        line-height: 1.18;
+      }
+      #natal-wheel .chart-note,
+      #chart-reference .chart-note {
         margin-top: 6px;
         font-size: 0.74rem;
         line-height: 1.45;
@@ -2448,12 +2576,17 @@
       }
       .section-header + *,
       .forecast-climate-intro,
-      .month-opener-top,
-      .chronology-divider {
+      .month-opener-top {
         break-before: avoid;
         page-break-before: avoid;
       }
-      .chronology-divider { margin-top: 0; }
+      .chronology-divider {
+        margin-top: 0;
+        break-after: auto;
+        page-break-after: auto;
+        break-inside: auto;
+        page-break-inside: auto;
+      }
 
       /* ── Table behavior ───────────────────────────────────────────── */
       .ledger-table thead,
@@ -2774,6 +2907,54 @@
         font-size: .72rem;
         line-height: 1.5;
         text-align: left;
+      }
+      #year-arcs .timing-notes-compact {
+        margin-top: 10px;
+      }
+      #year-arcs .timing-notes-compact h3 {
+        margin-top: 12px;
+        font-size: 0.95rem;
+      }
+      #year-arcs .timing-notes-compact .section-subtitle {
+        margin-bottom: 8px;
+      }
+      #year-arcs .timing-notes-compact .predictive-research-grid {
+        grid-template-columns: 1fr;
+        gap: 5px;
+      }
+      #year-arcs .timing-notes-compact .predictive-research-card {
+        display: block;
+        padding: 8px 0;
+        border: 0;
+        border-top: 1px solid #d8d5e6;
+        border-radius: 0;
+        background: transparent;
+        box-shadow: none;
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+      #year-arcs .timing-notes-compact .predictive-research-kicker {
+        margin: 0 0 3px;
+        padding: 0;
+        border: 0;
+        color: var(--print-ink-muted);
+      }
+      #year-arcs .timing-notes-compact .predictive-research-card > h3 {
+        margin: 0 0 4px;
+        font-size: 0.86rem;
+        line-height: 1.25;
+      }
+      #year-arcs .timing-notes-compact .predictive-research-card > p:not(.predictive-research-kicker):not(.predictive-research-note) {
+        margin: 0;
+        font-size: 0.72rem;
+        line-height: 1.38;
+      }
+      #year-arcs .timing-notes-compact .predictive-research-note {
+        margin: 5px 0 0;
+        color: var(--print-ink-muted);
+        font-size: 0.62rem;
+        font-style: italic;
+        line-height: 1.35;
       }
 
       .mini-track { background: #dddddd; }
@@ -3096,6 +3277,45 @@
         row-gap: 18px;
       }
     }
+
+    @media print {
+      .report-shell .monthly-events,
+      .report-shell .monthly-events .event-card {
+        break-inside: auto !important;
+        page-break-inside: auto !important;
+      }
+      .report-shell .monthly-events .event-card {
+        padding-top: 16px;
+        padding-bottom: 16px;
+      }
+      .report-shell .monthly-events .card-kind {
+        margin-bottom: 8px;
+        padding-top: 6px;
+      }
+      .report-shell .monthly-events .card-date {
+        padding-top: 5px;
+        font-size: 0.7rem;
+      }
+      .report-shell .monthly-events .event-card h3 {
+        font-size: 1.12rem;
+        line-height: 1.24;
+      }
+      .report-shell .monthly-events .card-subtitle,
+      .report-shell .monthly-events .timing-line,
+      .report-shell .monthly-events .convergence-line {
+        font-size: 0.72rem;
+        line-height: 1.45;
+      }
+      .report-shell .monthly-events .event-block,
+      .report-shell .monthly-events .lens-block {
+        font-size: 0.86rem;
+        line-height: 1.58;
+      }
+      .report-shell .chronology-divider {
+        break-after: auto !important;
+        page-break-after: auto !important;
+      }
+    }
   </style>
 </head>
 <body class="report-shell report-year-ahead" data-palette="{{ palette_name | default('vibrant') }}">
@@ -3103,11 +3323,13 @@
     <aside>
       <p class="brand">
         Entangled Oracle
-        <span>Year-Ahead Forecast</span>
+        <span>Year-Ahead Predictive Almanac</span>
       </p>
+      <p class="toc-title">Table of Contents</p>
       <nav aria-label="Year Ahead report sections">
-        <a href="#report-record">I. Report Record</a>
-        <a href="#natal-reference">II. Natal Reference</a>
+        <a href="#reading-this-report">Start Here</a>
+        <a href="#natal-wheel">I. Natal Wheel</a>
+        <a href="#chart-reference">II. Chart Reference</a>
         <a href="#year-orientation">III. Year Orientation</a>
         <a href="#archetypal-frame">IV. Archetypal Frame</a>
         <a href="#year-arcs">V. Year Arcs</a>
@@ -3123,23 +3345,99 @@
     <main>
       <header>
         <div class="name">{{ querent_name }}</div>
-        <div class="report-title">Year-Ahead Transit Forecast</div>
-        <div class="meta">{{ report_start_date }} - {{ report_end_date }}</div>
-        <div class="meta">{{ report_brand_line | default('Entangled Oracle · Ksisti-Puck LLC') }}</div>
+        <div class="report-title">Year-Ahead Predictive Almanac</div>
+        <div class="meta">{{ report_span_display | default(report_start_date ~ ' - ' ~ report_end_date) }}</div>
+        <div class="meta">{{ report_brand_line | default('Entangled Oracle - Ksisti-Puck LLC') }}</div>
       </header>
 
-      <!-- I. REPORT IDENTITY & CALCULATION RECORD -->
-      <section class="section section-opening" id="report-record">
+      <section class="section section-opening" id="reading-this-report">
         <div class="section-header">
           <div>
-            <p class="eyebrow">I. Report identity & calculation record</p>
-            <h2>This Forecast, At a Glance</h2>
+            <p class="eyebrow">Start here</p>
+            <h2>How to Use This Almanac</h2>
+            <p class="section-subtitle">A long report should feel usable. These paths are meant to help you return to it in the right way at the right time.</p>
           </div>
         </div>
+
+        <div class="reader-guide">
+          <p class="reader-guide-kicker">Year-Ahead Predictive Almanac</p>
+          <div class="reader-guide-intro">This almanac is not meant to be consumed all at once; it is designed as an annual companion.</div>
+          {% if report_boundary_note %}
+          <p class="reader-guide-boundary"><strong>Forecast span note.</strong> {{ report_boundary_note }}</p>
+          {% endif %}
+          <div class="reader-principles">
+            <article>
+              <h3>Quick read</h3>
+              <div>
+                <p>Start with the high-level yearly pattern, then move directly to the seasonal highlights, the strongest windows worth returning to, and the closing guidance.</p>
+                <div class="usage-path-links">
+                  <a href="#year-orientation">Year in Context</a>
+                  <a href="#seasonal-highlights">Seasonal Highlights</a>
+                  <a href="#turning-point-guide">Key Windows</a>
+                  <a href="#year-integration">Closing Guidance</a>
+                </div>
+              </div>
+            </article>
+            <article>
+              <h3>Monthly use</h3>
+              <div>
+                <p>Read the relevant season and month as the year unfolds. The report is built to be revisited in pieces rather than absorbed in one sitting.</p>
+                <div class="usage-path-links">
+                  <a href="#annual-rhythm">Seasonal Rhythm</a>
+                  <a href="#monthly-chapters">Monthly Chapters</a>
+                  <a href="#turning-point-guide">Key Windows</a>
+                </div>
+              </div>
+            </article>
+            <article>
+              <h3>Deep dive</h3>
+              <div>
+                <p>Use the chart foundation, long arcs, methodology, and technical trace material when you want to understand how the forecast was constructed and why particular windows matter.</p>
+                <div class="usage-path-links">
+                  <a href="#chart-reference">Calculation Record</a>
+                  <a href="#natal-reference">Natal Baseline</a>
+                  <a href="#year-arcs">Long Arcs</a>
+                  <a href="#technical-appendix">Methodology</a>
+                  <a href="#cycle-ledger">Technical Trace</a>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- I. NATAL WHEEL -->
+      <section class="section" id="natal-wheel">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">I. Natal wheel</p>
+            <h2>Natal Wheel</h2>
+            <p class="section-subtitle">The chart this forecast moves through.</p>
+          </div>
+        </div>
+
+        {% if chart_wheel_svg %}
+        <div class="wheel-wrap">{{ chart_wheel_svg | safe }}</div>
+        {% if wheel_transit_retrograde_planets %}
+        <p class="chart-note">The ringed placement{{ 's' if wheel_transit_retrograde_planets | length > 1 else '' }} ({{ wheel_transit_retrograde_planets | join(', ') }}) {{ 'are' if wheel_transit_retrograde_planets | length > 1 else 'is' }} currently retrograde by transit.</p>
+        {% endif %}
+        {% endif %}
+      </section>
+
+      <!-- II. CHART REFERENCE AT A GLANCE -->
+      <section class="section" id="chart-reference">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">II. Chart reference at a glance</p>
+            <h2>This Forecast, At a Glance</h2>
+            <p class="section-subtitle">A stable reference map for the chart this forecast moves through.</p>
+          </div>
+        </div>
+
         <div class="record-grid">
           <article class="record-card record-card-primary">
             <p class="record-label">Forecast span</p>
-            <p class="record-value">{{ report_start_date }} - {{ report_end_date }}</p>
+            <p class="record-value">{{ report_span_display | default(report_start_date ~ ' - ' ~ report_end_date) }}</p>
             <p class="record-detail">A one-year forecast built around sustained cycles, changing conditions, and dated concentrations of activity.</p>
           </article>
           <article class="record-card">
@@ -3152,6 +3450,16 @@
             <p class="record-value">{{ birth_time_confidence }}</p>
             <p class="record-detail">Timing-sensitive chart features are interpreted in proportion to the information available.</p>
           </article>
+          <article class="record-card">
+            <p class="record-label">Version</p>
+            <p class="record-value">{{ report_version | default('Year Ahead v2.0') }}</p>
+            <p class="record-detail">Generated {{ generation_date }}</p>
+          </article>
+        </div>
+
+        <div class="suite-note">
+          <h3>How This Report Fits the Suite</h3>
+          <p>Year Ahead is the annual predictive almanac of the Entangled Oracle suite, tracing the wider movement of the year through natal foundation, timing layers, and EO synthesis.</p>
         </div>
 
         <div class="integrity-print-compact">
@@ -3178,24 +3486,6 @@
             {% endfor %}
           </dl>
         </div>
-      </section>
-
-      <!-- II. NATAL REFERENCE -->
-      <section class="section" id="natal-reference">
-        <div class="section-header">
-          <div>
-            <p class="eyebrow">II. Natal reference</p>
-            <h2>Chart Reference</h2>
-            <p class="section-subtitle">A stable reference map for the chart this forecast moves through.</p>
-          </div>
-        </div>
-
-        {% if chart_wheel_svg %}
-        <div class="wheel-wrap">{{ chart_wheel_svg | safe }}</div>
-        {% if wheel_transit_retrograde_planets %}
-        <p class="chart-note">The ringed placement{{ 's' if wheel_transit_retrograde_planets | length > 1 else '' }} ({{ wheel_transit_retrograde_planets | join(', ') }}) {{ 'are' if wheel_transit_retrograde_planets | length > 1 else 'is' }} currently retrograde by transit.</p>
-        {% endif %}
-        {% endif %}
 
         <table class="snapshot-table">
           <thead>
@@ -3214,6 +3504,17 @@
           {{ zodiac_label | default('Tropical') }} zodiac reference. Planetary sign positions remain usable; angle and house features are withheld without exact birth time.
           {% endif %}
         </p>
+      </section>
+
+      <!-- NATAL REFERENCE -->
+      <section class="section" id="natal-reference">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">Natal reference</p>
+            <h2>Reading the Chart Foundation</h2>
+            <p class="section-subtitle">The compact baseline used to keep the year forecast anchored to the natal chart.</p>
+          </div>
+        </div>
 
         {% if retrograde_cluster_active and retrograde_cluster_block %}
         <div class="transit-climate-note">
@@ -3248,7 +3549,7 @@
 
         {% if standard_natal_foundation and standard_natal_foundation.sections %}
         <div class="reader-guide" style="margin-top: 2rem;">
-          <p class="reader-guide-kicker">How to Use This Book</p>
+          <p class="reader-guide-kicker">Reading the Baseline</p>
           <div class="reader-guide-intro">{{ standard_natal_foundation.intro }}</div>
           <div class="reader-principles">
             {% for section in standard_natal_foundation.sections %}
@@ -3359,7 +3660,7 @@
           </div>
           {% if seasonal_highlights %}
           <div class="curated-summary-stack">
-            <div class="curated-summary-panel">
+            <div class="curated-summary-panel" id="seasonal-highlights">
               <p class="curated-summary-label">Seasonal Highlights</p>
               <div class="season-summary-grid" style="margin-top: 0;">
                 {% for item in seasonal_highlights %}
@@ -3512,6 +3813,7 @@
         {% if tier5_predictive_surfaces %}
         <h3>Timing Notes &amp; Recurring Clocks</h3>
         <p class="section-subtitle">These timing methods add context to the year without turning every recurrence into a separate full reading. Repeating cycles are grouped once, with their active dates kept as tags.</p>
+        <div class="timing-notes-compact">
 
         {% if tier5_predictive_surfaces.annual_profections %}
         <div class="predictive-research-grid">
@@ -3520,11 +3822,7 @@
             <p class="predictive-research-kicker">{{ card.source_label }}{% if card.kicker %} - {{ card.kicker }}{% endif %}</p>
             <h3>{{ card.title }}</h3>
             <p>{{ card.body }}</p>
-            <div class="predictive-research-meta">
-              {% if card.period_lord %}<span>Lord: {{ card.period_lord }}</span>{% endif %}
-              {% if card.period_house %}<span>House {{ card.period_house }}</span>{% endif %}
-              {% if card.period_sign %}<span>{{ card.period_sign }}</span>{% endif %}
-            </div>
+            <p class="predictive-research-note">{{ card.source_label }}{% if card.kicker %}; {{ card.kicker }}{% endif %}{% if card.period_lord %}; lord: {{ card.period_lord }}{% endif %}{% if card.period_house %}; house {{ card.period_house }}{% endif %}{% if card.period_sign %}; {{ card.period_sign }}{% endif %}.</p>
           </article>
           {% endfor %}
         </div>
@@ -3536,18 +3834,8 @@
           <article class="predictive-research-card">
             <p class="predictive-research-kicker">{{ card.source_label }}{% if card.kicker %} - {{ card.kicker }}{% endif %}</p>
             <h3>{{ card.title }}</h3>
-            {% if card.date_labels %}
-            <div class="predictive-research-dates">
-              {% for date_label in card.date_labels %}<span>{{ date_label }}</span>{% endfor %}
-            </div>
-            {% endif %}
             <p>{{ card.body }}</p>
-            <div class="predictive-research-meta">
-              {% if card.level %}<span>{{ card.level }}</span>{% endif %}
-              {% if card.event_kind %}<span>{{ card.event_kind | replace('_', ' ') }}</span>{% endif %}
-              {% if card.period_lord %}<span>Lord: {{ card.period_lord }}</span>{% endif %}
-              {% if card.lot_name %}<span>Lot: {{ card.lot_name }}</span>{% endif %}
-            </div>
+            <p class="predictive-research-note">{% if card.date_labels %}{% for date_label in card.date_labels %}{{ date_label }}{% if not loop.last %}, {% endif %}{% endfor %}{% endif %}{% if card.level %}; {{ card.level | replace('_', ' ') }}{% endif %}{% if card.event_kind %}; {{ card.event_kind | replace('_', ' ') }}{% endif %}{% if card.period_lord %}; lord: {{ card.period_lord }}{% endif %}{% if card.lot_name %}; lot: {{ card.lot_name }}{% endif %}.</p>
           </article>
           {% endfor %}
         </div>
@@ -3559,17 +3847,8 @@
           <article class="predictive-research-card">
             <p class="predictive-research-kicker">{{ card.source_label }}{% if card.kicker %} - {{ card.kicker }}{% endif %}</p>
             <h3>{{ card.title }}</h3>
-            {% if card.date_labels %}
-            <div class="predictive-research-dates">
-              {% for date_label in card.date_labels %}<span>{{ date_label }}</span>{% endfor %}
-            </div>
-            {% endif %}
             <p>{{ card.body }}</p>
-            <div class="predictive-research-meta">
-              {% if card.return_body %}<span>{{ card.return_body }}</span>{% endif %}
-              {% if card.method_variant %}<span>{{ card.method_variant | replace('_', ' ') }}</span>{% endif %}
-              {% if card.temporal_precision %}<span>{{ card.temporal_precision }}</span>{% endif %}
-            </div>
+            <p class="predictive-research-note">{% if card.date_labels %}{% for date_label in card.date_labels %}{{ date_label }}{% if not loop.last %}, {% endif %}{% endfor %}{% endif %}{% if card.return_body %}; {{ card.return_body }}{% endif %}{% if card.method_variant %}; {{ card.method_variant | replace('_', ' ') }}{% endif %}{% if card.temporal_precision %}; {{ card.temporal_precision | replace('_', ' ') }}{% endif %}.</p>
           </article>
           {% endfor %}
         </div>
@@ -3582,40 +3861,22 @@
             <p class="predictive-research-kicker">{{ tier5_predictive_surfaces.forecast_terrain.annual.source_label }}</p>
             <h3>{{ tier5_predictive_surfaces.forecast_terrain.annual.title }}</h3>
             <p>{{ tier5_predictive_surfaces.forecast_terrain.annual.body }}</p>
-            <div class="predictive-research-meta">
-              {% if tier5_predictive_surfaces.forecast_terrain.annual.kicker %}<span>{{ tier5_predictive_surfaces.forecast_terrain.annual.kicker }}</span>{% endif %}
-              {% for method in tier5_predictive_surfaces.forecast_terrain.annual.method_families[:4] %}<span>{{ method }}</span>{% endfor %}
-            </div>
+            <p class="predictive-research-note">{% if tier5_predictive_surfaces.forecast_terrain.annual.kicker %}{{ tier5_predictive_surfaces.forecast_terrain.annual.kicker }}{% endif %}{% for method in tier5_predictive_surfaces.forecast_terrain.annual.method_families[:4] %}{% if tier5_predictive_surfaces.forecast_terrain.annual.kicker or not loop.first %}; {% endif %}{{ method | replace('_', ' ') | lower }}{% endfor %}.</p>
           </article>
           {% for card in tier5_predictive_surfaces.forecast_terrain.months %}
           <article class="predictive-research-card">
             <p class="predictive-research-kicker">{{ card.source_label }}{% if card.kicker %} - {{ card.kicker }}{% endif %}</p>
             <h3>{{ card.title }}</h3>
-            {% if card.date_labels %}
-            <div class="predictive-research-dates">
-              {% for date_label in card.date_labels %}<span>{{ date_label }}</span>{% endfor %}
-            </div>
-            {% endif %}
             <p>{{ card.body }}</p>
-            <div class="predictive-research-meta">
-              {% for method in card.method_families[:3] %}<span>{{ method }}</span>{% endfor %}
-              {% if card.relative_intensity %}<span>{{ card.relative_intensity }}</span>{% endif %}
-            </div>
+            <p class="predictive-research-note">{% if card.date_labels %}{% for date_label in card.date_labels %}{{ date_label }}{% if not loop.last %}, {% endif %}{% endfor %}{% endif %}{% for method in card.method_families[:3] %}{% if card.date_labels or not loop.first %}; {% endif %}{{ method | replace('_', ' ') | lower }}{% endfor %}{% if card.relative_intensity %}; {{ card.relative_intensity }}{% endif %}.</p>
           </article>
           {% endfor %}
           {% for card in tier5_predictive_surfaces.forecast_terrain.chapters %}
           <article class="predictive-research-card">
             <p class="predictive-research-kicker">{{ card.source_label }}{% if card.kicker %} - {{ card.kicker }}{% endif %}</p>
             <h3>{{ card.title }}</h3>
-            {% if card.date_labels %}
-            <div class="predictive-research-dates">
-              {% for date_label in card.date_labels %}<span>{{ date_label }}</span>{% endfor %}
-            </div>
-            {% endif %}
             <p>{{ card.body }}</p>
-            <div class="predictive-research-meta">
-              {% for topic in card.topic_keys[:3] %}<span>{{ topic }}</span>{% endfor %}
-            </div>
+            <p class="predictive-research-note">{% if card.date_labels %}{% for date_label in card.date_labels %}{{ date_label }}{% if not loop.last %}, {% endif %}{% endfor %}{% endif %}{% for topic in card.topic_keys[:3] %}{% if card.date_labels or not loop.first %}; {% endif %}{{ topic | replace('_', ' ') }}{% endfor %}.</p>
           </article>
           {% endfor %}
           {% for card in tier5_predictive_surfaces.forecast_terrain.contradictions %}
@@ -3623,9 +3884,7 @@
             <p class="predictive-research-kicker">{{ card.source_label }}{% if card.kicker %} - {{ card.kicker }}{% endif %}</p>
             <h3>{{ card.title }}</h3>
             <p>{{ card.body }}</p>
-            <div class="predictive-research-meta">
-              {% for method in card.method_families[:3] %}<span>{{ method }}</span>{% endfor %}
-            </div>
+            <p class="predictive-research-note">{% for method in card.method_families[:3] %}{{ method | replace('_', ' ') | lower }}{% if not loop.last %}; {% endif %}{% endfor %}.</p>
           </article>
           {% endfor %}
         </div>
@@ -3636,22 +3895,15 @@
         <div class="predictive-research-grid">
           {% for card in predictive_report_surface.chapters %}
           <article class="predictive-research-card">
-            <p class="predictive-research-kicker">Forecast chapter{% if card.tier4_label %} - {{ card.tier4_label }}{% endif %}</p>
+            <p class="predictive-research-kicker">Forecast evidence{% if card.tier4_label %} - {{ card.tier4_label | replace('_', ' ') }}{% endif %}</p>
             <h3>{{ card.title }}</h3>
-            {% if card.date_labels %}
-            <div class="predictive-research-dates">
-              {% for date_label in card.date_labels %}<span>{{ date_label }}</span>{% endfor %}
-            </div>
-            {% endif %}
             <p>{{ card.body }}</p>
-            <div class="predictive-research-meta">
-              <span>{{ card.chapter_kind }}</span>
-              <span>{{ card.domain_key }}</span>
-            </div>
+            <p class="predictive-research-note">{% if card.date_labels %}{% for date_label in card.date_labels %}{{ date_label }}{% if not loop.last %}, {% endif %}{% endfor %}{% endif %}{% if card.chapter_kind %}; {% if card.chapter_kind == 'sustained_transit_chapter' %}sustained research signal{% else %}{{ card.chapter_kind | replace('_', ' ') }}{% endif %}{% endif %}{% if card.domain_key and card.domain_key != 'fallback' %}; {{ card.domain_key | replace('_', ' ') }}{% endif %}.</p>
           </article>
           {% endfor %}
         </div>
         {% endif %}
+        </div>
         {% endif %}
       </section>
 
@@ -4056,7 +4308,7 @@
           {% endif %}
           <article><h3>Forecast shape</h3><p>A structural label describing how concentration is distributed across the year's existing monthly intensity pattern.</p></article>
         </div>
-        <div class="method-note"><h3>Method note</h3><p>This forecast is calculated with the Swiss Ephemeris using the {{ methodology_label | default('Tropical zodiac + Whole Sign houses') }} methodology. The report draws on natal transits, Whole Sign house ingresses, planetary stations, and eclipses that contact selected natal targets. It does not claim to predict one fixed future; it maps changing symbolic conditions, timing concentrations, and recurring developmental patterns.</p>{% if raw_cycle_ledger and raw_cycle_ledger.status_method_note %}<p>{{ raw_cycle_ledger.status_method_note }}</p>{% endif %}</div>
+        <div class="method-note"><h3>Method note</h3><p>This forecast is calculated with the Swiss Ephemeris using the {{ methodology_label | default('Tropical zodiac + Whole Sign houses') }} methodology. The report draws on natal transits, Whole Sign house ingresses, planetary stations, and eclipses that contact selected natal targets. It does not claim to predict one fixed future; it maps changing symbolic conditions, timing concentrations, and recurring developmental patterns. The proprietary EO material functions here as an additional interpretive lens layered onto that astrological base, not a replacement for it.</p>{% if raw_cycle_ledger and raw_cycle_ledger.status_method_note %}<p>{{ raw_cycle_ledger.status_method_note }}</p>{% endif %}</div>
       </section>
 
       <!-- XI. YEAR INTEGRATION -->

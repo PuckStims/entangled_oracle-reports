@@ -1,0 +1,53 @@
+{
+  "_note": "Key path: day_character -> label -> variant. Short label for each day in the weekly timing section.",
+  "fallback": {
+    "label": {
+      "v1": "{day_label} Timing",
+      "v2": "{day_label} Signal",
+      "v3": "{day_label} Focus",
+      "v4": "{day_label} Pattern",
+      "v5": "{day_label} Thread",
+      "v6": "{day_label} Cue"
+    }
+  },
+  "quiet": {
+    "label": {
+      "v1": "Quiet Calibration",
+      "v2": "Low-Noise Signals",
+      "v3": "Background Patterning",
+      "v4": "Room to Hear",
+      "v5": "Subtle Evidence",
+      "v6": "Soft Timing"
+    }
+  },
+  "flowing": {
+    "label": {
+      "v1": "Usable Opening",
+      "v2": "Supported Movement",
+      "v3": "Clearer Access",
+      "v4": "Easier Traction",
+      "v5": "Available Support",
+      "v6": "Open Thread"
+    }
+  },
+  "challenging": {
+    "label": {
+      "v1": "Productive Friction",
+      "v2": "Pressure With Information",
+      "v3": "Adjustment Point",
+      "v4": "Clarifying Tension",
+      "v5": "Necessary Revision",
+      "v6": "Pressure Point"
+    }
+  },
+  "neutral": {
+    "label": {
+      "v1": "Pattern Recognition",
+      "v2": "Mixed Signals",
+      "v3": "Observation Window",
+      "v4": "Timing Cue",
+      "v5": "Small Signal",
+      "v6": "Open Question"
+    }
+  }
+}

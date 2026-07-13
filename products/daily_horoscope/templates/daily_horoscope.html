@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Daily Horoscope · {{ querent_name }}</title>
+  <title>Daily Horoscope - {{ querent_name }}</title>
+  <style>{{ shared_report_css | safe }}</style>
   <style>
     :root {
       /* Base */
@@ -69,12 +70,19 @@
       margin-top: 6px;
       letter-spacing: 1px;
     }
+    .report-title {
+      font-size: 0.74rem;
+      color: var(--muted);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-top: 8px;
+    }
     hr { border: none; border-top: 1px solid var(--border); margin: 28px 0; }
     .section { margin-bottom: 28px; }
     .section-label {
-      font-size: 0.68rem;
+      font-size: 0.7rem;
       color: var(--muted);
-      letter-spacing: 3px;
+      letter-spacing: 2px;
       text-transform: uppercase;
       margin-bottom: 10px;
     }
@@ -110,6 +118,19 @@
       margin-top: 10px;
       font-style: italic;
     }
+    .method-note {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px 14px;
+      color: var(--muted);
+      font-size: 0.78rem;
+      line-height: 1.55;
+    }
+    .method-note strong {
+      color: var(--gold);
+      font-weight: normal;
+    }
     .closing {
       text-align: center;
       font-style: italic;
@@ -127,8 +148,12 @@
       letter-spacing: 1px;
     }
 
-    /* ── Print Mode ───────────────────────────────── */
+    /* Print Mode */
     @media print {
+      @page {
+        size: letter;
+        margin: 0.62in 0.58in 0.68in;
+      }
       body[data-palette="vibrant"] {
         /* .block (the actual Today's Sky / Activation / Day's Ruler /
            Proprietary / Closing copy — i.e. almost the entire report)
@@ -138,34 +163,131 @@
         --text: #17263d;
         --muted: #223654;
         --subtle: #30486c;
+        --print-ink-strong: #17263d;
+        --print-ink-muted: #223654;
+        --print-ink-soft: #30486c;
+        --print-ink-faint: #5f6f88;
+        --print-paper: #fbfaf7;
+        --print-card: #f7f7fa;
+        --print-card-warm: #fffdfa;
+        --print-rule: #d8d4df;
       }
       body {
-        background: #fff;
-        color: #111;
+        --print-ink-strong: #17263d;
+        --print-ink-muted: #223654;
+        --print-ink-soft: #30486c;
+        --print-ink-faint: #5f6f88;
+        --print-paper: #fbfaf7;
+        --print-card: #f7f7fa;
+        --print-card-warm: #fffdfa;
+        --print-rule: #d8d4df;
+        background: var(--print-paper);
+        color: var(--print-ink-strong);
         max-width: 100%;
-        padding: 20px 30px;
+        margin: 0;
+        padding: 14px 20px 20px;
         font-size: 10pt;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
       }
-      header .name { color: #000; }
+      * {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      header {
+        margin-bottom: 18px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--print-rule);
+      }
+      header .name { color: var(--print-ink-strong); }
       header .meta { color: var(--print-ink-muted); }
-      .moon-line { color: var(--print-ink-muted); }
+      .section {
+        margin-bottom: 16px;
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+      .section-label { color: var(--print-ink-soft); letter-spacing: 2px; }
+      .moon-line { color: #5a3a9a; }
       .activation-header { color: var(--print-ink-muted); }
-      .proprietary-card { background: #f9f9f9; border-color: #ccc; }
+      .block { color: var(--print-ink-strong); }
+      .proprietary-card {
+        background: var(--print-card-warm);
+        border-color: var(--print-rule);
+        border-left-color: #6f55aa;
+        box-shadow: none;
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
       .proprietary-name { color: var(--print-ink-muted); }
       .soft-sell { color: var(--print-ink-soft); }
-      .closing { color: var(--print-ink-muted); }
-      footer { color: var(--print-ink-faint); }
-      hr { border-color: #ddd; }
+      .method-note {
+        background: var(--print-card);
+        border-color: var(--print-rule);
+        color: var(--print-ink-muted);
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+      .method-note strong { color: var(--print-ink-soft); }
+      .closing {
+        color: var(--print-ink-muted);
+        margin-top: 24px;
+        padding-top: 16px;
+      }
+      footer {
+        color: var(--print-ink-faint);
+        margin-top: 24px;
+      }
+      hr { border-color: var(--print-rule); margin: 18px 0; }
     }
   </style>
 </head>
-<body data-palette="{{ palette_name | default('vibrant') }}">
+<body class="report-shell report-daily-horoscope" data-palette="{{ palette_name | default('vibrant') }}">
 
   <header>
     <div class="name">{{ querent_name }}</div>
-    <div class="meta">{{ display_date }}{% if generation_location %} · {{ generation_location }}{% endif %}</div>
-    <div class="meta" style="margin-top:4px;">Daily Horoscope · Entangled Oracle</div>
+    <div class="report-title">Daily Horoscope</div>
+    <div class="meta">{{ display_date }}{% if generation_location %} - {{ generation_location }}{% endif %}</div>
+    <div class="meta" style="margin-top:4px;">{{ report_brand_line | default('Entangled Oracle - Ksisti-Puck LLC') }}</div>
   </header>
+
+  <div class="report-record-grid">
+    <article class="report-record-card">
+      <p class="report-record-label">Client</p>
+      <p class="report-record-value">{{ querent_name }}</p>
+    </article>
+    <article class="report-record-card">
+      <p class="report-record-label">Report date</p>
+      <p class="report-record-value">{{ display_date }}</p>
+    </article>
+    {% if not simple_mode %}
+    <article class="report-record-card">
+      <p class="report-record-label">Birth data</p>
+      <p class="report-record-value">{{ birth_date_display }}{% if birth_time_display %} - {{ birth_time_display }}{% endif %}</p>
+      <p class="report-record-detail">{{ birth_location }}</p>
+    </article>
+    <article class="report-record-card">
+      <p class="report-record-label">Birth-time confidence</p>
+      <p class="report-record-value">{{ birth_time_confidence | default(birth_time_status | default('unknown')) }}</p>
+      <p class="report-record-detail">{{ report_version | default('Horoscope v1.0') }} - Generated {{ generation_date }}</p>
+    </article>
+    {% else %}
+    <article class="report-record-card">
+      <p class="report-record-label">Output mode</p>
+      <p class="report-record-value">Simple daily guidance</p>
+      <p class="report-record-detail">Birth-time-dependent sections suppressed.</p>
+    </article>
+    <article class="report-record-card">
+      <p class="report-record-label">Version</p>
+      <p class="report-record-value">{{ report_version | default('Horoscope v1.0') }}</p>
+      <p class="report-record-detail">Generated {{ generation_date }}</p>
+    </article>
+    {% endif %}
+  </div>
+
+  <div class="suite-note">
+    <h3>How This Report Fits the Suite</h3>
+    <p>Daily Horoscope is the smallest signal in the Entangled Oracle suite: a compact daily activation based on what is most immediate in the day's sky.</p>
+  </div>
 
   <!-- Today's Sky -->
   <div class="section">
@@ -191,6 +313,12 @@
       {{ secondary_activation_line }}
     </div>
     {% endif %}
+    {% if activation_basis_line %}
+    <div class="method-note" style="margin-top:14px;">
+      <strong>Why this activation.</strong>
+      {{ activation_basis_line }}
+    </div>
+    {% endif %}
   </div>
 
   <hr>
@@ -207,10 +335,13 @@
 
   <!-- Proprietary Reference (Full Mode only) -->
   {% if not simple_mode and activated_index_name %}
-  <div class="proprietary-card">
-    <div class="proprietary-name">{{ activated_index_name }}</div>
-    <div class="block">{{ proprietary_block }}</div>
-    <div class="soft-sell">Activation detected. Full context in your Soul Ecosystem report.</div>
+  <div class="section">
+    <div class="section-label">Your Narrative Genre / EO Reference</div>
+    <div class="proprietary-card">
+      <div class="proprietary-name">{{ activated_index_name }}</div>
+      <div class="block">{{ proprietary_block }}</div>
+      <div class="soft-sell">Fuller context appears in the Soul Ecosystem report when included in your package.</div>
+    </div>
   </div>
   <br>
   {% endif %}
@@ -218,10 +349,22 @@
   <!-- Closing Line -->
   <div class="closing">{{ closing_block }}</div>
 
-  <footer>
-    Entangled Oracle · Ksisti-Puck LLC<br>
-    Generated {{ generation_date }}
-  </footer>
+  {% if horoscope_simplified_output_contract %}
+  <div class="trust-note">
+    <h3>Calculation Basis</h3>
+    <p><strong>Calculation basis.</strong> {{ horoscope_simplified_output_contract }}</p>
+    <p><strong>Method note.</strong> Daily sky positions are calculated from the report date using {{ methodology_label | default('Tropical zodiac + Whole Sign houses') }} and Swiss Ephemeris positions where available.</p>
+    {% if not simple_mode %}
+    <p><strong>Activation priority.</strong> The activation lane selects a planetary station, same-day natal contact, or Moon-house fallback in that order.</p>
+    <p><strong>Birth-time confidence.</strong> {{ birth_time_confidence | default('Birth-time confidence unavailable') }}. House and angle references are interpreted in proportion to that confidence state.</p>
+    <p><strong>Proprietary EO layer.</strong> The activation and index reference translate the natal formula layer into a lightweight daily prompt. Use them as reflective timing cues alongside your own practical judgment and context.</p>
+    {% endif %}
+  </div>
+  {% endif %}
+
+  {% if not simple_mode %}
+  <footer>{{ report_footer_text | default('Entangled Oracle - Ksisti-Puck LLC - Generated ' ~ generation_date) }}</footer>
+  {% endif %}
 
 </body>
 </html>

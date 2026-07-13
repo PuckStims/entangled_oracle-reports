@@ -5,6 +5,57 @@ Newest entry on top. See `agents/README.md` for the convention.
 
 ---
 
+## 2026-07-13 - Report-suite polish pass documented, Soul Ecosystem expansion runway staged
+
+**Context:** a cross-suite product-readiness polish pass landed across
+Year Ahead, Soul Ecosystem, Personal Forecast, Weekly Horoscope, and
+Daily Horoscope. The operator's boundary was presentation, hierarchy,
+trust language, template consistency, repetition cleanup, and
+safety-aware wording - not astrology-engine rewrites, depth reduction, or
+flattening EO into generic wellness copy. Later in the same session, the
+next Soul Ecosystem expansion direction was scoped: keep EO proprietary
+layers, but make the natal / open-astrology baseline more visibly alive.
+
+**What changed:**
+
+- Added a dated handoff / upgrade source doc:
+  `agents/2026-07-13_REPORT_SUITE_UPGRADE_DOC.md`.
+- Documented the active July 13 suite-polish surfaces now visible in the
+  live template layer:
+  `products/year_ahead/templates/active/year_ahead.html`,
+  `products/soul_ecosystem/templates/soul_ecosystem.html`,
+  `products/personal_forecast/templates/personal_forecast.html`,
+  `products/weekly_horoscope/templates/weekly_horoscope.html`,
+  `products/daily_horoscope/templates/daily_horoscope.html`,
+  plus shared support in `generate.py`, `selectors/variable_resolver.py`,
+  `products/shared/report_visual_system.css`, and
+  `products/daily_horoscope/blocks/your_activation.json`.
+- Captured the suite-level rendering / QA artifact trail so later agents
+  can verify the same outputs instead of relying only on code grep:
+  finalized HTML in `tmp/finalized_suite_html/` and PDF / preview assets
+  in `tmp/pdfs/`.
+- Recorded the next Soul Ecosystem expansion model: standard natal
+  foundation + established interpretive support + EO proprietary
+  synthesis, with section-specific recommendations for Core Pattern,
+  Growth Pattern, World Pattern, and World Interface.
+
+**Verification:** the dated upgrade doc references concrete rendered
+artifacts produced on 2026-07-13 for all five active report surfaces, not
+just code edits. It also records the governing prose-guide rule that
+future content expansion must defer to
+`docs/prose_guides/Entangled_Oracle_Master_Plainspeak_Guide_v5.md` and
+`docs/prose_guides/Entangled_Oracle_Anti-Monotony_Redundancy_Protocol_v2.md`
+when prompt language conflicts with them.
+
+**Open:** the final end-of-pass guardrail audit still needs to happen
+against the full suite, and the actual Soul Ecosystem expansion pass is
+not implemented yet - only staged and documented. Daily's compactness
+contract and any remaining Year Ahead date-span consistency questions
+should be resolved in that closeout, not assumed solved because the
+surface pass rendered.
+
+---
+
 ## 2026-07-10 - Tier 5 report-surface promotion scaffolded, tiered upgrade Tiers 0-5 complete (Codex, accepted by operator, spot-verified by Claude Code)
 
 **Context:** governing product decision this session: everything the

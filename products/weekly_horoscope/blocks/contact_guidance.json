@@ -1,0 +1,90 @@
+{
+  "_note": "Key path: exact_aspect -> guidance_mode. Feeds the guidance_line rendered field (the actionable follow-up sentence that pairs with meaning_primary). guidance_mode is computed by generate.py's _weekly_guidance_mode(planet, aspect_character) and only depends on which broad character group (flowing vs challenging) the exact_aspect belongs to, so the reachable mode set differs by aspect group rather than being a full grid: flowing aspects (Conjunction, Sextile, Trine) reach action/receiving/structure/adjustment/discernment/pacing/visibility; challenging aspects (Square, Opposition, Semisquare, Sesquiquadrate, Quincunx) reach conversation/discernment/structure/adjustment/pacing/visibility ('action' and 'receiving' never occur on a challenging aspect; 'conversation' never occurs on a flowing one). This mirrors moment_guidance.json's aspect_character -> guidance_mode shape at exact-aspect grain instead of broad-character grain. Variant-key rotation (v1/v2/v3 per README convention) is not wired into this file yet -- add variant leaves under a mode once volume warrants it; a single TODO string per mode is enough for the selector to resolve today. Leaves are TODO placeholders; until authored, generate.py falls back to the existing moment_guidance.json output for reader_guidance.",
+  "Conjunction": {
+    "_note": "Conjunction guidance: the transiting energy and the natal target are fused for the duration -- guidance should help the reader use the merge on purpose rather than being swept by it.",
+    "action": "Choose one deliberate move that lets this contact become usable now, rather than letting its intensity decide the whole direction for you.",
+    "receiving": "Let the signal arrive before you answer it; what is merging with you needs room to be felt, not immediately managed.",
+    "structure": "Give this concentrated energy a clear container, schedule, boundary, or sequence so it can work through you without taking over.",
+    "adjustment": "Notice where the fusion is too tight, then make the smallest shift that lets both parts of the pattern breathe.",
+    "discernment": "Separate urgency from truth; the fact that something feels immediate does not mean every response has to happen at once.",
+    "pacing": "Move close enough to engage the moment, but leave enough space to notice whether the contact is building clarity or heat.",
+    "visibility": "Name what is becoming impossible to keep separate, especially where your presence, role, or desire now needs to be seen plainly.",
+    "fallback": "Treat this as a point of concentration: work with what has come together, but do not let intensity become your only guide."
+  },
+  "Sextile": {
+    "_note": "Sextile guidance: an opening that needs participation to become real -- guidance should point at the small available action, not passive luck.",
+    "action": "Take the available opening seriously enough to do one concrete thing with it; this support becomes real through participation.",
+    "receiving": "Let help, timing, or invitation meet you halfway, then respond before the opening stays theoretical.",
+    "structure": "Put a light framework around the opportunity so it has somewhere to land without becoming heavier than it needs to be.",
+    "adjustment": "Make the small correction that allows the opening to connect with your actual life instead of remaining a nice idea.",
+    "discernment": "Look for the door that is already slightly open, not the one you have to force to prove the moment is meaningful.",
+    "pacing": "Engage the chance at a human scale; a modest response now may do more than an overbuilt plan.",
+    "visibility": "Let the opening be visible enough that the right person, choice, or next step can recognize you in return.",
+    "fallback": "Use what is available, but meet it actively; this is an invitation that needs a response, not luck that performs by itself."
+  },
+  "Trine": {
+    "_note": "Trine guidance: natural fluency between the two functions -- guidance should name the specific resource on offer so it reads as usable, not vague good fortune.",
+    "action": "Use the ease while it is available, and turn fluency into a chosen action instead of assuming it will act on your behalf.",
+    "receiving": "Receive the support without minimizing it; what comes naturally here still deserves your attention and trust.",
+    "structure": "Give the smoothness a form it can keep using, so a helpful current becomes a repeatable resource rather than a passing mood.",
+    "adjustment": "Let the path of least resistance show you what no longer needs to be made difficult.",
+    "discernment": "Notice what works without strain, then ask whether it is truly aligned or simply familiar.",
+    "pacing": "Do not rush the ease just because it is moving well; let the rhythm carry you without turning it into urgency.",
+    "visibility": "Allow what is already working in you to be seen, especially where hiding it would make the gift harder to share.",
+    "fallback": "Trust the fluency, but stay awake inside it; ease is most useful when it becomes conscious."
+  },
+  "Square": {
+    "_note": "Square guidance: productive friction between two functions that want different things -- guidance should point at adjustment, not a verdict on which side is right.",
+    "conversation": "Have the conversation where the mismatch actually lives, not around it; both needs become easier to work with once named clearly.",
+    "structure": "Build a firmer container around the friction so the competing demands have rules, timing, and limits instead of colliding at random.",
+    "adjustment": "Change the angle of approach before you decide one side must win; the strain may be asking for coordination, not conquest.",
+    "discernment": "Identify which part of the tension is useful information and which part is old reaction repeating under a new name.",
+    "pacing": "Slow the response enough to keep friction productive, but do not wait so long that avoidance starts making the choice for you.",
+    "visibility": "Let the conflict show you what can no longer stay politely hidden, especially where a clearer stance is overdue.",
+    "fallback": "Treat the friction as movement trying to happen; adjust the pattern before turning it into a verdict."
+  },
+  "Opposition": {
+    "_note": "Opposition guidance: a tension to be held between two poles rather than resolved by fully picking one -- guidance should keep both ends in the sentence.",
+    "conversation": "Keep both ends of the tension in the room; the useful conversation is the one that can hear contrast without collapsing it into blame.",
+    "structure": "Create an agreement, boundary, or rhythm that gives each side a place, instead of letting one pole impersonate the whole truth.",
+    "adjustment": "Shift from either-or to proportion; the correction may be about how much weight each side gets, not which one disappears.",
+    "discernment": "Ask what belongs to you, what belongs to the other side, and what only appears when the two are facing each other.",
+    "pacing": "Let the tension show its shape before resolving it; moving too fast may only replace one imbalance with another.",
+    "visibility": "Make the contrast visible without dramatizing it, especially where being seen by another person clarifies your own position.",
+    "fallback": "Hold the polarity long enough to learn from both sides; this aspect is asking for relationship, not instant resolution."
+  },
+  "Semisquare": {
+    "_note": "Semisquare guidance: low-grade friction, an irritant more than a crisis -- guidance should be sized proportionately, useful as an early signal rather than a call to overhaul.",
+    "conversation": "Say the small thing before it becomes the large thing; a brief, specific conversation may clear more than extended tolerance.",
+    "structure": "Tighten the loose screw rather than rebuilding the whole machine; this friction is asking for maintenance-sized structure.",
+    "adjustment": "Make the minor correction now, especially where irritation is pointing to a habit that has drifted out of tune.",
+    "discernment": "Do not inflate the annoyance, but do not ignore it either; it may be the first sign that something needs a cleaner fit.",
+    "pacing": "Pause just long enough to respond accurately; this does not require a dramatic slowdown, only less automatic momentum.",
+    "visibility": "Let the small signal be acknowledged without making it the whole story, especially where quiet resentment would otherwise accumulate.",
+    "fallback": "Read this as an early warning light, not a crisis; a measured correction is usually enough."
+  },
+  "Sesquiquadrate": {
+    "_note": "Sesquiquadrate guidance: a secondary adjustment point, often a nagging correction that shows up after an earlier signal was missed -- guidance can reference catching up, not starting over.",
+    "conversation": "Return to the conversation that should have happened earlier, and keep it specific enough to repair the missed signal.",
+    "structure": "Add the support, boundary, or sequence that the pattern has already shown it needed; this is catch-up structure, not punishment.",
+    "adjustment": "Make the follow-up correction now, especially where a previous compromise no longer holds under real conditions.",
+    "discernment": "Look for the second signal beneath the irritation; something is repeating because the first message was not fully integrated.",
+    "pacing": "Do not rush to compensate for the delay; catch up by moving accurately, not by overcorrecting.",
+    "visibility": "Acknowledge what has become harder to overlook, especially where a small omission is now affecting the larger pattern.",
+    "fallback": "Treat this as a delayed correction point; you are not starting over, but the pattern does need a cleaner response."
+  },
+  "Quincunx": {
+    "_note": "Quincunx guidance: a mismatch between two functions that do not naturally relate -- guidance should point at deliberate translation between them, not force.",
+    "conversation": "Translate before you negotiate; the two sides may be using different languages even when they seem to be discussing the same issue.",
+    "structure": "Build a bridge between mismatched needs with explicit terms, steps, and expectations, rather than assuming they will naturally understand each other.",
+    "adjustment": "Make a precise adaptation instead of forcing compatibility; the goal is workable translation, not perfect symmetry.",
+    "discernment": "Name what does not naturally fit, then decide what can be translated, what needs space, and what should not be forced.",
+    "pacing": "Give the mismatch time to reveal its logic; moving too quickly may turn unfamiliarity into unnecessary resistance.",
+    "visibility": "Let the awkward fit be visible enough to work with, especially where pretending it is simple would create more strain later.",
+    "fallback": "Approach the mismatch as a translation problem; force will distort it, but deliberate adaptation can make it livable."
+  },
+  "fallback": {
+    "_note": "Fallback for an exact_aspect that has not been mapped yet.",
+    "fallback": "Use this contact as information about timing, proportion, and response; choose the next step that fits the actual shape of the moment."
+  }
+}

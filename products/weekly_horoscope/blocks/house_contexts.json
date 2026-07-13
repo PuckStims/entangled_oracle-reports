@@ -1,0 +1,16 @@
+{
+  "_note": "Key path: natal house number (1-12). Secondary layer only -- deliberately kept independent of transit_planet / exact_aspect / natal_target_group rather than folded into that key path, to avoid a planet x aspect x target x house combinatorial explosion. Distinct from house_domains.json: house_domains.json supplies the {house_theme} phrase already used in the live moment_focus prose (\"what part of life\"); house_contexts.json is the newer secondary-layer modifier exposed as {house_context} for future contact_meanings.json / contact_guidance.json authors to add house-specific texture or pressure to an already-selected contact_meaning without writing a new leaf per house. Leaves are TODO placeholders.",
+  "1": "where your body, presence, self-definition, and first responses make the pattern immediate",
+  "2": "where resources, self-worth, stability, and the question of what is truly valuable give the pattern weight",
+  "3": "where daily language, decisions, siblings, neighbors, and the local flow of information give the pattern a voice",
+  "4": "where home, family memory, privacy, and emotional foundations make the pattern personal",
+  "5": "where creativity, pleasure, romance, play, and the need to feel alive give the pattern expression",
+  "6": "where work rhythms, health, service, maintenance, and ordinary habits make the pattern practical",
+  "7": "where partnership, reciprocity, projection, and one-to-one agreements make the pattern relational",
+  "8": "where intimacy, shared resources, trust, debt, grief, and transformation make the pattern harder to keep on the surface",
+  "9": "where belief, study, travel, teaching, and the search for meaning pull the pattern into a larger frame",
+  "10": "where vocation, reputation, authority, and public responsibility make the pattern visible",
+  "11": "where friendship, community, networks, future plans, and collective belonging give the pattern a wider audience",
+  "12": "where solitude, the unconscious, hidden labor, spiritual repair, and what operates offstage make the pattern subtle",
+  "fallback": "where this part of life gives the contact its setting"
+}

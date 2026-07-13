@@ -1,0 +1,21 @@
+{
+  "_note": "Key path: aspect_character -> transit_planet. Fallbacks preserve planet-specific headlines without requiring every planet/aspect combination at once.",
+  "fallback": "Track the Signal Around {strongest_planet_label}",
+  "flowing": {
+    "fallback": "Use the Opening Around {strongest_planet_label}",
+    "Moon": "Let the Week Find Its Rhythm",
+    "Venus": "Receive the Easier Thread Around Venus",
+    "Jupiter": "Use the Opening Around Jupiter"
+  },
+  "challenging": {
+    "fallback": "Let {strongest_planet_label} Name the Friction",
+    "Mars": "Aim the Heat Instead of Spending It Everywhere",
+    "Saturn": "Give the Week a Stronger Container",
+    "Pluto": "Name the Pressure Without Obeying It"
+  },
+  "neutral": {
+    "fallback": "Track the Signal Around {strongest_planet_label}",
+    "Mercury": "Listen for the Sentence That Keeps Returning",
+    "Neptune": "Let the Fog Tell You What Needs Discernment"
+  }
+}

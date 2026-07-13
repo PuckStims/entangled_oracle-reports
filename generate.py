@@ -142,21 +142,22 @@ def _align_to_week_start(moment: datetime) -> datetime:
     return day_start - timedelta(days=day_start.weekday())
 
 
+def _align_to_day_start(moment: datetime) -> datetime:
+    """Returns UTC midnight for the calendar day containing moment."""
+    return moment.replace(hour=0, minute=0, second=0, microsecond=0)
+
+
 def _report_window(report_type: str, report_start: datetime) -> tuple[datetime, datetime]:
     """
     Returns (report_start, report_end) for a report type's forecast window.
 
-    weekly_horoscope aligns to the Monday-Friday work week containing
-    report_start, regardless of which day generation happens to run on —
-    so a whole cohort generated together (the intended B2B batch-export
-    use case) shares identical week boundaries rather than each member's
-    window drifting by generation time. Clinical / theory / off-day
-    custom schedules are an explicit later follow-on; Monday-Friday is
-    just the default for now.
+    weekly_horoscope starts on the report/generation date and covers seven
+    full calendar days. That keeps the product from forcing a Monday-Friday
+    work-week layout when it is created on a different day.
     """
     if report_type == "weekly_horoscope":
-        monday = _align_to_week_start(report_start)
-        return monday, monday + timedelta(days=5)
+        day_start = _align_to_day_start(report_start)
+        return day_start, day_start + timedelta(days=7)
     return report_start, _add_one_year(report_start)
 
 
@@ -326,6 +327,7 @@ def build_report_context(
         standard_report_bundle,
         report_type,
     )
+    ctx.setdefault("report_version", report_version(report_type))
 
     if report_type == "horoscope":
         ctx.update(_build_horoscope_context(variables, index_results, payload))
@@ -387,6 +389,22 @@ def _raw_select_block(path: str, *keys: str, fallback: str = "fallback") -> str:
     """Select a block without suppressing literal TODO scaffolding markers."""
     data = _load_json_file(path)
     return _dict_lookup_with_fallback(data, *keys, fallback=fallback)
+
+
+class _FormatDefaults(dict):
+    def __missing__(self, key):
+        return ""
+
+
+def _format_block_text(text: str, values: dict | None = None) -> str:
+    if not isinstance(text, str):
+        return ""
+    if not values:
+        return text
+    try:
+        return text.format_map(_FormatDefaults(values))
+    except (KeyError, ValueError):
+        return text
 
 
 def _pack_path(pack: dict, key: str) -> str:
@@ -1469,6 +1487,7 @@ def _build_personal_forecast_context(
         "birth_date_display": birth_meta["birth_date_display"],
         "birth_time_display": birth_meta["birth_time_display"],
         "birth_location": payload.get("birth_location") or payload.get("location") or birth_meta["birth_location"],
+        "birth_time_confidence": birth_meta["birth_time_confidence"],
         "event_counts": counts,
         "total_events": len(all_events),
         "opening_snapshot": opening_snapshot,
@@ -1509,6 +1528,8 @@ def _build_horoscope_context(variables, index_results, payload) -> dict:
     from selectors.block_selector import select_block
     v = variables
     ctx = {}
+    birth_meta = _build_birth_metadata(payload)
+    methodology = _build_methodology_metadata(payload, v)
 
     # Today's Sky block
     ctx["todays_sky_block"] = select_block(
@@ -1555,6 +1576,40 @@ def _build_horoscope_context(variables, index_results, payload) -> dict:
     # Until then, this passthrough preserves the resolver's blank value and
     # ensures the key is always present in the horoscope context dict.
     ctx["secondary_activation_line"] = v.get("secondary_activation_line", "")
+    ctx["activation_source"] = v.get("activation_source", "")
+    ctx["activation_basis_line"] = v.get("activation_basis_line", "")
+
+    simple_mode = bool(v.get("simple_mode") or payload.get("simple_mode"))
+    ctx["horoscope_output_mode"] = (
+        "simple_collective_daily_guidance" if simple_mode else "natalized_daily_guidance"
+    )
+    ctx["horoscope_complexity_capacity"] = [
+        "Moon phase and Moon sign are calculated from the report date.",
+        "The day ruler is calculated from the report date.",
+        (
+            "The activation section is suppressed because birth-time-dependent "
+            "house and angle routing is unavailable."
+            if simple_mode
+            else "The activation section selects planetary station, same-day natal contact, or Moon-house fallback in priority order."
+        ),
+        (
+            "Proprietary index reference is suppressed in simple mode."
+            if simple_mode
+            else "The proprietary reference names the strongest EO index from the natal formula layer."
+        ),
+    ]
+    ctx["horoscope_simplified_output_contract"] = (
+        "One short daily reading; complex chart signals are reduced to sky, day ruler, and one activation lane."
+    )
+    ctx.update({
+        "birth_date_display": birth_meta["birth_date_display"],
+        "birth_time_display": birth_meta["birth_time_display"],
+        "birth_location": birth_meta["birth_location"],
+        "birth_time_status": birth_meta["birth_time_status"],
+        "birth_time_confidence": birth_meta["birth_time_confidence"],
+        "birth_time_state": birth_meta["birth_time_state"],
+        **methodology,
+    })
 
     from config import PALETTES as _PALETTES
     _h_palette_name = variables.get("palette", "vibrant")
@@ -1562,6 +1617,906 @@ def _build_horoscope_context(variables, index_results, payload) -> dict:
     ctx["palette"] = _PALETTES.get(_h_palette_name, _PALETTES["vibrant"])
 
     return ctx
+
+
+_WEEKLY_FALLBACK_HOUSE_THEME = "the part of life this contact activates"
+_WEEKLY_FALLBACK_PLANET_PROMPT = "timing, attention, and response"
+_WEEKLY_FALLBACK_ASPECT_PROMPT = (
+    "The week is more about noticing pattern than forcing resolution. "
+    "Small choices can reveal which thread wants more attention."
+)
+_WEEKLY_MAX_CONTACTS_PER_DAY = 2
+_WEEKLY_CANDIDATE_COUNT = 30
+
+# Exact-aspect and target-group selector wiring (block-architecture layer).
+#
+# `aspect_character` (flowing/challenging/neutral) stays the broad grouping
+# used by the theme/day/legacy moment blocks above. These additions let
+# contact-level blocks route on the exact aspect and on *what* natal target
+# is being contacted (grouped by function, not raw technical label), per
+# `transit_planet -> exact_aspect -> natal_target_group`. House context is
+# kept as an independent secondary layer (see _weekly_house_context) rather
+# than folded into that key path, to avoid a planet x aspect x target x
+# house combinatorial explosion.
+_WEEKLY_EXACT_ASPECTS = (
+    "Conjunction", "Sextile", "Trine", "Square", "Opposition",
+    "Semisquare", "Sesquiquadrate", "Quincunx",
+)
+
+# Short function-group keys for natal targets, matching engine.transit_engine's
+# natal_target vocabulary (10 planets + ASC/MC/DSC/IC/Vertex). Used as the
+# third leg of the contact-level key path so prose routes by what the
+# target *does* (identity, structure, partnership...) rather than by raw
+# planet/point name.
+_WEEKLY_TARGET_GROUPS = {
+    "Sun": "identity",
+    "Moon": "mood",
+    "Mercury": "language",
+    "Venus": "values",
+    "Mars": "action",
+    "Jupiter": "growth",
+    "Saturn": "structure",
+    "Uranus": "disruption",
+    "Neptune": "longing",
+    "Pluto": "power",
+    "ASC": "presence",
+    "MC": "public_role",
+    "DSC": "partnership",
+    "IC": "home",
+    "Vertex": "threshold",
+}
+
+_WEEKLY_TODO_SENTINEL = "TODO"
+
+
+def _weekly_exact_aspect(aspect) -> str:
+    key = str(aspect or "").strip()
+    return key if key in _WEEKLY_EXACT_ASPECTS else "fallback"
+
+
+def _weekly_target_group(natal_target) -> str:
+    key = str(natal_target or "").strip()
+    return _WEEKLY_TARGET_GROUPS.get(key, "fallback")
+
+
+def _weekly_technical_label(moment: dict) -> str:
+    """The raw contact in plain technical language, e.g. 'Mars Square Saturn in the 5th house'."""
+    contact = _weekly_contact_phrase(moment)
+    house_raw = str(moment.get("natal_house") or "").strip()
+    if not house_raw:
+        return contact
+    if _weekly_contact_has_house_phrase(contact, house_raw):
+        return contact
+    try:
+        house_label = f"{_ordinal(int(house_raw))} house"
+    except (TypeError, ValueError):
+        house_label = f"{house_raw} house"
+    return f"{contact} in the {house_label}"
+
+
+def _weekly_technical_meta(moment: dict) -> str:
+    """Tertiary metadata line, e.g. 'House 5 · growth pressure · high-priority cue'."""
+    house = moment.get("natal_house") or "-"
+    band = _weekly_score_band(moment.get("score"))
+    tone = _weekly_meta_tone(moment)
+    return f"House {house} · {tone} · {band}"
+
+
+def _weekly_contact_has_house_phrase(contact: str, house_raw) -> bool:
+    text = str(contact or "").strip().lower()
+    if not text:
+        return False
+    return any(re.search(pattern, text) for pattern in _weekly_house_phrase_patterns(house_raw))
+
+
+def _weekly_house_phrase_patterns(house_raw) -> list[str]:
+    raw = str(house_raw or "").strip().lower()
+    if not raw:
+        return []
+    try:
+        house_num = int(raw)
+    except (TypeError, ValueError):
+        house_num = None
+
+    if house_num is not None:
+        ordinal_house = re.escape(f"{_ordinal(house_num).lower()} house")
+        return [
+            rf"\bin the {ordinal_house}\b",
+            rf"\b{ordinal_house}\b",
+            rf"\bhouse {house_num}\b",
+        ]
+
+    escaped = re.escape(raw)
+    return [
+        rf"\bin the {escaped} house\b",
+        rf"\b{escaped} house\b",
+        rf"\bhouse {escaped}\b",
+    ]
+
+
+def _weekly_meta_tone(moment: dict) -> str:
+    character = str(moment.get("aspect_character") or "neutral").strip().lower()
+    signal_band = _weekly_score_band(moment.get("score"))
+    if character == "flowing":
+        return "supportive opening" if signal_band != "background cue" else "timing cue"
+    if character == "challenging":
+        if signal_band == "lead signal":
+            return "growth pressure"
+        if signal_band in {"high-priority cue", "useful timing cue"}:
+            return "usable friction"
+    return "timing cue"
+
+
+def _weekly_polish_legacy_focus(legacy_focus: str, moment: dict) -> str:
+    text = str(legacy_focus or "").strip()
+    if not text:
+        return text
+
+    planet = str(moment.get("transit_planet") or "").strip().lower()
+    character = str(moment.get("aspect_character") or "neutral").strip().lower()
+    house_theme = _weekly_house_theme(moment.get("natal_house"))
+    exact_aspect = _weekly_exact_aspect(moment.get("aspect"))
+
+    if planet == "moon":
+        if character == "challenging":
+            variants = [
+                f"The Moon makes this a mood-and-body cue around {house_theme}; do not confuse intensity with final truth.",
+                f"The Moon brings the timing into body, mood, and immediate response around {house_theme}; let intensity be information, not verdict.",
+                f"The Moon turns this into a felt-time cue around {house_theme}; what spikes first may still need a second look.",
+                f"The Moon presses the timing closer to instinct around {house_theme}; name the reaction before you decide what it means.",
+                f"The Moon makes this more immediate around {house_theme}; stay close to what is actually happening instead of arguing with the first feeling.",
+            ]
+        elif character == "flowing":
+            variants = [
+                f"The Moon makes this a softer timing cue around {house_theme}, where response may matter more than effort.",
+                f"The Moon softens the timing around {house_theme}; what is easier to feel may also be easier to answer well.",
+                f"The Moon keeps this light but noticeable around {house_theme}, where rhythm may matter more than force.",
+                f"The Moon makes this more receptive around {house_theme}; sometimes the useful move is to notice what is already landing.",
+                f"The Moon brings a quieter ease to {house_theme}; let the response stay simple enough to follow.",
+            ]
+        else:
+            return text
+    elif planet == "sun":
+        if character == "challenging":
+            variants = [
+                f"Sun localizes the timing through {house_theme}. Let the awkward fit be visible enough to work with, especially where pretending it is simple would create more strain later.",
+                f"Sun puts the emphasis on {house_theme}. Let the mismatch show clearly enough to adjust before it hardens into a bigger problem.",
+                f"Sun brings the live question into view around {house_theme}; work with what the light reveals instead of forcing a cleaner story than the timing supports.",
+            ]
+        elif character == "flowing":
+            variants = [
+                f"Sun localizes the timing through {house_theme}. Let the opening be visible enough that the right person, choice, or next step can recognize you in return.",
+                f"Sun puts the emphasis on {house_theme}, where recognition, traction, or clarity may be easier to use if you keep the move concrete.",
+                f"Sun makes the live question easier to see in {house_theme}; let what is working become practical instead of leaving it at the level of promise.",
+            ]
+        else:
+            return text
+    else:
+        return text
+
+    variant_seed = "|".join(
+        [
+            exact_aspect,
+            house_theme,
+            str(moment.get("natal_target_display") or moment.get("natal_target") or ""),
+            str(moment.get("natal_house") or ""),
+            str(moment.get("time_label") or moment.get("peak_datetime") or ""),
+        ]
+    )
+    variant_index = sum(ord(char) for char in variant_seed) % len(variants)
+    return variants[variant_index]
+
+
+def _weekly_polish_guidance_line(guidance_line: str, moment: dict) -> str:
+    text = str(guidance_line or "").strip()
+    if not text:
+        return text
+
+    exact_aspect = _weekly_exact_aspect(moment.get("aspect"))
+    character = str(moment.get("aspect_character") or "neutral").strip().lower()
+    guidance_mode = _weekly_guidance_mode(str(moment.get("transit_planet") or ""), character)
+
+    variants_by_key = {
+        ("Quincunx", "pacing"): [
+            "Give the mismatch time to reveal its logic; moving too quickly may turn unfamiliarity into unnecessary resistance.",
+            "Let the mismatch show you its internal rules before you force an answer; rushing can turn strangeness into avoidable resistance.",
+            "Stay with the awkward fit long enough to understand it; speed may make the translation harder than it needs to be.",
+        ],
+        ("Sesquiquadrate", "pacing"): [
+            "Do not rush to compensate for the delay; catch up by moving accurately, not by overcorrecting.",
+            "Resist the urge to make up for lost time all at once; precision will help more than overcorrection.",
+            "Catch up by getting exact, not dramatic; the cleaner response is better than the faster one.",
+        ],
+    }
+
+    variants = variants_by_key.get((exact_aspect, guidance_mode))
+    if not variants or text not in variants:
+        return text
+
+    variant_seed = "|".join(
+        [
+            exact_aspect,
+            guidance_mode,
+            str(moment.get("natal_target_display") or moment.get("natal_target") or ""),
+            str(moment.get("natal_house") or ""),
+            str(moment.get("time_label") or moment.get("peak_datetime") or ""),
+        ]
+    )
+    variant_index = sum(ord(char) for char in variant_seed) % len(variants)
+    return variants[variant_index]
+
+
+def _weekly_guidance_duplicates_meaning(meaning_primary: str, guidance_line: str) -> bool:
+    meaning = str(meaning_primary or "").strip().lower()
+    guidance = str(guidance_line or "").strip().lower()
+    if not meaning or not guidance:
+        return False
+
+    normalize = lambda value: re.sub(r"[^a-z0-9]+", " ", value).strip()
+    meaning_norm = normalize(meaning)
+    guidance_norm = normalize(guidance)
+    if not meaning_norm or not guidance_norm:
+        return False
+    return guidance_norm in meaning_norm
+
+
+def _weekly_house_context(house) -> str:
+    """Secondary layer: house-level modifier, independent of the planet/aspect/target key path."""
+    key = str(house or "").strip()
+    return _weekly_block("house_contexts", key, fallback=_WEEKLY_TODO_SENTINEL)
+
+
+def _weekly_target_function(target_group: str) -> str:
+    """Group-level function descriptor for a natal_target_group key (identity, structure, ...)."""
+    return _weekly_block("target_functions", target_group, fallback=_WEEKLY_TODO_SENTINEL)
+
+
+def _weekly_aspect_prompt_exact(exact_aspect: str) -> str:
+    """Exact-aspect-grained movement clause, finer-grained sibling of _weekly_aspect_prompt."""
+    return _weekly_block("aspect_movements_exact", exact_aspect, fallback=_WEEKLY_TODO_SENTINEL)
+
+
+def _weekly_resolve_or_placeholder(text: str, legacy_text: str) -> tuple[str, bool]:
+    """
+    Treats a literal "TODO" leaf (unauthored block content) as not-yet-ready and
+    falls back to already-proven legacy prose, so production output never shows
+    a raw "TODO" to a reader while the new contact-level blocks are unauthored.
+
+    Returns (resolved_text, used_placeholder_fallback).
+    """
+    cleaned = (text or "").strip()
+    if not cleaned or cleaned == _WEEKLY_TODO_SENTINEL:
+        return legacy_text, True
+    return text, False
+
+
+def _weekly_selector_trace_entry(
+    block_file: str,
+    requested_key_path: list[str],
+    resolved_key_path: list[str],
+    fallback_used: bool,
+    placeholder_fallback_used: bool,
+    legacy_source: str,
+) -> dict:
+    resolved = [str(item) for item in resolved_key_path if str(item)] or ["unresolved"]
+    requested = [str(item) for item in requested_key_path if str(item)]
+    return {
+        "block_file": block_file,
+        "requested_key_path": requested,
+        "resolved_key_path": resolved,
+        "fallback_used": bool(fallback_used),
+        "fallback_depth": max(0, len(requested) - len([item for item in resolved if item != "fallback"])),
+        "placeholder_fallback_used": bool(placeholder_fallback_used),
+        "legacy_source": legacy_source if placeholder_fallback_used else "",
+    }
+
+
+def _weekly_contact_level_fields(moment: dict, ledger: dict | None = None) -> dict:
+    """
+    Contact-level selector wiring: transit_planet -> exact_aspect -> natal_target_group,
+    with house context, target function, and exact-aspect movement made available as
+    secondary interpolation values rather than additional key-path legs.
+
+    Exposes the separated rendered fields the template needs for the
+    primary/secondary/tertiary card hierarchy: meaning_primary, technical_label,
+    technical_meta, guidance_line, selector_trace. Until contact_meanings.json and
+    contact_guidance.json are authored (currently "TODO" skeletons), meaning_primary
+    and guidance_line transparently fall back to the existing moment_focus /
+    moment_guidance blocks so current output is unaffected.
+    """
+    from selectors.block_selector import select_block_traced
+
+    planet = str(moment.get("transit_planet") or "").strip()
+    exact_aspect = _weekly_exact_aspect(moment.get("aspect"))
+    target_group = _weekly_target_group(moment.get("natal_target"))
+    character = str(moment.get("aspect_character") or "neutral").strip().lower()
+    house_theme = _weekly_house_theme(moment.get("natal_house"))
+    guidance_mode = _weekly_guidance_mode(planet, character)
+
+    values = {
+        "planet": planet,
+        "exact_aspect": exact_aspect,
+        "target_group": target_group,
+        "house_theme": house_theme,
+        "house_context": _weekly_house_context(moment.get("natal_house")),
+        "target_function": _weekly_target_function(target_group),
+        "aspect_movement_exact": _weekly_aspect_prompt_exact(exact_aspect),
+        "contact_phrase": _weekly_contact_phrase(moment),
+        "guidance_mode": guidance_mode,
+        "signal_band": _weekly_score_band(moment.get("score")),
+    }
+
+    legacy_focus = str(moment.get("localized_focus") or "")
+    legacy_guidance = str(moment.get("reader_guidance") or "")
+
+    meaning_requested_path = [planet, exact_aspect, target_group]
+    meaning_raw, meaning_path, meaning_fallback_used = select_block_traced(
+        "weekly_horoscope", "contact_meanings", planet, exact_aspect, target_group,
+        fallback=_WEEKLY_TODO_SENTINEL,
+    )
+    meaning_primary, meaning_is_placeholder = _weekly_resolve_or_placeholder(
+        _format_block_text(meaning_raw, values), legacy_focus
+    )
+    if meaning_is_placeholder:
+        meaning_primary = _weekly_polish_legacy_focus(meaning_primary, moment)
+
+    guidance_requested_path = [exact_aspect, guidance_mode]
+    guidance_raw, guidance_path, guidance_fallback_used = select_block_traced(
+        "weekly_horoscope", "contact_guidance", exact_aspect, guidance_mode,
+        fallback=_WEEKLY_TODO_SENTINEL,
+    )
+    guidance_line, guidance_is_placeholder = _weekly_resolve_or_placeholder(
+        _format_block_text(guidance_raw, values), legacy_guidance
+    )
+    guidance_line = _weekly_polish_guidance_line(guidance_line, moment)
+    if _weekly_guidance_duplicates_meaning(meaning_primary, guidance_line):
+        guidance_line = ""
+
+    if ledger is not None and not meaning_is_placeholder:
+        _record_weekly_block(ledger, "contact_meanings", meaning_path)
+    if ledger is not None and not guidance_is_placeholder:
+        _record_weekly_block(ledger, "contact_guidance", guidance_path)
+
+    selector_trace = {
+        "inputs": {
+            "transit_planet": planet,
+            "exact_aspect": exact_aspect,
+            "aspect_character": character,
+            "natal_target": str(moment.get("natal_target") or "").strip(),
+            "natal_target_group": target_group,
+            "natal_house": str(moment.get("natal_house") or "").strip(),
+            "guidance_mode": guidance_mode,
+        },
+        "contact_meanings": _weekly_selector_trace_entry(
+            "contact_meanings",
+            meaning_requested_path,
+            meaning_path,
+            meaning_fallback_used,
+            meaning_is_placeholder,
+            "moment_focus",
+        ),
+        "contact_guidance": _weekly_selector_trace_entry(
+            "contact_guidance",
+            guidance_requested_path,
+            guidance_path,
+            guidance_fallback_used,
+            guidance_is_placeholder,
+            "moment_guidance",
+        ),
+    }
+    if ledger is not None:
+        ledger.setdefault("contact_selector_traces", []).append(selector_trace)
+
+    return {
+        "exact_aspect": exact_aspect,
+        "natal_target_group": target_group,
+        "meaning_primary": meaning_primary,
+        "technical_label": _weekly_technical_label(moment),
+        "technical_meta": _weekly_technical_meta(moment),
+        "guidance_line": guidance_line,
+        "selector_trace": selector_trace,
+    }
+
+
+def _new_weekly_prose_ledger() -> dict:
+    return {
+        "block_counts": {},
+        "selected_block_paths": [],
+        "reused_block_paths": [],
+        "contact_selector_traces": [],
+        "total_selections": 0,
+    }
+
+
+def _record_weekly_block(ledger: dict | None, block_file: str, resolved_key_path: list[str]) -> None:
+    if ledger is None:
+        return
+    key_path = "/".join(str(item) for item in resolved_key_path if str(item))
+    block_path = f"{block_file}/{key_path or 'unresolved'}"
+    ledger["total_selections"] = int(ledger.get("total_selections") or 0) + 1
+    counts = ledger.setdefault("block_counts", {})
+    counts[block_path] = int(counts.get(block_path) or 0) + 1
+    if counts[block_path] == 1:
+        ledger.setdefault("selected_block_paths", []).append(block_path)
+    elif block_path not in ledger.setdefault("reused_block_paths", []):
+        ledger["reused_block_paths"].append(block_path)
+
+
+def _weekly_block(
+    block_file: str,
+    *keys: str,
+    values: dict | None = None,
+    fallback: str = "",
+    ledger: dict | None = None,
+    track: bool = False,
+) -> str:
+    from selectors.block_selector import select_block, select_block_traced
+
+    if track or ledger is not None:
+        text, resolved_key_path, _fallback_used = select_block_traced(
+            "weekly_horoscope", block_file, *keys, fallback=fallback
+        )
+        if track:
+            _record_weekly_block(ledger, block_file, resolved_key_path)
+        return _format_block_text(text, values)
+
+    return _format_block_text(
+        select_block("weekly_horoscope", block_file, *keys, fallback=fallback),
+        values,
+    )
+
+
+def _weekly_variant_block(
+    block_file: str,
+    *keys: str,
+    variants: tuple[str, ...] = ("v1", "v2", "v3", "v4", "v5", "v6"),
+    values: dict | None = None,
+    fallback: str = "",
+    ledger: dict | None = None,
+) -> str:
+    from selectors.block_selector import select_block_traced
+
+    counts = (ledger or {}).get("block_counts", {})
+    fallback_choice = None
+    for variant in variants:
+        text, resolved_key_path, fallback_used = select_block_traced(
+            "weekly_horoscope", block_file, *keys, variant, fallback=""
+        )
+        if not text or text.startswith("[BLOCK NOT FOUND") or text.startswith("[MISSING BLOCK"):
+            continue
+        block_path = f"{block_file}/{'/'.join(str(item) for item in resolved_key_path if str(item))}"
+        if fallback_choice is None:
+            fallback_choice = (text, resolved_key_path, fallback_used)
+        if counts.get(block_path, 0) == 0:
+            _record_weekly_block(ledger, block_file, resolved_key_path)
+            return _format_block_text(text, values)
+
+    if fallback_choice is not None:
+        text, resolved_key_path, _fallback_used = fallback_choice
+        _record_weekly_block(ledger, block_file, resolved_key_path)
+        return _format_block_text(text, values)
+
+    return _weekly_block(
+        block_file,
+        *keys,
+        values=values,
+        fallback=fallback,
+        ledger=ledger,
+        track=True,
+    )
+
+
+def _weekly_house_theme(house) -> str:
+    key = str(house or "").strip()
+    return _weekly_block("house_domains", key, fallback=_WEEKLY_FALLBACK_HOUSE_THEME)
+
+
+def _weekly_planet_prompt(planet: str) -> str:
+    return _weekly_block(
+        "planet_motifs",
+        str(planet or "").strip(),
+        fallback=_WEEKLY_FALLBACK_PLANET_PROMPT,
+    )
+
+
+def _weekly_aspect_prompt(character: str) -> str:
+    key = str(character or "").strip().lower()
+    return _weekly_block("aspect_movements", key, fallback=_WEEKLY_FALLBACK_ASPECT_PROMPT)
+
+
+def _weekly_guidance_mode(planet: str, character: str) -> str:
+    planet_key = str(planet or "").strip()
+    character_key = str(character or "").strip().lower()
+    if planet_key in {"Mercury", "Mars"}:
+        return "conversation" if character_key == "challenging" else "action"
+    if planet_key in {"Venus", "Jupiter"}:
+        return "receiving" if character_key == "flowing" else "discernment"
+    if planet_key == "Saturn":
+        return "structure"
+    if planet_key in {"Uranus", "Pluto"}:
+        return "adjustment"
+    if planet_key == "Neptune":
+        return "discernment"
+    if planet_key == "Moon":
+        return "pacing"
+    return "visibility"
+
+
+def _weekly_planet_label(planet: str) -> str:
+    planet_key = str(planet or "").strip()
+    if planet_key in {"Sun", "Moon"}:
+        return f"the {planet_key}"
+    return planet_key or "the main transit"
+
+
+def _weekly_planet_subject(planet: str) -> str:
+    label = _weekly_planet_label(planet)
+    return label[:1].upper() + label[1:] if label else "The main transit"
+
+
+def _weekly_contact_phrase(moment: dict) -> str:
+    planet = str(moment.get("transit_planet") or "A transit").strip()
+    aspect = str(moment.get("aspect") or "contacts").strip()
+    target = str(moment.get("natal_target_display") or moment.get("natal_target") or "your chart").strip()
+    return f"{planet} {aspect.lower()} {target}"
+
+
+def _weekly_score_band(score) -> str:
+    value = _safe_float(score)
+    if value >= 0.82:
+        return "lead signal"
+    if value >= 0.64:
+        return "high-priority cue"
+    if value >= 0.45:
+        return "useful timing cue"
+    return "background cue"
+
+
+def _weekly_peak_datetime(moment: dict) -> datetime | None:
+    peak_dt = moment.get("peak_datetime")
+    if isinstance(peak_dt, datetime):
+        return peak_dt
+    if isinstance(peak_dt, str) and peak_dt.strip():
+        try:
+            return datetime.fromisoformat(peak_dt.replace("Z", "+00:00"))
+        except ValueError:
+            return None
+    return None
+
+
+def _weekly_day_key(moment: dict) -> str:
+    peak_dt = _weekly_peak_datetime(moment)
+    return peak_dt.date().isoformat() if peak_dt else "undated"
+
+
+def _weekly_contact_signature(moment: dict) -> tuple[str, str, str]:
+    return (
+        str(moment.get("transit_planet") or "").strip(),
+        str(moment.get("aspect") or "").strip(),
+        str(moment.get("natal_target") or moment.get("natal_target_display") or "").strip(),
+    )
+
+
+def _weekly_candidate_sort_key(moment: dict) -> tuple[float, datetime]:
+    peak_dt = _weekly_peak_datetime(moment) or datetime.max.replace(tzinfo=timezone.utc)
+    return (-_safe_float(moment.get("score")), peak_dt)
+
+
+def _weekly_day_character(moments: list[dict]) -> str:
+    if not moments:
+        return "quiet"
+    characters = [str(moment.get("aspect_character") or "neutral").strip().lower() for moment in moments]
+    if characters.count("challenging") > characters.count("flowing"):
+        return "challenging"
+    if characters.count("flowing") > 0:
+        return "flowing"
+    return "neutral"
+
+
+def _weekly_day_focus_values(day: dict) -> dict:
+    moments = day.get("moments") or []
+    strongest = max(moments, key=lambda item: _safe_float(item.get("score")), default={})
+    character = _weekly_day_character(moments)
+    planet = str(strongest.get("transit_planet") or "the day").strip()
+    house_theme = _weekly_house_theme(strongest.get("natal_house")) if strongest else "the quieter background of the week"
+    return {
+        "day_label": day.get("short_day_label") or day.get("day_label") or "This day",
+        "contact_count": str(len(moments)),
+        "contact_label": "contacts" if len(moments) != 1 else "contact",
+        "day_character": character,
+        "strongest_planet": planet,
+        "strongest_planet_label": _weekly_planet_label(planet),
+        "strongest_planet_subject": _weekly_planet_subject(planet),
+        "strongest_house": house_theme,
+    }
+
+
+def _select_weekly_moments_for_day(
+    day_moments: list[dict],
+    global_signatures: set[tuple[str, str, str]],
+    max_per_day: int = _WEEKLY_MAX_CONTACTS_PER_DAY,
+) -> list[dict]:
+    candidates = sorted(day_moments, key=_weekly_candidate_sort_key)
+    selected = []
+    selected_ids = set()
+    day_signatures = set()
+    day_planets = set()
+
+    def try_add(moment: dict, require_new_global_signature: bool, require_new_planet: bool) -> None:
+        if len(selected) >= max_per_day:
+            return
+        moment_id = id(moment)
+        if moment_id in selected_ids:
+            return
+        signature = _weekly_contact_signature(moment)
+        planet = str(moment.get("transit_planet") or "").strip()
+        if signature in day_signatures:
+            return
+        if require_new_global_signature and signature in global_signatures:
+            return
+        if require_new_planet and planet in day_planets:
+            return
+        selected.append(moment)
+        selected_ids.add(moment_id)
+        day_signatures.add(signature)
+        day_planets.add(planet)
+
+    for require_new_global_signature, require_new_planet in (
+        (True, True),
+        (True, False),
+        (False, True),
+        (False, False),
+    ):
+        for moment in candidates:
+            try_add(moment, require_new_global_signature, require_new_planet)
+        if len(selected) >= max_per_day:
+            break
+
+    global_signatures.update(_weekly_contact_signature(moment) for moment in selected)
+    return selected
+
+
+def _select_weekly_moments_by_day(
+    raw_moments: list[dict],
+    max_per_day: int = _WEEKLY_MAX_CONTACTS_PER_DAY,
+) -> list[dict]:
+    grouped: dict[str, list[dict]] = {}
+    for moment in raw_moments:
+        grouped.setdefault(_weekly_day_key(moment), []).append(moment)
+
+    selected = []
+    global_signatures: set[tuple[str, str, str]] = set()
+    for day_key in sorted(grouped):
+        selected.extend(
+            _select_weekly_moments_for_day(grouped[day_key], global_signatures, max_per_day)
+        )
+
+    return sorted(
+        selected,
+        key=lambda moment: _weekly_peak_datetime(moment) or datetime.max.replace(tzinfo=timezone.utc),
+    )
+
+
+def _build_weekly_day_groups(
+    weekly_timeline: list[dict],
+    report_start: datetime,
+    report_end: datetime,
+    ledger: dict | None = None,
+) -> list[dict]:
+    by_day: dict[str, list[dict]] = {}
+    for moment in weekly_timeline:
+        peak_dt = _weekly_peak_datetime(moment)
+        if not peak_dt:
+            continue
+        by_day.setdefault(peak_dt.date().isoformat(), []).append(moment)
+
+    days = []
+    current = report_start
+    while current < report_end:
+        day_key = current.date().isoformat()
+        moments = by_day.get(day_key, [])
+        day = {
+            "date_key": day_key,
+            "day_label": current.strftime("%A, %B %d"),
+            "short_day_label": current.strftime("%A"),
+            "moments": moments,
+            "selected_count": len(moments),
+        }
+        character = _weekly_day_character(moments)
+        values = _weekly_day_focus_values(day)
+        day["movement_key"] = character
+        day["movement_label"] = _weekly_variant_block(
+            "day_movement",
+            character,
+            "label",
+            values=values,
+            fallback="{day_label}",
+            ledger=ledger,
+        )
+        day["guidance"] = _weekly_variant_block(
+            "day_guidance",
+            character,
+            values=values,
+            fallback="Let this day stay simple: notice what repeats, respond to what is actually present, and avoid making the whole week depend on one signal.",
+            ledger=ledger,
+        )
+        days.append(day)
+        current += timedelta(days=1)
+    return days
+
+
+def _weekly_moment_localization(moment: dict, ledger: dict | None = None) -> dict:
+    planet = str(moment.get("transit_planet") or "This contact").strip()
+    house_theme = _weekly_house_theme(moment.get("natal_house"))
+    character = str(moment.get("aspect_character") or "neutral").strip().lower()
+    values = {
+        "planet": planet,
+        "house_theme": house_theme,
+        "contact_phrase": _weekly_contact_phrase(moment),
+        "guidance_mode": _weekly_guidance_mode(planet, character),
+        "signal_band": _weekly_score_band(moment.get("score")),
+    }
+
+    return {
+        "signal_band": _weekly_score_band(moment.get("score")),
+        "localized_focus": _weekly_block(
+            "moment_focus",
+            planet,
+            character,
+            values=values,
+            fallback="{planet} localizes the timing through {house_theme}.",
+            ledger=ledger,
+            track=True,
+        ),
+        "reader_guidance": _weekly_variant_block(
+            "moment_guidance",
+            character,
+            values["guidance_mode"],
+            values=values,
+            fallback="Use this moment to notice the pattern before deciding whether it needs action.",
+            ledger=ledger,
+        ),
+    }
+
+
+def _build_weekly_subscriber_narrative(
+    weekly_timeline: list[dict],
+    simple_mode: bool,
+    ledger: dict | None = None,
+) -> dict:
+    """
+    Turns selected exact contacts into a subscriber-email narrative layer.
+
+    The copy is deliberately synthesized from already-selected timing evidence:
+    it adds editorial density without creating new astrological claims.
+    """
+    if not weekly_timeline:
+        empty_values = {
+            "mode_note": (
+                "The reading also keeps angle-dependent targets out of the story."
+                if simple_mode
+                else "An exact birth time is available, but the retained window still stays quiet."
+            )
+        }
+        return {
+            "weekly_theme_headline": _weekly_block(
+                "empty_week",
+                "headline",
+                values=empty_values,
+                fallback="A Quieter Week for Pattern Recognition",
+                ledger=ledger,
+                track=True,
+            ),
+            "weekly_theme_overview": _weekly_block(
+                "empty_week",
+                "overview",
+                values=empty_values,
+                fallback=(
+                    "This week does not surface a dense cluster of standout exact contacts in the retained scan. "
+                    "Use the quieter texture as useful information: fewer peaks can make ordinary choices, body cues, "
+                    "and unfinished conversations easier to hear."
+                ),
+                ledger=ledger,
+                track=True,
+            ),
+            "weekly_work_with": _weekly_block(
+                "empty_week",
+                "work_with",
+                values=empty_values,
+                fallback=(
+                    "Keep the week simple. Choose one practical rhythm to protect, one conversation to clarify, "
+                    "and one source of background pressure to stop feeding with extra urgency."
+                ),
+                ledger=ledger,
+                track=True,
+            ),
+            "weekly_watch_for": [
+                _weekly_block("empty_week", "watch_for", "first", values=empty_values, ledger=ledger, track=True),
+                _weekly_block("empty_week", "watch_for", "second", values=empty_values, ledger=ledger, track=True),
+                _weekly_block("empty_week", "watch_for", "third", values=empty_values, ledger=ledger, track=True),
+            ],
+            "weekly_narrative_basis": "No selected exact contacts were retained for the displayed window.",
+        }
+
+    strongest = max(weekly_timeline, key=lambda item: float(item.get("score") or 0))
+    first = weekly_timeline[0]
+    strongest_planet = str(strongest.get("transit_planet") or "the week's main transit").strip()
+    strongest_house = _weekly_house_theme(strongest.get("natal_house"))
+    first_day = first.get("day_label") or "early in the week"
+    strongest_day = strongest.get("day_label") or "the strongest contact"
+    character = str(strongest.get("aspect_character") or "neutral").strip().lower()
+    planet_prompt = _weekly_planet_prompt(strongest_planet)
+    aspect_prompt = _weekly_aspect_prompt(character)
+    contact_phrase = _weekly_contact_phrase(strongest)
+
+    count = len(weekly_timeline)
+    mode_note = (
+        " Because this is simple mode, the reading keeps angle-dependent targets out of the story."
+        if simple_mode
+        else " Because an exact birth time is available, angle-dependent targets may be part of the selected evidence."
+    )
+    guidance_mode = _weekly_guidance_mode(strongest_planet, character)
+    values = {
+        "aspect_prompt": aspect_prompt,
+        "contact_phrase": contact_phrase,
+        "count": str(count),
+        "first_contact_phrase": _weekly_contact_phrase(first),
+        "first_day": first_day,
+        "mode_note": mode_note,
+        "moment_label": "moments" if count != 1 else "moment",
+        "planet_prompt": planet_prompt,
+        "strongest_day": strongest_day,
+        "strongest_house": strongest_house,
+        "strongest_planet": strongest_planet,
+        "strongest_planet_label": _weekly_planet_label(strongest_planet),
+        "strongest_planet_subject": _weekly_planet_subject(strongest_planet),
+    }
+
+    return {
+        "weekly_theme_headline": _weekly_block(
+            "theme_headline",
+            character,
+            strongest_planet,
+            values=values,
+            fallback="Track the Signal Around {strongest_planet}",
+            ledger=ledger,
+            track=True,
+        ),
+        "weekly_theme_overview": _weekly_block(
+            "theme_overview",
+            character,
+            guidance_mode,
+            values=values,
+            fallback=(
+                "The week opens with {first_contact_phrase} on {first_day}, then concentrates around "
+                "{contact_phrase} on {strongest_day}. The main emphasis is {strongest_house}. "
+                "{strongest_planet} brings {planet_prompt}. {aspect_prompt}{mode_note}"
+            ),
+            ledger=ledger,
+            track=True,
+        ),
+        "weekly_work_with": _weekly_block(
+            "work_with",
+            character,
+            guidance_mode,
+            values=values,
+            fallback=(
+                "Let the strongest contact identify the working edge, then use the surrounding {count} selected "
+                "{moment_label} as pacing cues."
+            ),
+            ledger=ledger,
+            track=True,
+        ),
+        "weekly_watch_for": [
+            _weekly_block("watch_for", character, "domain", values=values, ledger=ledger, track=True),
+            _weekly_block("watch_for", character, "timing_pattern", values=values, ledger=ledger, track=True),
+            _weekly_block("watch_for", character, "next_move", values=values, ledger=ledger, track=True),
+        ],
+        "weekly_narrative_basis": (
+            f"Subscriber narrative synthesized from block-backed weekly prose and {count} selected exact contact"
+            f"{'s' if count != 1 else ''}; strongest retained contact: {contact_phrase}."
+        ),
+    }
 
 
 def _build_weekly_horoscope_context(
@@ -1579,34 +2534,37 @@ def _build_weekly_horoscope_context(
     instead of a single day — the function is date-range-agnostic, so no
     engine changes were needed to generalize it to a week.
 
-    Content blocks are intentionally not wired here yet (out of scope for
-    this pass). This only assembles the computed timeline moments and the
-    simple/exact-birth-time gating so a template and block library can be
-    built on top of a working data layer.
+    The selected timing evidence feeds a block-backed subscriber narrative.
+    The block library adds prose variation and practical framing without
+    creating new astrological claims beyond the retained exact contacts.
     """
     from engine.transit_engine import compute_daily_timeline
     from config import PALETTES as _PALETTES
 
     v = variables
-    report_start = report_start or _align_to_week_start(datetime.now(timezone.utc))
-    report_end = report_end or (report_start + timedelta(days=5))
+    report_start = report_start or _align_to_day_start(datetime.now(timezone.utc))
+    report_end = report_end or (report_start + timedelta(days=7))
     simple_mode = bool(payload.get("simple_mode") or v.get("simple_mode"))
+    birth_meta = _build_birth_metadata(payload)
+    methodology = _build_methodology_metadata(payload, v)
 
     _log_verbose("[Timeline] Scanning 7-day window for weekly moments...")
     raw_moments = compute_daily_timeline(
         payload,
         day_start=report_start,
         day_end=report_end,
-        count=10,
+        count=_WEEKLY_CANDIDATE_COUNT,
         include_angles=not simple_mode,
     )
     raw_moments = sorted(
         raw_moments,
         key=lambda moment: moment.get("peak_datetime") or datetime.max.replace(tzinfo=timezone.utc),
     )
+    selected_moments = _select_weekly_moments_by_day(raw_moments, _WEEKLY_MAX_CONTACTS_PER_DAY)
+    weekly_prose_ledger = _new_weekly_prose_ledger()
 
     weekly_timeline = []
-    for moment in raw_moments:
+    for moment in selected_moments:
         peak_dt = moment.get("peak_datetime")
         time_label = peak_dt.strftime("%I:%M %p UTC").lstrip("0") if peak_dt else ""
         weekly_timeline.append({
@@ -1621,19 +2579,56 @@ def _build_weekly_horoscope_context(
             "natal_house": moment.get("natal_house", ""),
             "score": moment.get("score", 0),
         })
+        weekly_timeline[-1].update(_weekly_moment_localization(weekly_timeline[-1], weekly_prose_ledger))
+        weekly_timeline[-1].update(_weekly_contact_level_fields(weekly_timeline[-1], weekly_prose_ledger))
 
     _palette_name = v.get("palette", "vibrant")
+    weekly_days = _build_weekly_day_groups(
+        weekly_timeline,
+        report_start,
+        report_end,
+        weekly_prose_ledger,
+    )
+    subscriber_narrative = _build_weekly_subscriber_narrative(
+        weekly_timeline,
+        simple_mode,
+        weekly_prose_ledger,
+    )
 
     return {
         "simple_mode": simple_mode,
         "week_start_display": report_start.strftime("%B %d, %Y"),
-        # report_end is the exclusive window boundary (Saturday 00:00 UTC for a
-        # Mon-Fri window) — display the actual last covered day, Friday.
         "week_end_display": (report_end - timedelta(days=1)).strftime("%B %d, %Y"),
+        "weekly_days": weekly_days,
         "weekly_timeline": weekly_timeline,
         "weekly_timeline_count": len(weekly_timeline),
-        "weekly_timeline_mode": "chronological_selected_exact_contacts",
-        "weekly_scope_note": "Selected exact contacts, shown in chronological order.",
+        "weekly_raw_candidate_count": len(raw_moments),
+        "weekly_day_contact_cap": _WEEKLY_MAX_CONTACTS_PER_DAY,
+        "weekly_timeline_mode": "daily_balanced_chronological_selected_exact_contacts",
+        "weekly_scope_note": "Selected exact contacts, capped at two per day and shown in chronological order.",
+        "weekly_prose_ledger": weekly_prose_ledger,
+        "weekly_reused_block_paths": sorted(weekly_prose_ledger.get("reused_block_paths", [])),
+        "weekly_complexity_capacity": [
+            "Weekly moments are computed from chart-specific exact contacts over seven full calendar days starting on the report date.",
+            "The weekly layer scans a larger candidate pool, then caps the client-facing display at two contacts per day.",
+            "The scan can include Moon timing and rare same-window slow-planet peaks.",
+            (
+                "Angle-dependent targets are excluded because this chart is in simple mode."
+                if simple_mode
+                else "Angle-dependent targets are included because an exact birth time is available."
+            ),
+        ],
+        "weekly_simplified_output_contract": (
+            "The client surface converts selected exact contacts into a subscriber-friendly weekly narrative, practical guidance, and a compact timing list."
+        ),
+        "birth_date_display": birth_meta["birth_date_display"],
+        "birth_time_display": birth_meta["birth_time_display"],
+        "birth_location": birth_meta["birth_location"],
+        "birth_time_status": birth_meta["birth_time_status"],
+        "birth_time_confidence": birth_meta["birth_time_confidence"],
+        "birth_time_state": birth_meta["birth_time_state"],
+        **methodology,
+        **subscriber_narrative,
         "palette_name": _palette_name,
         "palette": _PALETTES.get(_palette_name, _PALETTES["vibrant"]),
     }
@@ -1767,6 +2762,405 @@ def _build_soul_ecosystem_depth_payload(
     }
 
 
+def _soul_support_slug(value: str) -> str:
+    parts = []
+    previous_sep = False
+    for char in str(value or "").strip().lower():
+        if char.isalnum():
+            parts.append(char)
+            previous_sep = False
+        elif not previous_sep:
+            parts.append("_")
+            previous_sep = True
+    return "".join(parts).strip("_") or "fallback"
+
+
+def _soul_body_house_key(variables: dict, body_name: str) -> str:
+    variable_key = _soul_support_slug(body_name)
+    house_value = variables.get(f"{variable_key}_house")
+    return str(house_value or "fallback")
+
+
+def _top_planet_connection(connections: list[dict], classifications: tuple[str, ...]) -> dict:
+    if not isinstance(connections, list):
+        return {}
+    ranked = [
+        item for item in connections
+        if isinstance(item, dict)
+        and item.get("classification") in classifications
+        and item.get("connection_type") == "planet_planet"
+        and item.get("body_1")
+        and item.get("body_2")
+        and item.get("aspect")
+    ]
+    if not ranked:
+        return {}
+    ranked.sort(
+        key=lambda item: (
+            -_safe_float(item.get("structural_importance"), 0.0),
+            _safe_float(item.get("orb"), 99.0),
+            str(item.get("body_1") or ""),
+            str(item.get("body_2") or ""),
+        )
+    )
+    return ranked[0]
+
+
+def _build_soul_ecosystem_standard_support(
+    variables: dict,
+    selector,
+) -> dict:
+    support_cards = {
+        "core": [],
+        "hidden": [],
+        "growth": [],
+        "inherited": [],
+        "world": [],
+        "interface": [],
+        "integration": [],
+    }
+
+    standard_bundle = _safe_mapping(variables.get("standard_result_bundle"))
+    if not standard_bundle:
+        return support_cards
+
+    orientation = _safe_mapping(
+        _safe_mapping(standard_bundle.get("chart_orientation")).get("traceable_source_data")
+    )
+    chart_ruler = _safe_mapping(
+        _safe_mapping(standard_bundle.get("chart_ruler")).get("traceable_source_data")
+    )
+    houses = _safe_mapping(
+        _safe_mapping(standard_bundle.get("house_emphasis")).get("traceable_source_data")
+    )
+    aspects = _safe_mapping(
+        _safe_mapping(standard_bundle.get("aspect_architecture")).get("traceable_source_data")
+    )
+    convergence = _safe_mapping(
+        _safe_mapping(standard_bundle.get("natal_convergence")).get("traceable_source_data")
+    )
+
+    def add_card(
+        section_key: str,
+        slot_key: str,
+        type_label: str,
+        name: str,
+        block_file: str,
+        key_path: tuple[str, ...],
+        inputs: dict,
+        meta: str = "",
+    ) -> None:
+        block = selector(
+            f"{section_key}_support_{slot_key}_block",
+            block_file,
+            *key_path,
+            inputs=inputs,
+        )
+        if not block:
+            return
+        support_cards[section_key].append(
+            {
+                "type": type_label,
+                "name": name,
+                "meta": meta,
+                "body": block,
+                "block_file": block_file,
+                "key_path": list(key_path),
+            }
+        )
+
+    dominance = _safe_mapping(orientation.get("core_standard_distribution")).get("dominance_assessment") or {}
+    dominant_element = _safe_mapping(_safe_mapping(dominance).get("elements")).get("dominant_key") or ""
+    dominant_modality = _safe_mapping(_safe_mapping(dominance).get("modalities")).get("dominant_key") or ""
+    sun_moon_relationship = str(variables.get("sun_moon_relationship") or "fallback")
+    if dominant_element and dominant_modality:
+        add_card(
+            "core",
+            "orientation",
+            "Orientation Layer",
+            f"{dominant_element.title()} / {dominant_modality} / {sun_moon_relationship}",
+            "core_pattern_foundation",
+            ("orientation", dominant_element, dominant_modality, sun_moon_relationship),
+            {
+                "dominant_element": dominant_element,
+                "dominant_modality": dominant_modality,
+                "sun_moon_relationship": sun_moon_relationship,
+            },
+            meta=f"Selected leaf: {dominant_element} / {dominant_modality} / {sun_moon_relationship}",
+        )
+
+    chart_ruler_body = str(chart_ruler.get("primary_ruler") or variables.get("chart_ruler_body") or "")
+    chart_ruler_condition = (
+        str(
+            _safe_mapping(chart_ruler.get("condition_record"))
+            .get("dignity", {})
+            .get("classification")
+            or variables.get("chart_ruler_condition_label")
+            or "fallback"
+        )
+        .replace(" ", "_")
+        .lower()
+    )
+    if chart_ruler_body:
+        chart_ruler_house = _soul_body_house_key(variables, chart_ruler_body)
+        add_card(
+            "core",
+            "chart_ruler",
+            "Chart Ruler Support",
+            f"{chart_ruler_body} in house {chart_ruler_house}",
+            "core_pattern_foundation",
+            ("chart_ruler", chart_ruler_body, chart_ruler_house, chart_ruler_condition or "fallback"),
+            {
+                "chart_ruler_body": chart_ruler_body,
+                "chart_ruler_house": chart_ruler_house,
+                "chart_ruler_condition": chart_ruler_condition,
+                "chart_ruler_prominence_tier": variables.get("chart_ruler_prominence_tier", ""),
+            },
+            meta=f"Selected leaf: {chart_ruler_body} / house {chart_ruler_house} / {chart_ruler_condition or 'fallback'}",
+        )
+
+    support_axis = _top_planet_connection(aspects.get("connections") or [], ("supportive", "neutral"))
+    if support_axis:
+        body_1 = str(support_axis.get("body_1") or "")
+        aspect_name = str(support_axis.get("aspect") or "")
+        body_2 = str(support_axis.get("body_2") or "")
+        add_card(
+            "core",
+            "support_axis",
+            "Support Axis",
+            f"{body_1} {aspect_name.lower()} {body_2}",
+            "core_pattern_foundation",
+            ("support_axis", body_1, aspect_name, body_2),
+            {
+                "body_1": body_1,
+                "aspect": aspect_name,
+                "body_2": body_2,
+                "classification": support_axis.get("classification"),
+            },
+            meta=f"Selected leaf: {body_1} / {aspect_name} / {body_2}",
+        )
+
+    inner_life_record = _safe_mapping(convergence.get("inner-life / restoration structure"))
+    inner_life_score = _safe_float(inner_life_record.get("normalized_relevance_score"), 0.0)
+    if inner_life_score > 0:
+        theme_slug = _soul_support_slug(inner_life_record.get("label") or "inner_life_restoration_structure")
+        add_card(
+            "hidden",
+            "restoration_axis",
+            "Restoration Axis",
+            "Inner-life / restoration structure",
+            "hidden_resources_foundation",
+            ("restoration_axis", theme_slug),
+            {
+                "theme_label": inner_life_record.get("label"),
+                "normalized_relevance_score": inner_life_score,
+            },
+            meta=f"Selected leaf: {theme_slug}",
+        )
+
+    saturn_sign = str(variables.get("saturn_sign") or "fallback")
+    saturn_house = str(variables.get("saturn_house") or "fallback")
+    if saturn_sign and saturn_house != "fallback":
+        add_card(
+            "growth",
+            "saturn_structure",
+            "Saturn Structure",
+            f"{saturn_sign} / house {saturn_house}",
+            "growth_pattern_foundation",
+            ("saturn_structure", saturn_sign, saturn_house),
+            {
+                "saturn_sign": saturn_sign,
+                "saturn_house": saturn_house,
+            },
+            meta=f"Selected leaf: {saturn_sign} / house {saturn_house}",
+        )
+
+    chiron_sign = str(variables.get("chiron_sign") or "fallback")
+    chiron_house = str(variables.get("chiron_house") or "fallback")
+    if chiron_sign and chiron_house != "fallback":
+        add_card(
+            "growth",
+            "chiron_repair",
+            "Chiron Repair Pattern",
+            f"{chiron_sign} / house {chiron_house}",
+            "growth_pattern_foundation",
+            ("chiron_repair", chiron_sign, chiron_house),
+            {
+                "chiron_sign": chiron_sign,
+                "chiron_house": chiron_house,
+            },
+            meta=f"Selected leaf: {chiron_sign} / house {chiron_house}",
+        )
+
+    pressure_axis = _top_planet_connection(aspects.get("connections") or [], ("tensional",))
+    if pressure_axis:
+        body_1 = str(pressure_axis.get("body_1") or "")
+        aspect_name = str(pressure_axis.get("aspect") or "")
+        body_2 = str(pressure_axis.get("body_2") or "")
+        add_card(
+            "growth",
+            "pressure_axis",
+            "Pressure Axis",
+            f"{body_1} {aspect_name.lower()} {body_2}",
+            "growth_pattern_foundation",
+            ("pressure_axis", body_1, aspect_name, body_2),
+            {
+                "body_1": body_1,
+                "aspect": aspect_name,
+                "body_2": body_2,
+                "classification": pressure_axis.get("classification"),
+            },
+            meta=f"Selected leaf: {body_1} / {aspect_name} / {body_2}",
+        )
+
+    south_node_sign = str(variables.get("south_node_sign") or "fallback")
+    south_node_house = str(variables.get("south_node_house") or "fallback")
+    if south_node_sign and south_node_house != "fallback":
+        add_card(
+            "inherited",
+            "south_node_axis",
+            "South Node Axis",
+            f"{south_node_sign} / house {south_node_house}",
+            "inherited_pattern_foundation",
+            ("south_node_axis", south_node_sign, south_node_house),
+            {
+                "south_node_sign": south_node_sign,
+                "south_node_house": south_node_house,
+            },
+            meta=f"Selected leaf: {south_node_sign} / house {south_node_house}",
+        )
+
+    north_node_sign = str(variables.get("north_node_sign") or "fallback")
+    north_node_house = str(variables.get("north_node_house") or "fallback")
+    if north_node_sign and north_node_house != "fallback":
+        add_card(
+            "world",
+            "north_node_axis",
+            "North Node Axis",
+            f"{north_node_sign} / house {north_node_house}",
+            "world_pattern_foundation",
+            ("north_node_axis", north_node_sign, north_node_house),
+            {
+                "north_node_sign": north_node_sign,
+                "north_node_house": north_node_house,
+            },
+            meta=f"Selected leaf: {north_node_sign} / house {north_node_house}",
+        )
+
+    jupiter_sign = str(variables.get("jupiter_sign") or "fallback")
+    jupiter_house = str(variables.get("jupiter_house") or "fallback")
+    if jupiter_sign and jupiter_house != "fallback":
+        add_card(
+            "world",
+            "jupiter_path",
+            "Jupiter Growth Path",
+            f"{jupiter_sign} / house {jupiter_house}",
+            "world_pattern_foundation",
+            ("jupiter_path", jupiter_sign, jupiter_house),
+            {
+                "jupiter_sign": jupiter_sign,
+                "jupiter_house": jupiter_house,
+            },
+            meta=f"Selected leaf: {jupiter_sign} / house {jupiter_house}",
+        )
+
+    house_rankings = houses.get("rankings") or []
+    top_house_record = house_rankings[0] if len(house_rankings) > 0 and isinstance(house_rankings[0], dict) else {}
+    second_house_record = house_rankings[1] if len(house_rankings) > 1 and isinstance(house_rankings[1], dict) else top_house_record
+    top_house = str(top_house_record.get("house") or "fallback")
+    second_house = str(second_house_record.get("house") or "fallback")
+    if top_house != "fallback":
+        add_card(
+            "world",
+            "house_emphasis",
+            "House Emphasis",
+            f"House {top_house} with house {second_house}",
+            "world_pattern_foundation",
+            ("house_emphasis", top_house, second_house),
+            {
+                "top_house": top_house,
+                "second_house": second_house,
+            },
+            meta=f"Selected leaf: house {top_house} / house {second_house}",
+        )
+
+    central_domains = convergence.get("central_life_domains") or []
+    primary_theme = ""
+    if central_domains and isinstance(central_domains[0], dict):
+        primary_theme = str(central_domains[0].get("label") or "")
+    primary_theme_slug = _soul_support_slug(primary_theme)
+    if primary_theme:
+        add_card(
+            "world",
+            "convergence",
+            "Convergence Theme",
+            primary_theme,
+            "world_pattern_foundation",
+            ("convergence", primary_theme_slug),
+            {
+                "primary_theme": primary_theme,
+            },
+            meta=f"Selected leaf: {primary_theme_slug}",
+        )
+
+    mc_sign = str(variables.get("mc_sign") or "fallback")
+    if mc_sign and chart_ruler_body:
+        add_card(
+            "interface",
+            "meridian_bridge",
+            "Meridian Bridge",
+            f"{mc_sign} with {chart_ruler_body}",
+            "world_interface_foundation",
+            ("meridian_bridge", mc_sign, chart_ruler_body),
+            {
+                "mc_sign": mc_sign,
+                "chart_ruler_body": chart_ruler_body,
+            },
+            meta=f"Selected leaf: {mc_sign} / {chart_ruler_body}",
+        )
+
+    public_theme_record = _safe_mapping(convergence.get("vocational / public structure"))
+    public_theme_slug = _soul_support_slug(
+        public_theme_record.get("label") or "vocational_public_structure"
+    )
+    if top_house != "fallback":
+        add_card(
+            "interface",
+            "public_structure",
+            "Public Structure",
+            f"{public_theme_record.get('label') or 'vocational / public structure'} / house {top_house}",
+            "world_interface_foundation",
+            ("public_structure", public_theme_slug, top_house),
+            {
+                "theme_label": public_theme_record.get("label") or "vocational / public structure",
+                "top_house": top_house,
+            },
+            meta=f"Selected leaf: {public_theme_slug} / house {top_house}",
+        )
+
+    dominant_index = str(
+        variables.get("dominant_eas_dimension")
+        or variables.get("soul_ecosystem_dominant_index")
+        or "fallback"
+    )
+    if primary_theme:
+        add_card(
+            "integration",
+            "integration_bridge",
+            "Integration Bridge",
+            f"{primary_theme} with {dominant_index}",
+            "living_integration_foundation",
+            ("integration_bridge", primary_theme_slug, dominant_index),
+            {
+                "primary_theme": primary_theme,
+                "dominant_eas_dimension": dominant_index,
+            },
+            meta=f"Selected leaf: {primary_theme_slug} / {dominant_index}",
+        )
+
+    return support_cards
+
+
 def _build_soul_ecosystem_context(variables, index_results, payload) -> dict:
     import os as _os
     from selectors.block_selector import select_block_traced
@@ -1822,6 +3216,14 @@ def _build_soul_ecosystem_context(variables, index_results, payload) -> dict:
             print(f"[ChartWheel] Skipped (non-fatal): {_cw_err}")
 
     ctx = {}
+    standard_support_cards = _build_soul_ecosystem_standard_support(v, _tsel)
+    ctx["core_support_cards"] = standard_support_cards["core"]
+    ctx["hidden_support_cards"] = standard_support_cards["hidden"]
+    ctx["growth_support_cards"] = standard_support_cards["growth"]
+    ctx["inherited_support_cards"] = standard_support_cards["inherited"]
+    ctx["world_support_cards"] = standard_support_cards["world"]
+    ctx["world_interface_support_cards"] = standard_support_cards["interface"]
+    ctx["living_integration_support_cards"] = standard_support_cards["integration"]
 
     ctx["souls_story_block"] = _tsel(
         "souls_story_block", "souls_story",
@@ -2108,6 +3510,7 @@ def _build_soul_ecosystem_context(variables, index_results, payload) -> dict:
     _se_palette_name = variables.get("palette", "vibrant")
     ctx.update({
         "birth_time_status":  birth_time_status,
+        "birth_time_confidence": birth_meta["birth_time_confidence"],
         "birth_time_state":   birth_meta["birth_time_state"],
         "birth_date_display": birth_meta["birth_date_display"],
         "birth_time_display": birth_meta["birth_time_display"],
@@ -4317,6 +5720,18 @@ def _format_forecast_window(start: datetime | None, end: datetime | None) -> str
     return (
         f"{start.strftime('%B %d, %Y')} - "
         f"{end_display.strftime('%B %d, %Y')}"
+    )
+
+
+def _format_report_boundary_note(start: datetime | None, end: datetime | None) -> str:
+    if not start or not end:
+        return ""
+    final_day = end - timedelta(days=1)
+    return (
+        f"Reader-facing span: {start.strftime('%B %d, %Y')} through "
+        f"{final_day.strftime('%B %d, %Y')}. When a technical window names "
+        f"{end.strftime('%B %d, %Y')}, it is marking the boundary immediately "
+        f"after the final day of the almanac."
     )
 
 
@@ -8427,6 +9842,8 @@ def _build_year_ahead_context(
         "natal_positions": _build_natal_positions(payload),
         "chart_characteristics": chart_characteristics,
         "standard_natal_foundation": standard_natal_foundation,
+        "report_span_display": _format_forecast_window(report_start, report_end),
+        "report_boundary_note": _format_report_boundary_note(report_start, report_end),
         "house_system": variables.get("house_system", "Whole Sign"),
         "archetypal_opening_section": _generate_archetypal_opening(
             payload, index_results, pack, dominant_planet, dominant_character

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Soul Ecosystem · {{ querent_name }}</title>
+  <title>Soul Ecosystem - {{ querent_name }}</title>
   <style>{{ shared_report_css | safe }}</style>
   <style>
     :root {
@@ -58,12 +58,36 @@
     h4 {
       overflow-wrap: break-word;
       word-break: normal;
-      hyphens: auto;
+      hyphens: none;
+      font-variant-ligatures: none;
     }
 
     header {
       text-align: center;
       margin-bottom: 46px;
+    }
+
+    .report-title,
+    .natal-ref-label,
+    .time-status,
+    .section-label,
+    .chart-wheel-label,
+    .chart-note,
+    .report-intro-title,
+    .hierarchy-level,
+    .map-label,
+    .section-eyebrow,
+    .subsection-kicker,
+    .support-type,
+    .proprietary-depth-label,
+    .proprietary-depth-slot,
+    .proprietary-depth-meta strong,
+    .astro-index-label,
+    .eas-ranking-label,
+    .eas-rank-tier,
+    .nge-spectrum-label,
+    .ahl-qualifier-label {
+      font-family: Arial, sans-serif;
     }
 
     .name {
@@ -77,8 +101,6 @@
     .report-title {
       font-size: 0.78rem;
       color: var(--muted);
-      letter-spacing: 3px;
-      text-transform: uppercase;
       margin-top: 8px;
     }
 
@@ -87,7 +109,7 @@
       color: var(--subtle);
       margin-top: 4px;
     }
-    .natal-ref-label { font-size: 0.6rem; letter-spacing: 2px; text-transform: uppercase; opacity: 0.55; margin-top: 10px; }
+    .natal-ref-label { font-size: 0.62rem; opacity: 0.55; margin-top: 10px; }
 
     .time-status {
       display: inline-block;
@@ -95,9 +117,7 @@
       padding: 3px 9px;
       border: 1px solid var(--border);
       border-radius: 999px;
-      font-size: 0.62rem;
-      letter-spacing: 2px;
-      text-transform: uppercase;
+      font-size: 0.64rem;
       color: var(--muted);
     }
 
@@ -111,10 +131,8 @@
     }
 
     .section-label {
-      font-size: 0.62rem;
+      font-size: 0.68rem;
       color: var(--muted);
-      letter-spacing: 4px;
-      text-transform: uppercase;
       margin-bottom: 16px;
     }
 
@@ -125,7 +143,7 @@
     }
     [data-palette="muted"] .opening { color: #2A2420; }
 
-    /* ── Chart Wheel ── */
+    /* Chart wheel */
     .chart-wheel-container {
       margin: 28px auto 0;
       max-width: 460px;
@@ -140,12 +158,85 @@
       height: auto;
       display: block;
     }
-    .chart-wheel-label {
-      font-size: 0.58rem;
+    .chart-wheel-label,
+    .chart-note {
+      font-size: 0.62rem;
       color: var(--subtle);
-      letter-spacing: 3px;
-      text-transform: uppercase;
+      text-transform: none;
       margin-top: 12px;
+    }
+    .chart-note {
+      line-height: 1.6;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+
+    .report-intro-card {
+      margin: 22px 0 30px;
+      padding: 24px 24px 20px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-top: 2px solid var(--accent);
+      border-radius: 10px;
+    }
+    .report-intro-title {
+      font-size: 0.76rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .report-intro-body {
+      font-size: 0.92rem;
+      line-height: 1.75;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+    .report-intro-list {
+      display: grid;
+      gap: 10px;
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+      font-size: 0.84rem;
+      line-height: 1.65;
+    }
+    .report-intro-list strong {
+      color: var(--text);
+      text-transform: uppercase;
+      font-size: 0.68rem;
+      margin-right: 6px;
+    }
+
+    .hierarchy-guide {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+    .hierarchy-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 14px 12px;
+    }
+    .hierarchy-level {
+      font-size: 0.54rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .hierarchy-card h3 {
+      font-size: 0.92rem;
+      font-weight: normal;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+    .hierarchy-card p {
+      font-size: 0.78rem;
+      line-height: 1.6;
+      color: var(--muted);
     }
 
     .ecosystem-map {
@@ -166,7 +257,6 @@
     .map-label {
       font-size: 0.56rem;
       color: var(--muted);
-      letter-spacing: 2px;
       text-transform: uppercase;
       margin-bottom: 8px;
     }
@@ -203,7 +293,6 @@
 
     .section-eyebrow {
       font-size: 0.60rem;
-      letter-spacing: 3px;
       text-transform: uppercase;
       color: var(--muted);
       margin-bottom: 6px;
@@ -221,6 +310,20 @@
       font-weight: normal;
       color: var(--text);
       margin-bottom: 14px;
+    }
+
+    .section-bridge {
+      margin: 0 0 14px;
+      font-size: 0.84rem;
+      line-height: 1.65;
+      color: var(--muted);
+    }
+
+    .subsection-kicker {
+      font-size: 0.56rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin: 18px 0 8px;
     }
 
     .block {
@@ -248,7 +351,6 @@
     .support-type {
       font-size: 0.58rem;
       color: var(--muted);
-      letter-spacing: 3px;
       text-transform: uppercase;
       margin-bottom: 6px;
     }
@@ -256,6 +358,14 @@
     .support-name {
       font-size: 1.08rem;
       color: var(--rose);
+      margin-bottom: 12px;
+    }
+
+    .support-meta {
+      font-size: 0.68rem;
+      line-height: 1.55;
+      color: var(--subtle);
+      margin-top: -4px;
       margin-bottom: 12px;
     }
 
@@ -280,7 +390,6 @@
     .proprietary-depth-label {
       font-size: 0.58rem;
       color: var(--muted);
-      letter-spacing: 3px;
       text-transform: uppercase;
       margin-bottom: 10px;
     }
@@ -300,7 +409,6 @@
     .proprietary-depth-slot {
       font-size: 0.55rem;
       color: var(--muted);
-      letter-spacing: 2px;
       text-transform: uppercase;
       margin-bottom: 6px;
     }
@@ -334,7 +442,6 @@
     .proprietary-depth-meta strong {
       color: var(--muted);
       font-size: 0.6rem;
-      letter-spacing: 1.5px;
       text-transform: uppercase;
       margin-right: 4px;
     }
@@ -349,7 +456,7 @@
       color: var(--muted);
     }
 
-    /* ── Astrologer's Index ── */
+    /* Astrologer's Index */
     .astro-index {
       margin-top: 48px;
       border-top: 1px solid var(--border);
@@ -358,7 +465,6 @@
     .astro-index-label {
       font-size: 0.60rem;
       color: var(--subtle);
-      letter-spacing: 4px;
       text-transform: uppercase;
       margin-bottom: 12px;
     }
@@ -374,7 +480,7 @@
       padding: 0;
     }
 
-    /* ── EAS Activation Ranking ── */
+    /* EAS activation ranking */
     .eas-ranking {
       margin-top: 28px;
       padding-top: 20px;
@@ -383,7 +489,6 @@
     .eas-ranking-label {
       font-size: 0.58rem;
       color: var(--subtle);
-      letter-spacing: 3px;
       text-transform: uppercase;
       margin-bottom: 14px;
     }
@@ -406,7 +511,6 @@
     }
     .eas-rank-tier {
       font-size: 0.56rem;
-      letter-spacing: 2px;
       text-transform: uppercase;
       color: var(--subtle);
       min-width: 64px;
@@ -417,7 +521,7 @@
     .eas-rank-row.is-dominant .eas-rank-score { color: var(--gold); }
     .eas-rank-row.is-secondary .eas-rank-name { color: var(--text); }
 
-    /* ── NGE Body Spectrum ── */
+    /* NGE body spectrum */
     .nge-spectrum {
       margin-top: 18px;
       padding-top: 14px;
@@ -426,7 +530,6 @@
     .nge-spectrum-label {
       font-size: 0.56rem;
       color: var(--subtle);
-      letter-spacing: 3px;
       text-transform: uppercase;
       margin-bottom: 10px;
     }
@@ -469,7 +572,7 @@
     .nge-body-row.is-dominant  .nge-facet-label { color: var(--muted); }
     .nge-body-row.is-secondary .nge-facet-label { color: var(--subtle); }
 
-    /* ── AHL Contributor Qualifier ── */
+    /* AHL contributor qualifier */
     .ahl-qualifier {
       margin-top: 14px;
       padding: 11px 14px;
@@ -482,7 +585,6 @@
     .ahl-qualifier-label {
       font-size: 0.54rem;
       color: var(--color-relationships);
-      letter-spacing: 2px;
       text-transform: uppercase;
       margin-bottom: 5px;
     }
@@ -510,6 +612,7 @@
       .ecosystem-map { grid-template-columns: 1fr; }
       .support-grid { grid-template-columns: 1fr; }
       .proprietary-depth-grid { grid-template-columns: 1fr; }
+      .hierarchy-guide { grid-template-columns: 1fr; }
     }
 
     @media print {
@@ -519,15 +622,49 @@
       .support-type { color: var(--print-ink-muted); }
       .section-eyebrow { color: var(--print-ink-muted); }
       .opening { color: var(--print-ink-muted); }
-      .map-card, .support-card, .integration { background: #f8f8f8; border-color: #ddd; }
+      .map-card,
+      .support-card,
+      .integration,
+      .report-intro-card,
+      .hierarchy-card,
+      .proprietary-depth,
+      .proprietary-depth-card,
+      .translator-hook {
+        background: #f8f8f8;
+        border-color: #ddd;
+      }
       .section-title, .map-title, .support-name { color: var(--print-ink-strong); }
       .map-note, .grounding { color: var(--print-ink-soft); }
+      .report-intro-body,
+      .report-intro-list,
+      .hierarchy-card h3,
+      .hierarchy-card p,
+      .section-bridge,
+      .proprietary-depth-title,
+      .proprietary-depth-archetype,
+      .proprietary-depth-expression,
+      .proprietary-depth-meta div,
+      .translator-hook,
+      .astro-data {
+        color: var(--print-ink-strong);
+      }
+      .report-intro-title,
+      .hierarchy-level,
+      .subsection-kicker,
+      .proprietary-depth-label,
+      .proprietary-depth-slot,
+      .proprietary-depth-meta strong,
+      .astro-index-label,
+      .eas-ranking-label,
+      .nge-spectrum-label,
+      .ahl-qualifier-label {
+        color: var(--print-ink-muted);
+      }
       .time-status { border-color: #ccc; color: var(--print-ink-muted); }
-      .astro-index-label { color: var(--print-ink-faint); }
-      .astro-data { color: var(--print-ink-faint); font-size: 0.65rem; }
+      .astro-data { font-size: 0.65rem; }
       footer { color: var(--print-ink-faint); }
       .chart-wheel-container { background: #f5f5f5; border-color: #ddd; }
-      .chart-wheel-label { color: var(--print-ink-faint); }
+      .chart-wheel-label, .chart-note { color: var(--print-ink-faint); }
       .chart-wheel-container {
         margin-top: 18px;
         page-break-inside: avoid;
@@ -572,7 +709,44 @@
     </div>
   </header>
 
-  <!-- ── Opening Synthesis ── -->
+  <div class="report-record-grid">
+    <article class="report-record-card">
+      <p class="report-record-label">Client</p>
+      <p class="report-record-value">{{ querent_name }}</p>
+    </article>
+    <article class="report-record-card">
+      <p class="report-record-label">Report title</p>
+      <p class="report-record-value">Soul Ecosystem</p>
+      <p class="report-record-detail">Natal and proprietary baseline.</p>
+    </article>
+    <article class="report-record-card">
+      <p class="report-record-label">Birth-time confidence</p>
+      <p class="report-record-value">{{ birth_time_confidence | default(birth_time_status | default('unknown')) }}</p>
+      <p class="report-record-detail">{{ birth_date_display }}{% if birth_time_display %} - {{ birth_time_display }}{% endif %}</p>
+    </article>
+    <article class="report-record-card">
+      <p class="report-record-label">Version</p>
+      <p class="report-record-value">{{ report_version | default('Soul Ecosystem v1.0') }}</p>
+      <p class="report-record-detail">Generated {{ generation_date }}</p>
+    </article>
+  </div>
+
+  <div class="suite-note">
+    <h3>How This Report Fits the Suite</h3>
+    <p>Soul Ecosystem is your baseline report within the Entangled Oracle suite, describing the deeper natal and proprietary pattern that gives later forecasts their personal context.</p>
+  </div>
+
+  <div class="report-intro-card">
+    <div class="report-intro-title">How to Use This Report</div>
+    <p class="report-intro-body">This report describes your baseline inner and proprietary pattern. It works best as a reference map you return to over time, not as a one-time reading.</p>
+    <ul class="report-intro-list">
+      <li><strong>Baseline.</strong> Daily, Weekly, Personal Forecast, and Year Ahead reports may refer back to this material.</li>
+      <li><strong>Use.</strong> Return to the core, growth, and world patterns when you want to understand what a forecast is activating underneath the timing.</li>
+      <li><strong>Depth.</strong> The proprietary sections name deeper pattern currents; they are meant to orient reflection, not flatten the chart into a single label.</li>
+    </ul>
+  </div>
+
+  <!-- Opening synthesis -->
   <div class="section-label">Your Inner Ecology</div>
   <div class="opening">
     {{ ecosystem_overview_block | default(souls_story_block, true) }}
@@ -581,9 +755,9 @@
   {% if chart_wheel_svg %}
   <div class="chart-wheel-container">
     {{ chart_wheel_svg | safe }}
-    <div class="chart-wheel-label">Natal Chart - {{ house_system_label | default(house_system | default('Whole Sign')) }} Houses - {{ zodiac_label | default('Tropical') }} Zodiac</div>
+    <div class="chart-wheel-label">Natal wheel rendered in {{ zodiac_label | default('Tropical') }} zodiac and {{ house_system_label | default(house_system | default('Whole Sign')) }} houses.</div>
     {% if wheel_transit_retrograde_planets %}
-    <div class="chart-wheel-label">The ringed placement{{ 's' if wheel_transit_retrograde_planets | length > 1 else '' }} ({{ wheel_transit_retrograde_planets | join(', ') }}) {{ 'are' if wheel_transit_retrograde_planets | length > 1 else 'is' }} currently retrograde by transit</div>
+    <div class="chart-note">The ringed placement{{ 's' if wheel_transit_retrograde_planets | length > 1 else '' }} ({{ wheel_transit_retrograde_planets | join(', ') }}) {{ 'are' if wheel_transit_retrograde_planets | length > 1 else 'is' }} currently retrograde by transit.</div>
     {% endif %}
   </div>
   {% endif %}
@@ -611,21 +785,55 @@
     </div>
   </div>
 
+  <div class="hierarchy-guide">
+    <article class="hierarchy-card">
+      <div class="hierarchy-level">Primary</div>
+      <h3>Core, Growth, World</h3>
+      <p>These are the main organizing patterns of the report: the baseline self, the developmental edge, and the way the life meets the larger field.</p>
+    </article>
+    <article class="hierarchy-card">
+      <div class="hierarchy-level">Secondary</div>
+      <h3>World Interface</h3>
+      <p>This layer shows how the baseline pattern becomes visible in vocation, impact, and relationship to collective structures.</p>
+    </article>
+    <article class="hierarchy-card">
+      <div class="hierarchy-level">Tertiary</div>
+      <h3>EO Pattern Depth</h3>
+      <p>Narrative Current, Power Current, Foresight Pattern, and the other EO layers describe deeper currents inside the ecosystem rather than replacing the natal chart.</p>
+    </article>
+  </div>
+
   <hr>
 
-  <!-- ── Core Nature ── -->
+  <!-- World interface -->
   <div class="ecosystem-section world">
     <div class="section-eyebrow">World Interface</div>
     <div class="section-title">How Your Work Meets the Larger Field</div>
+    <p class="section-bridge">Read this section as the meeting point between the inner pattern and the outer world: the place where vocation, visibility, and consequence start to take form.</p>
+    {% if world_interface_support_cards %}
+    <div class="support-grid">
+      {% for card in world_interface_support_cards %}
+      <div class="support-card">
+        <div class="support-type">{{ card.type }}</div>
+        <div class="support-name">{{ card.name }}</div>
+        {% if card.meta %}<div class="support-meta">{{ card.meta }}</div>{% endif %}
+        <div class="block">{{ card.body }}</div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
     {% if midheaven_block %}<div class="block">{{ midheaven_block }}</div>{% endif %}
     {% if pluto_generation_block %}<div class="block">{{ pluto_generation_block }}</div>{% endif %}
     {% if proprietary_section_block %}
+      <div class="subsection-kicker">EO Pattern Layer</div>
+      <p class="section-bridge">This proprietary layer names the deeper current forecasts may activate later. It adds interpretive depth to the natal baseline rather than replacing it.</p>
       <div class="block"><strong>{{ proprietary_section_title }}</strong></div>
       <div class="block">{{ proprietary_section_block }}</div>
     {% endif %}
     {% if eas_depth.available_slots %}
     <div class="proprietary-depth">
       <div class="proprietary-depth-label">Pattern Depth</div>
+      <p class="section-bridge">Use these as primary, secondary, and tertiary EO currents within the same ecosystem. The dominant layer tends to organize experience most consistently; the others modify how it expresses.</p>
       <div class="proprietary-depth-grid">
         {% if dominant_depth.available %}
         <article class="proprietary-depth-card primary">
@@ -688,7 +896,7 @@
     {% endif %}
     {% if world_interface_block %}<div class="block">{{ world_interface_block }}</div>{% endif %}
 
-    {# NGE Body Spectrum â€” compact display of the five narrative-body weights #}
+    {# NGE Body Spectrum - compact display of the five narrative-body weights #}
     {% set nge_bodies = [
       {"key": "Apollo",       "weight": nge_apollo_weight,       "facet": nge_dominant_facet   if nge_dominant_body == "Apollo"       else (nge_secondary_facet if nge_secondary_body == "Apollo" else "")},
       {"key": "Themis",       "weight": nge_themis_weight,       "facet": nge_dominant_facet   if nge_dominant_body == "Themis"       else (nge_secondary_facet if nge_secondary_body == "Themis" else "")},
@@ -700,6 +908,7 @@
     {% if nge_max and nge_max > 0 %}
     <div class="nge-spectrum">
       <div class="nge-spectrum-label">Narrative Body Spectrum</div>
+      <p class="section-bridge">This spectrum shows which narrative bodies carry the most weight in the current baseline pattern.</p>
       {% for body in nge_bodies %}
         {% set is_dom = body.key == nge_dominant_body %}
         {% set is_sec = body.key == nge_secondary_body %}
@@ -718,20 +927,46 @@
   <hr>
 
   {% set core_block = core_nature_block | default(sun_moon_integration_block, true) %}
-  {% if core_block or core_identity_block %}
+  {% if core_block or core_identity_block or core_support_cards %}
   <div class="ecosystem-section core">
-    <div class="section-eyebrow">Core Nature</div>
+    <div class="section-eyebrow">Core Pattern</div>
     <div class="section-title">Your Baseline Operating Pattern</div>
+    <p class="section-bridge">Start here when you want the simplest possible orientation: this is the rhythm the rest of the report keeps returning to.</p>
+    {% if core_support_cards %}
+    <div class="support-grid">
+      {% for card in core_support_cards %}
+      <div class="support-card">
+        <div class="support-type">{{ card.type }}</div>
+        <div class="support-name">{{ card.name }}</div>
+        {% if card.meta %}<div class="support-meta">{{ card.meta }}</div>{% endif %}
+        <div class="block">{{ card.body }}</div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
     {% if core_block %}<div class="block">{{ core_block }}</div>{% endif %}
     {% if core_identity_block %}<div class="block">{{ core_identity_block }}</div>{% endif %}
   </div>
   {% endif %}
 
-  <!-- ── Hidden Resources ── -->
-  {% if hidden_resources_block or twelfth_house_blocks or ancestral_block or ahl_fires %}
+  <!-- Hidden resources -->
+  {% if hidden_resources_block or twelfth_house_blocks or ancestral_block or ahl_fires or hidden_support_cards %}
   <div class="ecosystem-section hidden">
     <div class="section-eyebrow">Hidden Resources</div>
     <div class="section-title">What Works Beneath the Surface</div>
+    <p class="section-bridge">These are quieter supports and inherited reserves that may not be obvious at first glance, but often matter when the system is under pressure.</p>
+    {% if hidden_support_cards %}
+    <div class="support-grid">
+      {% for card in hidden_support_cards %}
+      <div class="support-card">
+        <div class="support-type">{{ card.type }}</div>
+        <div class="support-name">{{ card.name }}</div>
+        {% if card.meta %}<div class="support-meta">{{ card.meta }}</div>{% endif %}
+        <div class="block">{{ card.body }}</div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
     {% if hidden_resources_block %}
       <div class="block">{{ hidden_resources_block }}</div>
     {% endif %}
@@ -751,7 +986,7 @@
       <div class="ahl-contributor">
         {%- set parts = [] -%}
         {%- if ahl_dna_retro and ahl_dna_retro > 0 -%}{%- set parts = parts + ["Retrograde ancestral signal"] -%}{%- endif -%}
-        {%- if ahl_child_chiron and ahl_child_chiron > 0 -%}{%- set parts = parts + ["Child–Chiron resonance"] -%}{%- endif -%}
+        {%- if ahl_child_chiron and ahl_child_chiron > 0 -%}{%- set parts = parts + ["Child-Chiron resonance"] -%}{%- endif -%}
         {%- if ahl_anubis_4th and ahl_anubis_4th > 0 -%}{%- set parts = parts + ["Anubis in the fourth house"] -%}{%- endif -%}
         {{ parts | join(" - ") if parts else "Ancestral pattern at threshold" }}
       </div>
@@ -760,11 +995,24 @@
   </div>
   {% endif %}
 
-  <!-- ── Growth Edges ── -->
-  {% if saturn_block or chiron_block or growth_edge_block %}
+  <!-- Growth pattern -->
+  {% if saturn_block or chiron_block or growth_edge_block or growth_support_cards %}
   <div class="ecosystem-section growth">
-    <div class="section-eyebrow">Growth Edges</div>
+    <div class="section-eyebrow">Growth Pattern</div>
     <div class="section-title">Where the System Builds Strength</div>
+    <p class="section-bridge">This section names the pressure points that become capacity over time through repair, steadiness, and practice.</p>
+    {% if growth_support_cards %}
+    <div class="support-grid">
+      {% for card in growth_support_cards %}
+      <div class="support-card">
+        <div class="support-type">{{ card.type }}</div>
+        <div class="support-name">{{ card.name }}</div>
+        {% if card.meta %}<div class="support-meta">{{ card.meta }}</div>{% endif %}
+        <div class="block">{{ card.body }}</div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
     {% if saturn_block %}<div class="block">{{ saturn_block }}</div>{% endif %}
     {% if chiron_block %}<div class="block">{{ chiron_block }}</div>{% endif %}
     {% if growth_edge_block %}<div class="block">{{ growth_edge_block }}</div>{% endif %}
@@ -773,22 +1021,48 @@
 
   <hr>
 
-  <!-- ── The Inherited Pattern ── -->
-  {% if south_node_sign_block or south_node_house_block or inherited_pattern_block %}
+  <!-- The inherited pattern -->
+  {% if south_node_sign_block or south_node_house_block or inherited_pattern_block or inherited_support_cards %}
   <div class="ecosystem-section inherited">
     <div class="section-eyebrow">The Inherited Pattern</div>
     <div class="section-title">What You Arrive Already Knowing</div>
+    <p class="section-bridge">Read this as old fluency: the material that feels native, familiar, or already well-worn in the system.</p>
+    {% if inherited_support_cards %}
+    <div class="support-grid">
+      {% for card in inherited_support_cards %}
+      <div class="support-card">
+        <div class="support-type">{{ card.type }}</div>
+        <div class="support-name">{{ card.name }}</div>
+        {% if card.meta %}<div class="support-meta">{{ card.meta }}</div>{% endif %}
+        <div class="block">{{ card.body }}</div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
     {% if south_node_sign_block %}<div class="block">{{ south_node_sign_block }}</div>{% endif %}
     {% if south_node_house_block %}<div class="block">{{ south_node_house_block }}</div>{% endif %}
     {% if inherited_pattern_block %}<div class="block">{{ inherited_pattern_block }}</div>{% endif %}
   </div>
   {% endif %}
 
-  <!-- ── What Pulls You Forward ── -->
-  {% if north_node_sign_block or north_node_house_block or jupiter_block or meaning_direction_block %}
+  <!-- World pattern -->
+  {% if north_node_sign_block or north_node_house_block or jupiter_block or meaning_direction_block or world_support_cards %}
   <div class="ecosystem-section meaning">
-    <div class="section-eyebrow">What Pulls You Forward</div>
+    <div class="section-eyebrow">World Pattern</div>
     <div class="section-title">The Direction Your Life Is Growing Toward</div>
+    <p class="section-bridge">This is the outward vector of the ecosystem: the direction that asks for expansion, meaning, and lived participation.</p>
+    {% if world_support_cards %}
+    <div class="support-grid">
+      {% for card in world_support_cards %}
+      <div class="support-card">
+        <div class="support-type">{{ card.type }}</div>
+        <div class="support-name">{{ card.name }}</div>
+        {% if card.meta %}<div class="support-meta">{{ card.meta }}</div>{% endif %}
+        <div class="block">{{ card.body }}</div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
     {% if north_node_sign_block %}<div class="block">{{ north_node_sign_block }}</div>{% endif %}
     {% if north_node_house_block %}<div class="block">{{ north_node_house_block }}</div>{% endif %}
     {% if jupiter_block %}<div class="block">{{ jupiter_block }}</div>{% endif %}
@@ -798,7 +1072,7 @@
 
   <hr>
 
-  <!-- ── World Interface ── -->
+  <!-- World interface legacy block retained but disabled -->
   {% set eas_depth = soul_ecosystem_eas_depth | default({}, true) %}
   {% set dominant_depth = eas_depth.dominant | default({}, true) %}
   {% set secondary_depth = eas_depth.secondary | default({}, true) %}
@@ -912,7 +1186,7 @@
 
   <hr>
 
-  <!-- ── Archetypal Supports ── -->
+  <!-- Archetypal supports -->
   {% endif %}
   {% if primary_archetype_name or primary_archetype_block or secondary_archetype_name or secondary_archetype_block %}
   <div class="section-label">Archetypal Supports</div>
@@ -934,7 +1208,7 @@
   </div>
   {% endif %}
 
-  <!-- ── EAS Activation Rankings ── -->
+  <!-- EAS activation rankings -->
   {# Compact dimension ranking with activation scores. Ordered by the resolver's
      eas_dimension_order (score-descending). Six fixed EAS primaries only. #}
   {% set eas_rows = [
@@ -942,13 +1216,14 @@
     {"key": "MKI",      "name": "Knowledge Legacy",   "score": mki_activation_score,      "tier": mki_tier},
     {"key": "RWI",      "name": "Reality Field",      "score": rwi_activation_score,      "tier": rwi_tier},
     {"key": "DFIS",     "name": "Power Current",      "score": dfis_activation_score,     "tier": dfis_tier},
-    {"key": "NGE",      "name": "Narrative Genre",    "score": nge_activation_score,      "tier": nge_tier},
+    {"key": "NGE",      "name": "Narrative Current",  "score": nge_activation_score,      "tier": nge_tier},
     {"key": "CATALYST", "name": "Impact Radius",      "score": catalyst_activation_score, "tier": catalyst_tier},
   ] | sort(attribute="score", reverse=True) %}
   {% set ranked_eas_rows = eas_rows | selectattr("score", "gt", 0) | list %}
   {% if ranked_eas_rows %}
   <div class="eas-ranking">
     <div class="eas-ranking-label">Activation Field</div>
+    <p class="section-bridge">This ranking shows which EO layers are most active in the baseline pattern, with the dominant current appearing first.</p>
     {% for row in ranked_eas_rows %}
       {% set is_dom = row.key == dominant_eas_dimension %}
       {% set is_sec = row.key == secondary_eas_dimension %}
@@ -960,20 +1235,35 @@
   </div>
   {% endif %}
 
-  <!-- ── Living Integration ── -->
+  <!-- Living integration -->
   {% set living_integration_text = living_integration_block | default(souls_promise_block, true) %}
-  {% if living_integration_text %}
+  {% if living_integration_text or living_integration_support_cards %}
   <div class="integration">
     <div class="section-label">Living Integration</div>
+    {% if living_integration_support_cards %}
+    <div class="support-grid">
+      {% for card in living_integration_support_cards %}
+      <div class="support-card">
+        <div class="support-type">{{ card.type }}</div>
+        <div class="support-name">{{ card.name }}</div>
+        {% if card.meta %}<div class="support-meta">{{ card.meta }}</div>{% endif %}
+        <div class="block">{{ card.body }}</div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+    {% if living_integration_text %}
     <div class="block">
       {{ living_integration_text }}
     </div>
+    {% endif %}
   </div>
   {% endif %}
 
-  <!-- ── Astrologer's Index ── -->
+  <!-- Astrologer's index -->
   <div class="astro-index">
     <div class="astro-index-label">Astrologer's Index</div>
+    <p class="section-bridge">This technical trace keeps the report anchored to the natal record the proprietary language is built on.</p>
     <pre class="astro-data">House system     {{ house_system_label | default(house_system | default('Whole Sign')) }}
 Birth time       {{ birth_time_status }}
 
@@ -982,7 +1272,15 @@ NATAL POSITIONS
   </div>
 
   <div class="grounding">
-    Astrology describes symbolic patterns, timing, and meaning-making frameworks. It does not replace practical judgment, professional advice, medical care, legal guidance, or lived consent. Keep what is useful, and let real-world information guide important decisions.
+    Astrology describes symbolic patterns, timing, and meaning-making frameworks. Keep what is useful, and let lived context, consent, and real-world information carry the decisions that need them.
+  </div>
+
+  <div class="trust-note">
+    <h3>Calculation Basis</h3>
+    <p><strong>Calculation basis.</strong> Soul Ecosystem is built from the natal chart, standard astrological reference points, and proprietary EO index layers. It is a baseline report, not a prediction engine.</p>
+    <p><strong>Method note.</strong> Calculated with Swiss Ephemeris using {{ methodology_label | default('Tropical zodiac + Whole Sign houses') }}. Natal placements, houses, and angles are interpreted in proportion to the available birth data.</p>
+    <p><strong>Birth-time confidence.</strong> {{ birth_time_confidence | default('Birth-time confidence unavailable') }}. House and angle-dependent material should remain conditional when birth time is approximate or unknown.</p>
+    <p><strong>Proprietary EO layer.</strong> EAS and related pattern language are interpretive frameworks for reflection and meaning-making. They are meant to deepen discernment, not settle practical decisions for you.</p>
   </div>
 
   <footer>{{ report_footer_text | default('Entangled Oracle - Ksisti-Puck LLC - Generated ' ~ generation_date) }} <span class="report-page-number"></span></footer>

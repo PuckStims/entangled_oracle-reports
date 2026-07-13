@@ -171,6 +171,14 @@ def main(argv=None) -> int:
     manifest = {
         "product": "cosmic_weather",
         "methodology": "Tropical zodiac · collective daily sky (no natal / no signs)",
+        "complexity_capacity": [
+            "Swiss Ephemeris sky positions are computed once per calendar day.",
+            "Moon phase, Moon sign, and day ruler are calculated from the real sky.",
+            "Copy is selected from the same daily horoscope sky and day-ruler block libraries used by the lighter horoscope stack.",
+        ],
+        "simplified_output_contract": (
+            "One collective card per day; sign-specific, natal, house, and transit activation layers are intentionally excluded."
+        ),
         "generated_utc": datetime.now(timezone.utc).isoformat(),
         "start_date": start.strftime("%Y-%m-%d"),
         "days": args.days,

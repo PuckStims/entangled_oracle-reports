@@ -1,0 +1,12 @@
+{
+  "_note": "Key path: exact_aspect. Finer-grained sibling of aspect_movements.json, which only knows the broad aspect_character (flowing/challenging/neutral). This file is not selected directly into a rendered field today -- generate.py exposes it as the {aspect_movement_exact} interpolation value available to contact_meanings.json and contact_guidance.json authors, so a future writer can reference the exact-aspect texture (an exact conjunction's merge, a square's friction, a quincunx's mismatch) inside a contact-level line without the weekly selector needing a new rendered field. Leaves are TODO placeholders.",
+  "Conjunction": "a merge that makes the two functions harder to separate, concentrating the contact into something immediate",
+  "Sextile": "an opening that becomes real through participation rather than passive luck",
+  "Trine": "a fluent channel that can move with less resistance when the available resource is actually used",
+  "Square": "productive friction that exposes where two needs want different kinds of movement",
+  "Opposition": "a polarity that becomes clearer through contrast, projection, or another person's response",
+  "Semisquare": "a low-grade irritant that flags a small misalignment before it becomes a larger demand",
+  "Sesquiquadrate": "a nagging secondary correction, often showing where an earlier signal needs follow-through",
+  "Quincunx": "a mismatch between functions that do not naturally translate each other and need deliberate adjustment",
+  "fallback": "a contact that changes how the two functions meet, asking the larger pattern to be read in context"
+}

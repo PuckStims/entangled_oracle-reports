@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Weekly Horoscope · {{ querent_name }}</title>
+  <title>Weekly Horoscope - {{ querent_name }}</title>
+  <style>{{ shared_report_css | safe }}</style>
   <style>
     :root {
       --bg:        {{ palette.bg }};
@@ -43,11 +44,55 @@
     hr { border: none; border-top: 1px solid var(--border); margin: 28px 0; }
     .section { margin-bottom: 28px; }
     .section-label {
-      font-size: 0.68rem;
+      font-size: 0.7rem;
       color: var(--muted);
-      letter-spacing: 3px;
+      letter-spacing: 2px;
       text-transform: uppercase;
       margin-bottom: 10px;
+    }
+    .weekly-headline {
+      color: var(--accent);
+      font-size: 1.35rem;
+      line-height: 1.25;
+      margin-bottom: 12px;
+    }
+    .weekly-overview {
+      font-size: 1rem;
+      color: var(--text);
+      margin-bottom: 14px;
+    }
+    .weekly-guidance {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--gold);
+      border-radius: 6px;
+      padding: 14px 18px;
+      margin: 16px 0;
+      font-size: 0.94rem;
+    }
+    .watch-list {
+      margin: 10px 0 0 18px;
+      color: var(--text);
+      font-size: 0.92rem;
+    }
+    .watch-list li { margin-bottom: 6px; }
+    .day-group {
+      margin-bottom: 20px;
+    }
+    .day-title {
+      color: var(--accent);
+      font-size: 1rem;
+      margin-bottom: 4px;
+      break-after: avoid;
+      page-break-after: avoid;
+    }
+    .day-guidance {
+      color: var(--subtle);
+      font-size: 0.86rem;
+      line-height: 1.55;
+      margin-bottom: 10px;
+      break-after: avoid;
+      page-break-after: avoid;
     }
     .moment {
       background: var(--surface);
@@ -63,9 +108,16 @@
       letter-spacing: 1px;
       margin-bottom: 6px;
     }
-    .moment-what {
-      font-size: 0.95rem;
+    .moment-meaning {
+      font-size: 0.92rem;
       color: var(--text);
+      line-height: 1.55;
+    }
+    .moment-technical {
+      font-size: 0.78rem;
+      font-style: italic;
+      color: var(--subtle);
+      margin-top: 6px;
     }
     .moment-meta {
       font-size: 0.72rem;
@@ -77,6 +129,20 @@
       color: var(--muted);
       font-style: italic;
     }
+    .method-note {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px 14px;
+      color: var(--muted);
+      font-size: 0.78rem;
+      line-height: 1.55;
+      margin-top: 14px;
+    }
+    .method-note strong {
+      color: var(--gold);
+      font-weight: normal;
+    }
     footer {
       text-align: center;
       font-size: 0.68rem;
@@ -84,42 +150,240 @@
       margin-top: 48px;
       letter-spacing: 1px;
     }
+
+    @media print {
+      @page {
+        size: letter;
+        margin: 0.62in 0.58in 0.68in;
+      }
+      body[data-palette="vibrant"] {
+        --text: #17263d;
+        --muted: #223654;
+        --subtle: #30486c;
+        --print-ink-strong: #17263d;
+        --print-ink-muted: #223654;
+        --print-ink-soft: #30486c;
+        --print-ink-faint: #5f6f88;
+        --print-paper: #fbfaf7;
+        --print-card: #f7f7fa;
+        --print-card-warm: #fffdfa;
+        --print-rule: #d8d4df;
+        --print-purple: #6f55aa;
+        --print-gold: #8a681d;
+      }
+      body {
+        --print-ink-strong: #17263d;
+        --print-ink-muted: #223654;
+        --print-ink-soft: #30486c;
+        --print-ink-faint: #5f6f88;
+        --print-paper: #fbfaf7;
+        --print-card: #f7f7fa;
+        --print-card-warm: #fffdfa;
+        --print-rule: #d8d4df;
+        --print-purple: #6f55aa;
+        --print-gold: #8a681d;
+        background: var(--print-paper);
+        color: var(--print-ink-strong);
+        max-width: 100%;
+        margin: 0;
+        padding: 18px 24px 28px;
+        font-size: 10pt;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      * {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      header {
+        margin-bottom: 24px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid var(--print-rule);
+      }
+      header .name,
+      .weekly-headline,
+      .day-title {
+        color: var(--print-ink-strong);
+      }
+      header .meta,
+      .weekly-overview,
+      .day-guidance,
+      .moment-meaning,
+      .empty-state {
+        color: var(--print-ink-muted);
+      }
+      .section {
+        margin-bottom: 22px;
+      }
+      .weekly-summary {
+        break-inside: auto;
+        page-break-inside: auto;
+      }
+      .section-label {
+        color: var(--print-ink-soft);
+        letter-spacing: 2px;
+        break-after: avoid;
+        page-break-after: avoid;
+      }
+      .weekly-guidance,
+      .method-note {
+        background: var(--print-card);
+        border-color: var(--print-rule);
+        color: var(--print-ink-muted);
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+      .weekly-guidance {
+        border-left-color: var(--print-gold);
+      }
+      .method-note strong {
+        color: var(--print-ink-soft);
+      }
+      .watch-list {
+        color: var(--print-ink-strong);
+      }
+      .day-group {
+        margin-bottom: 18px;
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+      .moment {
+        background: var(--print-card-warm);
+        border-color: var(--print-rule);
+        border-left-color: var(--print-purple);
+        box-shadow: none;
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+      .moment-when {
+        color: var(--print-gold);
+      }
+      .moment-technical {
+        color: var(--print-ink-soft);
+      }
+      .moment-meta {
+        color: var(--print-ink-faint);
+      }
+      hr {
+        border-color: var(--print-rule);
+        margin: 18px 0;
+      }
+      footer {
+        color: var(--print-ink-faint);
+      }
+    }
   </style>
 </head>
-<body data-palette="{{ palette_name | default('vibrant') }}">
+<body class="report-shell report-weekly-horoscope" data-palette="{{ palette_name | default('vibrant') }}">
 
   <header>
     <div class="name">{{ querent_name }}</div>
-    <div class="meta">{{ week_start_display }} &ndash; {{ week_end_display }}</div>
-    <div class="meta" style="margin-top:4px;">Weekly Horoscope · Entangled Oracle</div>
+    <div class="meta">{{ week_start_display }} - {{ week_end_display }}</div>
+    <div class="meta" style="margin-top:4px;">Weekly Horoscope - {{ report_brand_line | default('Entangled Oracle - Ksisti-Puck LLC') }}</div>
     {% if simple_mode %}
-    <div class="meta" style="margin-top:4px;">Simple mode &mdash; birth time not provided</div>
+    <div class="meta" style="margin-top:4px;">Simple mode - birth time not provided</div>
     {% endif %}
   </header>
 
+  <div class="report-record-grid">
+    <article class="report-record-card">
+      <p class="report-record-label">Client</p>
+      <p class="report-record-value">{{ querent_name }}</p>
+    </article>
+    <article class="report-record-card">
+      <p class="report-record-label">Report span</p>
+      <p class="report-record-value">{{ week_start_display }} - {{ week_end_display }}</p>
+    </article>
+    <article class="report-record-card">
+      <p class="report-record-label">Birth data</p>
+      <p class="report-record-value">{{ birth_date_display }}{% if birth_time_display %} - {{ birth_time_display }}{% endif %}</p>
+      <p class="report-record-detail">{{ birth_location }}</p>
+    </article>
+    <article class="report-record-card">
+      <p class="report-record-label">Version</p>
+      <p class="report-record-value">{{ report_version | default('Weekly Horoscope v0.1') }}</p>
+      <p class="report-record-detail">Generated {{ generation_date }}</p>
+    </article>
+  </div>
+
+  <!-- Weekly Reading -->
+  <div class="section weekly-summary">
+    <div class="section-label">Week Theme</div>
+    <div class="weekly-headline">{{ weekly_theme_headline }}</div>
+    <div class="weekly-overview">{{ weekly_theme_overview }}</div>
+    <div class="weekly-guidance">
+      <div class="section-label" style="margin-bottom:6px;">Work With It</div>
+      {{ weekly_work_with }}
+    </div>
+    {% if weekly_watch_for %}
+    <div class="section-label">Watch For</div>
+    <ul class="watch-list">
+      {% for item in weekly_watch_for %}
+      <li>{{ item }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+  </div>
+
+  <hr>
+
   <!-- Selected Exact Contacts -->
   <div class="section">
-    <div class="section-label">Selected Exact Contacts</div>
+    <div class="section-label">Timing Notes</div>
     {% if weekly_scope_note %}
     <div class="empty-state" style="margin-bottom:12px;">{{ weekly_scope_note }}</div>
     {% endif %}
-    {% if weekly_timeline %}
-      {% for moment in weekly_timeline %}
+    {% if weekly_days %}
+      {% for day in weekly_days %}
+      <div class="day-group">
+        <div class="day-title">{{ day.day_label }}{% if day.movement_label %} · {{ day.movement_label }}{% endif %}</div>
+        {% if day.guidance %}
+        <div class="day-guidance">{{ day.guidance }}</div>
+        {% endif %}
+        {% if day.moments %}
+          {% for moment in day.moments %}
       <div class="moment">
         <div class="moment-when">{{ moment.day_label }}{% if moment.time_label %} · {{ moment.time_label }}{% endif %}</div>
-        <div class="moment-what">{{ moment.transit_planet }} {{ moment.aspect }} {{ moment.natal_target_display or ('your ' ~ moment.natal_target) }}</div>
-        <div class="moment-meta">House {{ moment.natal_house }} · {{ moment.aspect_character }}</div>
+        {% if moment.meaning_primary or moment.guidance_line %}
+        <div class="moment-meaning">
+          {% if moment.meaning_primary %}{{ moment.meaning_primary }}{% endif %}
+          {% if moment.guidance_line %} {{ moment.guidance_line }}{% endif %}
+        </div>
+        {% endif %}
+        {% if moment.technical_label %}<div class="moment-technical">({{ moment.technical_label }})</div>{% endif %}
+        <div class="moment-meta">{{ moment.technical_meta }}</div>
+      </div>
+      {% endfor %}
+        {% else %}
+          <div class="empty-state">No selected contacts for this day.</div>
+        {% endif %}
       </div>
       {% endfor %}
     {% else %}
       <div class="empty-state">No standout moments detected for this week.</div>
     {% endif %}
+    <div class="suite-note">
+      <h3>How This Report Fits the Suite</h3>
+      <p>Weekly Horoscope is the short-range timing layer of the Entangled Oracle suite, built to orient you to the week's rhythm and selected exact contacts.</p>
+    </div>
+    {% if weekly_simplified_output_contract %}
+    <div class="trust-note">
+      <h3>Calculation Basis</h3>
+      <p><strong>Calculation basis.</strong> {{ weekly_simplified_output_contract }}</p>
+      <p><strong>Method note.</strong> Selected exact contacts are drawn from the report span, capped at {{ weekly_day_contact_cap | default(2) }} per day, and shown in chronological order using {{ methodology_label | default('Tropical zodiac + Whole Sign houses') }} with Swiss Ephemeris positions where available.</p>
+      <p><strong>Birth-time confidence.</strong> {{ birth_time_confidence | default('Birth-time confidence unavailable') }}. Birth-time-sensitive points are used only when an exact birth time is available.</p>
+      <p><strong>Proprietary EO layer.</strong> Weekly guidance translates selected timing evidence into reflective next steps. It is meant to support discernment, not override practical judgment.</p>
+      {% if weekly_narrative_basis %}
+      <p>{{ weekly_narrative_basis }}</p>
+      {% endif %}
+      {% if weekly_complexity_capacity %}
+      <p>{{ weekly_complexity_capacity | join(' ') }}</p>
+      {% endif %}
+    </div>
+    {% endif %}
   </div>
 
-  <footer>
-    Entangled Oracle · Ksisti-Puck LLC<br>
-    Generated {{ generation_date }}
-  </footer>
+  <footer>{{ report_footer_text | default('Entangled Oracle - Ksisti-Puck LLC - Generated ' ~ generation_date) }}</footer>
 
 </body>
 </html>

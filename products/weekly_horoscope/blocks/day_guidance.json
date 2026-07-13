@@ -1,0 +1,43 @@
+{
+  "_note": "Key path: day_character -> variant. Day-level guidance should orient the day without repeating the contact cards below it.",
+  "fallback": {
+    "v1": "Let {day_label} stay simple: notice what repeats, respond to what is actually present, and avoid making the whole week depend on one signal.",
+    "v2": "{day_label} works best when you keep the evidence close. Track what changes in the room, the schedule, or your body before deciding what the day means.",
+    "v3": "Use {day_label} as a small test of the week's larger pattern. One clear observation is more useful than a dramatic conclusion.",
+    "v4": "Keep {day_label} close to the facts on the ground. The useful answer is probably smaller than the first interpretation.",
+    "v5": "{day_label} can be read through sequence: what opens first, what tightens next, and what remains clear after the mood changes.",
+    "v6": "Let {day_label} show its own scale. Not every cue needs to become a command."
+  },
+  "quiet": {
+    "v1": "{day_label} does not need to prove itself loudly. The useful information may come through pacing, ordinary maintenance, or the place where less pressure makes a pattern easier to hear.",
+    "v2": "Treat {day_label} as a calibration day. Fewer selected contacts means the background matters: appetite, rest, repeated thoughts, and the task that becomes easier once urgency drops.",
+    "v3": "{day_label} gives the week room to breathe. Do the simple thing cleanly, and let the quieter evidence show what actually deserves more attention.",
+    "v4": "Let {day_label} be low-noise on purpose. Quiet can make the difference between a real signal and a habit of urgency easier to detect.",
+    "v5": "Use {day_label} for maintenance rather than proof. What gets steadier today may support the louder parts of the week.",
+    "v6": "{day_label} may be most useful when nothing demands a performance. Notice what returns once the pressure drops."
+  },
+  "flowing": {
+    "v1": "{day_label} has usable support around {strongest_house}. Move one live thread forward, but keep it specific enough that the day can answer back.",
+    "v2": "There is more access on {day_label}, especially around {strongest_house}. Accept the opening without turning it into a whole new obligation.",
+    "v3": "{strongest_planet_subject} gives {day_label} a little more traction. Let the easier part of the day become practical: one message, one choice, one visible step.",
+    "v4": "{day_label} does not need a dramatic push. Follow the part of {strongest_house} that is already becoming easier to approach.",
+    "v5": "Use {day_label} to cooperate with momentum rather than manufacture it. The supported move is likely the one that already has a little room.",
+    "v6": "{day_label} favors a cleaner yes. If something around {strongest_house} feels genuinely available, let it become real in one practical way."
+  },
+  "challenging": {
+    "v1": "{day_label} is not just difficult for the sake of it. The friction points toward {strongest_house}, where a mismatch may need language, structure, or a smaller next move.",
+    "v2": "Use {day_label} to make pressure more specific. What is the actual demand, what belongs to timing, and what can be adjusted without turning the whole day into a verdict?",
+    "v3": "{strongest_planet_subject} makes {day_label} harder to ignore. Keep the response proportionate: name the pressure, choose one repair, and leave room for the rest of the week to develop.",
+    "v4": "{day_label} can clarify what no longer fits cleanly around {strongest_house}. Treat that as design information, not proof that everything is wrong.",
+    "v5": "Let {day_label} narrow the question. The whole pattern may be large, but today's workable piece is smaller: one term, one limit, one next adjustment.",
+    "v6": "{day_label} asks for precision under pressure. Before reacting, separate the real constraint from the story growing around it."
+  },
+  "neutral": {
+    "v1": "{day_label} is more about tracking than forcing. Let the selected {contact_count} {contact_label} show what keeps returning before you decide what needs action.",
+    "v2": "Read {day_label} through pattern recognition. The signal may not demand an immediate move, but it can clarify what deserves a closer look.",
+    "v3": "{day_label} asks for attention without drama. Notice what becomes easier to name once you stop trying to turn every cue into instruction.",
+    "v4": "Use {day_label} to observe the shape of the week rather than forcing a direction. What repeats is the clue.",
+    "v5": "{day_label} works like a hinge: not a full answer, but a point where the week can turn slightly.",
+    "v6": "Let {day_label} stay interpretive. The value is in seeing the pattern clearly enough to choose later with less noise."
+  }
+}

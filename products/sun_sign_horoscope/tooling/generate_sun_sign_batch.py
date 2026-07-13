@@ -148,6 +148,14 @@ def main(argv=None) -> int:
         "product": "sun_sign_horoscope",
         "frame": args.frame,
         "methodology": f"Tropical zodiac · whole-sign houses from the reader's {anchor}",
+        "complexity_capacity": [
+            "Swiss Ephemeris sky positions are computed once per calendar day.",
+            "Moon phase, Moon sign, day ruler, and featured fast-planet aspect are calculated from the real sky.",
+            "Each sign receives a solar-house activation by treating that sign as the first house.",
+        ],
+        "simplified_output_contract": (
+            "One square social card per sign per day; natal birth data, exact houses, and personal transits are intentionally excluded."
+        ),
         "generated_utc": datetime.now(timezone.utc).isoformat(),
         "start_date": start.strftime("%Y-%m-%d"),
         "days": args.days,

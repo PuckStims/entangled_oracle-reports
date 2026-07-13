@@ -1,0 +1,18 @@
+{
+  "_note": "Key path: aspect_character -> guidance_mode. The generator supplies first/strongest contacts, house terrain, planet motif, aspect prompt, and simple-mode note.",
+  "fallback": "The week opens with {first_contact_phrase} on {first_day}, then concentrates around {contact_phrase} on {strongest_day}. The main emphasis is {strongest_house}. {strongest_planet_subject} brings {planet_prompt}. {aspect_prompt}{mode_note}",
+  "flowing": {
+    "fallback": "The week opens with {first_contact_phrase} on {first_day}, then gathers around {contact_phrase} on {strongest_day}. The cleanest emphasis is {strongest_house}. {strongest_planet_subject} brings {planet_prompt}; the useful move is to notice what already has support and give it a practical next step. {aspect_prompt}{mode_note}",
+    "receiving": "The week opens with {first_contact_phrase} on {first_day}, then gathers around {contact_phrase} on {strongest_day}. The main field is {strongest_house}. {strongest_planet_subject} brings {planet_prompt}, so the opportunity is not only to act, but to recognize what can be accepted, enjoyed, or allowed without turning it into another assignment. {aspect_prompt}{mode_note}",
+    "action": "The week opens with {first_contact_phrase} on {first_day}, then concentrates around {contact_phrase} on {strongest_day}. The emphasis is {strongest_house}. {strongest_planet_subject} brings {planet_prompt}; this is a week for moving the live thread one step forward instead of waiting for the entire plan to become obvious. {aspect_prompt}{mode_note}"
+  },
+  "challenging": {
+    "fallback": "The week opens with {first_contact_phrase} on {first_day}, then sharpens around {contact_phrase} on {strongest_day}. The most activated terrain is {strongest_house}. {strongest_planet_subject} brings {planet_prompt}, so the friction is information about where timing, desire, demand, or capacity no longer fit cleanly. {aspect_prompt}{mode_note}",
+    "conversation": "The week opens with {first_contact_phrase} on {first_day}, then sharpens around {contact_phrase} on {strongest_day}. The activated terrain is {strongest_house}. {strongest_planet_subject} brings {planet_prompt}; the pressure is most useful when it becomes a plain sentence, a direct request, or a cleaner refusal. {aspect_prompt}{mode_note}",
+    "structure": "The week opens with {first_contact_phrase} on {first_day}, then narrows around {contact_phrase} on {strongest_day}. The main emphasis is {strongest_house}. {strongest_planet_subject} brings {planet_prompt}, which makes this less about pushing harder and more about finding the form that can actually hold the work. {aspect_prompt}{mode_note}",
+    "discernment": "The week opens with {first_contact_phrase} on {first_day}, then complicates around {contact_phrase} on {strongest_day}. The activated terrain is {strongest_house}. {strongest_planet_subject} brings {planet_prompt}; treat the uncertainty as a sorting condition, not as proof that nothing is knowable. {aspect_prompt}{mode_note}"
+  },
+  "neutral": {
+    "fallback": "The week opens with {first_contact_phrase} on {first_day}, then gathers around {contact_phrase} on {strongest_day}. The strongest emphasis is {strongest_house}. {strongest_planet_subject} brings {planet_prompt}; this may read less like a dramatic event and more like a pattern becoming easier to recognize. {aspect_prompt}{mode_note}"
+  }
+}

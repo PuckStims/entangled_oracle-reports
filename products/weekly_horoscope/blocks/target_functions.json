@@ -1,0 +1,19 @@
+{
+  "_note": "Key path: natal_target_group (the short function-group key from _WEEKLY_TARGET_GROUPS in generate.py, not the raw natal target label). Describes what each function-group represents in plain terms, independent of transiting planet, exact aspect, or house -- a glossary entry, not a contact-specific line. Exposed to contact_meanings.json / contact_guidance.json authors as the {target_function} interpolation value. Group key -> natal target it maps from: identity=Sun, mood=Moon, language=Mercury, values=Venus, action=Mars, growth=Jupiter, structure=Saturn, disruption=Uranus, longing=Neptune, power=Pluto, presence=ASC, public_role=MC, partnership=DSC, home=IC, threshold=Vertex. Leaves are TODO placeholders.",
+  "identity": "your sense of direction, vitality, and personal authorship",
+  "mood": "your emotional weather, needs, habits, and sense of belonging",
+  "language": "how you interpret, name, plan, decide, and make agreements",
+  "values": "what you value, enjoy, desire, choose, and exchange with others",
+  "action": "your drive, anger, courage, stamina, and way of taking action",
+  "growth": "your appetite for possibility, confidence, meaning, and increased scale",
+  "structure": "your commitments, limits, responsibilities, fears, and long-term durability",
+  "disruption": "where you need freedom, deviation, experimentation, and change",
+  "longing": "your sensitivity, imagination, ideals, spiritual hunger, and porous places",
+  "power": "your relationship with depth, control, exposure, grief, and regeneration",
+  "presence": "how you enter a situation, meet the world, and define yourself on first contact",
+  "public_role": "your visible contribution, vocation, reputation, and public accountability",
+  "partnership": "how you meet others as equals, negotiate reciprocity, and share relational space",
+  "home": "your roots, private life, family patterns, and emotional foundation",
+  "threshold": "the encounters, invitations, and turning points that pull you across a new edge",
+  "fallback": "the part of life being contacted"
+}

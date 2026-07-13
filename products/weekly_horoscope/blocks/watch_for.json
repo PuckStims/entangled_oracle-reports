@@ -1,0 +1,23 @@
+{
+  "_note": "Key path: aspect_character -> item role. The generator formats each item into the weekly watch-list.",
+  "fallback": {
+    "domain": "Where {strongest_planet_label} makes {strongest_house} harder to ignore.",
+    "timing_pattern": "The difference between the visible event and the timing pattern underneath it.",
+    "next_move": "A moment that feels small but clarifies the next responsible move."
+  },
+  "flowing": {
+    "domain": "Where {strongest_planet_label} makes {strongest_house} easier to approach.",
+    "timing_pattern": "Support that arrives quietly enough to miss if you only look for drama.",
+    "next_move": "The opening that becomes useful once you give it a concrete form."
+  },
+  "challenging": {
+    "domain": "Where {strongest_planet_label} makes {strongest_house} harder to postpone.",
+    "timing_pattern": "Friction that points to a real mismatch, not just a bad mood.",
+    "next_move": "The smallest repair, boundary, clarification, or adjustment that changes the week."
+  },
+  "neutral": {
+    "domain": "Where {strongest_planet_label} keeps drawing attention back to {strongest_house}.",
+    "timing_pattern": "A repeated cue that becomes meaningful because it returns more than once.",
+    "next_move": "The moment when observation naturally becomes a choice."
+  }
+}

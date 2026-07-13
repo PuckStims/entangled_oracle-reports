@@ -1,0 +1,2214 @@
+{
+  "_note": "Soul Ecosystem expansion scaffold for Core Pattern. All leaf strings are TODO placeholders. Fill with EO-compatible prose later. orientation = dominant_element -> dominant_modality -> sun_moon_relationship. chart_ruler = chart_ruler_body -> natal_house -> condition_classification. support_axis = body_1 -> aspect -> body_2 from supportive or neutral natal aspect architecture. Keep this as standard natal support beneath the proprietary layer, not as a replacement for it.",
+  "orientation": {
+    "_note": "TODO guidance: name the baseline movement of the chart through element, modality, and the Sun-Moon relationship. Be specific about behavioral pattern, not abstract temperament keywords.",
+    "fire": {
+      "_note": "TODO guidance for fire: write from the actual EO/product voice, but let the interpretation stay grounded in how fire changes the baseline pattern.",
+      "cardinal": {
+        "_note": "TODO guidance for fire + cardinal: show what kind of movement or pacing this creates before adding Sun-Moon nuance.",
+        "flowing": "TODO",
+        "challenging": "TODO",
+        "unaspected": "TODO",
+        "fallback": "TODO"
+      },
+      "fixed": {
+        "_note": "TODO guidance for fire + fixed: show what kind of movement or pacing this creates before adding Sun-Moon nuance.",
+        "flowing": "TODO",
+        "challenging": "TODO",
+        "unaspected": "TODO",
+        "fallback": "TODO"
+      },
+      "mutable": {
+        "_note": "TODO guidance for fire + mutable: show what kind of movement or pacing this creates before adding Sun-Moon nuance.",
+        "flowing": "TODO",
+        "challenging": "TODO",
+        "unaspected": "TODO",
+        "fallback": "TODO"
+      },
+      "fallback": "TODO"
+    },
+    "earth": {
+      "_note": "TODO guidance for earth: write from the actual EO/product voice, but let the interpretation stay grounded in how earth changes the baseline pattern.",
+      "cardinal": {
+        "_note": "TODO guidance for earth + cardinal: show what kind of movement or pacing this creates before adding Sun-Moon nuance.",
+        "flowing": "TODO",
+        "challenging": "TODO",
+        "unaspected": "TODO",
+        "fallback": "TODO"
+      },
+      "fixed": {
+        "_note": "TODO guidance for earth + fixed: show what kind of movement or pacing this creates before adding Sun-Moon nuance.",
+        "flowing": "TODO",
+        "challenging": "TODO",
+        "unaspected": "TODO",
+        "fallback": "TODO"
+      },
+      "mutable": {
+        "_note": "TODO guidance for earth + mutable: show what kind of movement or pacing this creates before adding Sun-Moon nuance.",
+        "flowing": "TODO",
+        "challenging": "TODO",
+        "unaspected": "TODO",
+        "fallback": "TODO"
+      },
+      "fallback": "TODO"
+    },
+    "air": {
+      "_note": "TODO guidance for air: write from the actual EO/product voice, but let the interpretation stay grounded in how air changes the baseline pattern.",
+      "cardinal": {
+        "_note": "TODO guidance for air + cardinal: show what kind of movement or pacing this creates before adding Sun-Moon nuance.",
+        "flowing": "TODO",
+        "challenging": "TODO",
+        "unaspected": "TODO",
+        "fallback": "TODO"
+      },
+      "fixed": {
+        "_note": "TODO guidance for air + fixed: show what kind of movement or pacing this creates before adding Sun-Moon nuance.",
+        "flowing": "TODO",
+        "challenging": "TODO",
+        "unaspected": "TODO",
+        "fallback": "TODO"
+      },
+      "mutable": {
+        "_note": "TODO guidance for air + mutable: show what kind of movement or pacing this creates before adding Sun-Moon nuance.",
+        "flowing": "TODO",
+        "challenging": "TODO",
+        "unaspected": "TODO",
+        "fallback": "TODO"
+      },
+      "fallback": "TODO"
+    },
+    "water": {
+      "_note": "TODO guidance for water: write from the actual EO/product voice, but let the interpretation stay grounded in how water changes the baseline pattern.",
+      "cardinal": {
+        "_note": "TODO guidance for water + cardinal: show what kind of movement or pacing this creates before adding Sun-Moon nuance.",
+        "flowing": "TODO",
+        "challenging": "TODO",
+        "unaspected": "TODO",
+        "fallback": "TODO"
+      },
+      "fixed": {
+        "_note": "TODO guidance for water + fixed: show what kind of movement or pacing this creates before adding Sun-Moon nuance.",
+        "flowing": "TODO",
+        "challenging": "TODO",
+        "unaspected": "TODO",
+        "fallback": "TODO"
+      },
+      "mutable": {
+        "_note": "TODO guidance for water + mutable: show what kind of movement or pacing this creates before adding Sun-Moon nuance.",
+        "flowing": "TODO",
+        "challenging": "TODO",
+        "unaspected": "TODO",
+        "fallback": "TODO"
+      },
+      "fallback": "TODO"
+    }
+  },
+  "chart_ruler": {
+    "_note": "TODO guidance: explain how the chart ruler behaves when its body, house placement, and condition are taken together. Mention what function organizes experience, where it lives, and how available or burdened it is.",
+    "Sun": {
+      "_note": "TODO guidance for chart ruler Sun: keep the body-specific function intact, then localize it through house and condition.",
+      "1": {
+        "_note": "TODO guidance for chart ruler Sun in house 1: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "2": {
+        "_note": "TODO guidance for chart ruler Sun in house 2: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "3": {
+        "_note": "TODO guidance for chart ruler Sun in house 3: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "4": {
+        "_note": "TODO guidance for chart ruler Sun in house 4: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "5": {
+        "_note": "TODO guidance for chart ruler Sun in house 5: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "6": {
+        "_note": "TODO guidance for chart ruler Sun in house 6: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "7": {
+        "_note": "TODO guidance for chart ruler Sun in house 7: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "8": {
+        "_note": "TODO guidance for chart ruler Sun in house 8: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "9": {
+        "_note": "TODO guidance for chart ruler Sun in house 9: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "10": {
+        "_note": "TODO guidance for chart ruler Sun in house 10: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "11": {
+        "_note": "TODO guidance for chart ruler Sun in house 11: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "12": {
+        "_note": "TODO guidance for chart ruler Sun in house 12: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "fallback": "TODO"
+    },
+    "Moon": {
+      "_note": "TODO guidance for chart ruler Moon: keep the body-specific function intact, then localize it through house and condition.",
+      "1": {
+        "_note": "TODO guidance for chart ruler Moon in house 1: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "2": {
+        "_note": "TODO guidance for chart ruler Moon in house 2: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "3": {
+        "_note": "TODO guidance for chart ruler Moon in house 3: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "4": {
+        "_note": "TODO guidance for chart ruler Moon in house 4: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "5": {
+        "_note": "TODO guidance for chart ruler Moon in house 5: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "6": {
+        "_note": "TODO guidance for chart ruler Moon in house 6: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "7": {
+        "_note": "TODO guidance for chart ruler Moon in house 7: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "8": {
+        "_note": "TODO guidance for chart ruler Moon in house 8: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "9": {
+        "_note": "TODO guidance for chart ruler Moon in house 9: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "10": {
+        "_note": "TODO guidance for chart ruler Moon in house 10: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "11": {
+        "_note": "TODO guidance for chart ruler Moon in house 11: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "12": {
+        "_note": "TODO guidance for chart ruler Moon in house 12: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "fallback": "TODO"
+    },
+    "Mercury": {
+      "_note": "TODO guidance for chart ruler Mercury: keep the body-specific function intact, then localize it through house and condition.",
+      "1": {
+        "_note": "TODO guidance for chart ruler Mercury in house 1: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "2": {
+        "_note": "TODO guidance for chart ruler Mercury in house 2: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "3": {
+        "_note": "TODO guidance for chart ruler Mercury in house 3: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "4": {
+        "_note": "TODO guidance for chart ruler Mercury in house 4: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "5": {
+        "_note": "TODO guidance for chart ruler Mercury in house 5: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "6": {
+        "_note": "TODO guidance for chart ruler Mercury in house 6: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "7": {
+        "_note": "TODO guidance for chart ruler Mercury in house 7: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "8": {
+        "_note": "TODO guidance for chart ruler Mercury in house 8: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "9": {
+        "_note": "TODO guidance for chart ruler Mercury in house 9: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "10": {
+        "_note": "TODO guidance for chart ruler Mercury in house 10: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "11": {
+        "_note": "TODO guidance for chart ruler Mercury in house 11: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "12": {
+        "_note": "TODO guidance for chart ruler Mercury in house 12: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "fallback": "TODO"
+    },
+    "Venus": {
+      "_note": "TODO guidance for chart ruler Venus: keep the body-specific function intact, then localize it through house and condition.",
+      "1": {
+        "_note": "TODO guidance for chart ruler Venus in house 1: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "2": {
+        "_note": "TODO guidance for chart ruler Venus in house 2: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "3": {
+        "_note": "TODO guidance for chart ruler Venus in house 3: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "4": {
+        "_note": "TODO guidance for chart ruler Venus in house 4: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "5": {
+        "_note": "TODO guidance for chart ruler Venus in house 5: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "6": {
+        "_note": "TODO guidance for chart ruler Venus in house 6: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "7": {
+        "_note": "TODO guidance for chart ruler Venus in house 7: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "8": {
+        "_note": "TODO guidance for chart ruler Venus in house 8: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "9": {
+        "_note": "TODO guidance for chart ruler Venus in house 9: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "10": {
+        "_note": "TODO guidance for chart ruler Venus in house 10: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "11": {
+        "_note": "TODO guidance for chart ruler Venus in house 11: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "12": {
+        "_note": "TODO guidance for chart ruler Venus in house 12: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "fallback": "TODO"
+    },
+    "Mars": {
+      "_note": "TODO guidance for chart ruler Mars: keep the body-specific function intact, then localize it through house and condition.",
+      "1": {
+        "_note": "TODO guidance for chart ruler Mars in house 1: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "2": {
+        "_note": "TODO guidance for chart ruler Mars in house 2: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "3": {
+        "_note": "TODO guidance for chart ruler Mars in house 3: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "4": {
+        "_note": "TODO guidance for chart ruler Mars in house 4: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "5": {
+        "_note": "TODO guidance for chart ruler Mars in house 5: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "6": {
+        "_note": "TODO guidance for chart ruler Mars in house 6: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "7": {
+        "_note": "TODO guidance for chart ruler Mars in house 7: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "8": {
+        "_note": "TODO guidance for chart ruler Mars in house 8: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "9": {
+        "_note": "TODO guidance for chart ruler Mars in house 9: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "10": {
+        "_note": "TODO guidance for chart ruler Mars in house 10: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "11": {
+        "_note": "TODO guidance for chart ruler Mars in house 11: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "12": {
+        "_note": "TODO guidance for chart ruler Mars in house 12: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "fallback": "TODO"
+    },
+    "Jupiter": {
+      "_note": "TODO guidance for chart ruler Jupiter: keep the body-specific function intact, then localize it through house and condition.",
+      "1": {
+        "_note": "TODO guidance for chart ruler Jupiter in house 1: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "2": {
+        "_note": "TODO guidance for chart ruler Jupiter in house 2: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "3": {
+        "_note": "TODO guidance for chart ruler Jupiter in house 3: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "4": {
+        "_note": "TODO guidance for chart ruler Jupiter in house 4: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "5": {
+        "_note": "TODO guidance for chart ruler Jupiter in house 5: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "6": {
+        "_note": "TODO guidance for chart ruler Jupiter in house 6: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "7": {
+        "_note": "TODO guidance for chart ruler Jupiter in house 7: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "8": {
+        "_note": "TODO guidance for chart ruler Jupiter in house 8: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "9": {
+        "_note": "TODO guidance for chart ruler Jupiter in house 9: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "10": {
+        "_note": "TODO guidance for chart ruler Jupiter in house 10: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "11": {
+        "_note": "TODO guidance for chart ruler Jupiter in house 11: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "12": {
+        "_note": "TODO guidance for chart ruler Jupiter in house 12: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "fallback": "TODO"
+    },
+    "Saturn": {
+      "_note": "TODO guidance for chart ruler Saturn: keep the body-specific function intact, then localize it through house and condition.",
+      "1": {
+        "_note": "TODO guidance for chart ruler Saturn in house 1: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "2": {
+        "_note": "TODO guidance for chart ruler Saturn in house 2: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "3": {
+        "_note": "TODO guidance for chart ruler Saturn in house 3: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "4": {
+        "_note": "TODO guidance for chart ruler Saturn in house 4: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "5": {
+        "_note": "TODO guidance for chart ruler Saturn in house 5: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "6": {
+        "_note": "TODO guidance for chart ruler Saturn in house 6: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "7": {
+        "_note": "TODO guidance for chart ruler Saturn in house 7: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "8": {
+        "_note": "TODO guidance for chart ruler Saturn in house 8: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "9": {
+        "_note": "TODO guidance for chart ruler Saturn in house 9: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "10": {
+        "_note": "TODO guidance for chart ruler Saturn in house 10: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "11": {
+        "_note": "TODO guidance for chart ruler Saturn in house 11: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "12": {
+        "_note": "TODO guidance for chart ruler Saturn in house 12: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "fallback": "TODO"
+    },
+    "Uranus": {
+      "_note": "TODO guidance for chart ruler Uranus: keep the body-specific function intact, then localize it through house and condition.",
+      "1": {
+        "_note": "TODO guidance for chart ruler Uranus in house 1: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "2": {
+        "_note": "TODO guidance for chart ruler Uranus in house 2: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "3": {
+        "_note": "TODO guidance for chart ruler Uranus in house 3: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "4": {
+        "_note": "TODO guidance for chart ruler Uranus in house 4: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "5": {
+        "_note": "TODO guidance for chart ruler Uranus in house 5: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "6": {
+        "_note": "TODO guidance for chart ruler Uranus in house 6: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "7": {
+        "_note": "TODO guidance for chart ruler Uranus in house 7: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "8": {
+        "_note": "TODO guidance for chart ruler Uranus in house 8: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "9": {
+        "_note": "TODO guidance for chart ruler Uranus in house 9: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "10": {
+        "_note": "TODO guidance for chart ruler Uranus in house 10: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "11": {
+        "_note": "TODO guidance for chart ruler Uranus in house 11: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "12": {
+        "_note": "TODO guidance for chart ruler Uranus in house 12: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "fallback": "TODO"
+    },
+    "Neptune": {
+      "_note": "TODO guidance for chart ruler Neptune: keep the body-specific function intact, then localize it through house and condition.",
+      "1": {
+        "_note": "TODO guidance for chart ruler Neptune in house 1: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "2": {
+        "_note": "TODO guidance for chart ruler Neptune in house 2: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "3": {
+        "_note": "TODO guidance for chart ruler Neptune in house 3: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "4": {
+        "_note": "TODO guidance for chart ruler Neptune in house 4: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "5": {
+        "_note": "TODO guidance for chart ruler Neptune in house 5: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "6": {
+        "_note": "TODO guidance for chart ruler Neptune in house 6: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "7": {
+        "_note": "TODO guidance for chart ruler Neptune in house 7: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "8": {
+        "_note": "TODO guidance for chart ruler Neptune in house 8: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "9": {
+        "_note": "TODO guidance for chart ruler Neptune in house 9: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "10": {
+        "_note": "TODO guidance for chart ruler Neptune in house 10: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "11": {
+        "_note": "TODO guidance for chart ruler Neptune in house 11: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "12": {
+        "_note": "TODO guidance for chart ruler Neptune in house 12: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "fallback": "TODO"
+    },
+    "Pluto": {
+      "_note": "TODO guidance for chart ruler Pluto: keep the body-specific function intact, then localize it through house and condition.",
+      "1": {
+        "_note": "TODO guidance for chart ruler Pluto in house 1: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "2": {
+        "_note": "TODO guidance for chart ruler Pluto in house 2: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "3": {
+        "_note": "TODO guidance for chart ruler Pluto in house 3: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "4": {
+        "_note": "TODO guidance for chart ruler Pluto in house 4: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "5": {
+        "_note": "TODO guidance for chart ruler Pluto in house 5: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "6": {
+        "_note": "TODO guidance for chart ruler Pluto in house 6: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "7": {
+        "_note": "TODO guidance for chart ruler Pluto in house 7: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "8": {
+        "_note": "TODO guidance for chart ruler Pluto in house 8: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "9": {
+        "_note": "TODO guidance for chart ruler Pluto in house 9: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "10": {
+        "_note": "TODO guidance for chart ruler Pluto in house 10: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "11": {
+        "_note": "TODO guidance for chart ruler Pluto in house 11: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "12": {
+        "_note": "TODO guidance for chart ruler Pluto in house 12: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "fallback": "TODO"
+    },
+    "Chiron": {
+      "_note": "TODO guidance for chart ruler Chiron: keep the body-specific function intact, then localize it through house and condition.",
+      "1": {
+        "_note": "TODO guidance for chart ruler Chiron in house 1: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "2": {
+        "_note": "TODO guidance for chart ruler Chiron in house 2: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "3": {
+        "_note": "TODO guidance for chart ruler Chiron in house 3: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "4": {
+        "_note": "TODO guidance for chart ruler Chiron in house 4: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "5": {
+        "_note": "TODO guidance for chart ruler Chiron in house 5: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "6": {
+        "_note": "TODO guidance for chart ruler Chiron in house 6: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "7": {
+        "_note": "TODO guidance for chart ruler Chiron in house 7: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "8": {
+        "_note": "TODO guidance for chart ruler Chiron in house 8: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "9": {
+        "_note": "TODO guidance for chart ruler Chiron in house 9: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "10": {
+        "_note": "TODO guidance for chart ruler Chiron in house 10: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "11": {
+        "_note": "TODO guidance for chart ruler Chiron in house 11: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "12": {
+        "_note": "TODO guidance for chart ruler Chiron in house 12: name what arena organizes the life and how that function shows up there.",
+        "excellent": "TODO",
+        "strong": "TODO",
+        "neutral": "TODO",
+        "challenged": "TODO",
+        "severely_challenged": "TODO",
+        "fallback": "TODO"
+      },
+      "fallback": "TODO"
+    }
+  },
+  "support_axis": {
+    "_note": "TODO guidance: explain a supportive or neutral natal aspect as part of the baseline operating pattern. Name what two functions cooperate, what kind of flow or cohesion it creates, and where that support can be overused or underused.",
+    "Sun": {
+      "_note": "TODO guidance for support-axis entries beginning with Sun: keep the interpretation about what this planet contributes to support, cohesion, or coordination.",
+      "Conjunction": {
+        "_note": "TODO guidance for Sun conjunction x body_2: explain how the aspect changes the way support moves.",
+        "Sun": "TODO",
+        "Moon": "TODO",
+        "Mercury": "TODO",
+        "Venus": "TODO",
+        "Mars": "TODO",
+        "Jupiter": "TODO",
+        "Saturn": "TODO",
+        "Uranus": "TODO",
+        "Neptune": "TODO",
+        "Pluto": "TODO",
+        "Chiron": "TODO",
+        "fallback": "TODO"
+      },
+      "Opposition": {
+        "_note": "TODO guidance for Sun opposition x body_2: explain how the aspect changes the way support moves.",
+        "Sun": "TODO",
+        "Moon": "TODO",
+        "Mercury": "TODO",
+        "Venus": "TODO",
+        "Mars": "TODO",
+        "Jupiter": "TODO",
+        "Saturn": "TODO",
+        "Uranus": "TODO",
+        "Neptune": "TODO",
+        "Pluto": "TODO",
+        "Chiron": "TODO",
+        "fallback": "TODO"
+      },
+      "Trine": {
+        "_note": "TODO guidance for Sun trine x body_2: explain how the aspect changes the way support moves.",
+        "Sun": "TODO",
+        "Moon": "TODO",
+        "Mercury": "TODO",
+        "Venus": "TODO",
+        "Mars": "TODO",
+        "Jupiter": "TODO",
+        "Saturn": "TODO",
+        "Uranus": "TODO",
+        "Neptune": "TODO",
+        "Pluto": "TODO",
+        "Chiron": "TODO",
+        "fallback": "TODO"
+      },
+      "Square": {
+        "_note": "TODO guidance for Sun square x body_2: explain how the aspect changes the way support moves.",
+        "Sun": "TODO",
+        "Moon": "TODO",
+        "Mercury": "TODO",
+        "Venus": "TODO",
+        "Mars": "TODO",
+        "Jupiter": "TODO",
+        "Saturn": "TODO",
+        "Uranus": "TODO",
+        "Neptune": "TODO",
+        "Pluto": "TODO",
+        "Chiron": "TODO",
+        "fallback": "TODO"
+      },
+      "Sextile": {
+        "_note": "TODO guidance for Sun sextile x body_2: explain how the aspect changes the way support moves.",
+        "Sun": "TODO",
+        "Moon": "TODO",
+        "Mercury": "TODO",
+        "Venus": "TODO",
+        "Mars": "TODO",
+        "Jupiter": "TODO",
+        "Saturn": "TODO",
+        "Uranus": "TODO",
+        "Neptune": "TODO",
+        "Pluto": "TODO",
+        "Chiron": "TODO",
+        "fallback": "TODO"
+      },
+      "fallback": "TODO"
+    },
+    "Moon": {
+      "_note": "TODO guidance for support-axis entries beginning with Moon: keep the interpretation about what this planet contributes to support, cohesion, or coordination.",
+      "Conjunction": {
+        "_note": "TODO guidance for Moon conjunction x body_2: explain how the aspect changes the way support moves.",
+        "Sun": "TODO",
+        "Moon": "TODO",
+        "Mercury": "TODO",
+        "Venus": "TODO",
+        "Mars": "TODO",
+        "Jupiter": "TODO",
+        "Saturn": "TODO",
+        "Uranus": "TODO",
+        "Neptune": "TODO",
+        "Pluto": "TODO",
+        "Chiron": "TODO",
+        "fallback": "TODO"
+      },
+      "Opposition": {
+        "_note": "TODO guidance for Moon opposition x body_2: explain how the aspect changes the way support moves.",
+        "Sun": "TODO",
+        "Moon": "TODO",
+        "Mercury": "TODO",
+        "Venus": "TODO",
+        "Mars": "TODO",
+        "Jupiter": "TODO",
+        "Saturn": "TODO",
+        "Uranus": "TODO",
+        "Neptune": "TODO",
+        "Pluto": "TODO",
+        "Chiron": "TODO",
+        "fallback": "TODO"
+      },
+      "Trine": {
+        "_note": "TODO guidance for Moon trine x body_2: explain how the aspect changes the way support moves.",
+        "Sun": "TODO",
+        "Moon": "TODO",
+        "Mercury": "TODO",
+        "Venus": "TODO",
+        "Mars": "TODO",
+        "Jupiter": "TODO",
+        "Saturn": "TODO",
+        "Uranus": "TODO",
+        "Neptune": "TODO",
+        "Pluto": "TODO",
+        "Chiron": "TODO",
+        "fallback": "TODO"
+      },
+      "Square": {
+        "_note": "TODO guidance for Moon square x body_2: explain how the aspect changes the way support moves.",
+        "Sun": "TODO",
+        "Moon": "TODO",
+        "Mercury": "TODO",
+        "Venus": "TODO",
+        "Mars": "TODO",
+        "Jupiter": "TODO",
+        "Saturn": "TODO",
+        "Uranus": "TODO",
+        "Neptune": "TODO",
+        "Pluto": "TODO",
+        "Chiron": "TODO",
+        "fallback": "TODO"
+      },
+      "Sextile": {
+        "_note": "TODO guidance for Moon sextile x body_2: explain how the aspect changes the way support moves.",
+        "Sun": "TODO",
+        "Moon": "TODO",
+        "Mercury": "TODO",
+        "Venus": "TODO",
+        "Mars": "TODO",
+        "Jupiter": "TODO",
+        "Saturn": "TODO",
+        "Uranus": "TODO",
+        "Neptune": "TODO",
+        "Pluto": "TODO",
+        "Chiron": "TODO",
+        "fallback": "TODO"
+      },
+      "fallback": "TODO"
+    },
+    "Mercury": {
+      "_note": "TODO guidance for support-axis entries beginning with Mercury: keep the interpretation about what this planet contributes to support, cohesion, or coordination.",
+      "Conjunction": {
+        "_note": "TODO guidance for Mercury conjunction x body_2: explain how the aspect changes the way support moves.",
+        "Sun": "TODO",
+        "Moon": "TODO",
+        "Mercury": "TODO",
+        "Venus": "TODO",
+        "Mars": "TODO",
+        "Jupiter": "TODO",
+        "Saturn": "TODO",
+        "Uranus": "TODO",
+        "Neptune": "TODO",
+        "Pluto": "TODO",
+        "Chiron": "TODO",
+        "fallback": "TODO"
+      },
+      "Opposition": {
+        "_note": "TODO guidance for Mercury opposition x body_2: explain how the aspect changes the way support moves.",
+        "Sun": "TODO",
+        "Moon": "TODO",
+        "Mercury": "TODO",
+        "Venus": "TODO",
+        "Mars": "TODO",
+        "Jupiter": "TODO",
+        "Saturn": "TODO",
+        "Uranus": "TODO",
+        "Neptune": "TODO",
+        "Pluto": "TODO",
+        "Chiron": "TODO",
+        "fallback": "TODO"
+      },
+      "Trine": {
+        "_note": "TODO guidance for Mercury trine x body_2: explain how the aspect changes the way support moves.",
+        "Sun": "TODO",
+        "Moon": "TODO",
+        "Mercury": "TODO",
+        "Venus": "TODO",
+        "Mars": "TODO",
+        "Jupiter": "TODO",
+        "Saturn": "TODO",
+        "Uranus": "TODO",
+        "Neptune": "TODO",
+        "Pluto": "TODO",
+        "Chiron": "TODO",
+        "fallback": "TODO"
+      },
+      "Square": {
+        "_note": "TODO guidance for Mercury square x body_2: explain how the aspect changes the way support moves.",
+        "Sun": "TODO",
+        "Moon": "TODO",
+        "Mercury": "TODO",
+        "Venus": "TODO",
+        "Mars": "TODO",
+        "Jupiter": "TODO",
+        "Saturn": "TODO",
+        "Uranus": "TODO",
+        "Neptune": "TODO",
+        "Pluto": "TODO",
+        "Chiron": "TODO",
+        "fallback": "TODO"
+      },
+      "Sextile": {
+        "_note": "TODO guidance for Mercury sextile x body_2: explain how the aspect changes the way support moves.",
+        "Sun": "TODO",
+        "Moon": "TODO",
+        "Mercury": "TODO",
+        "Venus": "TODO",
+        "Mars": "TODO",
+        "Jupiter": "TODO",
+        "Saturn": "TODO",
+        "Uranus": "TODO",
+        "Neptune": "TODO",
+        "Pluto": "TODO",
+        "Chiron": "TODO",
+        "fallback": "TODO"
+      },
+      "fallback": "TODO"
+    },
+    "Venus": {
+      "_note": "TODO guidance for support-axis entries beginning with Venus: keep the interpretation about what this planet contributes to support, cohesion, or coordination.",
+      "Conjunction": {
+        "_note": "TODO guidance for Venus conjunction x body_2: explain how the aspect changes the way support moves.",
+        "Sun": "TODO",
+        "Moon": "TODO",
+        "Mercury": "TODO",
+        "Venus": "TODO",
+        "Mars": "TODO",
+        "Jupiter": "TODO",
+        "Saturn": "TODO",
+        "Uranus": "TODO",
+        "Neptune": "TODO",
+        "Pluto": "TODO",
+        "Chiron": "TODO",
+        "fallback": "TODO"
+      },
+      "Opposition": {
+        "_note": "TODO guidance for Venus opposition x body_2: explain how the aspect changes the way support moves.",
+        "Sun": "TODO",
+        "Moon": "TODO",
+        "Mercury": "TODO",
+        "Venus": "TODO",
+        "Mars": "TODO",
+        "Jupiter": "TODO",
+        "Saturn": "TODO",
+        "Uranus": "TODO",
+        "Neptune": "TODO",
+        "Pluto": "TODO",
+        "Chiron": "TODO",
+        "fallback": "TODO"
+      },
+      "Trine": {
+        "_note": "TODO guidance for Venus trine x body_2: explain how the aspect changes the way support moves.",
+        "Sun": "TODO",
+        "Moon": "TODO",
+        "Mercury": "TODO",
+        "Venus": "TODO",
+        "Mars": "TODO",
+        "Jupiter": "TODO",
+        "Saturn": "TODO",
+        "Uranus": "TODO",
+        "Neptune": "TODO",
+        "Pluto": "TODO",
+        "Chiron": "TODO",
+        "fallback": "TODO"
+      },
+      "Square": {
+        "_note": "TODO guidance for Venus square x body_2: explain how the aspect changes the way support moves.",
+        "Sun": "TODO",
+        "Moon": "TODO",
+        "Mercury": "TODO",
+        "Venus": "TODO",
+        "Mars": "TODO",
+        "Jupiter": "TODO",
+        "Saturn": "TODO",
+        "Uranus": "TODO",
+        "Neptune": "TODO",
+        "Pluto": "TODO",
+        "Chiron": "TODO",
+        "fallback": "TODO"
+      },
+      "Sextile": {
+        "_note": "TODO guidance for Venus sextile x body_2: explain how the aspect changes the way support moves.",
+        "Sun": "TODO",
+        "Moon": "TODO",
+        "Mercury": "TODO",
+        "Venus": "TODO",
+        "Mars": "TODO",
+        "Jupiter": "TODO",
+        "Saturn": "TODO",
+        "Uranus": "TODO",
+        "Neptune": "TODO",
+        "Pluto": "TODO",
+        "Chiron": "TODO",
+        "fallback": "TODO"
+      },
+      "fallback": "TODO"
+    },
+    "Mars": {
+      "_note": "TODO guidance for support-axis entries beginning with Mars: keep the interpretation about what this planet contributes to support, cohesion, or coordination.",
+      "Conjunction": {
+        "_note": "TODO guidance for Mars conjunction x body_2: explain how the aspect changes the way support moves.",
+        "Sun": "TODO",
+        "Moon": "TODO",
+        "Mercury": "TODO",
+        "Venus": "TODO",
+        "Mars": "TODO",
+        "Jupiter": "TODO",
+        "Saturn": "TODO",
+        "Uranus": "TODO",
+        "Neptune": "TODO",
+        "Pluto": "TODO",
+        "Chiron": "TODO",
+        "fallback": "TODO"
+      },
+      "Opposition": {
+        "_note": "TODO guidance for Mars opposition x body_2: explain how the aspect changes the way support moves.",
+        "Sun": "TODO",
+        "Moon": "TODO",
+        "Mercury": "TODO",
+        "Venus": "TODO",
+        "Mars": "TODO",
+        "Jupiter": "TODO",
+        "Saturn": "TODO",
+        "Uranus": "TODO",
+        "Neptune": "TODO",
+        "Pluto": "TODO",
+        "Chiron": "TODO",
+        "fallback": "TODO"
+      },
+      "Trine": {
+        "_note": "TODO guidance for Mars trine x body_2: explain how the aspect changes the way support moves.",
+        "Sun": "TODO",
+        "Moon": "TODO",
+        "Mercury": "TODO",
+        "Venus": "TODO",
+        "Mars": "TODO",
+        "Jupiter": "TODO",
+        "Saturn": "TODO",
+        "Uranus": "TODO",
+        "Neptune": "TODO",
+        "Pluto": "TODO",
+        "Chiron": "TODO",
+        "fallback": "TODO"
+      },
+      "Square": {
+        "_note": "TODO guidance for Mars square x body_2: explain how the aspect changes the way support moves.",
+        "Sun": "TODO",
+        "Moon": "TODO",
+        "Mercury": "TODO",
+        "Venus": "TODO",
+        "Mars": "TODO",
+        "Jupiter": "TODO",
+        "Saturn": "TODO",
+        "Uranus": "TODO",
+        "Neptune": "TODO",
+        "Pluto": "TODO",
+        "Chiron": "TODO",
+        "fallback": "TODO"
+      },
+      "Sextile": {
+        "_note": "TODO guidance for Mars sextile x body_2: explain how the aspect changes the way support moves.",
+        "Sun": "TODO",
+        "Moon": "TODO",
+        "Mercury": "TODO",
+        "Venus": "TODO",
+        "Mars": "TODO",
+        "Jupiter": "TODO",
+        "Saturn": "TODO",
+        "Uranus": "TODO",
+        "Neptune": "TODO",
+        "Pluto": "TODO",
+        "Chiron": "TODO",
+        "fallback": "TODO"
+      },
+      "fallback": "TODO"
+    },
+    "Jupiter": {
+      "_note": "TODO guidance for support-axis entries beginning with Jupiter: keep the interpretation about what this planet contributes to support, cohesion, or coordination.",
+      "Conjunction": {
+        "_note": "TODO guidance for Jupiter conjunction x body_2: explain how the aspect changes the way support moves.",
+        "Sun": "TODO",
+        "Moon": "TODO",
+        "Mercury": "TODO",
+        "Venus": "TODO",
+        "Mars": "TODO",
+        "Jupiter": "TODO",
+        "Saturn": "TODO",
+        "Uranus": "TODO",
+        "Neptune": "TODO",
+        "Pluto": "TODO",
+        "Chiron": "TODO",
+        "fallback": "TODO"
+      },
+      "Opposition": {
+        "_note": "TODO guidance for Jupiter opposition x body_2: explain how the aspect changes the way support moves.",
+        "Sun": "TODO",
+        "Moon": "TODO",
+        "Mercury": "TODO",
+        "Venus": "TODO",
+        "Mars": "TODO",
+        "Jupiter": "TODO",
+        "Saturn": "TODO",
+        "Uranus": "TODO",
+        "Neptune": "TODO",
+        "Pluto": "TODO",
+        "Chiron": "TODO",
+        "fallback": "TODO"
+      },
+      "Trine": {
+        "_note": "TODO guidance for Jupiter trine x body_2: explain how the aspect changes the way support moves.",
+        "Sun": "TODO",
+        "Moon": "TODO",
+        "Mercury": "TODO",
+        "Venus": "TODO",
+        "Mars": "TODO",
+        "Jupiter": "TODO",
+        "Saturn": "TODO",
+        "Uranus": "TODO",
+        "Neptune": "TODO",
+        "Pluto": "TODO",
+        "Chiron": "TODO",
+        "fallback": "TODO"
+      },
+      "Square": {
+        "_note": "TODO guidance for Jupiter square x body_2: explain how the aspect changes the way support moves.",
+        "Sun": "TODO",
+        "Moon": "TODO",
+        "Mercury": "TODO",
+        "Venus": "TODO",
+        "Mars": "TODO",
+        "Jupiter": "TODO",
+        "Saturn": "TODO",
+        "Uranus": "TODO",
+        "Neptune": "TODO",
+        "Pluto": "TODO",
+        "Chiron": "TODO",
+        "fallback": "TODO"
+      },
+      "Sextile": {
+        "_note": "TODO guidance for Jupiter sextile x body_2: explain how the aspect changes the way support moves.",
+        "Sun": "TODO",
+        "Moon": "TODO",
+        "Mercury": "TODO",
+        "Venus": "TODO",
+        "Mars": "TODO",
+        "Jupiter": "TODO",
+        "Saturn": "TODO",
+        "Uranus": "TODO",
+        "Neptune": "TODO",
+        "Pluto": "TODO",
+        "Chiron": "TODO",
+        "fallback": "TODO"
+      },
+      "fallback": "TODO"
+    },
+    "Saturn": {
+      "_note": "TODO guidance for support-axis entries beginning with Saturn: keep the interpretation about what this planet contributes to support, cohesion, or coordination.",
+      "Conjunction": {
+        "_note": "TODO guidance for Saturn conjunction x body_2: explain how the aspect changes the way support moves.",
+        "Sun": "TODO",
+        "Moon": "TODO",
+        "Mercury": "TODO",
+        "Venus": "TODO",
+        "Mars": "TODO",
+        "Jupiter": "TODO",
+        "Saturn": "TODO",
+        "Uranus": "TODO",
+        "Neptune": "TODO",
+        "Pluto": "TODO",
+        "Chiron": "TODO",
+        "fallback": "TODO"
+      },
+      "Opposition": {
+        "_note": "TODO guidance for Saturn opposition x body_2: explain how the aspect changes the way support moves.",
+        "Sun": "TODO",
+        "Moon": "TODO",
+        "Mercury": "TODO",
+        "Venus": "TODO",
+        "Mars": "TODO",
+        "Jupiter": "TODO",
+        "Saturn": "TODO",
+        "Uranus": "TODO",
+        "Neptune": "TODO",
+        "Pluto": "TODO",
+        "Chiron": "TODO",
+        "fallback": "TODO"
+      },
+      "Trine": {
+        "_note": "TODO guidance for Saturn trine x body_2: explain how the aspect changes the way support moves.",
+        "Sun": "TODO",
+        "Moon": "TODO",
+        "Mercury": "TODO",
+        "Venus": "TODO",
+        "Mars": "TODO",
+        "Jupiter": "TODO",
+        "Saturn": "TODO",
+        "Uranus": "TODO",
+        "Neptune": "TODO",
+        "Pluto": "TODO",
+        "Chiron": "TODO",
+        "fallback": "TODO"
+      },
+      "Square": {
+        "_note": "TODO guidance for Saturn square x body_2: explain how the aspect changes the way support moves.",
+        "Sun": "TODO",
+        "Moon": "TODO",
+        "Mercury": "TODO",
+        "Venus": "TODO",
+        "Mars": "TODO",
+        "Jupiter": "TODO",
+        "Saturn": "TODO",
+        "Uranus": "TODO",
+        "Neptune": "TODO",
+        "Pluto": "TODO",
+        "Chiron": "TODO",
+        "fallback": "TODO"
+      },
+      "Sextile": {
+        "_note": "TODO guidance for Saturn sextile x body_2: explain how the aspect changes the way support moves.",
+        "Sun": "TODO",
+        "Moon": "TODO",
+        "Mercury": "TODO",
+        "Venus": "TODO",
+        "Mars": "TODO",
+        "Jupiter": "TODO",
+        "Saturn": "TODO",
+        "Uranus": "TODO",
+        "Neptune": "TODO",
+        "Pluto": "TODO",
+        "Chiron": "TODO",
+        "fallback": "TODO"
+      },
+      "fallback": "TODO"
+    },
+    "Uranus": {
+      "_note": "TODO guidance for support-axis entries beginning with Uranus: keep the interpretation about what this planet contributes to support, cohesion, or coordination.",
+      "Conjunction": {
+        "_note": "TODO guidance for Uranus conjunction x body_2: explain how the aspect changes the way support moves.",
+        "Sun": "TODO",
+        "Moon": "TODO",
+        "Mercury": "TODO",
+        "Venus": "TODO",
+        "Mars": "TODO",
+        "Jupiter": "TODO",
+        "Saturn": "TODO",
+        "Uranus": "TODO",
+        "Neptune": "TODO",
+        "Pluto": "TODO",
+        "Chiron": "TODO",
+        "fallback": "TODO"
+      },
+      "Opposition": {
+        "_note": "TODO guidance for Uranus opposition x body_2: explain how the aspect changes the way support moves.",
+        "Sun": "TODO",
+        "Moon": "TODO",
+        "Mercury": "TODO",
+        "Venus": "TODO",
+        "Mars": "TODO",
+        "Jupiter": "TODO",
+        "Saturn": "TODO",
+        "Uranus": "TODO",
+        "Neptune": "TODO",
+        "Pluto": "TODO",
+        "Chiron": "TODO",
+        "fallback": "TODO"
+      },
+      "Trine": {
+        "_note": "TODO guidance for Uranus trine x body_2: explain how the aspect changes the way support moves.",
+        "Sun": "TODO",
+        "Moon": "TODO",
+        "Mercury": "TODO",
+        "Venus": "TODO",
+        "Mars": "TODO",
+        "Jupiter": "TODO",
+        "Saturn": "TODO",
+        "Uranus": "TODO",
+        "Neptune": "TODO",
+        "Pluto": "TODO",
+        "Chiron": "TODO",
+        "fallback": "TODO"
+      },
+      "Square": {
+        "_note": "TODO guidance for Uranus square x body_2: explain how the aspect changes the way support moves.",
+        "Sun": "TODO",
+        "Moon": "TODO",
+        "Mercury": "TODO",
+        "Venus": "TODO",
+        "Mars": "TODO",
+        "Jupiter": "TODO",
+        "Saturn": "TODO",
+        "Uranus": "TODO",
+        "Neptune": "TODO",
+        "Pluto": "TODO",
+        "Chiron": "TODO",
+        "fallback": "TODO"
+      },
+      "Sextile": {
+        "_note": "TODO guidance for Uranus sextile x body_2: explain how the aspect changes the way support moves.",
+        "Sun": "TODO",
+        "Moon": "TODO",
+        "Mercury": "TODO",
+        "Venus": "TODO",
+        "Mars": "TODO",
+        "Jupiter": "TODO",
+        "Saturn": "TODO",
+        "Uranus": "TODO",
+        "Neptune": "TODO",
+        "Pluto": "TODO",
+        "Chiron": "TODO",
+        "fallback": "TODO"
+      },
+      "fallback": "TODO"
+    },
+    "Neptune": {
+      "_note": "TODO guidance for support-axis entries beginning with Neptune: keep the interpretation about what this planet contributes to support, cohesion, or coordination.",
+      "Conjunction": {
+        "_note": "TODO guidance for Neptune conjunction x body_2: explain how the aspect changes the way support moves.",
+        "Sun": "TODO",
+        "Moon": "TODO",
+        "Mercury": "TODO",
+        "Venus": "TODO",
+        "Mars": "TODO",
+        "Jupiter": "TODO",
+        "Saturn": "TODO",
+        "Uranus": "TODO",
+        "Neptune": "TODO",
+        "Pluto": "TODO",
+        "Chiron": "TODO",
+        "fallback": "TODO"
+      },
+      "Opposition": {
+        "_note": "TODO guidance for Neptune opposition x body_2: explain how the aspect changes the way support moves.",
+        "Sun": "TODO",
+        "Moon": "TODO",
+        "Mercury": "TODO",
+        "Venus": "TODO",
+        "Mars": "TODO",
+        "Jupiter": "TODO",
+        "Saturn": "TODO",
+        "Uranus": "TODO",
+        "Neptune": "TODO",
+        "Pluto": "TODO",
+        "Chiron": "TODO",
+        "fallback": "TODO"
+      },
+      "Trine": {
+        "_note": "TODO guidance for Neptune trine x body_2: explain how the aspect changes the way support moves.",
+        "Sun": "TODO",
+        "Moon": "TODO",
+        "Mercury": "TODO",
+        "Venus": "TODO",
+        "Mars": "TODO",
+        "Jupiter": "TODO",
+        "Saturn": "TODO",
+        "Uranus": "TODO",
+        "Neptune": "TODO",
+        "Pluto": "TODO",
+        "Chiron": "TODO",
+        "fallback": "TODO"
+      },
+      "Square": {
+        "_note": "TODO guidance for Neptune square x body_2: explain how the aspect changes the way support moves.",
+        "Sun": "TODO",
+        "Moon": "TODO",
+        "Mercury": "TODO",
+        "Venus": "TODO",
+        "Mars": "TODO",
+        "Jupiter": "TODO",
+        "Saturn": "TODO",
+        "Uranus": "TODO",
+        "Neptune": "TODO",
+        "Pluto": "TODO",
+        "Chiron": "TODO",
+        "fallback": "TODO"
+      },
+      "Sextile": {
+        "_note": "TODO guidance for Neptune sextile x body_2: explain how the aspect changes the way support moves.",
+        "Sun": "TODO",
+        "Moon": "TODO",
+        "Mercury": "TODO",
+        "Venus": "TODO",
+        "Mars": "TODO",
+        "Jupiter": "TODO",
+        "Saturn": "TODO",
+        "Uranus": "TODO",
+        "Neptune": "TODO",
+        "Pluto": "TODO",
+        "Chiron": "TODO",
+        "fallback": "TODO"
+      },
+      "fallback": "TODO"
+    },
+    "Pluto": {
+      "_note": "TODO guidance for support-axis entries beginning with Pluto: keep the interpretation about what this planet contributes to support, cohesion, or coordination.",
+      "Conjunction": {
+        "_note": "TODO guidance for Pluto conjunction x body_2: explain how the aspect changes the way support moves.",
+        "Sun": "TODO",
+        "Moon": "TODO",
+        "Mercury": "TODO",
+        "Venus": "TODO",
+        "Mars": "TODO",
+        "Jupiter": "TODO",
+        "Saturn": "TODO",
+        "Uranus": "TODO",
+        "Neptune": "TODO",
+        "Pluto": "TODO",
+        "Chiron": "TODO",
+        "fallback": "TODO"
+      },
+      "Opposition": {
+        "_note": "TODO guidance for Pluto opposition x body_2: explain how the aspect changes the way support moves.",
+        "Sun": "TODO",
+        "Moon": "TODO",
+        "Mercury": "TODO",
+        "Venus": "TODO",
+        "Mars": "TODO",
+        "Jupiter": "TODO",
+        "Saturn": "TODO",
+        "Uranus": "TODO",
+        "Neptune": "TODO",
+        "Pluto": "TODO",
+        "Chiron": "TODO",
+        "fallback": "TODO"
+      },
+      "Trine": {
+        "_note": "TODO guidance for Pluto trine x body_2: explain how the aspect changes the way support moves.",
+        "Sun": "TODO",
+        "Moon": "TODO",
+        "Mercury": "TODO",
+        "Venus": "TODO",
+        "Mars": "TODO",
+        "Jupiter": "TODO",
+        "Saturn": "TODO",
+        "Uranus": "TODO",
+        "Neptune": "TODO",
+        "Pluto": "TODO",
+        "Chiron": "TODO",
+        "fallback": "TODO"
+      },
+      "Square": {
+        "_note": "TODO guidance for Pluto square x body_2: explain how the aspect changes the way support moves.",
+        "Sun": "TODO",
+        "Moon": "TODO",
+        "Mercury": "TODO",
+        "Venus": "TODO",
+        "Mars": "TODO",
+        "Jupiter": "TODO",
+        "Saturn": "TODO",
+        "Uranus": "TODO",
+        "Neptune": "TODO",
+        "Pluto": "TODO",
+        "Chiron": "TODO",
+        "fallback": "TODO"
+      },
+      "Sextile": {
+        "_note": "TODO guidance for Pluto sextile x body_2: explain how the aspect changes the way support moves.",
+        "Sun": "TODO",
+        "Moon": "TODO",
+        "Mercury": "TODO",
+        "Venus": "TODO",
+        "Mars": "TODO",
+        "Jupiter": "TODO",
+        "Saturn": "TODO",
+        "Uranus": "TODO",
+        "Neptune": "TODO",
+        "Pluto": "TODO",
+        "Chiron": "TODO",
+        "fallback": "TODO"
+      },
+      "fallback": "TODO"
+    },
+    "Chiron": {
+      "_note": "TODO guidance for support-axis entries beginning with Chiron: keep the interpretation about what this planet contributes to support, cohesion, or coordination.",
+      "Conjunction": {
+        "_note": "TODO guidance for Chiron conjunction x body_2: explain how the aspect changes the way support moves.",
+        "Sun": "TODO",
+        "Moon": "TODO",
+        "Mercury": "TODO",
+        "Venus": "TODO",
+        "Mars": "TODO",
+        "Jupiter": "TODO",
+        "Saturn": "TODO",
+        "Uranus": "TODO",
+        "Neptune": "TODO",
+        "Pluto": "TODO",
+        "Chiron": "TODO",
+        "fallback": "TODO"
+      },
+      "Opposition": {
+        "_note": "TODO guidance for Chiron opposition x body_2: explain how the aspect changes the way support moves.",
+        "Sun": "TODO",
+        "Moon": "TODO",
+        "Mercury": "TODO",
+        "Venus": "TODO",
+        "Mars": "TODO",
+        "Jupiter": "TODO",
+        "Saturn": "TODO",
+        "Uranus": "TODO",
+        "Neptune": "TODO",
+        "Pluto": "TODO",
+        "Chiron": "TODO",
+        "fallback": "TODO"
+      },
+      "Trine": {
+        "_note": "TODO guidance for Chiron trine x body_2: explain how the aspect changes the way support moves.",
+        "Sun": "TODO",
+        "Moon": "TODO",
+        "Mercury": "TODO",
+        "Venus": "TODO",
+        "Mars": "TODO",
+        "Jupiter": "TODO",
+        "Saturn": "TODO",
+        "Uranus": "TODO",
+        "Neptune": "TODO",
+        "Pluto": "TODO",
+        "Chiron": "TODO",
+        "fallback": "TODO"
+      },
+      "Square": {
+        "_note": "TODO guidance for Chiron square x body_2: explain how the aspect changes the way support moves.",
+        "Sun": "TODO",
+        "Moon": "TODO",
+        "Mercury": "TODO",
+        "Venus": "TODO",
+        "Mars": "TODO",
+        "Jupiter": "TODO",
+        "Saturn": "TODO",
+        "Uranus": "TODO",
+        "Neptune": "TODO",
+        "Pluto": "TODO",
+        "Chiron": "TODO",
+        "fallback": "TODO"
+      },
+      "Sextile": {
+        "_note": "TODO guidance for Chiron sextile x body_2: explain how the aspect changes the way support moves.",
+        "Sun": "TODO",
+        "Moon": "TODO",
+        "Mercury": "TODO",
+        "Venus": "TODO",
+        "Mars": "TODO",
+        "Jupiter": "TODO",
+        "Saturn": "TODO",
+        "Uranus": "TODO",
+        "Neptune": "TODO",
+        "Pluto": "TODO",
+        "Chiron": "TODO",
+        "fallback": "TODO"
+      },
+      "fallback": "TODO"
+    }
+  },
+  "fallback": "TODO"
+}

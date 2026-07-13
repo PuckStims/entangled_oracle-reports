@@ -1,0 +1,67 @@
+{
+  "_note": "Soul Ecosystem expansion scaffold for Living Integration. integration_bridge = convergence theme slug -> dominant_eas_dimension. Use this section to connect standard natal architecture to the EO layer without implying that the EO layer replaces the chart.",
+  "integration_bridge": {
+    "_note": "TODO guidance: bridge the standard natal convergence theme and the dominant EO dimension in clean, usable language. This should feel connective, not like an upsell or a second report.",
+    "vocational_public_structure": {
+      "_note": "TODO guidance for vocational_public_structure: connect this structural theme to the dominant EO current in a way that preserves both layers.",
+      "KVQ": "TODO",
+      "MKI": "TODO",
+      "RWI": "TODO",
+      "DFIS": "TODO",
+      "NGE": "TODO",
+      "CATALYST": "TODO",
+      "fallback": "TODO"
+    },
+    "relational_structure": {
+      "_note": "TODO guidance for relational_structure: connect this structural theme to the dominant EO current in a way that preserves both layers.",
+      "KVQ": "TODO",
+      "MKI": "TODO",
+      "RWI": "TODO",
+      "DFIS": "TODO",
+      "NGE": "TODO",
+      "CATALYST": "TODO",
+      "fallback": "TODO"
+    },
+    "inner_life_restoration_structure": {
+      "_note": "TODO guidance for inner_life_restoration_structure: connect this structural theme to the dominant EO current in a way that preserves both layers.",
+      "KVQ": "TODO",
+      "MKI": "TODO",
+      "RWI": "TODO",
+      "DFIS": "TODO",
+      "NGE": "TODO",
+      "CATALYST": "TODO",
+      "fallback": "TODO"
+    },
+    "resource_material_structure": {
+      "_note": "TODO guidance for resource_material_structure: connect this structural theme to the dominant EO current in a way that preserves both layers.",
+      "KVQ": "TODO",
+      "MKI": "TODO",
+      "RWI": "TODO",
+      "DFIS": "TODO",
+      "NGE": "TODO",
+      "CATALYST": "TODO",
+      "fallback": "TODO"
+    },
+    "learning_meaning_structure": {
+      "_note": "TODO guidance for learning_meaning_structure: connect this structural theme to the dominant EO current in a way that preserves both layers.",
+      "KVQ": "TODO",
+      "MKI": "TODO",
+      "RWI": "TODO",
+      "DFIS": "TODO",
+      "NGE": "TODO",
+      "CATALYST": "TODO",
+      "fallback": "TODO"
+    },
+    "creative_pleasure_structure": {
+      "_note": "TODO guidance for creative_pleasure_structure: connect this structural theme to the dominant EO current in a way that preserves both layers.",
+      "KVQ": "TODO",
+      "MKI": "TODO",
+      "RWI": "TODO",
+      "DFIS": "TODO",
+      "NGE": "TODO",
+      "CATALYST": "TODO",
+      "fallback": "TODO"
+    }
+  },
+  "fallback": "TODO"
+}

@@ -1,0 +1,123 @@
+{
+  "_note": "Key path: aspect_character -> guidance_mode -> variant. Variants let the weekly selector avoid reusing the same guidance block in one report.",
+  "fallback": {
+    "fallback": {
+      "v1": "Use this moment to notice the pattern before deciding whether it needs action.",
+      "v2": "Let this contact clarify what is active, then choose a response small enough to test.",
+      "v3": "Treat this as timing information: useful, specific, and not the whole story by itself.",
+      "v4": "Let the contact name the active thread without asking it to explain everything.",
+      "v5": "Use this as evidence, then wait for the week to show what kind of response it deserves.",
+      "v6": "Keep the signal close to lived facts: what changed, what repeated, and what became easier to see?"
+    }
+  },
+  "flowing": {
+    "fallback": {
+      "v1": "Use this moment to accept available support and move the already-open thread one step forward.",
+      "v2": "Let the ease become practical. Choose the next step that is already partly available.",
+      "v3": "Do not overcomplicate the opening. Give the supported thread one clean action.",
+      "v4": "Let the simpler route count. Ease is still information when it is specific.",
+      "v5": "Use the opening while it is fresh, before turning it into a problem to solve.",
+      "v6": "Move with the part of the pattern that is already cooperating."
+    },
+    "action": {
+      "v1": "Use this moment for direct movement: send it, start it, ask it, or test the route while the door is open.",
+      "v2": "Act while the signal is warm, but keep the action small enough to learn from.",
+      "v3": "Let initiative stay concrete here. A visible next step matters more than a perfect plan.",
+      "v4": "Choose the action that can be completed or clearly begun today.",
+      "v5": "Do one thing that gives the momentum somewhere real to go.",
+      "v6": "Let movement answer the question better than more planning would."
+    },
+    "receiving": {
+      "v1": "Let support land before you turn it into another responsibility.",
+      "v2": "Receive what is available here: ease, attention, help, pleasure, or a wider margin.",
+      "v3": "Use this contact to notice what feels genuinely good without immediately justifying it.",
+      "v4": "Let the good thing be simple before you make it useful.",
+      "v5": "Notice where life offers more room than you expected, and take the room seriously.",
+      "v6": "Accept the easier exchange without discounting it as luck."
+    },
+    "pacing": {
+      "v1": "Let the body set the tempo. The useful move may be responding sooner, not pushing harder.",
+      "v2": "Use this cue to pace the day around what feels naturally available.",
+      "v3": "Follow the softer opening without needing it to become a major decision.",
+      "v4": "Let timing matter more than force here.",
+      "v5": "Check capacity before turning a small opening into a full commitment.",
+      "v6": "Respond at the pace the moment can actually hold."
+    }
+  },
+  "challenging": {
+    "fallback": {
+      "v1": "Use this moment to adjust expectations, name the friction, and choose the next workable step.",
+      "v2": "Let the pressure become information before it becomes a verdict.",
+      "v3": "Respond to the mismatch directly, but keep the response proportionate to the actual signal.",
+      "v4": "Clarify what is tight before deciding what has to change.",
+      "v5": "Let the contact show where the old approach has become too expensive.",
+      "v6": "Name the friction in plain terms; that alone may reduce its size."
+    },
+    "conversation": {
+      "v1": "Say the smaller true sentence before it becomes the larger one.",
+      "v2": "Use this contact for clarification: what was meant, what was heard, and what needs cleaner language?",
+      "v3": "A direct request or refusal works better here than hints, tests, or private rehearsals.",
+      "v4": "Ask the clarifying question before filling in the silence yourself.",
+      "v5": "Keep the sentence specific enough that someone else can actually answer it.",
+      "v6": "Let the conversation solve one real confusion, not every old one."
+    },
+    "structure": {
+      "v1": "Give the pressure a container: a limit, schedule, budget, repair plan, or agreed next step.",
+      "v2": "The useful response is structural. Make the demand smaller, clearer, and easier to hold.",
+      "v3": "Do not solve the whole pattern. Build the one support that keeps this contact from spilling everywhere.",
+      "v4": "Choose the rule, boundary, or sequence that makes the pressure less shapeless.",
+      "v5": "A practical container will help more than another round of effort.",
+      "v6": "Let structure do some of the carrying so willpower does not have to do all of it."
+    },
+    "discernment": {
+      "v1": "Separate signal from atmosphere before acting on either one.",
+      "v2": "Use this contact to verify what is real, what is implied, and what simply needs more time.",
+      "v3": "Let uncertainty slow the decision, not erase the meaning.",
+      "v4": "Do not make a permanent conclusion from a blurry signal.",
+      "v5": "Check the evidence twice: once for facts, once for feeling.",
+      "v6": "Let the unclear part stay named as unclear until more evidence arrives."
+    },
+    "adjustment": {
+      "v1": "Make the smallest adjustment that changes the pressure without pretending it disappears.",
+      "v2": "Treat the disruption as design feedback: what needs more room, clearer terms, or a different route?",
+      "v3": "Shift the pattern where it is actually tight, not everywhere at once.",
+      "v4": "Change the part of the setup that keeps producing the same snag.",
+      "v5": "Let the interruption point to the outdated assumption.",
+      "v6": "Choose a revision that gives the system more room to move."
+    },
+    "visibility": {
+      "v1": "Notice what becomes harder to hide here, then decide how much visibility is actually useful.",
+      "v2": "Let the visible pressure clarify the private choice underneath it.",
+      "v3": "This contact may ask you to be seen more accurately, not more dramatically.",
+      "v4": "Bring the relevant part into view without turning it into a performance.",
+      "v5": "Let the exposure be precise: what needs to be known, and by whom?",
+      "v6": "Use visibility as information, not as a demand to prove yourself."
+    }
+  },
+  "neutral": {
+    "fallback": {
+      "v1": "Use this moment to notice the pattern before deciding whether it needs action.",
+      "v2": "Let the cue repeat or clarify before you force a conclusion.",
+      "v3": "Track what this contact points toward; the useful answer may arrive through sequence.",
+      "v4": "Let observation be the work for now.",
+      "v5": "Name the cue and keep watching what gathers around it.",
+      "v6": "Give the signal enough room to show whether it is passing or important."
+    },
+    "visibility": {
+      "v1": "Let one thing become a little more visible without asking it to explain the whole week.",
+      "v2": "Use this moment to name what has been sitting in the background.",
+      "v3": "Visibility is enough here. Action can wait until the pattern is clearer.",
+      "v4": "Notice what wants to be acknowledged, even if it is not ready to be solved.",
+      "v5": "Let the visible clue stay modest and still count.",
+      "v6": "Use this as a naming moment, not necessarily a doing moment."
+    },
+    "pacing": {
+      "v1": "Let the timing cue set the pace rather than forcing an immediate outcome.",
+      "v2": "Use this as a rhythm check: what speeds up, what slows down, and what feels easier to carry?",
+      "v3": "The moment is useful even if it only changes your tempo.",
+      "v4": "Let the day breathe around this cue before choosing a response.",
+      "v5": "Adjust the pace first; the meaning may become clearer afterward.",
+      "v6": "This contact may be more about timing than decision."
+    }
+  }
+}

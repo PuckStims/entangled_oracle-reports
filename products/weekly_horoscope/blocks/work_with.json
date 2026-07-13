@@ -1,0 +1,19 @@
+{
+  "_note": "Key path: aspect_character -> guidance_mode. Practical guidance should rotate mode rather than defaulting to boundary/pacing every time.",
+  "fallback": "Let the strongest contact identify the working edge, then use the surrounding {count} selected {moment_label} as pacing cues. The point is not to solve the whole life pattern at once; it is to respond to the part of it that is actually active this week.",
+  "flowing": {
+    "fallback": "Move with what is already opening. Choose one practical next step in {strongest_house}, then let the other {count} selected {moment_label} show you when to press, when to pause, and when to stop improving something that is already working.",
+    "receiving": "Practice receiving without immediately converting the gift into a debt. If the week offers ease, warmth, help, attention, or room to grow, let some of it land before deciding what it means.",
+    "action": "Use the opening while it is live. Send the message, make the request, test the route, or move the task one visible step forward. Keep it concrete enough that the week can answer back."
+  },
+  "challenging": {
+    "fallback": "Work with the friction by making it observable. Name the mismatch, reduce one avoidable complication, and choose the next response that can actually be carried through the week.",
+    "conversation": "Say the smaller true sentence before it becomes the bigger one. This does not require a dramatic confrontation; it asks for cleaner language, fewer hints, and a willingness to check what the other person actually heard.",
+    "structure": "Give the pressure a container: a limit, schedule, budget, repair plan, or agreed next step. The structure does not have to solve everything. It only has to make the active demand less shapeless.",
+    "discernment": "Do not treat every unclear feeling as a verdict. Separate signal from atmosphere: what happened, what was implied, what you can verify, and what simply needs more time before it is acted on."
+  },
+  "neutral": {
+    "fallback": "Track the repeating cue instead of forcing a conclusion. The useful work is noticing what returns, what changes when you give it attention, and what becomes easier to name by the end of the week.",
+    "visibility": "Let one thing be more visible than usual, even if it is still unfinished. A pattern can become workable once it leaves the private background and has a place in the actual day."
+  }
+}

@@ -5,6 +5,40 @@ item to `REVISIONS.md` when it is actually finished.
 
 ---
 
+## 2026-07-13 report-suite closeout + Soul Ecosystem expansion runway
+
+Use `agents/2026-07-13_REPORT_SUITE_UPGRADE_DOC.md` as the July 13 source
+of truth before opening the next content / polish pass. That document
+captures the active files, rendered QA artifacts, guardrails, and the
+recommended Soul Ecosystem expansion structure.
+
+**Open follow-up from the current suite pass:**
+
+- Run the final audit against the full report suite using the actual
+  guardrails, not just the prompt list remembered in chat:
+  preserve EO voice, preserve technical transparency, avoid excessive
+  disclaimers, avoid engine rewrites, avoid scope flattening, avoid
+  sterile overcorrection.
+- Build the `Soul Ecosystem expansion matrix` from the live template:
+  `current section` / `add standard natal support` /
+  `add established astro-psych support` / `keep proprietary only`.
+- Implement Soul Ecosystem expansion only after the matrix exists, using
+  the repo-local prose guides as the authority when prompt wording and
+  editorial standards disagree.
+- Re-run HTML and production-route PDF QA after the expansion pass,
+  especially for:
+  - Year Ahead metadata consistency
+  - Weekly timing-entry cleanliness
+  - Daily compactness / intended page count
+  - copy-paste text-layer integrity
+
+**Do not lose this distinction:** the next Soul Ecosystem pass should not
+retreat from proprietary EO language. The goal is to make the natal /
+open-astrology foundation more explicit so the proprietary layer reads as
+earned depth rather than unsupported abstraction.
+
+---
+
 ## Professional-grade formula/computation/backend upgrade - status (2026-07-10)
 
 See `agents/PROFESSIONAL_GRADE_UPGRADE_DIRECTIVES.md` for the tier
