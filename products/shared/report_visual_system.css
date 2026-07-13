@@ -37,6 +37,14 @@ body.report-shell {
   --print-ink-muted: #555555;
   --print-ink-soft: #888888;
   --print-ink-faint: #aaaaaa;
+  --mag-paper: #fbfaf7;
+  --mag-card: #f7f7fa;
+  --mag-card-warm: #fffdfa;
+  --mag-rule: #d8d4df;
+  --mag-rule-soft: #e4dfeb;
+  --mag-ink: #17263d;
+  --mag-soft: #223654;
+  --mag-faint: #30486c;
 }
 
 .report-shell header,
@@ -264,5 +272,92 @@ body.report-shell {
   .trust-note h3,
   .trust-note strong {
     color: var(--print-ink-strong);
+  }
+
+  body.report-shell.report-magazine {
+    background: #ffffff !important;
+    color: var(--mag-ink) !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  body.report-shell.report-magazine header {
+    margin: 0 0 0.28in;
+    padding: 0 0 0.16in;
+    border-bottom: 1px solid var(--mag-rule);
+  }
+
+  body.report-shell.report-magazine .report-title,
+  body.report-shell.report-magazine .meta,
+  body.report-shell.report-magazine .section-label,
+  body.report-shell.report-magazine footer {
+    color: var(--print-ink-muted);
+  }
+
+  body.report-shell.report-magazine .report-record-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.09in;
+    margin: 0 0 0.22in;
+  }
+
+  body.report-shell.report-magazine .report-record-card,
+  body.report-shell.report-magazine .suite-note,
+  body.report-shell.report-magazine .trust-note {
+    background: var(--mag-card);
+    border-color: var(--mag-rule);
+    box-shadow: none;
+  }
+
+  body.report-shell.report-magazine .suite-note {
+    border-left-color: #8a681d;
+  }
+
+  body.report-shell.report-magazine .report-record-label,
+  body.report-shell.report-magazine .report-record-detail {
+    color: var(--print-ink-muted);
+  }
+
+  body.report-shell.report-magazine .report-record-value,
+  body.report-shell.report-magazine .suite-note h3,
+  body.report-shell.report-magazine .trust-note h3,
+  body.report-shell.report-magazine .trust-note strong {
+    color: var(--mag-ink);
+  }
+
+  body.report-shell.report-magazine .report-record-card,
+  body.report-shell.report-magazine .suite-note,
+  body.report-shell.report-magazine .trust-note,
+  body.report-shell.report-magazine .forecast-intro,
+  body.report-shell.report-magazine .season-overview,
+  body.report-shell.report-magazine .themes-section,
+  body.report-shell.report-magazine .timing-section,
+  body.report-shell.report-magazine .chart-snapshot,
+  body.report-shell.report-magazine .featured-section,
+  body.report-shell.report-magazine .guidance-card,
+  body.report-shell.report-magazine .retrograde-climate,
+  body.report-shell.report-magazine .theme-card,
+  body.report-shell.report-magazine .report-intro-card,
+  body.report-shell.report-magazine .hierarchy-card,
+  body.report-shell.report-magazine .map-card,
+  body.report-shell.report-magazine .support-card,
+  body.report-shell.report-magazine .proprietary-depth,
+  body.report-shell.report-magazine .proprietary-depth-card,
+  body.report-shell.report-magazine .translator-hook,
+  body.report-shell.report-magazine .chart-wheel-container,
+  body.report-shell.report-magazine .weekly-guidance,
+  body.report-shell.report-magazine .moment,
+  body.report-shell.report-magazine .method-note,
+  body.report-shell.report-magazine .proprietary-card {
+    background: var(--mag-card-warm);
+    border-color: var(--mag-rule);
+    box-shadow: none;
+  }
+
+  body.report-shell.report-magazine .chart-wheel-container,
+  body.report-shell.report-magazine .theme-card,
+  body.report-shell.report-magazine .moment,
+  body.report-shell.report-magazine .proprietary-card {
+    border-left-color: var(--mag-rule);
   }
 }
