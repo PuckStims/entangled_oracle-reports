@@ -78,6 +78,7 @@ for the full migration audit before assuming anything needs rebuilding.
 
 ## Supporting Docs
 
+- [PROJECT_HISTORY.md](C:/entangled_oracle/PROJECT_HISTORY.md) — concise development timeline for partners, collaborators, and investors
 - [ARCHITECTURE.md](C:/entangled_oracle/ARCHITECTURE.md)
 - [METHODS.md](C:/entangled_oracle/METHODS.md)
 - [products/shared/CLIENT_METHOD_AND_LIMITS.md](C:/entangled_oracle/products/shared/CLIENT_METHOD_AND_LIMITS.md)
