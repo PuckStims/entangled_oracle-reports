@@ -1,200 +1,49 @@
 # Entangled Oracle Location Services Product Stack
 
-**Status:** Product goal specification.  
-**Scope:** End-state product stack for EO locational astrology services. This document defines the reports and service experiences the backend must ultimately support; it is not a tentative implementation phase plan.
+**Status:** Content-lead end-state specification.  
+**Scope:** Product goals, evidence expectations, report sections, and claim boundaries for the Location Services family.  
+**Primary anchor:** Place Resonance.
 
 ## Product Thesis
 
-Entangled Oracle Location Services turns locational astrology into evidence-routed place intelligence: not a map of generic planetary keywords, not a ranked list of "best places," and not a substitute for practical relocation judgment. The product stack explains how a specific place reorganizes the expression of a natal chart, how multiple places differ, and how geographic symbolism can be read with calculation transparency, interpretive discipline, and EO's adult report voice.
+Location Services turns place into an auditable symbolic layer. The work is not to rank the world from best to worst, and it is not to reduce a destination to a planetary keyword. The stack explains how a specific place changes the expression of an existing natal chart by bringing certain angles, houses, planets, and life arenas forward.
 
-The central promise is simple:
+Core promise:
 
-> A place does not rewrite the chart. It changes which parts of the chart become louder, more visible, more private, more pressured, more available, or more consequential.
+```text
+A place does not rewrite the chart.
+It changes which parts of the chart become louder, more visible, more private,
+more pressured, more available, or more consequential.
+```
 
-The stack is built around five end-goal products:
+## Shared Product Rules
+
+- Every claim must be traceable to a structured evidence record.
+- Relocation preserves the original birth UTC instant and recalculates angles/houses for the destination.
+- Tropical zodiac and Whole Sign houses remain the production baseline.
+- Natal condition modifies relocated expression; relocation does not overwrite natal condition.
+- Static place evidence comes before map lines, Local Space, parans, or dynamic timing.
+- No product declares a single universal best place.
+- No product claims guaranteed love, wealth, safety, illness, destiny, success, or failure.
+- Technical transparency is part of the premium product, not a backend footnote.
+
+## Product Ladder
 
 1. **Place Resonance** - one-location depth report.
-2. **Between Places** - multi-location comparison report.
+2. **Between Places** - comparison report across selected locations.
 3. **World Lines Companion** - astrocartography map evidence companion.
 4. **Local Compass** - Local Space directional report.
 5. **Living Map** - time-sensitive geographic forecast layer.
 
-All five products share a canonical evidence backbone so prose, maps, comparison tables, and technical appendices are generated from the same auditable location record.
-
-## Product Principles
-
-### Evidence Before Interpretation
-
-Every reader-facing claim must trace back to explicit location evidence: relocated angles, relocated houses, angular contacts, nearby planetary lines, distance bands, Local Space direction, dynamic timing evidence, or a clearly labeled synthesis of multiple signals.
-
-### Location-Specific, Not Keyword-Based
-
-The product stack must not reduce locational astrology to `Venus = love`, `Jupiter = luck`, or `Pluto = danger`. Planetary function, angle, natal condition, house context, distance, purpose lens, and uncertainty all modify the final claim.
-
-### No Universal Best Place
-
-EO does not declare one city "best." It identifies fit, emphasis, contrast, pressure, support, and purpose-specific suitability. A city can be better for visibility and worse for restoration. A place can be compelling for a short stay and demanding as a permanent home.
-
-### Confident Interpretation, Bounded Claims
-
-The prose should make clear interpretive moves without pretending to predict objective life outcomes. EO is not hesitant about symbolic meaning, but it does not claim that a location guarantees love, success, illness, wealth, danger, or spiritual destiny.
-
-### Technical Transparency Is Part Of The Product
-
-The technical appendix is not afterthought documentation. It is part of the premium trust layer: coordinates, time handling, relocated angles, house shifts, line distances, angular contacts, supported objects, excluded methods, confidence notes, and evidence rankings should be inspectable.
-
-### Product Voice
-
-Location Services inherits the EO prose standard:
-
-- Translate machinery into lived-life language by default.
-- Name the mechanism when it helps the reader understand why they received a claim.
-- Avoid generic caution loops and decorative vagueness.
-- Give each section a distinct job.
-- Keep deterministic future-fact claims out of production surfaces.
-- Use professional symbolic timing language rather than horoscope-app gimmickry.
-
-## Shared Location Evidence Record
-
-Every product writes from a shared canonical object rather than directly from raw calculations.
-
-```text
-LocationEvidenceRecord
-  identity
-    subject_id
-    report_id
-    product_id
-    generated_at
-
-  birth_context
-    birth_date
-    birth_time
-    birth_location
-    birth_timezone
-    birth_time_confidence
-    utc_instant
-    calculation_profile
-
-  destination_context
-    location_id
-    display_name
-    latitude
-    longitude
-    elevation_m
-    timezone
-    coordinate_precision
-    user_relationship
-    purpose_lens
-
-  relocated_chart
-    ascendant
-    midheaven
-    descendant
-    imum_coeli
-    house_system
-    house_cusps
-    planet_house_changes
-    relocated_angle_contacts
-    relocated_chart_ruler_notes
-
-  astrocartography
-    nearest_lines
-    line_distances
-    nearest_points
-    distance_bands
-    line_strength_estimates
-    line_clusters
-    excluded_line_claims
-
-  natal_modifiers
-    natal_condition_of_emphasized_planets
-    natal_house_rulership_links
-    natal_aspect_modifiers
-    natal_angularity_modifiers
-
-  local_space
-    origin_location
-    planetary_azimuths
-    direction_labels
-    destination_cross_track_distances
-
-  dynamic_location_timing
-    date_range
-    timing_method
-    active_windows
-    static_signature_relationship
-    temporary_strength_notes
-
-  evidence_ranking
-    primary_evidence
-    supporting_evidence
-    contradictory_evidence
-    speculative_or_excluded_evidence
-    confidence_notes
-
-  prose_inputs
-    dominant_place_theme
-    secondary_place_themes
-    practical_modes
-    resonance_scope
-    technical_terms_to_name
-    safety_notes
-
-  appendix_trace
-    calculation_sources
-    tolerances
-    unsupported_methods
-    warnings
-```
-
-## Shared Evidence Hierarchy
-
-The final stack uses a transparent hierarchy so stronger evidence shapes the report before weaker or more school-dependent techniques.
-
-### Primary Structural Evidence
-
-- A planet tightly conjunct a relocated angle.
-- A major natal planet changing into an angular relocated house.
-- The relocated Ascendant, Midheaven, IC, or Descendant changing the chart's expression in a major way.
-- A selected destination falling very close to a natal planetary angularity line.
-- A tight paran once paran support is researched and validated.
-
-### Major Contextual Evidence
-
-- Relocated house changes for planets with strong natal relevance.
-- Major aspects to relocated angles.
-- Multiple nearby planetary lines that tell a coherent story.
-- Natal rulership links carried into relocated houses.
-- Strong Local Space alignment from a selected anchor.
-
-### Supporting Evidence
-
-- Moderate line proximity.
-- Non-angular relocated house emphasis.
-- Repeated but weaker evidence across techniques.
-- Purpose-lens fit, such as career, restoration, belonging, experimentation, or creative visibility.
-
-### Research-Only Or Restricted Evidence
-
-- Remote activation claims.
-- Wide map crossings with no actual astronomical relationship.
-- Geodetic symbolism.
-- Dynamic timing claims before the static location baseline is established.
-- Any technique that cannot be explained deterministically in the technical appendix.
-
 ## Product 1: Place Resonance
 
-### Product Promise
+### User Question
 
-Place Resonance is EO's flagship one-location report. It answers:
+What changes when I live in, work in, visit, return to, or spend meaningful time in this specific place?
 
-> What changes when I live in, work in, visit, return to, or spend meaningful time in this specific place?
+### Product Role
 
-The report describes how one selected destination reorganizes natal expression through relocated angles and houses, nearby planetary angularity lines, natal modifiers, distance, and explicit uncertainty.
-
-### Commercial Role
-
-Place Resonance is the anchor product for Location Services. It serves people considering a move, understanding a current home, reflecting on a formative past place, planning extended travel, choosing a retreat or work base, or seeking language for why a place feels different.
+Place Resonance is the flagship one-location report and the foundation for the entire Location Services stack. It defines the shared evidence record used by later comparison, map, direction, and timing products.
 
 ### Required Inputs
 
@@ -381,6 +230,120 @@ World Lines Companion can function as an add-on to Place Resonance, a lower-cost
 - Birth location.
 - Optional selected city.
 - Optional object and angle filters.
+- Birth time and birth-time confidence.
+- Birth location.
+- Destination location.
+- Optional relationship to the place: current home, possible move, past home, travel, retreat, family place, work base, creative base.
+- Optional purpose lens: career, belonging, rest, relationship, creative visibility, study, retreat, structure, experimentation.
+
+### Included Evidence
+
+- Relocated Ascendant, Midheaven, Descendant, and IC.
+- Relocated Whole Sign houses.
+- Planet natal-house to relocated-house changes.
+- Planets near relocated angles.
+- Major aspects or contacts to relocated angles, once supported by the backend.
+- Natal condition of emphasized planets.
+- Natal rulership links carried into relocated expression.
+- Birth-time sensitivity and location precision notes.
+- Explicit unsupported-method warnings.
+
+### Excluded Until Later Products
+
+- Astrocartography line distance claims.
+- Parans.
+- Local Space directions.
+- Geodetic claims.
+- Relocated returns.
+- Dynamic timing overlays.
+- Remote activation claims.
+
+### Report Sections
+
+1. **Place Signature** - the dominant symbolic emphasis of the destination.
+2. **What Changes Here** - the main shift from natal baseline to relocated expression.
+3. **Strongest Structural Evidence** - the highest-ranked evidence and why it leads.
+4. **Relocated Angles** - how ASC, MC, DSC, and IC change the field of expression.
+5. **House Shifts** - planets that move into more visible, private, relational, or operational terrain.
+6. **Planets Brought Forward** - emphasized planets and the natal material they carry.
+7. **What This Place Rewards** - participation style supported by the evidence.
+8. **What May Require Adjustment** - pressure, friction, overuse, or mismatch grounded in evidence.
+9. **Duration Lens** - short visit, extended stay, residence, return, or remote relationship to place.
+10. **Purpose Lens** - how the location reads for the user's stated purpose.
+11. **Evidence Summary** - ranked evidence table.
+12. **Technical Appendix** - coordinates, time handling, calculations, exclusions, confidence notes.
+
+### End-State Backend Needs
+
+- `build_relocated_payload()`.
+- `compare_natal_to_relocated()`.
+- `build_location_evidence_record()`.
+- Stable relocated angle and house fields.
+- House-change list for planets and selected points.
+- Relocated angle contact list.
+- Natal modifier extraction for emphasized planets.
+- Evidence ranking and confidence notes.
+- Appendix trace.
+
+## Product 2: Between Places
+
+### User Question
+
+How do these locations differ, and which one better supports a specific purpose without pretending there is one universally best place?
+
+### Product Role
+
+Between Places compares two to five destinations using the same Place Resonance evidence record. It is not a ranking gimmick. It is a contrast report for choices: moving, travel, work bases, family locations, retreat options, creative homes, or life-stage decisions.
+
+### Required Inputs
+
+- All Place Resonance inputs.
+- Two to five destinations.
+- Optional decision context: relocation, travel, split life, work, relationship, restoration, visibility.
+- Optional priority weights: stability, opportunity, intimacy, creative work, public role, recovery, study.
+
+### Included Evidence
+
+- One `LocationEvidenceRecord` per destination.
+- Side-by-side dominant place themes.
+- Shared evidence and contrast evidence.
+- Purpose-lens fit.
+- Tradeoffs: what each place foregrounds and what it may ask in return.
+- Confidence notes where evidence is close, contradictory, or birth-time sensitive.
+
+### Report Sections
+
+1. **Comparison Summary** - the central contrast.
+2. **Place Profiles** - compact Place Resonance signatures.
+3. **Best Fit By Purpose** - purpose-specific suitability, not universal ranking.
+4. **Strongest Difference** - the evidence that most separates the places.
+5. **Shared Themes** - where multiple places activate similar material.
+6. **Tradeoff Map** - what each place supports and pressures.
+7. **Decision Notes** - how to use the symbolism alongside practical reality.
+8. **Technical Appendix** - location-by-location evidence trace.
+
+### End-State Backend Needs
+
+- Batch evidence-record generation.
+- Comparison/ranking function.
+- Purpose-lens weighting.
+- Conflict and similarity detection across locations.
+
+## Product 3: World Lines Companion
+
+### User Question
+
+Which planetary angularity lines are relevant to this place or region, and how should I understand them without overreading a map?
+
+### Product Role
+
+World Lines Companion is the astrocartography product. It explains map evidence with distance, angle type, line clustering, uncertainty, and natal context. It should make the map more trustworthy, not more sensational.
+
+### Required Inputs
+
+- Birth data.
+- Destination or region.
+- Optional line focus: career, partnership, belonging, creativity, retreat, study.
 
 ### Included Evidence
 
@@ -511,6 +474,99 @@ Living Map is an advanced premium layer or subscription add-on for users who alr
 - Current residence.
 - Target date range or year.
 - Selected cities, regions, or known location list.
+- Nearest point on each relevant line.
+- Distance to selected destination.
+- Distance bands and strength policy.
+- Birth-time sensitivity for line movement.
+- Natal condition and house rulership of line planets.
+- Clusters of nearby lines.
+
+### Excluded Until Validated
+
+- Parans, unless implemented as a deliberate method.
+- Remote activation claims.
+- Wide line claims with no defensible distance policy.
+- Guaranteed event claims.
+
+### Report Sections
+
+1. **Map Summary** - the main line story.
+2. **Closest Lines** - distance-ranked evidence.
+3. **Angle Meaning** - how MC, IC, ASC, or DSC changes the planet's expression.
+4. **Natal Context** - what the line planet carries from the birth chart.
+5. **Distance And Uncertainty** - strength bands and birth-time sensitivity.
+6. **Line Clusters** - coherent or conflicting nearby signals.
+7. **Technical Appendix** - geometry, coordinates, tolerances, exclusions.
+
+### End-State Backend Needs
+
+- Astrocartography line generation.
+- Distance-to-line and nearest-point geometry.
+- Antimeridian and polar handling.
+- Distance band policy.
+- Map-ready geometry payload.
+
+## Product 4: Local Compass
+
+### User Question
+
+From a chosen anchor place, which directions carry different symbolic emphasis, and how should I use that directional information?
+
+### Product Role
+
+Local Compass is the Local Space product. It is directional rather than relocation-first: it asks what planetary directions radiate from an anchor location and how a destination or movement path relates to those directions.
+
+### Required Inputs
+
+- Birth data.
+- Anchor location.
+- Optional destination or route.
+- Optional use case: home layout, travel direction, city exploration, retreat selection, symbolic orientation.
+
+### Included Evidence
+
+- Planetary azimuths from the anchor location.
+- Direction labels.
+- Destination or route cross-track distance to each directional path.
+- Natal condition of directional planets.
+- Practical mode guidance.
+
+### Excluded Until Validated
+
+- Claims that a direction guarantees outcomes.
+- Remote activation claims.
+- Local Space claims without altitude/azimuth convention and distance policy.
+
+### Report Sections
+
+1. **Directional Signature** - the main directional pattern.
+2. **Planetary Directions** - the strongest directions and what they emphasize.
+3. **Destination Relationship** - how a chosen place relates to those paths.
+4. **Use Modes** - movement, workspace, ritual, exploration, rest.
+5. **Technical Appendix** - anchor, azimuths, distance policy, exclusions.
+
+### End-State Backend Needs
+
+- Local Space altitude/azimuth engine.
+- Direction ray or great-circle path generation.
+- Cross-track distance to direction lines.
+- Direction grouping and confidence policy.
+
+## Product 5: Living Map
+
+### User Question
+
+How does timing interact with place right now, without confusing temporary weather with the deeper location signature?
+
+### Product Role
+
+Living Map is the dynamic layer. It combines static location evidence with date-bounded timing, but only after Place Resonance and the standard timing clocks are stable. It should never make temporary transits sound like permanent location fate.
+
+### Required Inputs
+
+- Birth data.
+- Destination or multiple destinations.
+- Date range.
 - Optional purpose lens.
 
 ### Included Evidence
@@ -769,3 +825,63 @@ The Location Services stack is complete when EO can generate:
 - A shared technical appendix across all products.
 - A canonical evidence object that can be tested independently from prose.
 - Prose that is confident, specific, non-repetitive, and clear about the boundary between symbolic pattern and objective outcome.
+- Static Place Resonance baseline.
+- Date-bounded transits to relocated angles, if supported.
+- Transits through relocated houses, if supported.
+- Standard timing clocks already promoted into report-safe use.
+- Temporary strength notes.
+- Distinction between baseline resonance and current weather.
+
+### Excluded Until Later
+
+- Relocated returns until return charts exist.
+- Dynamic astrocartography unless line geometry and timing policy are stable.
+- Any timing claim that bypasses existing report governance.
+
+### Report Sections
+
+1. **Static Place Baseline** - what the place means before timing.
+2. **Current Place Weather** - date-bounded shifts.
+3. **Windows Of Emphasis** - active periods and what they temporarily amplify.
+4. **What Is Baseline vs Temporary** - explicit distinction.
+5. **Purpose Timing** - how the date range interacts with the stated purpose.
+6. **Technical Appendix** - methods, dates, exclusions, confidence notes.
+
+### End-State Backend Needs
+
+- Stable `LocationEvidenceRecord`.
+- Date-bounded relocated timing policy.
+- Existing standard clocks integrated before reuse.
+- Clear baseline-vs-weather field model.
+
+## Product Priority
+
+### Build First
+
+Place Resonance.
+
+Reason:
+
+- It defines the relocated chart baseline.
+- It forces the core evidence record to become stable.
+- It creates content keys that later products can reuse.
+- It avoids map geometry and dynamic timing before the foundation exists.
+
+### Build Second
+
+Between Places.
+
+Reason:
+
+- It reuses Place Resonance records.
+- It creates immediate commercial value.
+- It tests evidence ranking and purpose lenses without needing astrocartography.
+
+### Build Later
+
+World Lines Companion, Local Compass, and Living Map.
+
+Reason:
+
+- Each requires new computation beyond simple relocation.
+- Each can create overclaiming risk if launched before the evidence contract is mature.
