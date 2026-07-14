@@ -1,13 +1,17 @@
-# Place Resonance Build / Edit Plan
+# Place Resonance / Place Profile Build Edit Plan
 
 Status date: 2026-07-14
 
 ## Purpose
 
-`Place Resonance` is the anchor product for the Location Services suite.
-It is the one-location depth report that proves the relocated evidence
-pipeline works before comparison, map, directional, or timing products
-are promoted.
+`Place Resonance` is currently the working one-location Location Services
+implementation. Its long-term architectural role is the reusable Place Profile
+engine: a single-destination evidence and interpretation unit that Place
+Resonance Search, Between Places, and later products can reuse.
+
+The legacy public name may stay `Place Resonance` while the repo transitions,
+but agents should not treat this package as the permanent flagship discovery
+product. That role now belongs to `Place Resonance Search`.
 
 ## Current Repo State
 
@@ -16,48 +20,56 @@ are promoted.
   - `products/location_services/place_resonance_renderer.py`
   - `products/location_services/templates/place_resonance.html`
   - `products/location_services/tooling/generate_place_resonance_ready.py`
-- Product-folder registration now exists through
+- Product-folder registration exists through
   `products/location_services/place_resonance/plugin.py`.
-- Focused tests and the ready-generator script now import the normalized
+- Focused tests and the ready-generator script import through the normalized
   `products/location_services/place_resonance/` package path.
-- Focused tests already exist and are green for assembler, renderer,
-  selector behavior, relocated payload shape, and astrocartography SVG
-  contract usage.
-- This dedicated folder now exists as the product home, but it currently
-  uses wrapper modules so the old imports do not break during migration.
+- Focused tests exist for assembler, renderer, selector behavior, relocated
+  payload shape, and astrocartography SVG contract usage.
+- This folder currently uses wrapper modules so old imports do not break during
+  migration.
 
 ## Build Goal
 
-Keep Place Resonance as the known-good reference product while gradually
-moving it into the same folder structure as the newer location products.
+Keep the existing one-location implementation stable while deliberately
+reframing it as a reusable Place Profile engine. It should remain the evidence
+contract authority for single-place interpretation, but it should not absorb
+search, comparison, map, directional, or timing responsibilities.
 
 ## Build Sequence
 
-1. Keep the current root-level assembler and renderer as canonical until
-   migration work is deliberate and tested.
-2. Use this folder as the local planning and normalization seam.
-3. Keep the product-folder wrapper imports and registry plugin live now
-   that tests and tooling reference the product folder safely.
+1. Keep the current root-level assembler and renderer canonical until migration
+   work is deliberate and tested.
+2. Use this folder as the product-local planning and normalization home for the
+   single-place profile engine.
+3. Keep product-folder wrapper imports and registry plugin live.
 4. When ready, migrate tests/tooling/imports from root-level modules to
    package-local modules in a dedicated pass.
-5. Only after import migration is stable should the root-level modules be
-   reduced to shims or removed.
+5. Only after import migration is stable should root-level modules become shims
+   or be removed.
+6. Expose compact profile context cleanly enough for Place Resonance Search and
+   Between Places to reuse it without copying single-place prose logic.
 
 ## Edit Rules
 
-- Do not break the current Place Resonance generator or focused test path
-  in pursuit of folder symmetry.
-- Do not widen Place Resonance into dynamic timing, comparison, or map
-  logic that belongs to later products.
-- Keep Place Resonance as the evidence-contract authority for the other
-  Location Services products.
+- Do not break the current generator or focused test path in pursuit of folder
+  symmetry.
+- Do not widen this package into candidate search, dynamic timing, comparison,
+  or map logic.
+- Keep this package responsible for single-place evidence, profile context, and
+  one-location prose selection.
+- Update stale references when they still describe this package as the future
+  flagship instead of the reusable profile engine.
 
 ## Immediate Next Edits
 
-- Decide whether the next migration pass should move tests first or
-  tooling first.
-- Add package-local imports only where they do not create duplicate logic.
-- Keep the folder docs here current as Place Resonance evolves.
+- Add a short compatibility note wherever external tooling still says "Place
+  Resonance" but is functionally using the Place Profile engine.
+- Keep documenting which context fields are reusable profile fields and which
+  are report-rendering fields.
+- Wire `place_context_modifier_blocks.json` only after a context-axis classifier
+  exists.
+- Preserve the focused test suite before any migration out of root-level modules.
 
 ## Verification
 

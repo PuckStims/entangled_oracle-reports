@@ -19,7 +19,7 @@ def test_place_resonance_search_context_retitles_the_wrapped_product():
         relationship_to_place="possible_move",
     )
 
-    assert context["context_version"] == "place_resonance_search_context_v0.1.0"
+    assert context["context_version"] == "place_resonance_search_context_v0.2.0"
     assert context["report_type"] == "location_services.place_resonance_search"
     assert context["product_name"] == "Place Resonance Search"
     assert context["source_product"] == "location_services.place_resonance"

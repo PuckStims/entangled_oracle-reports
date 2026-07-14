@@ -181,6 +181,18 @@ def select_technical_appendix_leaf(family: str, sub_key: str) -> dict[str, Any]:
     return _select_family_leaf(blocks, family, sub_key)
 
 
+def select_place_resonance_search_leaf(family: str, sub_key: str) -> dict[str, Any]:
+    """
+    Select a Search-level prose scaffold leaf.
+
+    Key path: family -> sub_key. This is intentionally separate from the
+    single-place profile selectors because these leaves explain candidate
+    search, bucket meaning, recommendation labels, and cross-location synthesis.
+    """
+    blocks = _load_blocks("place_resonance_search_blocks")
+    return _select_family_leaf(blocks, family, sub_key)
+
+
 def select_angle_contact_leaf(angle: str, body: str, contact_strength: str) -> dict[str, Any]:
     """
     Select a structured leaf for a relocated angle contact.
@@ -310,4 +322,3 @@ def select_synthesis_leaf(synthesis_category: str) -> dict[str, Any]:
     if leaf:
         return _copy_leaf(leaf)
     return _fallback_leaf(blocks)
-

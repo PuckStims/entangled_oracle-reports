@@ -516,7 +516,103 @@ Known v0.1 caveat:
 - `evidence_ranking.contradictory_evidence` is always an empty list.
 - Do not select contradiction/conflict blocks until the content lane authors a domain taxonomy that can identify visibility/privacy, expansion/structure, and similar tensions.
 
-## Block Family 7: Duration Lens
+## Block Family 6B: Place Resonance Search Blocks
+
+File:
+
+```text
+place_resonance_search_blocks.json
+```
+
+Purpose:
+
+- Provide search-level prose for Place Resonance Search.
+- Explain the selected location set, curated buckets, recommendation labels,
+  and cross-location pattern synthesis.
+- Keep these leaves separate from the reusable one-location Place Profile
+  blocks, because Search is interpreting a candidate pool and selected set, not
+  one destination in isolation.
+
+Selector key paths:
+
+```text
+search_summary -> dominant_search_theme
+bucket_intro -> bucket
+recommendation_label -> recommendation_key
+pattern_synthesis -> synthesis_pattern
+```
+
+Search summary keys:
+
+```text
+visibility_calling
+belonging_bonds
+hearth_restoration
+study_signal
+creative_culture
+long_term_build
+change_aliveness
+shadow_pressure
+mixed_signature
+fallback
+```
+
+Bucket intro keys:
+
+```text
+highest_resonance
+goal_specific_allies
+transformational_demanding
+quiet_grounding_alternatives
+pattern_outliers
+fallback
+```
+
+Recommendation label keys:
+
+```text
+strongly_consider
+goal_specific_ally
+powerful_but_demanding
+gentle_alternative
+useful_contrast
+stable_baseline
+low_signal_not_priority
+fallback
+```
+
+Pattern synthesis keys:
+
+```text
+convergent_theme
+split_need
+pressure_pattern
+quiet_counterweight
+outlier_reveal
+fallback
+```
+
+Required evidence/context fields:
+
+```text
+selected_locations
+evaluated_locations
+candidate_pool
+scores
+dominant_themes
+bucket_distribution
+evidence_refs
+purpose_lens
+relationship_to_place
+```
+
+Known v0.1 caveat:
+
+- These leaves are authored search-level prose and should be kept distinct from
+  one-location Place Profile interpretation blocks.
+- They are selected by `select_place_resonance_search_leaf()`.
+- Search-level blocks should never command relocation, declare a universal best
+  place, or flatten a demanding location into a vague positive.
 
 ## Block Family 6A: Place Context Modifiers
 

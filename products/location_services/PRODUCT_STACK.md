@@ -2,7 +2,9 @@
 
 **Status:** Content-lead end-state specification.  
 **Scope:** Product goals, evidence expectations, report sections, and claim boundaries for the Location Services family.  
-**Primary anchor:** Place Resonance.
+**Primary anchor:** Place Resonance Search.
+**Reusable evidence unit:** Place Profile, currently implemented by the
+`place_resonance` package and legacy root-level Place Resonance modules.
 
 ## Product Thesis
 
@@ -29,13 +31,106 @@ more pressured, more available, or more consequential.
 
 ## Product Ladder
 
-1. **Place Resonance** - one-location depth report.
-2. **Between Places** - comparison report across selected locations.
-3. **World Lines Companion** - astrocartography map evidence companion.
-4. **Local Compass** - Local Space directional report.
-5. **Living Map** - time-sensitive geographic forecast layer.
+1. **Place Resonance Search** - curated discovery report that evaluates a
+   candidate pool and surfaces the places whose symbolic field is worth the
+   reader's attention.
+2. **Place Profile** - reusable one-location depth unit, currently implemented
+   by the `place_resonance` report path.
+3. **Between Places** - comparison report across selected locations.
+4. **World Lines Companion** - astrocartography map evidence companion.
+5. **Local Compass** - Local Space directional report.
+6. **Living Map** - time-sensitive geographic forecast layer.
 
-## Product 1: Place Resonance
+## Product 1: Place Resonance Search
+
+### User Question
+
+Which places are most worth considering for the kind of life I am trying to
+build, and what would each place emphasize, support, or demand from me?
+
+### Product Role
+
+Place Resonance Search is the flagship discovery product for the Location
+Services suite. It does not ask the user to begin with one city and it does not
+publish a bulk "best places" list. It evaluates a curated candidate pool,
+selects a smaller set of meaningful locations, groups them into interpretive
+buckets, and explains what each place is asking from the natal chart.
+
+The current `place_resonance_search` package is a transitional product identity:
+it is registry-wired but still wraps the single-location Place Resonance output
+until candidate catalog, scoring, curation, and bucket logic are built.
+
+### Required Inputs
+
+- Birth date.
+- Exact birth time.
+- Birth location.
+- Preferred search country or region, initially United States.
+- Optional current residence or anchor location.
+- Optional places already under consideration.
+- Optional places to exclude.
+- Optional goal weighting: visibility, restoration, love, friendship,
+  study, creativity, stability, reinvention, or related life priorities.
+
+### Included Evidence
+
+- One `LocationEvidenceRecord` per evaluated candidate location.
+- Theme-vector scores by life dimension.
+- Overall resonance score.
+- Complexity or pressure index.
+- Consensus score across evidence types.
+- Grounding score for quieter or stabilizing places.
+- Baseline divergence or novelty score.
+- Bucket assignment with evidence references.
+- Technical appendix preserving candidate, coordinate, and scoring trace.
+
+### Excluded Until Later Versions
+
+- Practical city filters unless they have reliable mundane data sources.
+- AI-generated web summaries of cities.
+- Parans as a primary scoring layer.
+- Local Space directionality.
+- Current-year timing overlays.
+- Claims of one objective best or worst location.
+
+### Selection Buckets
+
+- **Highest Resonance** - strongest multi-indicator support.
+- **Goal-Specific Allies** - excellent for a defined theme, not universally easy.
+- **Transformational / Demanding Places** - powerful, complex, high-pressure
+  locations.
+- **Quiet or Grounding Alternatives** - gentler support, lower drama, or
+  stabilizing emphasis.
+- **Pattern Outliers** - unusual chart shifts or surprising symbolic contrast.
+
+### Report Sections
+
+1. **Search Summary** - the central pattern across the selected locations.
+2. **What This Search Is Pointing Toward** - the strongest repeated theme.
+3. **Top Locations By Theme** - major life-dimension leaders.
+4. **Curated Location Table** - selected cities, buckets, labels, and scores.
+5. **Location Profiles** - compact one-place interpretations powered by the
+   reusable Place Profile unit.
+6. **Pattern Synthesis** - what the selected places reveal together.
+7. **Practical Use Guidance** - how to use symbolic perspective without turning
+   it into a command.
+8. **Uncertainty And Safety Notes** - method boundaries, birth-time sensitivity,
+   and unsupported methods.
+9. **Technical Appendix** - candidate pool, coordinates, scoring trace, and
+   exclusions.
+
+### End-State Backend Needs
+
+- U.S. candidate location catalog.
+- Batch `LocationEvidenceRecord` generation.
+- Theme-vector scoring.
+- Complexity, consensus, grounding, and baseline-divergence indexes.
+- Curated selection rules that avoid monotony and near-duplicates.
+- Bucket assignment.
+- Search-level prose routing.
+- Technical appendix export for evaluated and selected candidates.
+
+## Reusable Unit: Place Profile
 
 ### User Question
 
@@ -43,7 +138,15 @@ What changes when I live in, work in, visit, return to, or spend meaningful time
 
 ### Product Role
 
-Place Resonance is the flagship one-location report and the foundation for the entire Location Services stack. It defines the shared evidence record used by later comparison, map, direction, and timing products.
+Place Profile is the one-location depth unit that interprets a single
+destination. It is currently implemented by the existing Place Resonance
+assembler, renderer, template, generator, and tests. It should remain stable
+because it proves the relocated evidence pipeline and supplies reusable profile
+language for Place Resonance Search, Between Places, and later products.
+
+The legacy public name may remain `Place Resonance` during transition, but
+planning docs should treat it as a reusable profile engine rather than the
+long-term flagship product.
 
 ### Required Inputs
 
@@ -111,11 +214,14 @@ How do these locations differ, and which one better supports a specific purpose 
 
 ### Product Role
 
-Between Places compares two to five destinations using the same Place Resonance evidence record. It is not a ranking gimmick. It is a contrast report for choices: moving, travel, work bases, family locations, retreat options, creative homes, or life-stage decisions.
+Between Places compares two to five destinations using the same Place Profile
+evidence record. It is not a ranking gimmick. It is a contrast report for
+choices: moving, travel, work bases, family locations, retreat options,
+creative homes, or life-stage decisions.
 
 ### Required Inputs
 
-- All Place Resonance inputs.
+- All Place Profile inputs.
 - Two to five destinations.
 - Optional decision context: relocation, travel, split life, work, relationship, restoration, visibility.
 - Optional priority weights: stability, opportunity, intimacy, creative work, public role, recovery, study.
@@ -132,7 +238,7 @@ Between Places compares two to five destinations using the same Place Resonance 
 ### Report Sections
 
 1. **Comparison Summary** - the central contrast.
-2. **Place Profiles** - compact Place Resonance signatures.
+2. **Place Profiles** - compact one-location signatures.
 3. **Best Fit By Purpose** - purpose-specific suitability, not universal ranking.
 4. **Strongest Difference** - the evidence that most separates the places.
 5. **Shared Themes** - where multiple places activate similar material.
@@ -296,13 +402,15 @@ Living Map is the dynamic layer. It combines static location evidence with date-
 
 ### Build First
 
-Place Resonance.
+Place Profile stability and Place Resonance Search contract.
 
 Reason:
 
-- It defines the relocated chart baseline.
-- It forces the core evidence record to become stable.
-- It creates content keys that later products can reuse.
+- The existing profile engine defines the relocated chart baseline.
+- Search is the actual flagship product direction.
+- Together, they force the core evidence record, batch candidate handling, and
+  curated selection logic to become stable.
+- They create content keys and profile language that later products can reuse.
 - It avoids map geometry and dynamic timing before the foundation exists.
 
 ### Build Second
@@ -311,7 +419,7 @@ Between Places.
 
 Reason:
 
-- It reuses Place Resonance records.
+- It reuses Place Profile records.
 - It creates immediate commercial value.
 - It tests evidence ranking and purpose lenses without needing astrocartography.
 

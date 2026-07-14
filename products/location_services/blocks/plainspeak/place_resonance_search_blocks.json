@@ -1,0 +1,568 @@
+{
+  "_note": "Search-level prose for Place Resonance Search. These leaves are not single-place profile interpretations; they explain why a curated search result set matters, how buckets should be understood, and how recommendations should sound without becoming commands or guarantees.",
+  "_version": "0.1.0-authored",
+  "fallback": {
+    "body": "This search still contains usable place evidence, but the available signals do not organize cleanly into a single theme, bucket, or recommendation pattern. Read the result as a bounded symbolic orientation rather than a directive: the strongest value is in noticing what the evidence can and cannot confidently say.",
+    "_note": "Fallback search-level leaf. Use when the search context cannot classify the theme, bucket, recommendation, or synthesis pattern cleanly.",
+    "claim_level": "bounded_interpretation",
+    "requires_evidence": [
+      "search_context"
+    ]
+  },
+  "search_summary": {
+    "_note": "Opening synthesis for the selected set. This should describe what the search repeatedly points toward, not restate every selected city.",
+    "visibility_calling": {
+      "body": "The selected places keep returning to public life, contribution, and the question of being more legible in the world. This does not promise recognition; it shows a geographic field where visibility is harder to keep peripheral and where role, authorship, or accountability may become more defining.",
+      "_note": "Use when selected locations repeatedly emphasize public role, career, contribution, being seen, leadership, or legibility.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": [
+        "selected_locations",
+        "scores.visibility_calling",
+        "evidence_refs"
+      ]
+    },
+    "belonging_bonds": {
+      "body": "This search gathers around connection rather than solitary achievement. The repeated signal is relational fit: places where partnership, friendship, clients, community participation, or social receptivity appear more emphasized than pure independence.",
+      "_note": "Use when selected locations repeatedly emphasize partnership, friendship, clients, social participation, or relational field.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": [
+        "selected_locations",
+        "scores.belonging_bonds",
+        "evidence_refs"
+      ]
+    },
+    "hearth_restoration": {
+      "body": "The strongest pattern here is private-life repair. These places point toward environments where home, rest, emotional regulation, and rooting matter more than speed, display, or constant activation.",
+      "_note": "Use when selected locations repeatedly emphasize home, privacy, emotional repair, retreat, nervous-system settling, or rooting.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": [
+        "selected_locations",
+        "scores.hearth_restoration",
+        "evidence_refs"
+      ]
+    },
+    "study_signal": {
+      "body": "This set leans toward message, learning, and movement of mind. The places may be especially useful for writing, teaching, studying, exchanging ideas, or entering knowledge networks that make thought easier to circulate.",
+      "_note": "Use when selected locations repeatedly emphasize learning, writing, teaching, travel of mind, message, communication, or knowledge networks.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": [
+        "selected_locations",
+        "scores.study_signal",
+        "evidence_refs"
+      ]
+    },
+    "creative_culture": {
+      "body": "The selected locations repeatedly emphasize aesthetic life, cultural contact, pleasure, and expression. The field is less about forcing productivity and more about environments where inspiration, taste, art, and social texture have room to become part of daily life.",
+      "_note": "Use when selected locations repeatedly emphasize aesthetic life, art, performance, pleasure, style, cultural exchange, or inspiration.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": [
+        "selected_locations",
+        "scores.creative_culture",
+        "evidence_refs"
+      ]
+    },
+    "long_term_build": {
+      "body": "The recurring signature is durability. These places appear strongest for disciplined work, practical consolidation, credibility, and the kind of material or vocational building that becomes meaningful because it can last.",
+      "_note": "Use when selected locations repeatedly emphasize structure, durability, disciplined work, material building, service, craft, or long-term responsibility.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": [
+        "selected_locations",
+        "scores.long_term_build",
+        "evidence_refs"
+      ]
+    },
+    "change_aliveness": {
+      "body": "The search points toward places that keep identity in motion. These locations are not necessarily the calmest options, but they emphasize reinvention, experimentation, mobility, and the feeling of becoming less fixed in an old version of life.",
+      "_note": "Use when selected locations repeatedly emphasize reinvention, mobility, experimentation, fresh identity, movement, risk, or aliveness.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": [
+        "selected_locations",
+        "scores.change_aliveness",
+        "evidence_refs"
+      ]
+    },
+    "shadow_pressure": {
+      "body": "A demanding pattern is not incidental in this result set. Several places appear to concentrate pressure, exposure, obligation, or confrontation, which can make them powerful for transformation but less suited to ease, recovery, or casual belonging.",
+      "_note": "Use when selected locations repeatedly carry pressure, intensity, isolation, obligation, confrontation, or demanding transformation. Be direct without fear language.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": [
+        "selected_locations",
+        "scores.shadow_pressure",
+        "scores.complexity_index",
+        "evidence_refs"
+      ]
+    },
+    "mixed_signature": {
+      "body": "The selected set does not reduce to one clean life function. It separates the search into different forms of fit, suggesting that the better question may be which priority matters most now: visibility, belonging, restoration, structure, reinvention, or creative aliveness.",
+      "_note": "Use when no single theme dominates or the selected set clearly separates into more than one major life function.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": [
+        "selected_locations",
+        "scores",
+        "bucket_distribution"
+      ]
+    },
+    "fallback": {
+      "body": "The search produced a valid set of places, but no single leading dimension is strong enough to carry the whole interpretation. Treat the result as a curated field of possibilities, with the individual buckets doing more of the interpretive work than the opening summary.",
+      "_note": "Use when the selected set has a valid search result but the theme classifier does not identify a reliable leading dimension.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": [
+        "selected_locations",
+        "scores"
+      ]
+    }
+  },
+  "bucket_intro": {
+    "_note": "Short explanation for each curated output bucket. These should tell the reader how to read the bucket, not repeat individual city profiles.",
+    "highest_resonance": {
+      "body": "These are the places where several indicators agree most clearly. Their value is not that they are universally easy or objectively superior, but that the symbolic evidence forms a coherent argument around why they belong near the top of the search.",
+      "_note": "Explain places with the strongest multi-indicator support and clear symbolic signal.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": [
+        "bucket",
+        "selected_locations",
+        "scores.overall_resonance",
+        "scores.consensus_score"
+      ]
+    },
+    "goal_specific_allies": {
+      "body": "These locations are useful because they know what they are for. They may be excellent for a particular aim — visibility, belonging, study, restoration, building, creativity, or change — even if they are not broad-spectrum answers for every life need.",
+      "_note": "Explain places that are strong for one purpose or theme without being universally easy.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": [
+        "bucket",
+        "selected_locations",
+        "dominant_themes"
+      ]
+    },
+    "transformational_demanding": {
+      "body": "This bucket holds places with real resonance and real cost. They may intensify pressure, exposure, responsibility, or inner confrontation, so difficulty here should be read as information about the field rather than as automatic disqualification.",
+      "_note": "Explain powerful, complex, high-pressure places. Difficulty should be treated as information, not failure.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": [
+        "bucket",
+        "selected_locations",
+        "scores.complexity_index",
+        "scores.shadow_pressure"
+      ]
+    },
+    "quiet_grounding_alternatives": {
+      "body": "These places matter because they are less dramatic. They may not create the loudest sense of activation, but they can offer steadier conditions for recovery, rhythm, emotional settling, and ordinary life that can actually be lived.",
+      "_note": "Explain gentler, lower-drama, stabilizing places that may matter precisely because they are less activating.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": [
+        "bucket",
+        "selected_locations",
+        "scores.grounding_score"
+      ]
+    },
+    "pattern_outliers": {
+      "body": "These locations stand apart from the main pattern. Their purpose is not always to outrank the rest, but to reveal a contrast, exception, or surprising chart shift that helps clarify what the broader search might otherwise miss.",
+      "_note": "Explain locations with unusual chart shifts, surprising contrast, or a distinctive symbolic exception to the main pattern.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": [
+        "bucket",
+        "selected_locations",
+        "scores.baseline_divergence"
+      ]
+    },
+    "fallback": {
+      "body": "This bucket contains selected places that could not be classified with full confidence. Use it as a holding space for potentially relevant locations whose meaning depends more heavily on the surrounding evidence than on the bucket label itself.",
+      "_note": "Use when a bucket label is not recognized or a selected location cannot be assigned confidently.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": [
+        "bucket",
+        "selected_locations"
+      ]
+    }
+  },
+  "recommendation_label": {
+    "_note": "Reader-facing label language for individual selected locations. These leaves should be decisive but never command the reader to move, avoid, or choose.",
+    "strongly_consider": {
+      "body": "This place has enough agreement across the evidence to deserve serious attention. The signal is clear, coherent, and strong enough to make it one of the more meaningful matches in the current search.",
+      "_note": "Use for high-resonance, high-consensus places with a clear symbolic argument.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": [
+        "selected_location",
+        "scores.overall_resonance",
+        "scores.consensus_score"
+      ]
+    },
+    "strongly_consider_belonging_restoration": {
+      "body": "This place earns attention because the support is relational and restorative at the same time. It does not only activate the chart; it points toward a field where belonging, emotional settling, and renewal can reinforce each other.",
+      "_note": "Variant for high-consensus places where belonging and restoration are both prominent.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": [
+        "selected_location",
+        "dominant_themes.belonging_bonds",
+        "dominant_themes.hearth_restoration",
+        "scores.consensus_score"
+      ]
+    },
+    "strongly_consider_belonging_aliveness": {
+      "body": "The signal here is not quiet belonging alone. This place seems to connect social fit with aliveness, creative contact, or a less fixed version of identity, making relationship and reinvention part of the same field.",
+      "_note": "Variant for high-consensus places where belonging is paired with change, creativity, or aliveness.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": [
+        "selected_location",
+        "dominant_themes.belonging_bonds",
+        "dominant_themes.change_aliveness",
+        "scores.consensus_score"
+      ]
+    },
+    "strongly_consider_visibility": {
+      "body": "This place deserves attention because the evidence makes public life harder to keep peripheral. The fit is strongest where contribution, recognition, accountability, or visible authorship are part of the question.",
+      "_note": "Variant for high-consensus places where visibility, public role, or contribution leads.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": [
+        "selected_location",
+        "dominant_themes.visibility_calling",
+        "scores.consensus_score"
+      ]
+    },
+    "strongly_consider_reinvention": {
+      "body": "This location stands out because it keeps identity in motion. Its strength is not only support, but the way it makes an older version of life harder to keep running unchanged.",
+      "_note": "Variant for high-consensus places where change, movement, or reinvention leads.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": [
+        "selected_location",
+        "dominant_themes.change_aliveness",
+        "scores.baseline_divergence"
+      ]
+    },
+    "strongly_consider_coherent": {
+      "body": "This place belongs near the top because the evidence forms a coherent argument rather than a single loud signal. Its usefulness comes from agreement across indicators, even if the support is not simple or one-dimensional.",
+      "_note": "Variant for high-consensus places whose strongest quality is broad coherence rather than one obvious theme.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": [
+        "selected_location",
+        "scores.overall_resonance",
+        "scores.consensus_score"
+      ]
+    },
+    "goal_specific_ally": {
+      "body": "This location reads as a strong ally for a defined purpose. Its value depends on the goal: it may serve one dimension of life very well without needing to be the most complete or comfortable option overall.",
+      "_note": "Use when the place is excellent for a defined theme but not necessarily broad-spectrum.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": [
+        "selected_location",
+        "dominant_themes",
+        "purpose_lens"
+      ]
+    },
+    "goal_specific_ally_creative": {
+      "body": "This location is useful when the goal involves expression, inspiration, or a more imaginative relationship to daily life. Its support is specific rather than universal: strong for creative contact, less clear as an answer to every practical need.",
+      "_note": "Variant for goal-specific allies where creative culture leads.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": [
+        "selected_location",
+        "dominant_themes.creative_culture",
+        "purpose_lens"
+      ]
+    },
+    "goal_specific_ally_visibility": {
+      "body": "This place is an ally when the purpose is visibility. It may not be the most restful or rounded option, but it gives public role, contribution, or being seen enough support to matter.",
+      "_note": "Variant for goal-specific allies where visibility leads.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": [
+        "selected_location",
+        "dominant_themes.visibility_calling",
+        "purpose_lens"
+      ]
+    },
+    "goal_specific_ally_belonging": {
+      "body": "This place is most useful when the question is relational fit. It may not solve every domain of life, but it gives connection, reciprocity, or being accurately met a stronger field.",
+      "_note": "Variant for goal-specific allies where belonging leads.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": [
+        "selected_location",
+        "dominant_themes.belonging_bonds",
+        "purpose_lens"
+      ]
+    },
+    "powerful_but_demanding": {
+      "body": "The resonance here is real, but it comes with pressure. This place may be consequential, activating, or transformative, so it is better approached with clear intention than treated as an easy fit.",
+      "_note": "Use when resonance is real but complexity, pressure, or contradiction is also high.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": [
+        "selected_location",
+        "scores.overall_resonance",
+        "scores.complexity_index"
+      ]
+    },
+    "powerful_but_demanding_pressure": {
+      "body": "The demand here is the point, not a side effect. This place concentrates pressure, exposure, or inner confrontation, which can make it clarifying and consequential without making it especially easy to inhabit.",
+      "_note": "Variant for demanding places led by pressure, complexity, or shadow material.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": [
+        "selected_location",
+        "dominant_themes.shadow_pressure",
+        "scores.complexity_index"
+      ]
+    },
+    "powerful_but_demanding_reinvention": {
+      "body": "This place is demanding because it changes the terms of selfhood. It may be useful when continuity is no longer the main goal, but it asks for enough flexibility to let the old pattern loosen without mistaking every disruption for direction.",
+      "_note": "Variant for demanding places led by change, aliveness, baseline divergence, or identity movement.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": [
+        "selected_location",
+        "dominant_themes.change_aliveness",
+        "scores.baseline_divergence",
+        "scores.complexity_index"
+      ]
+    },
+    "powerful_but_demanding_private": {
+      "body": "The pressure here works close to the roots. Home, recovery, memory, or emotional foundation may become more consequential, so the place is better read as deep private activation than simple rest.",
+      "_note": "Variant for demanding places where hearth, restoration, IC-like, or private-life themes lead.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": [
+        "selected_location",
+        "dominant_themes.hearth_restoration",
+        "scores.complexity_index"
+      ]
+    },
+    "powerful_but_demanding_consequential": {
+      "body": "This location reads as consequential rather than casual. Its value is in the way it gathers support and cost into the same field, making the place more useful for deliberate change than for uncomplicated ease.",
+      "_note": "Fallback-style variant for demanding places where the pressure is real but not cleanly tied to one dominant mode.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": [
+        "selected_location",
+        "scores.overall_resonance",
+        "scores.complexity_index"
+      ]
+    },
+    "powerful_but_demanding_visibility": {
+      "body": "The demand here comes through visibility. This place can make contribution, public role, or being recognized feel more immediate, but the same field also reduces how much anonymity or low-stakes experimentation you get to keep.",
+      "_note": "Variant for demanding places where visibility or public role leads.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": [
+        "selected_location",
+        "dominant_themes.visibility_calling",
+        "scores.complexity_index"
+      ]
+    },
+    "powerful_but_demanding_structure": {
+      "body": "The pressure here is practical and structural. This place asks for discipline, continuity, or responsibility, so its value is less about instant ease and more about what can be built when effort has somewhere to go.",
+      "_note": "Variant for demanding places where long-term build, work, discipline, or structure leads.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": [
+        "selected_location",
+        "dominant_themes.long_term_build",
+        "scores.complexity_index"
+      ]
+    },
+    "powerful_but_demanding_belonging": {
+      "body": "This place is demanding through relationship rather than isolation. Belonging, reciprocity, or social visibility may become active quickly, but that also means mismatch and obligation are harder to keep theoretical.",
+      "_note": "Variant for demanding places where belonging, relationship, or social field leads.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": [
+        "selected_location",
+        "dominant_themes.belonging_bonds",
+        "scores.complexity_index"
+      ]
+    },
+    "gentle_alternative": {
+      "body": "This place offers a softer kind of relevance. It may be less dramatic than the highest-activation options, but its grounding, steadiness, or restorative quality gives it a meaningful role in the search.",
+      "_note": "Use when grounding/restoration is meaningful and activation or pressure is lower.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": [
+        "selected_location",
+        "scores.grounding_score",
+        "scores.complexity_index"
+      ]
+    },
+    "gentle_alternative_restorative": {
+      "body": "This place matters because the support is restorative rather than loud. It is better suited to regulation, recovery, and livable rhythm than to constant activation or public acceleration.",
+      "_note": "Variant for quieter places where restoration, grounding, or hearth support leads.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": [
+        "selected_location",
+        "dominant_themes.hearth_restoration",
+        "scores.grounding_score"
+      ]
+    },
+    "gentle_alternative_visibility": {
+      "body": "This is not the loudest visibility field, and that is part of its usefulness. It supports being seen with more steadiness, making public life feel less like performance and more like something that can be sustained.",
+      "_note": "Variant for quieter places where visibility appears with strong grounding.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": [
+        "selected_location",
+        "dominant_themes.visibility_calling",
+        "scores.grounding_score"
+      ]
+    },
+    "gentle_alternative_belonging": {
+      "body": "The gentleness here is relational. This place may not create the most dramatic activation, but it gives belonging, reciprocity, or social ease enough room to become part of ordinary life.",
+      "_note": "Variant for quieter places where belonging or relationship support leads.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": [
+        "selected_location",
+        "dominant_themes.belonging_bonds",
+        "scores.grounding_score"
+      ]
+    },
+    "gentle_alternative_steady": {
+      "body": "This location is useful because it lowers the drama of the search. Its strength is steadiness: a field that may not maximize activation, but can make daily life more coherent and easier to inhabit.",
+      "_note": "Variant for quieter places with broad grounding but no single restorative or relational lead.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": [
+        "selected_location",
+        "scores.grounding_score",
+        "scores.complexity_index"
+      ]
+    },
+    "useful_contrast": {
+      "body": "This location clarifies the pattern by being different from it. Its value is comparative: it shows another possible expression of place resonance, especially where the main results become too similar or one-sided.",
+      "_note": "Use when a location is selected because it clarifies the main pattern by contrast, divergence, or unusual emphasis.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": [
+        "selected_location",
+        "scores.baseline_divergence",
+        "bucket"
+      ]
+    },
+    "useful_contrast_divergent": {
+      "body": "This place is useful because it diverges from the main pattern. It may not be the cleanest fit, but the contrast shows what changes when the chart is moved into a field that emphasizes a different kind of selfhood.",
+      "_note": "Variant for contrast locations selected primarily because baseline divergence is high.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": [
+        "selected_location",
+        "scores.baseline_divergence",
+        "bucket"
+      ]
+    },
+    "useful_contrast_visibility": {
+      "body": "This contrast is public-facing. The place may clarify how visibility behaves when it is separated from softer kinds of fit, showing whether being seen is actually the priority or only the loudest signal.",
+      "_note": "Variant for contrast locations where visibility leads.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": [
+        "selected_location",
+        "dominant_themes.visibility_calling",
+        "scores.baseline_divergence"
+      ]
+    },
+    "useful_contrast_visibility_signal": {
+      "body": "This outlier is especially useful for visibility, study, and signal. It shows a place where movement, message, or public legibility becomes pronounced, even if the broader fit is less restorative or rounded.",
+      "_note": "Variant for contrast locations where visibility and study/signal lead together.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": [
+        "selected_location",
+        "dominant_themes.visibility_calling",
+        "dominant_themes.study_signal",
+        "scores.baseline_divergence"
+      ]
+    },
+    "useful_contrast_visibility_signal_metro": {
+      "body": "This outlier turns the visibility-and-signal pattern outward. In a larger city field, the contrast is less about quiet fit and more about circulation: message, movement, audience, and public legibility become harder to keep contained.",
+      "_note": "Variant for visibility/signal outliers in major or large metro candidate records.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": [
+        "selected_location",
+        "candidate.population_tier",
+        "dominant_themes.visibility_calling",
+        "dominant_themes.study_signal",
+        "scores.baseline_divergence"
+      ]
+    },
+    "useful_contrast_visibility_signal_small_place": {
+      "body": "This outlier concentrates the visibility-and-signal pattern into a smaller field. The contrast is not broad public scale; it is sharper local legibility, where movement, message, or self-definition can become more noticeable because the environment gives it fewer places to diffuse.",
+      "_note": "Variant for visibility/signal outliers in small-town candidate records.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": [
+        "selected_location",
+        "candidate.population_tier",
+        "dominant_themes.visibility_calling",
+        "dominant_themes.study_signal",
+        "scores.baseline_divergence"
+      ]
+    },
+    "stable_baseline": {
+      "body": "This place reads as steady rather than highly charged. It may be most useful as a practical baseline: consistent, workable, and less likely to demand constant reinvention or heightened performance.",
+      "_note": "Use for lower-drama locations that appear steady, practical, or grounding rather than highly activating.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": [
+        "selected_location",
+        "scores.grounding_score"
+      ]
+    },
+    "low_signal_not_priority": {
+      "body": "The current evidence does not make this location a priority. That does not make it wrong or unlivable; it simply means the symbolic argument is weaker here than it is for the stronger matches in this search.",
+      "_note": "Use when a location is evaluated but should not be presented as a priority from the current symbolic evidence.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": [
+        "evaluated_location",
+        "scores.overall_resonance",
+        "evidence_refs"
+      ]
+    },
+    "fallback": {
+      "body": "This place remains part of the evaluated field, but the recommendation category is not clear enough to name confidently. The safest reading is to treat it as contextual rather than decisive.",
+      "_note": "Use when no recommendation label can be selected cleanly.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": [
+        "selected_location"
+      ]
+    }
+  },
+  "pattern_synthesis": {
+    "_note": "Cross-location synthesis after the selected set has been assembled. This is where Search should say what the collection reveals, separates, or warns against.",
+    "convergent_theme": {
+      "body": "Across the selected places, the same life function keeps reappearing. That convergence matters because the search is not merely listing options; it is showing which kind of environment repeatedly matches the chart’s strongest locational signal.",
+      "_note": "Use when multiple selected locations point to the same dominant life function.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": [
+        "selected_locations",
+        "dominant_search_theme",
+        "bucket_distribution"
+      ]
+    },
+    "split_need": {
+      "body": "The results separate two legitimate needs instead of resolving them into one answer. One group of places may serve one priority while another group serves a different one, so the choice depends on which part of life needs the better field now.",
+      "_note": "Use when the search separates two needs, such as visibility versus rest or belonging versus reinvention.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": [
+        "selected_locations",
+        "dominant_themes",
+        "scores"
+      ]
+    },
+    "pressure_pattern": {
+      "body": "Demanding places are not outliers in this search; they are part of the pattern. The repeated pressure suggests that some of the strongest locational matches may work through intensity, responsibility, exposure, or transformation rather than simple ease.",
+      "_note": "Use when demanding places are not anomalies but a meaningful repeated part of the selected set.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": [
+        "selected_locations",
+        "scores.complexity_index",
+        "scores.shadow_pressure"
+      ]
+    },
+    "quiet_counterweight": {
+      "body": "The quieter places provide an important counterweight to the more activated results. They show where the search finds steadiness, restoration, or livable rhythm, which can matter just as much as momentum when comparing real-life fit.",
+      "_note": "Use when quieter/grounding alternatives provide an important balancing function against stronger activation.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": [
+        "selected_locations",
+        "scores.grounding_score",
+        "bucket_distribution"
+      ]
+    },
+    "outlier_reveal": {
+      "body": "The outlier is useful because it reveals what the top-score pattern might hide. By moving differently from the rest of the set, it clarifies whether the search is favoring a true fit or simply repeating one dominant style of resonance.",
+      "_note": "Use when an unusual place reveals something the main top-score pattern would miss.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": [
+        "selected_locations",
+        "scores.baseline_divergence",
+        "bucket"
+      ]
+    },
+    "fallback": {
+      "body": "The selected places are valid, but the cross-location pattern is not yet sharp enough to summarize as one clean synthesis. In this case, the most useful reading comes from comparing the buckets and individual labels rather than forcing a final theme.",
+      "_note": "Use when the selected set is valid but does not produce a clean cross-location synthesis pattern yet.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": [
+        "selected_locations"
+      ]
+    }
+  }
+}

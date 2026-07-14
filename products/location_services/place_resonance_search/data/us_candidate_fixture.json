@@ -1,0 +1,1605 @@
+{
+  "catalog_version": "place_resonance_search_candidates_v0.2.0",
+  "scope": "expanded_us_city_pool",
+  "notes": [
+    "Expanded U.S. candidate catalog merged from the seed fixture plus Astrocartography fixture waves 1 and 2.",
+    "Duplicates were deduplicated, New York identity was canonicalized, and population tier plus region labels were normalized before promotion.",
+    "Coordinates remain curated seed values and should still be audited before any production-scale claims or external rollout."
+  ],
+  "candidates": [
+    {
+      "location_id": "us-ak-anchorage",
+      "display_name": "Anchorage, Alaska, United States",
+      "city": "Anchorage",
+      "state": "AK",
+      "country": "US",
+      "latitude": 61.2181,
+      "longitude": -149.9003,
+      "timezone": "America/Anchorage",
+      "population_tier": "large_metro",
+      "region": "Non-Contiguous",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Major Hub",
+        "Extreme North"
+      ]
+    },
+    {
+      "location_id": "us-ak-homer",
+      "display_name": "Homer, Alaska, United States",
+      "city": "Homer",
+      "state": "AK",
+      "country": "US",
+      "latitude": 59.6425,
+      "longitude": -151.5483,
+      "timezone": "America/Anchorage",
+      "population_tier": "small_town",
+      "region": "Non-Contiguous",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Kenai Peninsula",
+        "Coastal",
+        "Extreme North"
+      ]
+    },
+    {
+      "location_id": "us-ak-juneau",
+      "display_name": "Juneau, Alaska, United States",
+      "city": "Juneau",
+      "state": "AK",
+      "country": "US",
+      "latitude": 58.3019,
+      "longitude": -134.4197,
+      "timezone": "America/Anchorage",
+      "population_tier": "mid_metro",
+      "region": "Non-Contiguous",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Coastal",
+        "Isolated"
+      ]
+    },
+    {
+      "location_id": "us-al-birmingham",
+      "display_name": "Birmingham, Alabama, United States",
+      "city": "Birmingham",
+      "state": "AL",
+      "country": "US",
+      "latitude": 33.5186,
+      "longitude": -86.8104,
+      "timezone": "America/Chicago",
+      "population_tier": "large_metro",
+      "region": "Southeast",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Iron District"
+      ]
+    },
+    {
+      "location_id": "us-ar-eureka-springs",
+      "display_name": "Eureka Springs, Arkansas, United States",
+      "city": "Eureka Springs",
+      "state": "AR",
+      "country": "US",
+      "latitude": 36.4012,
+      "longitude": -93.7377,
+      "timezone": "America/Chicago",
+      "population_tier": "small_town",
+      "region": "Southeast",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Ozarks",
+        "Springs"
+      ]
+    },
+    {
+      "location_id": "us-ar-hot-springs",
+      "display_name": "Hot Springs, Arkansas, United States",
+      "city": "Hot Springs",
+      "state": "AR",
+      "country": "US",
+      "latitude": 34.5037,
+      "longitude": -93.0552,
+      "timezone": "America/Chicago",
+      "population_tier": "mid_metro",
+      "region": "Southeast",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Thermal Waters"
+      ]
+    },
+    {
+      "location_id": "us-az-sedona",
+      "display_name": "Sedona, Arizona, United States",
+      "city": "Sedona",
+      "state": "AZ",
+      "country": "US",
+      "latitude": 34.8697,
+      "longitude": -111.761,
+      "timezone": "America/Phoenix",
+      "population_tier": "small_town",
+      "region": "Southwest",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Vortex lines",
+        "Red rock"
+      ]
+    },
+    {
+      "location_id": "us-az-tucson",
+      "display_name": "Tucson, Arizona, United States",
+      "city": "Tucson",
+      "state": "AZ",
+      "country": "US",
+      "latitude": 32.2226,
+      "longitude": -110.9747,
+      "timezone": "America/Phoenix",
+      "population_tier": "mid_metro",
+      "region": "Southwest",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Deep desert"
+      ]
+    },
+    {
+      "location_id": "us-ca-joshua-tree",
+      "display_name": "Joshua Tree, California, United States",
+      "city": "Joshua Tree",
+      "state": "CA",
+      "country": "US",
+      "latitude": 34.1347,
+      "longitude": -116.3131,
+      "timezone": "America/Los_Angeles",
+      "population_tier": "small_town",
+      "region": "West Coast",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Desert",
+        "High spiritual energy"
+      ]
+    },
+    {
+      "location_id": "us-ca-los-angeles",
+      "display_name": "Los Angeles, California, United States",
+      "city": "Los Angeles",
+      "state": "CA",
+      "country": "US",
+      "latitude": 34.0522,
+      "longitude": -118.2437,
+      "timezone": "America/Los_Angeles",
+      "population_tier": "major_metro",
+      "region": "Southern California",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Major Hub"
+      ]
+    },
+    {
+      "location_id": "us-ca-mount-shasta",
+      "display_name": "Mount Shasta, California, United States",
+      "city": "Mount Shasta",
+      "state": "CA",
+      "country": "US",
+      "latitude": 41.3102,
+      "longitude": -122.3106,
+      "timezone": "America/Los_Angeles",
+      "population_tier": "small_town",
+      "region": "West Coast",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Root Chakra of the Earth",
+        "Mountain"
+      ]
+    },
+    {
+      "location_id": "us-ca-ojai",
+      "display_name": "Ojai, California, United States",
+      "city": "Ojai",
+      "state": "CA",
+      "country": "US",
+      "latitude": 34.448,
+      "longitude": -119.2429,
+      "timezone": "America/Los_Angeles",
+      "population_tier": "small_town",
+      "region": "West Coast",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Valley Haven",
+        "Spiritual"
+      ]
+    },
+    {
+      "location_id": "us-ca-san-francisco",
+      "display_name": "San Francisco, California, United States",
+      "city": "San Francisco",
+      "state": "CA",
+      "country": "US",
+      "latitude": 37.7749,
+      "longitude": -122.4194,
+      "timezone": "America/Los_Angeles",
+      "population_tier": "large_metro",
+      "region": "West Coast",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Major Hub",
+        "Fault zone"
+      ]
+    },
+    {
+      "location_id": "us-co-boulder",
+      "display_name": "Boulder, Colorado, United States",
+      "city": "Boulder",
+      "state": "CO",
+      "country": "US",
+      "latitude": 40.015,
+      "longitude": -105.2705,
+      "timezone": "America/Denver",
+      "population_tier": "mid_metro",
+      "region": "Mountain West",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Mountain base",
+        "Spiritual community"
+      ]
+    },
+    {
+      "location_id": "us-co-crestone",
+      "display_name": "Crestone, Colorado, United States",
+      "city": "Crestone",
+      "state": "CO",
+      "country": "US",
+      "latitude": 37.9961,
+      "longitude": -105.7,
+      "timezone": "America/Denver",
+      "population_tier": "small_town",
+      "region": "Mountain West",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "High Altitude",
+        "Spiritual Retreats"
+      ]
+    },
+    {
+      "location_id": "us-co-denver",
+      "display_name": "Denver, Colorado, United States",
+      "city": "Denver",
+      "state": "CO",
+      "country": "US",
+      "latitude": 39.7392,
+      "longitude": -104.9903,
+      "timezone": "America/Denver",
+      "population_tier": "large_metro",
+      "region": "Mountain West",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Major Hub",
+        "High altitude"
+      ]
+    },
+    {
+      "location_id": "us-ct-mystic",
+      "display_name": "Mystic, Connecticut, United States",
+      "city": "Mystic",
+      "state": "CT",
+      "country": "US",
+      "latitude": 41.3543,
+      "longitude": -71.9665,
+      "timezone": "America/New_York",
+      "population_tier": "small_town",
+      "region": "Northeast",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Maritime",
+        "Historic"
+      ]
+    },
+    {
+      "location_id": "us-fl-cassadaga",
+      "display_name": "Cassadaga, Florida, United States",
+      "city": "Cassadaga",
+      "state": "FL",
+      "country": "US",
+      "latitude": 28.9664,
+      "longitude": -81.2334,
+      "timezone": "America/New_York",
+      "population_tier": "small_town",
+      "region": "Southeast",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Psychic Capital of the World",
+        "Spiritualist Camp"
+      ]
+    },
+    {
+      "location_id": "us-fl-key-west",
+      "display_name": "Key West, Florida, United States",
+      "city": "Key West",
+      "state": "FL",
+      "country": "US",
+      "latitude": 24.5551,
+      "longitude": -81.78,
+      "timezone": "America/New_York",
+      "population_tier": "small_town",
+      "region": "Southeast",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Extreme South",
+        "Island"
+      ]
+    },
+    {
+      "location_id": "us-fl-miami",
+      "display_name": "Miami, Florida, United States",
+      "city": "Miami",
+      "state": "FL",
+      "country": "US",
+      "latitude": 25.7617,
+      "longitude": -80.1918,
+      "timezone": "America/New_York",
+      "population_tier": "large_metro",
+      "region": "Southeast",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Major Hub",
+        "Coastal"
+      ]
+    },
+    {
+      "location_id": "us-fl-st-augustine",
+      "display_name": "St. Augustine, Florida, United States",
+      "city": "St. Augustine",
+      "state": "FL",
+      "country": "US",
+      "latitude": 29.9012,
+      "longitude": -81.3124,
+      "timezone": "America/New_York",
+      "population_tier": "small_town",
+      "region": "Southeast",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Ancient Coastal",
+        "Historic"
+      ]
+    },
+    {
+      "location_id": "us-ga-atlanta",
+      "display_name": "Atlanta, Georgia, United States",
+      "city": "Atlanta",
+      "state": "GA",
+      "country": "US",
+      "latitude": 33.749,
+      "longitude": -84.388,
+      "timezone": "America/New_York",
+      "population_tier": "large_metro",
+      "region": "Southeast",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Major Hub"
+      ]
+    },
+    {
+      "location_id": "us-ga-savannah",
+      "display_name": "Savannah, Georgia, United States",
+      "city": "Savannah",
+      "state": "GA",
+      "country": "US",
+      "latitude": 32.0809,
+      "longitude": -81.0912,
+      "timezone": "America/New_York",
+      "population_tier": "mid_metro",
+      "region": "Southeast",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Coastal",
+        "Historic"
+      ]
+    },
+    {
+      "location_id": "us-hi-hilo",
+      "display_name": "Hilo, Hawaii, United States",
+      "city": "Hilo",
+      "state": "HI",
+      "country": "US",
+      "latitude": 19.7241,
+      "longitude": -155.0868,
+      "timezone": "Pacific/Honolulu",
+      "population_tier": "mid_metro",
+      "region": "Non-Contiguous",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Volcanic energy",
+        "Tropical"
+      ]
+    },
+    {
+      "location_id": "us-hi-honolulu",
+      "display_name": "Honolulu, Hawaii, United States",
+      "city": "Honolulu",
+      "state": "HI",
+      "country": "US",
+      "latitude": 21.3099,
+      "longitude": -157.8581,
+      "timezone": "Pacific/Honolulu",
+      "population_tier": "large_metro",
+      "region": "Non-Contiguous",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Major Hub",
+        "Pacific Island"
+      ]
+    },
+    {
+      "location_id": "us-hi-lahaina",
+      "display_name": "Lahaina, Hawaii, United States",
+      "city": "Lahaina",
+      "state": "HI",
+      "country": "US",
+      "latitude": 20.8783,
+      "longitude": -156.6825,
+      "timezone": "Pacific/Honolulu",
+      "population_tier": "small_town",
+      "region": "Non-Contiguous",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Historic",
+        "Coastal"
+      ]
+    },
+    {
+      "location_id": "us-ia-des-moines",
+      "display_name": "Des Moines, Iowa, United States",
+      "city": "Des Moines",
+      "state": "IA",
+      "country": "US",
+      "latitude": 41.5868,
+      "longitude": -93.625,
+      "timezone": "America/Chicago",
+      "population_tier": "mid_metro",
+      "region": "Midwest",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Heartland"
+      ]
+    },
+    {
+      "location_id": "us-id-boise",
+      "display_name": "Boise, Idaho, United States",
+      "city": "Boise",
+      "state": "ID",
+      "country": "US",
+      "latitude": 43.615,
+      "longitude": -116.2023,
+      "timezone": "America/Boise",
+      "population_tier": "mid_metro",
+      "region": "Mountain West",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "High desert"
+      ]
+    },
+    {
+      "location_id": "us-id-coeur-dalene",
+      "display_name": "Coeur d'Alene, Idaho, United States",
+      "city": "Coeur d'Alene",
+      "state": "ID",
+      "country": "US",
+      "latitude": 47.6735,
+      "longitude": -116.7812,
+      "timezone": "America/Los_Angeles",
+      "population_tier": "mid_metro",
+      "region": "Mountain West",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Lake",
+        "Alpine"
+      ]
+    },
+    {
+      "location_id": "us-il-chicago",
+      "display_name": "Chicago, Illinois, United States",
+      "city": "Chicago",
+      "state": "IL",
+      "country": "US",
+      "latitude": 41.8781,
+      "longitude": -87.6298,
+      "timezone": "America/Chicago",
+      "population_tier": "large_metro",
+      "region": "Great Lakes",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Major Hub",
+        "Lake Michigan"
+      ]
+    },
+    {
+      "location_id": "us-il-peoria",
+      "display_name": "Peoria, Illinois, United States",
+      "city": "Peoria",
+      "state": "IL",
+      "country": "US",
+      "latitude": 40.6936,
+      "longitude": -89.589,
+      "timezone": "America/Chicago",
+      "population_tier": "mid_metro",
+      "region": "Midwest",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "River valley"
+      ]
+    },
+    {
+      "location_id": "us-in-indianapolis",
+      "display_name": "Indianapolis, Indiana, United States",
+      "city": "Indianapolis",
+      "state": "IN",
+      "country": "US",
+      "latitude": 39.7684,
+      "longitude": -86.1581,
+      "timezone": "America/Indiana/Indianapolis",
+      "population_tier": "large_metro",
+      "region": "Midwest",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Major Hub"
+      ]
+    },
+    {
+      "location_id": "us-ks-lawrence",
+      "display_name": "Lawrence, Kansas, United States",
+      "city": "Lawrence",
+      "state": "KS",
+      "country": "US",
+      "latitude": 38.9717,
+      "longitude": -95.2353,
+      "timezone": "America/Chicago",
+      "population_tier": "mid_metro",
+      "region": "Plains",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "River Valley"
+      ]
+    },
+    {
+      "location_id": "us-ks-wichita",
+      "display_name": "Wichita, Kansas, United States",
+      "city": "Wichita",
+      "state": "KS",
+      "country": "US",
+      "latitude": 37.6872,
+      "longitude": -97.3301,
+      "timezone": "America/Chicago",
+      "population_tier": "mid_metro",
+      "region": "Plains",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Central plains"
+      ]
+    },
+    {
+      "location_id": "us-ky-berea",
+      "display_name": "Berea, Kentucky, United States",
+      "city": "Berea",
+      "state": "KY",
+      "country": "US",
+      "latitude": 37.5687,
+      "longitude": -84.2963,
+      "timezone": "America/New_York",
+      "population_tier": "small_town",
+      "region": "Southeast",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Appalachian",
+        "Artisan"
+      ]
+    },
+    {
+      "location_id": "us-la-new-orleans",
+      "display_name": "New Orleans, Louisiana, United States",
+      "city": "New Orleans",
+      "state": "LA",
+      "country": "US",
+      "latitude": 29.9511,
+      "longitude": -90.0715,
+      "timezone": "America/Chicago",
+      "population_tier": "large_metro",
+      "region": "Gulf South",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Major Hub",
+        "Historic",
+        "Gulf Coast"
+      ]
+    },
+    {
+      "location_id": "us-ma-boston",
+      "display_name": "Boston, Massachusetts, United States",
+      "city": "Boston",
+      "state": "MA",
+      "country": "US",
+      "latitude": 42.3601,
+      "longitude": -71.0589,
+      "timezone": "America/New_York",
+      "population_tier": "large_metro",
+      "region": "Northeast",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Major Hub",
+        "Coastal"
+      ]
+    },
+    {
+      "location_id": "us-ma-salem",
+      "display_name": "Salem, Massachusetts, United States",
+      "city": "Salem",
+      "state": "MA",
+      "country": "US",
+      "latitude": 42.5195,
+      "longitude": -70.8967,
+      "timezone": "America/New_York",
+      "population_tier": "small_town",
+      "region": "Northeast",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Historic",
+        "Coastal"
+      ]
+    },
+    {
+      "location_id": "us-md-annapolis",
+      "display_name": "Annapolis, Maryland, United States",
+      "city": "Annapolis",
+      "state": "MD",
+      "country": "US",
+      "latitude": 38.9784,
+      "longitude": -76.4922,
+      "timezone": "America/New_York",
+      "population_tier": "mid_metro",
+      "region": "Mid-Atlantic",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Bay",
+        "Maritime"
+      ]
+    },
+    {
+      "location_id": "us-me-bar-harbor",
+      "display_name": "Bar Harbor, Maine, United States",
+      "city": "Bar Harbor",
+      "state": "ME",
+      "country": "US",
+      "latitude": 44.3876,
+      "longitude": -68.2039,
+      "timezone": "America/New_York",
+      "population_tier": "small_town",
+      "region": "Northeast",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Rugged Coast"
+      ]
+    },
+    {
+      "location_id": "us-me-portland",
+      "display_name": "Portland, Maine, United States",
+      "city": "Portland",
+      "state": "ME",
+      "country": "US",
+      "latitude": 43.6591,
+      "longitude": -70.2568,
+      "timezone": "America/New_York",
+      "population_tier": "small_metro",
+      "region": "New England",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Coastal"
+      ]
+    },
+    {
+      "location_id": "us-mi-ann-arbor",
+      "display_name": "Ann Arbor, Michigan, United States",
+      "city": "Ann Arbor",
+      "state": "MI",
+      "country": "US",
+      "latitude": 42.2808,
+      "longitude": -83.743,
+      "timezone": "America/Detroit",
+      "population_tier": "mid_metro",
+      "region": "Midwest",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Wooded University Town"
+      ]
+    },
+    {
+      "location_id": "us-mi-detroit",
+      "display_name": "Detroit, Michigan, United States",
+      "city": "Detroit",
+      "state": "MI",
+      "country": "US",
+      "latitude": 42.3314,
+      "longitude": -83.0458,
+      "timezone": "America/Detroit",
+      "population_tier": "large_metro",
+      "region": "Midwest",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Major Hub",
+        "River border"
+      ]
+    },
+    {
+      "location_id": "us-mi-traverse-city",
+      "display_name": "Traverse City, Michigan, United States",
+      "city": "Traverse City",
+      "state": "MI",
+      "country": "US",
+      "latitude": 44.7631,
+      "longitude": -85.6206,
+      "timezone": "America/Detroit",
+      "population_tier": "small_town",
+      "region": "Midwest",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Northern bay",
+        "Freshwater"
+      ]
+    },
+    {
+      "location_id": "us-mn-duluth",
+      "display_name": "Duluth, Minnesota, United States",
+      "city": "Duluth",
+      "state": "MN",
+      "country": "US",
+      "latitude": 46.7867,
+      "longitude": -92.1005,
+      "timezone": "America/Chicago",
+      "population_tier": "mid_metro",
+      "region": "Midwest",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Lake Superior",
+        "Harbor"
+      ]
+    },
+    {
+      "location_id": "us-mn-grand-marais",
+      "display_name": "Grand Marais, Minnesota, United States",
+      "city": "Grand Marais",
+      "state": "MN",
+      "country": "US",
+      "latitude": 47.7505,
+      "longitude": -90.3343,
+      "timezone": "America/Chicago",
+      "population_tier": "small_town",
+      "region": "Midwest",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Rugged North Shore"
+      ]
+    },
+    {
+      "location_id": "us-mt-bozeman",
+      "display_name": "Bozeman, Montana, United States",
+      "city": "Bozeman",
+      "state": "MT",
+      "country": "US",
+      "latitude": 45.677,
+      "longitude": -111.0429,
+      "timezone": "America/Denver",
+      "population_tier": "mid_metro",
+      "region": "Mountain West",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Mountain",
+        "Valley"
+      ]
+    },
+    {
+      "location_id": "us-mt-missoula",
+      "display_name": "Missoula, Montana, United States",
+      "city": "Missoula",
+      "state": "MT",
+      "country": "US",
+      "latitude": 46.8721,
+      "longitude": -113.994,
+      "timezone": "America/Denver",
+      "population_tier": "mid_metro",
+      "region": "Mountain West",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "River valley"
+      ]
+    },
+    {
+      "location_id": "us-nc-asheville",
+      "display_name": "Asheville, North Carolina, United States",
+      "city": "Asheville",
+      "state": "NC",
+      "country": "US",
+      "latitude": 35.5951,
+      "longitude": -82.5515,
+      "timezone": "America/New_York",
+      "population_tier": "mid_metro",
+      "region": "Southeast",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Appalachian",
+        "Mountain"
+      ]
+    },
+    {
+      "location_id": "us-nd-fargo",
+      "display_name": "Fargo, North Dakota, United States",
+      "city": "Fargo",
+      "state": "ND",
+      "country": "US",
+      "latitude": 46.8772,
+      "longitude": -96.7898,
+      "timezone": "America/Chicago",
+      "population_tier": "mid_metro",
+      "region": "Plains",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Northern plains"
+      ]
+    },
+    {
+      "location_id": "us-ne-lincoln",
+      "display_name": "Lincoln, Nebraska, United States",
+      "city": "Lincoln",
+      "state": "NE",
+      "country": "US",
+      "latitude": 40.8136,
+      "longitude": -96.7026,
+      "timezone": "America/Chicago",
+      "population_tier": "mid_metro",
+      "region": "Plains",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Plains"
+      ]
+    },
+    {
+      "location_id": "us-ne-omaha",
+      "display_name": "Omaha, Nebraska, United States",
+      "city": "Omaha",
+      "state": "NE",
+      "country": "US",
+      "latitude": 41.2565,
+      "longitude": -95.9345,
+      "timezone": "America/Chicago",
+      "population_tier": "large_metro",
+      "region": "Plains",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Major Hub",
+        "River plains"
+      ]
+    },
+    {
+      "location_id": "us-nj-cape-may",
+      "display_name": "Cape May, New Jersey, United States",
+      "city": "Cape May",
+      "state": "NJ",
+      "country": "US",
+      "latitude": 38.9351,
+      "longitude": -74.906,
+      "timezone": "America/New_York",
+      "population_tier": "small_town",
+      "region": "Mid-Atlantic",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Coastal",
+        "Historic"
+      ]
+    },
+    {
+      "location_id": "us-nm-santa-fe",
+      "display_name": "Santa Fe, New Mexico, United States",
+      "city": "Santa Fe",
+      "state": "NM",
+      "country": "US",
+      "latitude": 35.687,
+      "longitude": -105.9378,
+      "timezone": "America/Denver",
+      "population_tier": "small_metro",
+      "region": "Southwest",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "High altitude",
+        "Artisan"
+      ]
+    },
+    {
+      "location_id": "us-nm-taos",
+      "display_name": "Taos, New Mexico, United States",
+      "city": "Taos",
+      "state": "NM",
+      "country": "US",
+      "latitude": 36.4072,
+      "longitude": -105.5731,
+      "timezone": "America/Denver",
+      "population_tier": "small_town",
+      "region": "Southwest",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Artisan",
+        "Pueblo energy"
+      ]
+    },
+    {
+      "location_id": "us-nv-las-vegas",
+      "display_name": "Las Vegas, Nevada, United States",
+      "city": "Las Vegas",
+      "state": "NV",
+      "country": "US",
+      "latitude": 36.1699,
+      "longitude": -115.1398,
+      "timezone": "America/Los_Angeles",
+      "population_tier": "large_metro",
+      "region": "Southwest",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Major Hub",
+        "Desert basin"
+      ]
+    },
+    {
+      "location_id": "us-ny-ithaca",
+      "display_name": "Ithaca, New York, United States",
+      "city": "Ithaca",
+      "state": "NY",
+      "country": "US",
+      "latitude": 42.444,
+      "longitude": -76.5019,
+      "timezone": "America/New_York",
+      "population_tier": "small_town",
+      "region": "Northeast",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Finger Lakes",
+        "Gorges"
+      ]
+    },
+    {
+      "location_id": "us-ny-new-york",
+      "display_name": "New York, New York, United States",
+      "city": "New York",
+      "state": "NY",
+      "country": "US",
+      "latitude": 40.7128,
+      "longitude": -74.006,
+      "timezone": "America/New_York",
+      "population_tier": "major_metro",
+      "region": "Mid-Atlantic",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Major Hub"
+      ]
+    },
+    {
+      "location_id": "us-ny-woodstock",
+      "display_name": "Woodstock, New York, United States",
+      "city": "Woodstock",
+      "state": "NY",
+      "country": "US",
+      "latitude": 42.0401,
+      "longitude": -74.1185,
+      "timezone": "America/New_York",
+      "population_tier": "small_town",
+      "region": "Northeast",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Catskills Arts",
+        "Spiritual"
+      ]
+    },
+    {
+      "location_id": "us-oh-cleveland",
+      "display_name": "Cleveland, Ohio, United States",
+      "city": "Cleveland",
+      "state": "OH",
+      "country": "US",
+      "latitude": 41.4993,
+      "longitude": -81.6944,
+      "timezone": "America/New_York",
+      "population_tier": "large_metro",
+      "region": "Midwest",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Major Hub",
+        "Lake Erie"
+      ]
+    },
+    {
+      "location_id": "us-oh-columbus",
+      "display_name": "Columbus, Ohio, United States",
+      "city": "Columbus",
+      "state": "OH",
+      "country": "US",
+      "latitude": 39.9612,
+      "longitude": -83.0007,
+      "timezone": "America/New_York",
+      "population_tier": "large_metro",
+      "region": "Midwest",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Major Hub"
+      ]
+    },
+    {
+      "location_id": "us-oh-yellow-springs",
+      "display_name": "Yellow Springs, Ohio, United States",
+      "city": "Yellow Springs",
+      "state": "OH",
+      "country": "US",
+      "latitude": 39.8064,
+      "longitude": -83.8869,
+      "timezone": "America/New_York",
+      "population_tier": "small_town",
+      "region": "Midwest",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Alternative",
+        "Springs"
+      ]
+    },
+    {
+      "location_id": "us-ok-tulsa",
+      "display_name": "Tulsa, Oklahoma, United States",
+      "city": "Tulsa",
+      "state": "OK",
+      "country": "US",
+      "latitude": 36.154,
+      "longitude": -95.9928,
+      "timezone": "America/Chicago",
+      "population_tier": "mid_metro",
+      "region": "Plains",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Heartland"
+      ]
+    },
+    {
+      "location_id": "us-or-astoria",
+      "display_name": "Astoria, Oregon, United States",
+      "city": "Astoria",
+      "state": "OR",
+      "country": "US",
+      "latitude": 46.1879,
+      "longitude": -123.8313,
+      "timezone": "America/Los_Angeles",
+      "population_tier": "small_town",
+      "region": "Pacific Northwest",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Coastal",
+        "Historical"
+      ]
+    },
+    {
+      "location_id": "us-or-bend",
+      "display_name": "Bend, Oregon, United States",
+      "city": "Bend",
+      "state": "OR",
+      "country": "US",
+      "latitude": 44.0582,
+      "longitude": -121.3153,
+      "timezone": "America/Los_Angeles",
+      "population_tier": "mid_metro",
+      "region": "Pacific Northwest",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Mountain",
+        "High desert"
+      ]
+    },
+    {
+      "location_id": "us-or-eugene",
+      "display_name": "Eugene, Oregon, United States",
+      "city": "Eugene",
+      "state": "OR",
+      "country": "US",
+      "latitude": 44.0521,
+      "longitude": -123.0868,
+      "timezone": "America/Los_Angeles",
+      "population_tier": "mid_metro",
+      "region": "Pacific Northwest",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Willamette Valley",
+        "Forested"
+      ]
+    },
+    {
+      "location_id": "us-or-portland",
+      "display_name": "Portland, Oregon, United States",
+      "city": "Portland",
+      "state": "OR",
+      "country": "US",
+      "latitude": 45.5152,
+      "longitude": -122.6784,
+      "timezone": "America/Los_Angeles",
+      "population_tier": "large_metro",
+      "region": "Pacific Northwest",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Major Hub"
+      ]
+    },
+    {
+      "location_id": "us-pa-gettysburg",
+      "display_name": "Gettysburg, Pennsylvania, United States",
+      "city": "Gettysburg",
+      "state": "PA",
+      "country": "US",
+      "latitude": 39.8309,
+      "longitude": -77.2311,
+      "timezone": "America/New_York",
+      "population_tier": "small_town",
+      "region": "Mid-Atlantic",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Historic",
+        "High Energy"
+      ]
+    },
+    {
+      "location_id": "us-pa-philadelphia",
+      "display_name": "Philadelphia, Pennsylvania, United States",
+      "city": "Philadelphia",
+      "state": "PA",
+      "country": "US",
+      "latitude": 39.9526,
+      "longitude": -75.1652,
+      "timezone": "America/New_York",
+      "population_tier": "large_metro",
+      "region": "Mid-Atlantic",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Major Hub",
+        "Historic"
+      ]
+    },
+    {
+      "location_id": "us-pa-pittsburgh",
+      "display_name": "Pittsburgh, Pennsylvania, United States",
+      "city": "Pittsburgh",
+      "state": "PA",
+      "country": "US",
+      "latitude": 40.4406,
+      "longitude": -79.9959,
+      "timezone": "America/New_York",
+      "population_tier": "large_metro",
+      "region": "Mid-Atlantic",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Major Hub",
+        "Confluence of Rivers"
+      ]
+    },
+    {
+      "location_id": "us-ri-providence",
+      "display_name": "Providence, Rhode Island, United States",
+      "city": "Providence",
+      "state": "RI",
+      "country": "US",
+      "latitude": 41.824,
+      "longitude": -71.4128,
+      "timezone": "America/New_York",
+      "population_tier": "mid_metro",
+      "region": "Northeast",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Coastal",
+        "Historic"
+      ]
+    },
+    {
+      "location_id": "us-sc-charleston",
+      "display_name": "Charleston, South Carolina, United States",
+      "city": "Charleston",
+      "state": "SC",
+      "country": "US",
+      "latitude": 32.7765,
+      "longitude": -79.9311,
+      "timezone": "America/New_York",
+      "population_tier": "mid_metro",
+      "region": "Southeast",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Coastal",
+        "Historic"
+      ]
+    },
+    {
+      "location_id": "us-sd-rapid-city",
+      "display_name": "Rapid City, South Dakota, United States",
+      "city": "Rapid City",
+      "state": "SD",
+      "country": "US",
+      "latitude": 44.0805,
+      "longitude": -103.231,
+      "timezone": "America/Denver",
+      "population_tier": "small_town",
+      "region": "Plains",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Black Hills"
+      ]
+    },
+    {
+      "location_id": "us-tn-chattanooga",
+      "display_name": "Chattanooga, Tennessee, United States",
+      "city": "Chattanooga",
+      "state": "TN",
+      "country": "US",
+      "latitude": 35.0456,
+      "longitude": -85.3097,
+      "timezone": "America/New_York",
+      "population_tier": "mid_metro",
+      "region": "Southeast",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Mountain River"
+      ]
+    },
+    {
+      "location_id": "us-tn-nashville",
+      "display_name": "Nashville, Tennessee, United States",
+      "city": "Nashville",
+      "state": "TN",
+      "country": "US",
+      "latitude": 36.1627,
+      "longitude": -86.7816,
+      "timezone": "America/Chicago",
+      "population_tier": "large_metro",
+      "region": "Southeast",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Major Hub"
+      ]
+    },
+    {
+      "location_id": "us-tx-austin",
+      "display_name": "Austin, Texas, United States",
+      "city": "Austin",
+      "state": "TX",
+      "country": "US",
+      "latitude": 30.2672,
+      "longitude": -97.7431,
+      "timezone": "America/Chicago",
+      "population_tier": "large_metro",
+      "region": "Southwest",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Major Hub"
+      ]
+    },
+    {
+      "location_id": "us-tx-denton",
+      "display_name": "Denton, Texas, United States",
+      "city": "Denton",
+      "state": "TX",
+      "country": "US",
+      "latitude": 33.2148,
+      "longitude": -97.1331,
+      "timezone": "America/Chicago",
+      "population_tier": "mid_metro",
+      "region": "Southwest",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Alternative Arts"
+      ]
+    },
+    {
+      "location_id": "us-tx-galveston",
+      "display_name": "Galveston, Texas, United States",
+      "city": "Galveston",
+      "state": "TX",
+      "country": "US",
+      "latitude": 29.3013,
+      "longitude": -94.7977,
+      "timezone": "America/Chicago",
+      "population_tier": "mid_metro",
+      "region": "Southwest",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Gulf Coast",
+        "Island"
+      ]
+    },
+    {
+      "location_id": "us-tx-marfa",
+      "display_name": "Marfa, Texas, United States",
+      "city": "Marfa",
+      "state": "TX",
+      "country": "US",
+      "latitude": 30.3095,
+      "longitude": -104.0218,
+      "timezone": "America/Chicago",
+      "population_tier": "small_town",
+      "region": "Southwest",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "High Desert",
+        "Artisan"
+      ]
+    },
+    {
+      "location_id": "us-tx-san-antonio",
+      "display_name": "San Antonio, Texas, United States",
+      "city": "San Antonio",
+      "state": "TX",
+      "country": "US",
+      "latitude": 29.4241,
+      "longitude": -98.4936,
+      "timezone": "America/Chicago",
+      "population_tier": "large_metro",
+      "region": "Southwest",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Major Hub",
+        "Historic"
+      ]
+    },
+    {
+      "location_id": "us-ut-moab",
+      "display_name": "Moab, Utah, United States",
+      "city": "Moab",
+      "state": "UT",
+      "country": "US",
+      "latitude": 38.5733,
+      "longitude": -109.5498,
+      "timezone": "America/Denver",
+      "population_tier": "small_town",
+      "region": "Mountain West",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Canyon",
+        "Red rock"
+      ]
+    },
+    {
+      "location_id": "us-ut-salt-lake-city",
+      "display_name": "Salt Lake City, Utah, United States",
+      "city": "Salt Lake City",
+      "state": "UT",
+      "country": "US",
+      "latitude": 40.7608,
+      "longitude": -111.891,
+      "timezone": "America/Denver",
+      "population_tier": "large_metro",
+      "region": "Mountain West",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Major Hub",
+        "Valley"
+      ]
+    },
+    {
+      "location_id": "us-va-richmond",
+      "display_name": "Richmond, Virginia, United States",
+      "city": "Richmond",
+      "state": "VA",
+      "country": "US",
+      "latitude": 37.5407,
+      "longitude": -77.436,
+      "timezone": "America/New_York",
+      "population_tier": "mid_metro",
+      "region": "Mid-Atlantic",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "River Fall Line",
+        "Historic"
+      ]
+    },
+    {
+      "location_id": "us-vt-burlington",
+      "display_name": "Burlington, Vermont, United States",
+      "city": "Burlington",
+      "state": "VT",
+      "country": "US",
+      "latitude": 44.4759,
+      "longitude": -73.2121,
+      "timezone": "America/New_York",
+      "population_tier": "mid_metro",
+      "region": "Northeast",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Lake Champlain"
+      ]
+    },
+    {
+      "location_id": "us-wa-forks",
+      "display_name": "Forks, Washington, United States",
+      "city": "Forks",
+      "state": "WA",
+      "country": "US",
+      "latitude": 47.9504,
+      "longitude": -124.3855,
+      "timezone": "America/Los_Angeles",
+      "population_tier": "small_town",
+      "region": "Pacific Northwest",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Atmospheric",
+        "Deep coastal forest"
+      ]
+    },
+    {
+      "location_id": "us-wa-olympia",
+      "display_name": "Olympia, Washington, United States",
+      "city": "Olympia",
+      "state": "WA",
+      "country": "US",
+      "latitude": 47.0379,
+      "longitude": -122.9007,
+      "timezone": "America/Los_Angeles",
+      "population_tier": "mid_metro",
+      "region": "Pacific Northwest",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Puget Sound",
+        "Capital"
+      ]
+    },
+    {
+      "location_id": "us-wa-seattle",
+      "display_name": "Seattle, Washington, United States",
+      "city": "Seattle",
+      "state": "WA",
+      "country": "US",
+      "latitude": 47.6062,
+      "longitude": -122.3321,
+      "timezone": "America/Los_Angeles",
+      "population_tier": "large_metro",
+      "region": "Pacific Northwest",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Major Hub",
+        "Extreme western longitude"
+      ]
+    },
+    {
+      "location_id": "us-wi-madison",
+      "display_name": "Madison, Wisconsin, United States",
+      "city": "Madison",
+      "state": "WI",
+      "country": "US",
+      "latitude": 43.0731,
+      "longitude": -89.4012,
+      "timezone": "America/Chicago",
+      "population_tier": "mid_metro",
+      "region": "Midwest",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Lakes",
+        "Isthmus"
+      ]
+    },
+    {
+      "location_id": "us-wi-milwaukee",
+      "display_name": "Milwaukee, Wisconsin, United States",
+      "city": "Milwaukee",
+      "state": "WI",
+      "country": "US",
+      "latitude": 43.0389,
+      "longitude": -87.9065,
+      "timezone": "America/Chicago",
+      "population_tier": "large_metro",
+      "region": "Midwest",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Major Hub",
+        "Lake Michigan"
+      ]
+    },
+    {
+      "location_id": "us-wy-jackson",
+      "display_name": "Jackson, Wyoming, United States",
+      "city": "Jackson",
+      "state": "WY",
+      "country": "US",
+      "latitude": 43.4799,
+      "longitude": -110.7624,
+      "timezone": "America/Denver",
+      "population_tier": "small_town",
+      "region": "Mountain West",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Alpine",
+        "Valley"
+      ]
+    }
+  ]
+}

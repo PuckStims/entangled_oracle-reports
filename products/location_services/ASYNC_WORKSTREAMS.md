@@ -4,6 +4,22 @@
 **Purpose:** Split asynchronous work between ChatGPT and Claude Code without flattening either agent's strengths.  
 **Operating principle:** ChatGPT leads content, method analysis, evidence language, and precision. Claude Code leads repo adaptation, wiring, scaffolding, tests, and implementation repair.
 
+## Current Direction Overlay
+
+This document predates the Place Resonance Search pivot. Treat the current
+product hierarchy as:
+
+1. **Place Resonance Search** - flagship curated discovery/search report.
+2. **Place Profile** - reusable one-location evidence unit, currently
+   implemented by the existing Place Resonance code path.
+3. **Between Places**, **World Lines Companion**, **Local Compass**, and
+   **Living Map** - descendants or adjacent products that should reuse the
+   relevant profile/search contracts once they are real.
+
+Older references below that call Place Resonance the permanent anchor should be
+read as references to the working single-place profile engine, not as a reason
+to collapse the new search product back into a one-city report.
+
 ## Shared Destination
 
 Location Services is not a side feature. It is a product family that turns place into an auditable interpretive layer:
@@ -15,7 +31,11 @@ birth UTC instant + destination coordinates
 -> product-specific prose, comparison, maps, timing, and appendices
 ```
 
-The first fully supported product should be **Place Resonance**, a one-location depth report. Other products can be specified in parallel, but Place Resonance is the anchor because it defines the shared evidence contract that Between Places, World Lines Companion, Local Compass, and Living Map will reuse.
+The first fully stable implementation path is the existing one-location Place
+Resonance code, now treated architecturally as the reusable **Place Profile**
+engine. The flagship product direction is **Place Resonance Search**, which
+will reuse profile evidence across a curated candidate pool instead of asking
+the user to begin with one chosen city.
 
 ## Non-Negotiable Boundaries
 

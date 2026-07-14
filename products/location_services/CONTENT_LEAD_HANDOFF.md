@@ -4,6 +4,22 @@
 **Owner:** ChatGPT content-analysis lane.  
 **Consumer:** Claude / implementation-review lane.
 
+## Current Direction Overlay
+
+This handoff includes historical rounds that were written when Place Resonance
+was treated as the long-term flagship. The current product direction is:
+
+- **Place Resonance Search** is the flagship discovery/search product.
+- The existing Place Resonance implementation is the reusable single-place
+  **Place Profile** engine.
+- Content work already authored for Place Resonance remains valuable, but its
+  long-term role is profile prose and reusable evidence interpretation inside
+  Search, Between Places, and later products.
+
+When older notes say "build Place Resonance first," read that as "keep the
+single-place profile engine stable before building search, comparison, map,
+directional, or timing products."
+
 ## Files Created
 
 ```text

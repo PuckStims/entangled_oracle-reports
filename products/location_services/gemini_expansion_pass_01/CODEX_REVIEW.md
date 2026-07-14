@@ -4,16 +4,32 @@
 **Status:** Reviewed draft. This file does not make Gemini's pass authoritative; it classifies what can be reused, corrected, or deferred.  
 **Scope:** `products/location_services/gemini_expansion_pass_01/` reviewed against the current Location Services code, tests, scaffold, and content contracts.
 
+## Current Direction Overlay
+
+This review predates the Place Resonance Search pivot. Its caution about
+building from the working Place Resonance code path still applies, but the
+product role has changed:
+
+- The existing Place Resonance implementation is now the reusable single-place
+  Place Profile engine.
+- Place Resonance Search is the intended flagship discovery product.
+- The next production contract after profile stability is candidate catalog,
+  batch profile generation, scoring, curation, and bucket assignment for Search.
+
 ## Review Summary
 
 Gemini Pass 01 succeeded at its intended job: it created broad draft structure without modifying engine files, block scaffold files, templates, or active non-location products. The pass is useful as a planning map, but not as an implementation source of truth.
 
-The safe near-term path is narrower than Gemini's full roadmap:
+The near-term path is narrower than Gemini's full roadmap:
 
-1. Keep Place Resonance as the only build target.
-2. Build a Location Services block-loader/selector adapter for the four Round 4 scaffold files.
-3. Prove selector traversal and fallback behavior against the existing TODO leaves.
-4. Only then begin a minimal Place Resonance report context/render skeleton.
+1. Keep the existing Place Resonance code path stable as the reusable Place
+   Profile engine.
+2. Build Place Resonance Search from candidate catalog, batch profile
+   generation, scoring, curation, and bucket assignment.
+3. Keep the Location Services block-loader/selector adapter and profile render
+   path green as the evidence layer evolves.
+4. Only then promote comparison, map, direction, or timing products into real
+   production routing.
 
 Between Places can follow after Place Resonance selection/rendering is stable. World Lines Companion, Local Compass, and Living Map remain planning-only until their missing methods and governance policies exist.
 
@@ -269,4 +285,3 @@ Stop and regroup if any Stage 1 implementation would require:
 - wiring a DRAFT taxonomy;
 - changing existing non-location report behavior;
 - implementing unsupported methods.
-

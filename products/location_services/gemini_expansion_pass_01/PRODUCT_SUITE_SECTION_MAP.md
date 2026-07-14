@@ -10,6 +10,16 @@ before any section becomes a build target.
 
 ---
 
+## Current Direction Overlay
+
+This draft predates the Place Resonance Search pivot. Its Place Resonance
+section remains useful as the one-location **Place Profile** section map, but
+it is no longer the full flagship product shape. The flagship is now
+**Place Resonance Search**, which requires candidate catalog, batch profile
+generation, scoring, curation, bucket assignment, and search-level synthesis.
+
+Do not use this draft to collapse Search back into a single chosen-city report.
+
 ## Reading Guide
 
 Each product section below defines:
@@ -32,9 +42,10 @@ Capability status labels used throughout:
 
 ---
 
-## Product 1: Place Resonance
+## Product 1 Profile Unit: Place Resonance / Place Profile
 
-**v0.1 foundation exists. This is the primary build target.**
+**v0.1 foundation exists. This is the reusable one-location profile unit, not
+the complete Place Resonance Search product.**
 
 The Place Resonance section map is grounded in the existing block scaffold
 in `blocks/plainspeak/` (745 TODO leaves, delivered in Round 4). This

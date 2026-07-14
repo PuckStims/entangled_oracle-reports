@@ -13,6 +13,15 @@ It inventories what each product needs and where the gaps are.
 
 ---
 
+## Current Direction Overlay
+
+This draft predates the Place Resonance Search pivot. The Place Resonance
+section below remains useful as the data-gap inventory for the reusable
+one-location **Place Profile** engine. It is not the complete flagship product
+contract. The flagship Search product additionally needs candidate catalog,
+batch profile generation, scoring, curation, bucket assignment, and search-level
+prose contracts.
+
 ## Capability Status Labels
 
 | Label | Meaning |
@@ -24,7 +33,7 @@ It inventories what each product needs and where the gaps are.
 
 ---
 
-## Product 1: Place Resonance
+## Product 1 Profile Unit: Place Resonance / Place Profile
 
 ### Evidence Already Available (AVAILABLE_NOW)
 
