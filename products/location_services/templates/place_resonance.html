@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ report_title }} - {{ destination_name or "Location draft" }}</title>
+  <style>{{ shared_report_css | safe }}</style>
+  <style>
+    :root {
+      --bg: #f6f0e5;
+      --surface: #fffaf3;
+      --surface-2: #efe1cf;
+      --border: #ccbba6;
+      --text: #1f1d19;
+      --muted: #706559;
+      --subtle: #8a7d6e;
+      --color-growth: #627b68;
+      --ember: #ad6c3e;
+      --purple: #325c56;
+      --color-identity: #325c56;
+      --color-relationships: #9d5d52;
+      --color-creativity: #9e7b33;
+      --color-vocation: #556c8e;
+      --color-home: #7a5f7e;
+      --color-spiritual: #6d6e4d;
+    }
+
+    * { box-sizing: border-box; }
+
+    body.report-shell {
+      margin: 0;
+      background:
+        radial-gradient(circle at top left, rgba(255,255,255,0.8), transparent 35%),
+        linear-gradient(180deg, #fbf7f0 0%, #efe2d2 100%);
+      color: var(--text);
+      padding: 28px 20px 64px;
+    }
+
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      gap: 22px;
+    }
+
+    .hero {
+      background:
+        linear-gradient(135deg, rgba(50,92,86,0.92), rgba(173,108,62,0.88)),
+        linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0));
+      color: #f9f5ee;
+      border-radius: 10px;
+      padding: 28px;
+      border: 1px solid rgba(255,255,255,0.2);
+      box-shadow: 0 18px 40px rgba(50, 44, 34, 0.12);
+      display: grid;
+      gap: 18px;
+    }
+
+    .hero-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .eyebrow {
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-size: 0.68rem;
+      opacity: 0.78;
+    }
+
+    .hero h1 {
+      margin: 6px 0 0;
+      font-size: clamp(2rem, 4vw, 3.25rem);
+      line-height: 1.05;
+      max-width: 12ch;
+      font-weight: 600;
+    }
+
+    .hero-subtitle {
+      font-size: 1rem;
+      max-width: 56ch;
+      color: rgba(249,245,238,0.86);
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .meta-card {
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.16);
+      border-radius: 8px;
+      padding: 12px 14px;
+      backdrop-filter: blur(6px);
+    }
+
+    .meta-card .label {
+      font-size: 0.62rem;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+      color: rgba(249,245,238,0.72);
+      margin-bottom: 4px;
+    }
+
+    .meta-card .value {
+      font-size: 0.92rem;
+      line-height: 1.35;
+      color: #fffaf3;
+    }
+
+    .draft-banner {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      padding: 14px 16px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.18);
+      color: rgba(249,245,238,0.92);
+    }
+
+    .draft-banner strong {
+      display: block;
+      font-size: 0.95rem;
+      margin-bottom: 3px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 2.2fr) minmax(280px, 0.95fr);
+      gap: 22px;
+      align-items: start;
+    }
+
+    .stack {
+      display: grid;
+      gap: 22px;
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 22px;
+      box-shadow: 0 14px 30px rgba(45, 36, 27, 0.06);
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: baseline;
+      margin-bottom: 16px;
+    }
+
+    .panel-title {
+      margin: 0;
+      font-size: 1.15rem;
+      line-height: 1.2;
+    }
+
+    .panel-kicker {
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-size: 0.66rem;
+      color: var(--muted);
+    }
+
+    .signal-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 0.72rem;
+      border: 1px solid var(--border);
+      background: var(--surface-2);
+      color: var(--muted);
+    }
+
+    .visual-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.45fr) minmax(260px, 0.9fr);
+      gap: 16px;
+      align-items: start;
+    }
+
+    .wheel-panel {
+      background: #fffdf9;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    .wheel-frame {
+      display: grid;
+      place-items: center;
+      padding: 8px;
+      min-height: 320px;
+    }
+
+    .wheel-frame svg {
+      width: 100%;
+      height: auto;
+      max-width: 520px;
+    }
+
+    .wheel-note {
+      margin-top: 12px;
+      font-size: 0.84rem;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .visual-slot {
+      background: linear-gradient(180deg, rgba(50,92,86,0.05), rgba(173,108,62,0.08));
+      border: 1px dashed var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      min-height: 320px;
+      display: grid;
+      align-content: start;
+      gap: 10px;
+    }
+
+    .visual-slot .status {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 1.7px;
+      color: var(--ember);
+    }
+
+    .prose-block {
+      font-size: 1rem;
+      line-height: 1.82;
+      color: var(--text);
+    }
+
+    .evidence-list,
+    .block-list {
+      display: grid;
+      gap: 16px;
+    }
+
+    .evidence-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    .evidence-table th,
+    .evidence-table td {
+      text-align: left;
+      vertical-align: top;
+      border-bottom: 1px solid var(--border);
+      padding: 10px 8px;
+    }
+
+    .evidence-table th {
+      color: var(--muted);
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 1.6px;
+    }
+
+    .evidence-id {
+      font-family: "Courier New", monospace;
+      font-size: 0.78rem;
+      color: var(--subtle);
+    }
+
+    .block-card {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #fffdf9;
+      overflow: hidden;
+    }
+
+    .block-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      padding: 12px 14px;
+      background: var(--surface-2);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .block-meta strong {
+      font-size: 0.94rem;
+      line-height: 1.2;
+    }
+
+    .block-meta .detail {
+      font-size: 0.76rem;
+      color: var(--muted);
+    }
+
+    .block-body {
+      padding: 16px 16px 18px;
+    }
+
+    .draft-block {
+      display: grid;
+      gap: 12px;
+    }
+
+    .draft-label {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 1.7px;
+      color: var(--ember);
+    }
+
+    .draft-prompt {
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .draft-editor {
+      min-height: 132px;
+      border: 1px dashed var(--border);
+      border-radius: 8px;
+      background: #fffdfa;
+      padding: 14px;
+      font-size: 0.95rem;
+      line-height: 1.65;
+      outline: none;
+      white-space: pre-wrap;
+    }
+
+    .draft-editor:empty::before {
+      content: attr(data-placeholder);
+      color: var(--subtle);
+    }
+
+    .draft-note {
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .draft-note summary {
+      cursor: pointer;
+      color: var(--color-identity);
+    }
+
+    .sidebar {
+      display: grid;
+      gap: 18px;
+      position: sticky;
+      top: 18px;
+    }
+
+    .sidebar-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 18px;
+      box-shadow: 0 12px 24px rgba(45, 36, 27, 0.05);
+    }
+
+    .sidebar-card h3 {
+      margin: 0 0 10px;
+      font-size: 0.95rem;
+    }
+
+    .sidebar-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      gap: 8px;
+      font-size: 0.88rem;
+      color: var(--muted);
+    }
+
+    .sidebar-list li {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .tag-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 0.73rem;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+
+    footer {
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
+
+    @media (max-width: 960px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .visual-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: static;
+      }
+
+      .meta-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 640px) {
+      body.report-shell {
+        padding: 16px 12px 40px;
+      }
+
+      .hero,
+      .panel,
+      .sidebar-card {
+        padding: 18px;
+      }
+
+      .meta-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .evidence-table,
+      .evidence-table thead,
+      .evidence-table tbody,
+      .evidence-table th,
+      .evidence-table td,
+      .evidence-table tr {
+        display: block;
+      }
+
+      .evidence-table thead {
+        display: none;
+      }
+
+      .evidence-table tr {
+        padding: 10px 0;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .evidence-table td {
+        border: none;
+        padding: 4px 0;
+      }
+    }
+  </style>
+</head>
+<body class="report-shell">
+  <div class="page">
+    <header class="hero">
+      <div class="hero-top">
+        <div>
+          <div class="eyebrow">{{ report_subtitle }}</div>
+          <h1>{{ report_title }}</h1>
+          <div class="hero-subtitle">
+            {{ destination_name or "Destination not set" }} as a structured locational draft,
+            ready for browser review and manual prose completion.
+          </div>
+        </div>
+        <div class="tag-row">
+          <span class="tag">{{ render_version }}</span>
+          <span class="tag">{{ generation_date }}</span>
+          {% if purpose_lens %}<span class="tag">Purpose: {{ purpose_lens }}</span>{% endif %}
+          {% if relationship_to_place %}<span class="tag">Relationship: {{ relationship_to_place }}</span>{% endif %}
+        </div>
+      </div>
+
+      <div class="meta-grid">
+        <div class="meta-card">
+          <div class="label">Destination</div>
+          <div class="value">{{ destination_name or "Unknown destination" }}</div>
+        </div>
+        <div class="meta-card">
+          <div class="label">Birth Location</div>
+          <div class="value">{{ birth_location or "Unknown birth location" }}</div>
+        </div>
+        <div class="meta-card">
+          <div class="label">Birth Date</div>
+          <div class="value">{{ birth_date or "Unknown" }}</div>
+        </div>
+        <div class="meta-card">
+          <div class="label">Birth Time</div>
+          <div class="value">{{ birth_time or "Unavailable" }}</div>
+        </div>
+        <div class="meta-card">
+          <div class="label">Time Confidence</div>
+          <div class="value">{{ birth_time_confidence or "Unknown" }}</div>
+        </div>
+      </div>
+
+      <div class="draft-banner">
+        <div>
+          <strong>Manual completion ready</strong>
+          Unauthored scaffold leaves appear as editable draft slots rather than raw TODO text.
+        </div>
+        <div>
+          <strong>{{ draft_leaf_count }} of {{ leaf_count }} leaves still in draft</strong>
+          Authored sections render as report prose; unfinished sections preserve the source note inline.
+        </div>
+      </div>
+    </header>
+
+    <div class="layout">
+      <main class="stack">
+        <section class="panel" id="visual-reference">
+          <div class="panel-header">
+            <div>
+              <div class="panel-kicker">visual reference</div>
+              <h2 class="panel-title">Chart Visuals</h2>
+            </div>
+            <span class="signal-chip">stable natal + future map slot</span>
+          </div>
+
+          <div class="visual-grid">
+            <article class="wheel-panel">
+              <div class="panel-kicker">Natal Wheel</div>
+              <div class="wheel-frame">
+                {% if chart_wheel_svg %}
+                  {{ chart_wheel_svg | safe }}
+                {% else %}
+                  <div class="visual-slot" style="min-height: 0;">
+                    <div class="status">Unavailable</div>
+                    <div class="prose-block">Natal wheel not rendered in this pass.</div>
+                  </div>
+                {% endif %}
+              </div>
+              {% if chart_wheel_note %}
+                <div class="wheel-note">{{ chart_wheel_note }}</div>
+              {% endif %}
+            </article>
+
+            <article class="visual-slot">
+              <div class="panel-kicker">{{ astrocartography_visual.title or "Astrocartography Visual" }}</div>
+              <div class="status">{{ astrocartography_visual.status or "reserved" }}</div>
+              {% if astrocartography_visual.svg %}
+                <div class="wheel-frame" style="min-height: 0; padding: 0; margin: 2px 0 6px;">
+                  {{ astrocartography_visual.svg | safe }}
+                </div>
+              {% endif %}
+              <div class="prose-block">
+                {{ astrocartography_visual.note or "Reserved for future astrocartography visual work." }}
+              </div>
+            </article>
+          </div>
+        </section>
+
+        {% for section in sections %}
+          <section class="panel" id="{{ section.id }}">
+            <div class="panel-header">
+              <div>
+                <div class="panel-kicker">{{ section.id.replace("_", " ") }}</div>
+                <h2 class="panel-title">{{ section.title }}</h2>
+              </div>
+              {% if section.category %}
+                <span class="signal-chip">{{ section.category.replace("_", " ") }}</span>
+              {% endif %}
+            </div>
+
+            {% if section.leaf %}
+              {% if section.leaf.is_draft %}
+                <div class="draft-block">
+                  <div class="draft-label">Draft Slot</div>
+                  <div class="draft-prompt">{{ section.leaf.draft_prompt }}</div>
+                  <div class="draft-editor" contenteditable="true" spellcheck="true" data-placeholder="{{ section.leaf.draft_prompt }}"></div>
+                  <details class="draft-note">
+                    <summary>Source note</summary>
+                    <p>{{ section.leaf.note }}</p>
+                  </details>
+                </div>
+              {% else %}
+                <div class="prose-block">{{ section.leaf.body }}</div>
+              {% endif %}
+            {% endif %}
+
+            {% if section.source_evidence_ids %}
+              <div class="tag-row" style="margin-top: 14px;">
+                {% for evidence_id in section.source_evidence_ids %}
+                  <span class="tag">{{ evidence_id }}</span>
+                {% endfor %}
+              </div>
+            {% endif %}
+
+            {% if section.repeated_bodies %}
+              <div class="tag-row" style="margin-top: 14px;">
+                {% for body in section.repeated_bodies %}
+                  <span class="tag">{{ body }}</span>
+                {% endfor %}
+              </div>
+            {% endif %}
+
+            {% if section.rows %}
+              <table class="evidence-table">
+                <thead>
+                  <tr>
+                    <th>Tier</th>
+                    <th>Evidence</th>
+                    <th>Source</th>
+                    <th>Block</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for row in section.rows %}
+                    <tr>
+                      <td>{{ row.tier }}</td>
+                      <td>
+                        <div>{{ row.evidence_type.replace("_", " ") }}</div>
+                        <div class="evidence-id">{{ row.id }}</div>
+                      </td>
+                      <td>{{ row.source_summary }}</td>
+                      <td>
+                        {% if row.leaf %}
+                          {% if row.leaf.is_draft %}
+                            <div class="draft-label">Draft slot</div>
+                            <div class="draft-prompt">{{ row.leaf.draft_prompt }}</div>
+                          {% else %}
+                            {{ row.leaf.body }}
+                          {% endif %}
+                        {% else %}
+                          <span class="evidence-id">No prose block selected</span>
+                        {% endif %}
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            {% endif %}
+
+            {% if section.blocks %}
+              <div class="block-list">
+                {% for block in section.blocks %}
+                  <article class="block-card" id="{{ block.id }}">
+                    <div class="block-meta">
+                      <div>
+                        <strong>{{ block.id }}</strong>
+                        {% if block.source.body %}
+                          <div class="detail">{{ block.source.body }}</div>
+                        {% elif block.source.method %}
+                          <div class="detail">{{ block.source.method }}</div>
+                        {% elif block.source.birth_time_confidence %}
+                          <div class="detail">{{ block.source.birth_time_confidence }}</div>
+                        {% elif block.source.coordinate_precision %}
+                          <div class="detail">{{ block.source.coordinate_precision }}</div>
+                        {% endif %}
+                      </div>
+                      <div class="detail">
+                        {% if block.source.angle %}
+                          {{ block.source.angle }}
+                        {% elif block.source.relocated_house %}
+                          House {{ block.source.relocated_house }}
+                        {% elif block.source.count %}
+                          {{ block.source.count }} warning(s)
+                        {% endif %}
+                      </div>
+                    </div>
+
+                    <div class="block-body">
+                      {% if block.leaf %}
+                        {% if block.leaf.is_draft %}
+                          <div class="draft-block">
+                            <div class="draft-label">Draft Slot</div>
+                            <div class="draft-prompt">{{ block.leaf.draft_prompt }}</div>
+                            <div class="draft-editor" contenteditable="true" spellcheck="true" data-placeholder="{{ block.leaf.draft_prompt }}"></div>
+                            <details class="draft-note">
+                              <summary>Source note</summary>
+                              <p>{{ block.leaf.note }}</p>
+                            </details>
+                          </div>
+                        {% else %}
+                          <div class="prose-block">{{ block.leaf.body }}</div>
+                        {% endif %}
+                      {% endif %}
+                    </div>
+                  </article>
+                {% endfor %}
+              </div>
+            {% endif %}
+
+            {% if section.warning_summary_count is defined %}
+              <div class="tag-row" style="margin-top: 14px;">
+                <span class="tag">Raw warnings: {{ section.raw_warning_count }}</span>
+                <span class="tag">Warning groups: {{ section.warning_summary_count }}</span>
+              </div>
+            {% endif %}
+          </section>
+        {% endfor %}
+      </main>
+
+      <aside class="sidebar">
+        <div class="sidebar-card">
+          <h3>Report Shape</h3>
+          <ul class="sidebar-list">
+            {% for item in section_order %}
+              <li><span>{{ item.replace("_", " ") }}</span><span>{{ loop.index }}</span></li>
+            {% endfor %}
+          </ul>
+        </div>
+
+        <div class="sidebar-card">
+          <h3>Editing Notes</h3>
+          <ul class="sidebar-list">
+            <li><span>Authored leaves</span><span>render as prose</span></li>
+            <li><span>Draft leaves</span><span>browser-editable</span></li>
+            <li><span>Evidence table</span><span>selection audit</span></li>
+            <li><span>Technical appendix</span><span>warning summary only</span></li>
+          </ul>
+        </div>
+
+        <div class="sidebar-card">
+          <h3>Footer</h3>
+          <div class="prose-block" style="font-size: 0.88rem;">{{ report_brand_line }}</div>
+          <div class="prose-block" style="font-size: 0.82rem; color: var(--muted); margin-top: 10px;">
+            {{ report_footer_text }}
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <footer>{{ report_footer_text }}</footer>
+  </div>
+</body>
+</html>

@@ -1,0 +1,10 @@
+{
+    "fallback": {
+        "fallback": {
+            "body": "TODO",
+            "_note": "Fallback for place comparison summary.",
+            "claim_level": "baseline",
+            "requires_evidence": ["house_changes", "angle_contacts", "comparison_matrix"]
+        }
+    }
+}

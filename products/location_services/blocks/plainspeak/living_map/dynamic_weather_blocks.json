@@ -1,0 +1,10 @@
+{
+    "fallback": {
+        "fallback": {
+            "body": "TODO",
+            "_note": "Fallback for dynamic weather.",
+            "claim_level": "baseline",
+            "requires_evidence": ["relocated_timing", "timing_weather"]
+        }
+    }
+}

@@ -6,6 +6,13 @@ philosophy, an observation about the work, whatever felt true when you
 got here. Sign off with a date if you like. Newest on top, or don't
 bother organizing it at all.
 
+## Blanket Agent Rule: Update Stale References
+
+If you notice referenced information in files is outdated, update it
+instead of acknowledging it and then ignoring it. If the update is unsafe
+or outside your assigned scope, record the exact stale reference and the
+needed correction in `agents/PLANNED_UPDATES.md` before moving on.
+
 ---
 
 **2026-07-12 (later still)** - Someone just thanked me for a finished task

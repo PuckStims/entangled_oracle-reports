@@ -2,7 +2,7 @@
   "_note": "Selector key paths (BLOCK_SCHEMA.md Block Family 8): calculation_note -> relocated_chart; unsupported_method -> method_key; confidence_note -> confidence_state; coordinate_precision_note -> coordinate_precision_state; warning_summary -> warning_key. The last two families are not literally spelled out as selector key paths in BLOCK_SCHEMA.md's 'Selector key paths' block, but both are named in that same family's 'Required evidence fields' list (appendix_trace.coordinate_precision, appendix_trace.warning_summary / warning_summary) with no leaf family proposed to render them -- coordinate_precision_note and warning_summary below fill that gap using the same shape as the two schema-named families. Flag to the content lead if a different key name is preferred; nothing downstream depends on these exact names yet. claim_level on every leaf here is 'technical_disclosure', not 'bounded_interpretation' -- this file is documentation of method and limitation, not symbolic interpretation of chart evidence (see PROSE_GUIDE.md's Technical Appendix Tone: 'clear, calm, and inspectable'). Purpose standard per PROSE_PURPOSE_REVIEW.md: increase trust without sounding apologetic; distinguish 'unsupported in this version' from 'computed and weak' from 'computed and strong'; do not turn unsupported methods into marketing promises; do not overexplain implementation details in the main report voice (that voice lives in the other block families -- this file is the appendix register only).",
   "_version": "0.1.0-scaffold",
   "fallback": {
-    "body": "TODO",
+    "body": "This appendix describes the calculation boundary for this location record. The report uses the evidence it can compute directly and leaves unsupported methods out of the interpretation.",
     "_note": "Generic technical-appendix leaf for any calculation note, unsupported method, confidence state, coordinate-precision state, or warning_summary key this file does not yet enumerate. Should read as calm documentation, never as an apology or a marketing claim.",
     "claim_level": "technical_disclosure",
     "requires_evidence": ["appendix_trace"]
@@ -11,13 +11,13 @@
   "calculation_note": {
     "_note": "Selector key: calculation_note -> relocated_chart (single key today; more calculation-note keys can be added here later without touching the engine, since these are all just different facets of the same relocated_chart/birth_utc_preserved computation appendix_trace.calculation_sources already names). Source content for these leaves: appendix_trace.calculation_sources (the literal function paths used), appendix_trace.tolerances (orb/band table), appendix_trace.methodology (tropical_whole, fixed). PROSE_GUIDE.md's own worked example for this exact leaf: 'Relocation was calculated from the original birth UTC instant. The destination coordinates were used only to recalculate angles and houses. Planetary longitudes remain natal.' Use that as the tone target, not a template to fill in mechanically -- the final leaf should also be able to name, when useful, that Whole Sign houses are regenerated from the relocated Ascendant and that natal aspects between two ordinary bodies are location-invariant while angle-linked aspects are recalculated as relocated_angle_contacts instead (see LOCATION_EVIDENCE_RECORD_CONTRACT.md's 'aspects are not recomputed wholesale' note) -- this second point is genuinely subtle and worth getting right rather than glossing over.",
     "relocated_chart": {
-      "body": "TODO",
+      "body": "Relocation was calculated from the original birth UTC instant. The destination coordinates were used to recalculate the angles and Whole Sign houses; natal planetary longitudes were preserved. In plain terms, the place changes the chart's local frame, not the birth chart itself.",
       "_note": "The single most important appendix sentence in the whole report: what stayed fixed (birth UTC instant / Julian Day, natal planetary longitudes) and what was recalculated (angles, Whole Sign houses) when the chart was relocated. This is the sentence that makes the whole product's central claim -- 'a place does not rewrite the chart' -- technically verifiable rather than just asserted. Should be readable standalone, without requiring the reader to already understand relocation astrology.",
       "claim_level": "technical_disclosure",
       "requires_evidence": ["appendix_trace.calculation_sources", "appendix_trace.methodology", "birth_context.utc_instant", "birth_context.julian_day"]
     },
     "fallback": {
-      "body": "TODO",
+      "body": "This calculation note describes a technical detail of the relocated chart. It should be read as method context, not as an additional symbolic claim.",
       "_note": "Fallback calculation-note leaf for any future calculation facet not yet named above.",
       "claim_level": "technical_disclosure",
       "requires_evidence": ["appendix_trace.calculation_sources"]
@@ -27,31 +27,31 @@
   "unsupported_method": {
     "_note": "Selector key: unsupported_method -> method_key. method_key values come directly from appendix_trace.unsupported_methods / top-level unsupported_methods -- a fixed 4-item list in v0.1 (astrocartography, local_space, parans, relocated_returns); do not add a 5th key here speculatively, since the engine only ever emits these four (see engine/location_services.py's UNSUPPORTED_METHODS constant). EVIDENCE_TO_MEANING_MATRIX.md's 'Unsupported Method Language' section gives two distinct templates worth distinguishing per method rather than collapsing into one generic sentence: (a) 'not included in this version, evidence-only-from-what-we-have' framing, and (b) 'could be added later, but must not be inferred from what exists now' framing. Each leaf below should pick (or blend) the appropriate framing rather than defaulting to the same sentence for all four -- astrocartography and local_space are both concretely plannable future methods (geometry work, not conceptual gaps), while parans and relocated_returns depend on those being built first, which may be worth a slightly different note.",
     "astrocartography": {
-      "body": "TODO",
+      "body": "Astrocartography line-distance evidence is not included in this version. This report uses relocated chart evidence for one destination point: recalculated angles, Whole Sign houses, house changes, and angle contacts.",
       "_note": "No planetary-line geometry exists anywhere in the codebase (see CAPABILITY_INVENTORY.md Section 3). This report's evidence is relocated-chart-only: angles and houses recalculated for one destination point, not a line traced across every longitude on Earth. Should not imply astrocartography exists elsewhere in the product and was merely omitted from this report -- it does not exist in the codebase at all yet.",
       "claim_level": "technical_disclosure",
       "requires_evidence": ["appendix_trace.unsupported_methods"]
     },
     "local_space": {
-      "body": "TODO",
+      "body": "Local Space directional evidence is not included in this version. The report does not calculate planetary azimuths or direction lines from the location; it only interprets the relocated chart evidence currently available.",
       "_note": "No azimuth/horizon-line calculation exists. Distinct geometric method from Whole Sign relocation -- do not imply it is a smaller version of what this report already does.",
       "claim_level": "technical_disclosure",
       "requires_evidence": ["appendix_trace.unsupported_methods"]
     },
     "parans": {
-      "body": "TODO",
+      "body": "Parans are not included in this version. The report does not calculate simultaneous rising, setting, or culminating relationships across locations, so no paran-based claims are used.",
       "_note": "No paran (simultaneous horizon/meridian crossing pair) detection exists. Depends on an astrocartography-style line engine existing first -- word this so it reads as 'not yet, and not independently plannable before the line engine' rather than an equally-near-term gap.",
       "claim_level": "technical_disclosure",
       "requires_evidence": ["appendix_trace.unsupported_methods"]
     },
     "relocated_returns": {
-      "body": "TODO",
+      "body": "Relocated return charts are not included in this version. Existing return timing can identify when a return occurs, but this report does not cast a separate return chart for the destination.",
       "_note": "engine/returns.py finds WHEN a return is exact (a time-only scan against natal longitude); it does not cast a chart for that moment anywhere, relocated or not. Worth being precise that the timing math already exists and works -- what is missing is casting that moment's chart at a destination, which is a comparatively small, well-scoped addition (see CAPABILITY_INVENTORY.md Section 3), not a conceptual gap the way astrocartography/local_space are.",
       "claim_level": "technical_disclosure",
       "requires_evidence": ["appendix_trace.unsupported_methods"]
     },
     "fallback": {
-      "body": "TODO",
+      "body": "This method is listed as unsupported for this report version. It should not be inferred from the relocated chart evidence used here.",
       "_note": "Fallback unsupported-method leaf. Should not occur in v0.1 since unsupported_methods is a fixed, known 4-item list, but present as a structural safety net if that list ever changes.",
       "claim_level": "technical_disclosure",
       "requires_evidence": ["appendix_trace.unsupported_methods"]
@@ -61,31 +61,31 @@
   "confidence_note": {
     "_note": "Selector key: confidence_note -> confidence_state. This family renders CHART-LEVEL confidence -- birth_context.birth_time_confidence / appendix_trace.birth_time_confidence. Body-level confidence (natal_modifiers[body].confidence, trustworthy as of Round 3 for exact/approximate/unknown charts alike) belongs in natal_modifier_blocks.json, a later-priority family per BLOCK_SCHEMA.md's write-after-selector-taxonomy list -- do not duplicate body-level confidence language here; this file's job is the single chart-wide confidence statement, not a per-planet one. States covered: exact_birth_time, approximate_birth_time, unknown_birth_time, angle_dependent_unavailable (all four are real, reachable values of birth_time_state / birth_time_confidence -- see formulas/standard/confidence.py). A fifth controlled state, provisional_near_horizon, exists in the confidence contract for chart-sect determination but is not currently produced by engine.natal_engine.generate_payload's birth_time_state assignment, so it is not given its own leaf here -- route it through this family's 'fallback' leaf if it is ever emitted. PROSE_GUIDE.md's worked example for the non-exact case: 'Because relocated angles are time-sensitive, approximate or unknown birth times reduce confidence in angle-based claims. House-level interpretation may be omitted or marked lower confidence where needed.'",
     "exact_birth_time": {
-      "body": "TODO",
+      "body": "The birth time is treated as exact for this record, so angle- and house-based location evidence can be read at the report's normal confidence level.",
       "_note": "The unmarked/default case -- angle- and house-based evidence throughout the report can be read at full confidence. Should be brief; this is not the leaf that needs the most words, it is the one that needs the fewest (a confident, quiet statement, not a celebration).",
       "claim_level": "technical_disclosure",
       "requires_evidence": ["birth_context.birth_time_confidence"]
     },
     "approximate_birth_time": {
-      "body": "TODO",
+      "body": "The birth time is approximate, so angle- and house-based location evidence should be read with some softness. The report can still describe the relocated pattern, but exact angular claims carry reduced confidence.",
       "_note": "Birth time is known but imprecise (e.g. a DST spring-forward gap case -- see engine/natal_engine.py's _is_nonexistent_local_time). Angle-sensitive evidence (relocated_angle_contacts, exact house cusps) should be named as somewhat softened, not withheld outright -- this is a real, if slightly uncertain, chart, not an unknown one.",
       "claim_level": "technical_disclosure",
       "requires_evidence": ["birth_context.birth_time_confidence"]
     },
     "unknown_birth_time": {
-      "body": "TODO",
+      "body": "No reliable birth time is available for this record. Any angle- or house-based location evidence depends on a placeholder calculation and should be treated as low-confidence rather than a firm relocation signature.",
       "_note": "No birth time at all -- natal_engine.generate_payload used a noon placeholder purely to make chart math possible (see birth_context.birth_time, which is correctly null/withheld in this state -- see LOCATION_EVIDENCE_RECORD_CONTRACT.md's birth_context field reference). This is the state that most needs explicit, calm caution: angle-based and house-based relocation evidence (relocated_angle_contacts, planet_house_changes) is built on a fabricated Ascendant and should be named as low-confidence or omitted from strong claims, not presented with the same weight as an exact chart. Should not read as an apology for the person not knowing their birth time -- it is a plain statement of what the evidence can and cannot support.",
       "claim_level": "technical_disclosure",
       "requires_evidence": ["birth_context.birth_time_confidence"]
     },
     "angle_dependent_unavailable": {
-      "body": "TODO",
+      "body": "The angle-dependent evidence for this scope could not be computed. Any interpretation that would require an Ascendant, house position, or angle contact should be withheld rather than softened.",
       "_note": "No Ascendant longitude at all was available for a given body's condition calculation -- a deeper unavailability than 'unknown birth time' (which still has a placeholder Ascendant). Should read as a plain statement that angle-dependent evidence for the affected scope could not be computed at all, not merely softened.",
       "claim_level": "technical_disclosure",
       "requires_evidence": ["birth_context.birth_time_confidence"]
     },
     "fallback": {
-      "body": "TODO",
+      "body": "The birth-time confidence state is not one of the standard states this appendix recognizes. Treat angle- and house-sensitive claims cautiously until the confidence state is reviewed.",
       "_note": "Fallback confidence-note leaf, e.g. for provisional_near_horizon if it is ever emitted by birth_time_state, or any future controlled confidence state.",
       "claim_level": "technical_disclosure",
       "requires_evidence": ["birth_context.birth_time_confidence"]
@@ -95,19 +95,19 @@
   "coordinate_precision_note": {
     "_note": "Selector key: coordinate_precision_note -> coordinate_precision_state. Values come from destination_context.coordinate_precision / appendix_trace.coordinate_precision. IMPORTANT, per LOCATION_EVIDENCE_RECORD_CONTRACT.md Section 3: coordinate_precision is a PROVENANCE tag, not an actual positional-accuracy measurement -- neither engine.natal_engine nor engine.offline_place_resolver computes true accuracy (e.g. '+/-2km'). Leaves here must not overclaim numeric precision that was never calculated. The two real values: user_provided (caller supplied exact latitude/longitude directly) and offline_geonamescache (destination was resolved from a place name to a city-level centroid via geonamescache -- 'somewhere at this city's centroid,' not a precise address).",
     "user_provided": {
-      "body": "TODO",
+      "body": "The destination coordinates were supplied directly. The report uses those coordinates for the relocated angle and house calculation.",
       "_note": "Destination coordinates were supplied directly rather than resolved from a place name. Can be stated plainly and briefly -- there is no precision caveat needed here, only a note of what 'user_provided' actually means if the report chooses to disclose it at all.",
       "claim_level": "technical_disclosure",
       "requires_evidence": ["destination_context.coordinate_precision"]
     },
     "offline_geonamescache": {
-      "body": "TODO",
+      "body": "The destination was resolved from an offline place-name database. The coordinates should be understood as a city-level location reference, not as an exact street address or measured accuracy band.",
       "_note": "Destination was resolved from a place name to a city centroid, not an exact address. Should be honest that this is a reasonable approximation for angle/house math at ordinary relocation distances, without claiming a precision figure that was never computed. Do not say 'exact coordinates' anywhere in this leaf.",
       "claim_level": "technical_disclosure",
       "requires_evidence": ["destination_context.coordinate_precision"]
     },
     "fallback": {
-      "body": "TODO",
+      "body": "The coordinate source is not one of the standard location sources this appendix recognizes. Treat the destination coordinates as calculation input, but do not infer a measured accuracy band from them.",
       "_note": "Fallback coordinate-precision leaf for any future resolution source (e.g. if an online geocoding fallback is ever added -- see CAPABILITY_INVENTORY.md Section 4 on why it is deliberately not wired in today).",
       "claim_level": "technical_disclosure",
       "requires_evidence": ["destination_context.coordinate_precision"]
@@ -117,19 +117,19 @@
   "warning_summary": {
     "_note": "Selector key: warning_summary -> warning_key. warning_key values come from warning_summary[*].key / appendix_trace.warning_summary[*].key -- a Round 3 evidence field. RENDER THIS FAMILY FOR READER-FACING APPENDIX PROSE, NOT RAW warnings[]. Raw warnings can run 30-40+ near-duplicate lines on a production-scale chart (one line per relocation-emphasized asteroid lacking a natal condition record) -- warning_summary collapses that into countable entries with a stable key, a count, and an examples list of affected body names (see LOCATION_EVIDENCE_RECORD_CONTRACT.md's warning_summary section and LOCATION_EVIDENCE_RECORD_SAMPLES.md's 'What production scale actually looks like'). Two keys are recognized templates today (no_natal_condition_record, missing_from_relocated_payload); every other warning collapses only on literal duplicate text and gets a short stable hash key (other_xxxxxxxx) -- route those through this family's 'fallback' leaf, which should read entry.message directly (it is already a complete, correctly-pluralized sentence) rather than trying to match on the hash key.",
     "no_natal_condition_record": {
-      "body": "TODO",
+      "body": "Some relocation-emphasized bodies do not have natal condition records in the current standard condition layer. Their house changes or angle contacts may still be listed, but the report should not add dignity, sect, or condition claims for those bodies.",
       "_note": "One or more relocation-emphasized bodies (typically custom asteroids, nodes, or Lilith) have no natal_modifiers entry, because evaluate_all_planetary_conditions only covers Sun through Pluto. Should read as a plain scope statement -- 'these bodies changed house or made an angle contact, but this system does not compute natal condition for them' -- using entry.count and entry.examples (the affected body names) from warning_summary, not the raw per-body warning lines. Must not read as an error or a data-quality failure; it is a documented scope boundary of formulas.standard.planetary_condition, not a bug (as of Round 3 -- see LOCATION_EVIDENCE_RECORD_SAMPLES.md's Round 3 correction notice for the confidence-bug fix, which is a separate and already-resolved issue from this scope note).",
       "claim_level": "technical_disclosure",
       "requires_evidence": ["warning_summary", "appendix_trace.warning_summary"]
     },
     "missing_from_relocated_payload": {
-      "body": "TODO",
+      "body": "One or more bodies present in the natal payload were not available in the relocated payload comparison. Any skipped body should be treated as a data mismatch for that comparison, not as symbolic absence.",
       "_note": "One or more bodies present in the natal payload were not found in the relocated payload, so their house-change comparison was skipped (see engine/location_services.py's compare_natal_to_relocated). Should be rare in practice -- both payloads are built from the same natal_payload's standard_planets/custom_asteroids, so this indicates a genuine data mismatch between the two, not routine scope narrowing (unlike no_natal_condition_record above). Worth naming plainly if it ever appears rather than smoothing it into generic appendix language.",
       "claim_level": "technical_disclosure",
       "requires_evidence": ["warning_summary", "appendix_trace.warning_summary"]
     },
     "fallback": {
-      "body": "TODO",
+      "body": "A technical warning was recorded for this location calculation. Use the warning message itself as the source of truth, and keep any reader-facing explanation limited to what the warning explicitly says.",
       "_note": "Any warning_summary entry whose key is not one of the two recognized templates above (key will look like 'other_xxxxxxxx', a short content hash -- see engine/location_services.py's _stable_message_key). Render entry.message directly; it is already a complete sentence (e.g. the angle-linked-aspect-exclusion warning, or a missing-destination-timezone warning) and does not need key-based routing to read correctly.",
       "claim_level": "technical_disclosure",
       "requires_evidence": ["warning_summary", "appendix_trace.warning_summary"]

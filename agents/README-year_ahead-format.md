@@ -1,5 +1,12 @@
 # Year Ahead Format Update
 
+## Blanket Agent Rule: Update Stale References
+
+If you notice referenced information in files is outdated, update it
+instead of acknowledging it and then ignoring it. If the update is unsafe
+or outside your assigned scope, record the exact stale reference and the
+needed correction in `agents/PLANNED_UPDATES.md` before moving on.
+
 This pass tightened the Year Ahead client report around a few clear rules:
 
 - present the product as a `Year-Ahead Predictive Almanac`, not a transit report; the surfaced method stack now includes transits, annual profection, zodiacal releasing, exact returns, forecast terrain, progressions, lunations, and synthesis layers

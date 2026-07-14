@@ -3,6 +3,13 @@
 Known, not-yet-done work. Check here before scoping something new. Move an
 item to `REVISIONS.md` when it is actually finished.
 
+## Blanket Agent Rule: Update Stale References
+
+If you notice referenced information in files is outdated, update it
+instead of acknowledging it and then ignoring it. If the update is unsafe
+or outside your assigned scope, record the exact stale reference and the
+needed correction in this file before moving on.
+
 ---
 
 ## 2026-07-13 report-suite closeout + Soul Ecosystem expansion runway

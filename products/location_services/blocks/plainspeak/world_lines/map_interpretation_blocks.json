@@ -1,0 +1,10 @@
+{
+    "fallback": {
+        "fallback": {
+            "body": "TODO",
+            "_note": "Fallback for map interpretation.",
+            "claim_level": "baseline",
+            "requires_evidence": ["distance_bands", "line_geometry"]
+        }
+    }
+}

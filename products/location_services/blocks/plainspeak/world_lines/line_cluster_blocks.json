@@ -1,0 +1,10 @@
+{
+    "fallback": {
+        "fallback": {
+            "body": "TODO",
+            "_note": "Fallback for line clusters.",
+            "claim_level": "baseline",
+            "requires_evidence": ["line_clusters", "line_geometry"]
+        }
+    }
+}

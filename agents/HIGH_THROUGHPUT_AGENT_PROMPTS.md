@@ -11,6 +11,13 @@ Use these when the operator wants Gemini/Antigravity to do the heavy
 construction pass while Claude Code and/or Codex preserve EO alignment,
 nuance, and scope control.
 
+## Blanket Agent Rule: Update Stale References
+
+If you notice referenced information in files is outdated, update it
+instead of acknowledging it and then ignoring it. If the update is unsafe
+or outside your assigned scope, record the exact stale reference and the
+needed correction in `agents/PLANNED_UPDATES.md` before moving on.
+
 ## Before Any Run
 
 Every agent should begin by reading:

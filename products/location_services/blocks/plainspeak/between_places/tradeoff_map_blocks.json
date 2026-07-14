@@ -1,0 +1,10 @@
+{
+    "fallback": {
+        "fallback": {
+            "body": "TODO",
+            "_note": "Fallback for tradeoff map.",
+            "claim_level": "baseline",
+            "requires_evidence": ["divergent_evidence", "tradeoff_framing"]
+        }
+    }
+}

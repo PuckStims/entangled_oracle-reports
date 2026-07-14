@@ -8,6 +8,13 @@ This file captures the speculative-but-actionable upgrade direction for
 making Entangled Oracle too advanced for its indie creator category while
 staying survivable for an indie, disabled, non-coding-led operator.
 
+## Blanket Agent Rule: Update Stale References
+
+If you notice referenced information in files is outdated, update it
+instead of acknowledging it and then ignoring it. If the update is unsafe
+or outside your assigned scope, record the exact stale reference and the
+needed correction in `agents/PLANNED_UPDATES.md` before moving on.
+
 It is not an implementation claim. Future agents must verify current code
 before acting. Treat this as a sequencing and decision framework for
 formula, computation, and backend upgrades.

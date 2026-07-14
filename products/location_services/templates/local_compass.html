@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ report_title }} - {{ destination_name }}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --bg-base: #060810;
+        --surface: rgba(16, 20, 32, 0.6);
+        --surface-border: rgba(255, 255, 255, 0.08);
+        --text-main: #E2E4E9;
+        --text-muted: #828694;
+        --accent-glow: #00DDBB;
+        --accent-purple: #BF7FFF;
+        --glass-bg: rgba(20, 24, 40, 0.4);
+        --glass-border: rgba(255, 255, 255, 0.05);
+    }
+    body {
+        background-color: var(--bg-base);
+        background-image: 
+            radial-gradient(circle at 50% 0%, rgba(0, 221, 187, 0.08) 0%, transparent 60%),
+            radial-gradient(circle at 0% 100%, rgba(191, 127, 255, 0.05) 0%, transparent 50%);
+        background-attachment: fixed;
+        color: var(--text-main);
+        font-family: 'Outfit', -apple-system, sans-serif;
+        line-height: 1.6;
+        margin: 0;
+        padding: 40px 20px;
+        -webkit-font-smoothing: antialiased;
+    }
+    .container {
+        max-width: 840px;
+        margin: 0 auto;
+    }
+    .hero {
+        text-align: left;
+        margin-bottom: 60px;
+        padding: 48px;
+        background: var(--surface);
+        border: 1px solid var(--surface-border);
+        border-radius: 24px;
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    }
+    .eyebrow {
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.25em;
+        color: var(--accent-glow);
+        margin-bottom: 16px;
+        font-weight: 600;
+    }
+    h1 {
+        font-size: 3rem;
+        font-weight: 300;
+        margin: 0 0 8px 0;
+        letter-spacing: -0.02em;
+    }
+    .destination {
+        font-size: 1.4rem;
+        color: var(--text-muted);
+        font-weight: 400;
+    }
+    
+    .section-card {
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: 16px;
+        padding: 32px;
+        margin-bottom: 32px;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+    }
+    .section-header {
+        margin-bottom: 24px;
+        border-bottom: 1px solid var(--surface-border);
+        padding-bottom: 16px;
+    }
+    .section-title {
+        font-size: 1.5rem;
+        font-weight: 500;
+        margin: 0;
+    }
+    .section-kicker {
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--text-muted);
+        margin-bottom: 8px;
+    }
+
+    .future-method {
+        background: linear-gradient(145deg, rgba(0, 221, 187, 0.05), rgba(191, 127, 255, 0.05));
+        border: 1px dashed rgba(0, 221, 187, 0.3);
+        text-align: left;
+        padding: 32px;
+        display: flex;
+        align-items: center;
+        gap: 24px;
+    }
+    .future-method .icon {
+        font-size: 32px;
+        color: var(--accent-glow);
+        background: rgba(0, 221, 187, 0.1);
+        width: 64px;
+        height: 64px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        flex-shrink: 0;
+    }
+    .future-content h2 { margin: 0 0 8px 0; font-size: 1.25rem; font-weight: 500; }
+    .future-content p { margin: 0; color: var(--text-muted); font-size: 0.95rem; }
+
+    .block-item { margin-bottom: 24px; }
+    .block-item:last-child { margin-bottom: 0; }
+    .block-title {
+        font-weight: 600;
+        font-size: 1.1rem;
+        margin-bottom: 12px;
+        color: #fff;
+    }
+    
+    .draft-slot {
+        background: rgba(255, 255, 255, 0.02);
+        border-left: 3px solid var(--accent-purple);
+        padding: 16px 20px;
+        border-radius: 0 8px 8px 0;
+        font-style: italic;
+        color: var(--text-muted);
+    }
+    .draft-note {
+        font-size: 0.8rem;
+        color: rgba(255, 255, 255, 0.3);
+        margin-top: 8px;
+        font-style: normal;
+        font-family: monospace;
+    }
+
+</style>
+</head>
+<body>
+<div class="container">
+    <header class="hero">
+        <div class="eyebrow">{{ report_subtitle }}</div>
+        <h1>{{ report_title }}</h1>
+        <div class="destination">{{ destination_name }}</div>
+    </header>
+
+    {% for section in sections %}
+    {% if section.is_future_method %}
+        <section class="section-card future-method">
+            <div class="icon">🧭</div>
+            <div class="future-content">
+                <h2>{{ section.future_title }}</h2>
+                <p>{{ section.future_description }}</p>
+            </div>
+        </section>
+    {% else %}
+        <section class="section-card">
+            <div class="section-header">
+                <div class="section-kicker">{{ section.kicker }}</div>
+                <h2 class="section-title">{{ section.title }}</h2>
+            </div>
+            
+            {% for block in section.blocks %}
+            <div class="block-item">
+                {% if block.title %}
+                <div class="block-title">{{ block.title }}</div>
+                {% endif %}
+                
+                {% if block.leaf and block.leaf.is_draft %}
+                <div class="draft-slot">
+                    {{ block.leaf.draft_prompt }}
+                    <div class="draft-note">{{ block.leaf.note }}</div>
+                </div>
+                {% else %}
+                <div class="prose">{{ block.leaf.body }}</div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </section>
+    {% endif %}
+    {% endfor %}
+</div>
+</body>
+</html>

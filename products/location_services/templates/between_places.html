@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ report_title }} - {{ name_a }} vs {{ name_b }}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --bg-base: #07070B;
+        --surface: rgba(16, 16, 24, 0.6);
+        --surface-border: rgba(255, 255, 255, 0.08);
+        --text-main: #E6E2DA;
+        --text-muted: #8B8798;
+        --accent-glow: #00FFB2;
+        --accent-purple: #BF7FFF;
+        --glass-bg: rgba(20, 20, 30, 0.4);
+        --glass-border: rgba(255, 255, 255, 0.05);
+    }
+    body {
+        background-color: var(--bg-base);
+        background-image: 
+            radial-gradient(circle at 15% 50%, rgba(191, 127, 255, 0.05) 0%, transparent 50%),
+            radial-gradient(circle at 85% 30%, rgba(0, 255, 178, 0.05) 0%, transparent 50%);
+        background-attachment: fixed;
+        color: var(--text-main);
+        font-family: 'Inter', -apple-system, sans-serif;
+        line-height: 1.6;
+        margin: 0;
+        padding: 40px 20px;
+        -webkit-font-smoothing: antialiased;
+    }
+    .container {
+        max-width: 840px;
+        margin: 0 auto;
+    }
+    .hero {
+        text-align: center;
+        margin-bottom: 60px;
+        padding: 40px;
+        background: var(--surface);
+        border: 1px solid var(--surface-border);
+        border-radius: 24px;
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+    }
+    .eyebrow {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        color: var(--accent-glow);
+        margin-bottom: 16px;
+        font-weight: 600;
+    }
+    h1 {
+        font-size: 2.5rem;
+        font-weight: 300;
+        margin: 0 0 16px 0;
+        letter-spacing: -0.02em;
+    }
+    .locations {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        font-size: 1.2rem;
+        color: var(--text-muted);
+    }
+    .vs { font-style: italic; opacity: 0.5; font-size: 1rem; }
+    
+    .section-card {
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: 16px;
+        padding: 32px;
+        margin-bottom: 32px;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+    .section-header {
+        margin-bottom: 24px;
+        border-bottom: 1px solid var(--surface-border);
+        padding-bottom: 16px;
+    }
+    .section-title {
+        font-size: 1.5rem;
+        font-weight: 500;
+        margin: 0;
+    }
+    .section-kicker {
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--text-muted);
+        margin-bottom: 8px;
+    }
+
+    .future-method {
+        background: rgba(191, 127, 255, 0.05);
+        border: 1px dashed rgba(191, 127, 255, 0.3);
+        text-align: center;
+        padding: 40px;
+    }
+    .future-method .icon {
+        font-size: 24px;
+        margin-bottom: 16px;
+        color: var(--accent-purple);
+    }
+
+    .block-item {
+        margin-bottom: 24px;
+    }
+    .block-item:last-child { margin-bottom: 0; }
+    .block-title {
+        font-weight: 600;
+        font-size: 1.1rem;
+        margin-bottom: 12px;
+        color: #fff;
+    }
+    
+    .draft-slot {
+        background: rgba(255, 255, 255, 0.03);
+        border-left: 3px solid var(--accent-glow);
+        padding: 16px 20px;
+        border-radius: 0 8px 8px 0;
+        font-style: italic;
+        color: var(--text-muted);
+    }
+    .draft-note {
+        font-size: 0.8rem;
+        color: rgba(255, 255, 255, 0.3);
+        margin-top: 8px;
+        font-style: normal;
+        font-family: monospace;
+    }
+
+</style>
+</head>
+<body>
+<div class="container">
+    <header class="hero">
+        <div class="eyebrow">{{ report_subtitle }}</div>
+        <h1>{{ report_title }}</h1>
+        <div class="locations">
+            <span>{{ name_a }}</span>
+            <span class="vs">vs</span>
+            <span>{{ name_b }}</span>
+        </div>
+    </header>
+
+    {% for section in sections %}
+    <section class="section-card {% if section.is_future_method %}future-method{% endif %}">
+        {% if section.is_future_method %}
+            <div class="icon">✨</div>
+            <h2 class="section-title">{{ section.future_title }}</h2>
+            <p style="color: var(--text-muted); max-width: 400px; margin: 16px auto 0;">{{ section.future_description }}</p>
+        {% else %}
+            <div class="section-header">
+                <div class="section-kicker">{{ section.kicker }}</div>
+                <h2 class="section-title">{{ section.title }}</h2>
+            </div>
+            
+            {% for block in section.blocks %}
+            <div class="block-item">
+                {% if block.title %}
+                <div class="block-title">{{ block.title }}</div>
+                {% endif %}
+                
+                {% if block.leaf and block.leaf.is_draft %}
+                <div class="draft-slot">
+                    {{ block.leaf.draft_prompt }}
+                    <div class="draft-note">{{ block.leaf.note }}</div>
+                </div>
+                {% else %}
+                <div class="prose">{{ block.leaf.body }}</div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        {% endif %}
+    </section>
+    {% endfor %}
+</div>
+</body>
+</html>

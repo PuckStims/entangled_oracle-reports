@@ -1,0 +1,10 @@
+{
+    "fallback": {
+        "fallback": {
+            "body": "TODO",
+            "_note": "Fallback for relocation vectors.",
+            "claim_level": "baseline",
+            "requires_evidence": ["azimuth_computation", "direction_strength"]
+        }
+    }
+}

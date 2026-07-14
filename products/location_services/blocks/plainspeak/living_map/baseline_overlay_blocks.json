@@ -1,0 +1,10 @@
+{
+    "fallback": {
+        "fallback": {
+            "body": "TODO",
+            "_note": "Fallback for baseline overlay.",
+            "claim_level": "baseline",
+            "requires_evidence": ["baseline_vs_weather"]
+        }
+    }
+}

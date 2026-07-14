@@ -3,6 +3,36 @@
 A dated log of meaningful changes made to this codebase by AI sessions.
 Newest entry on top. See `agents/README.md` for the convention.
 
+## Blanket Agent Rule: Update Stale References
+
+If you notice referenced information in files is outdated, update it
+instead of acknowledging it and then ignoring it. If the update is unsafe
+or outside your assigned scope, record the exact stale reference and the
+needed correction in `agents/PLANNED_UPDATES.md` before moving on.
+
+---
+
+## 2026-07-14 - Blanket stale-reference update rule added to agent docs
+
+**Context:** the operator clarified that agents should not merely notice
+outdated referenced information and move on. If a file points to stale
+facts, paths, status claims, or instructions, the expected behavior is to
+update the file directly when safe.
+
+**What changed:**
+
+- Added the blanket stale-reference update rule to every tracked Markdown
+  file in `agents/`.
+- Updated `agents/README.md` from the stale "three files" framing to a
+  "core files" framing, because the folder now contains additional
+  handoffs, prompts, ledgers, and conventions.
+- Clarified that `agents/` is the canonical tracked agent-doc home; the
+  gitignored `.agents/` directory remains tool-local and should not be
+  used for these persistent rules.
+
+**Verification:** confirmed every `agents/*.md` file contains the
+`Blanket Agent Rule: Update Stale References` heading.
+
 ---
 
 ## 2026-07-13 - Report-suite polish pass documented, Soul Ecosystem expansion runway staged

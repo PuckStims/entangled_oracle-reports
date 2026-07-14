@@ -1,0 +1,226 @@
+{
+  "_note": "Selector job: add practical perspective after primary Place Resonance evidence has already been selected. These leaves are not standalone interpretations of one planet, angle, or house. They are smaller context modifiers for report-facing guidance such as social connection, isolation, visibility, restoration, demand, movement, stability, and intimacy. Select them only from convergence across evidence_ranking, relocated_angle_contacts, planet_house_changes, natal_modifiers, purpose_lens, and relationship_to_place. Internal caution belongs in selection rules and evidence thresholds; client-facing prose should remain clear about what the place appears better for, thinner for, or more demanding about. Do not use these leaves to guarantee outcomes or issue commands.",
+  "_version": "0.1.0-authored",
+  "fallback": {
+    "body": "The location carries a practical context signal, but the available evidence does not identify one clean axis strongly enough. Keep the guidance close to the strongest computed factors and avoid turning a weak context cue into a relocation verdict.",
+    "_note": "Fallback context modifier. Use when the selector can tell that practical context is relevant but cannot classify the axis or expression cleanly.",
+    "claim_level": "bounded_interpretation",
+    "requires_evidence": ["evidence_ranking"]
+  },
+  "social_connection": {
+    "_note": "Use when evidence speaks to social ease, community, friendship, local networks, relational participation, or the lack of those signals. Do not equate social connection with guaranteed popularity or partnership.",
+    "supportive": {
+      "body": "This place has a stronger argument for social participation than withdrawal. The evidence supports contact, exchange, or community becoming easier to notice and use here, especially when the chart repeats Venus, Mercury, Jupiter, Descendant, 3rd-house, 7th-house, or 11th-house themes. That does not promise belonging, but it does make social connection a real part of the location's perspective.",
+      "_note": "Select from convergent social/contact evidence. This is the positive social-context leaf, but it must still avoid popularity or relationship guarantees.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["evidence_ranking.primary_evidence", "relocated_angle_contacts", "planet_house_changes"]
+    },
+    "demanding": {
+      "body": "Social contact is emphasized here, but not necessarily as ease. The place may ask for more negotiation, exposure, responsiveness, or relational maturity than the person can ignore. This is useful when the goal includes clients, collaboration, or active community, and more taxing when the person needs privacy or low social demand.",
+      "_note": "Select when social/relational evidence is strong but carries pressure, conflict, accountability, or high demand.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["evidence_ranking.primary_evidence", "natal_modifiers"]
+    },
+    "thin": {
+      "body": "The evidence for social ease is thin. That does not mean the place prevents connection, but the chart is not making social belonging the strongest argument for choosing it. If the reader's main question is community or relational support, the report should say that the location needs more proof from lived context or other evidence.",
+      "_note": "Select when the purpose or reader question is social/belonging but primary evidence points elsewhere or is low-signal.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["purpose_lens", "evidence_ranking.primary_evidence"]
+    },
+    "mixed": {
+      "body": "The social signal is mixed. The place may bring people, contact, or collaboration forward while also asking for boundaries, discernment, or recovery from social demand. This is not a simple isolation or belonging signature; it is a place where connection may require clearer terms.",
+      "_note": "Select when supportive contact evidence and pressure/private evidence both matter.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["evidence_ranking.primary_evidence", "evidence_ranking.supporting_evidence"]
+    }
+  },
+  "visibility": {
+    "_note": "Use when evidence speaks to public role, being seen, reputation, leadership, creative exposure, or the absence of those signals.",
+    "supportive": {
+      "body": "This place has a stronger argument for visibility than hiding. The evidence supports public role, contribution, leadership, or being more legible to others, especially when Midheaven, 10th-house, Sun, Venus, Jupiter, or Mercury themes repeat. It does not promise recognition, but it does make visibility one of the location's usable strengths.",
+      "_note": "Select from convergent public/10th/MC evidence with workable tone.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["evidence_ranking.primary_evidence", "relocated_angle_contacts", "planet_house_changes"]
+    },
+    "demanding": {
+      "body": "Visibility is emphasized here with pressure. The place may make it harder to stay unseen, unaccountable, or undefined in public terms. That can be productive for work, craft, leadership, or contribution, but it is less suited to a season where the reader needs anonymity or low expectation.",
+      "_note": "Select when public/MC/10th evidence is strong but Saturn, Mars, Pluto, strained natal condition, or purpose mismatch adds pressure.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["evidence_ranking.primary_evidence", "natal_modifiers", "purpose_lens"]
+    },
+    "thin": {
+      "body": "The evidence for visibility is not the strongest part of this location. The place may still be meaningful, but the chart does not currently make public recognition, career exposure, or visible contribution the main reason to choose it.",
+      "_note": "Select when career/visibility is the question but primary evidence points away from MC/10th/public indicators.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["purpose_lens", "evidence_ranking.primary_evidence"]
+    },
+    "mixed": {
+      "body": "The visibility signal is mixed. The place may pull life outward while another part of the chart asks for privacy, recovery, or stronger inner support. This can work when public participation is chosen deliberately; it becomes harder when visibility outruns the base that has to sustain it.",
+      "_note": "Select when public and private indicators both carry meaningful weight.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["evidence_ranking.primary_evidence", "evidence_ranking.supporting_evidence"]
+    }
+  },
+  "restoration": {
+    "_note": "Use when evidence speaks to rest, retreat, recovery, emotional regulation, privacy, spiritual repair, or the lack of those supports.",
+    "supportive": {
+      "body": "This place has a stronger argument for restoration than performance. The evidence supports privacy, recovery, emotional regulation, or a quieter relationship with the self, especially when Moon, Venus, Neptune, Imum Coeli, 4th-house, or 12th-house themes are well supported. It does not guarantee peace, but it does make rest a legitimate use of the location.",
+      "_note": "Select from convergent rest/private/IC/4th/12th evidence with supportive tone.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["evidence_ranking.primary_evidence", "planet_house_changes", "relocated_angle_contacts"]
+    },
+    "demanding": {
+      "body": "Restoration is present here, but it may come through demand rather than softness. The place can ask the reader to slow down, withdraw, face private material, or rebuild regulation with more honesty. This is useful for repair work and less comfortable when the person wants rest without confrontation.",
+      "_note": "Select when private/rest evidence is strong but Saturn, Mars, Pluto, Chiron, or difficult natal condition adds pressure.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["evidence_ranking.primary_evidence", "natal_modifiers"]
+    },
+    "thin": {
+      "body": "The evidence for restoration is thin. If the reader's main question is rest, recovery, or retreat, this location does not yet provide the strongest symbolic argument for that purpose. It may still matter in other ways, but rest should not be oversold from the current evidence.",
+      "_note": "Select when rest/retreat is the purpose but primary evidence points toward visibility, motion, pressure, or low signal.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["purpose_lens", "evidence_ranking.primary_evidence"]
+    },
+    "mixed": {
+      "body": "The restoration signal is mixed. The place may offer privacy or repair while also stirring pressure, memory, exposure, or old patterns. It may be useful for conscious recovery, but it should not be described as simple ease.",
+      "_note": "Select when rest/private evidence and pressure/exposure evidence both matter.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["evidence_ranking.primary_evidence", "evidence_ranking.supporting_evidence"]
+    }
+  },
+  "isolation": {
+    "_note": "Use when evidence speaks to aloneness, separation, enclosure, hidden work, social thinning, or protective withdrawal. This axis is allowed to be direct. Do not dilute isolation into vague reflection language when the evidence supports a stronger conclusion.",
+    "supportive": {
+      "body": "Aloneness may be useful here. The place can support retreat, concentration, private work, spiritual repair, or separation from noise when the reader wants fewer interruptions. This is not a social failure signal; it is a location where reduced contact may have a function.",
+      "_note": "Select when isolation/retreat indicators align with the stated purpose or are supported by restorative evidence.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["purpose_lens", "evidence_ranking.primary_evidence"]
+    },
+    "demanding": {
+      "body": "The place may lean toward isolation or social thinning in a way the report should name directly. This does not mean the reader will be lonely or miserable there, but the evidence is stronger for separation, inwardness, pressure, or limited social ease than for easy belonging. If the reader needs community, this is a real caution.",
+      "_note": "Select when 12th/4th/Saturn/Pluto/private evidence is strong and social/supportive evidence is weak or contradictory. This is the clearest 'do not dilute isolation' leaf.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["evidence_ranking.primary_evidence", "evidence_ranking.supporting_evidence", "purpose_lens"]
+    },
+    "thin": {
+      "body": "The evidence does not strongly support an isolation reading. Do not turn ordinary privacy, quiet continuity, or a single wide contact into a social-withdrawal conclusion. If isolation matters to the reader, the report needs stronger repeated evidence before making it a main theme.",
+      "_note": "Select to actively prevent over-reading isolation from weak private evidence.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["evidence_ranking.primary_evidence"]
+    },
+    "mixed": {
+      "body": "The isolation signal is mixed. The place may create meaningful solitude while still offering contact through specific channels. The report should separate where the reader may feel apart from others from where connection remains available.",
+      "_note": "Select when private/solitary evidence and social/contact evidence both exist.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["evidence_ranking.primary_evidence", "evidence_ranking.supporting_evidence"]
+    }
+  },
+  "pressure": {
+    "_note": "Use when evidence speaks to demand, friction, accountability, intensity, urgency, exposure, or growth edge.",
+    "supportive": {
+      "body": "Pressure appears usable here. The place may sharpen effort, discipline, courage, honesty, or visible participation in a way that can become productive when the reader has a real outlet. The guidance should name the pressure and the use, not soften it into generic growth language.",
+      "_note": "Select when pressure indicators align with the purpose and have a clear constructive channel.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["evidence_ranking.primary_evidence", "purpose_lens"]
+    },
+    "demanding": {
+      "body": "This location looks demanding. The evidence is stronger for pressure, accountability, exposure, conflict, or intensity than for uncomplicated ease. That does not make the place bad, but it means the reader should not expect the location to stay gentle simply because it is meaningful.",
+      "_note": "Select when Mars/Saturn/Pluto/MC/10th/8th/12th indicators dominate without enough supportive ease signals.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["evidence_ranking.primary_evidence", "natal_modifiers"]
+    },
+    "thin": {
+      "body": "The evidence for pressure is limited. Do not make the location sound harder than the chart supports. Name the actual demanding factor if one exists, then keep it proportional to its strength.",
+      "_note": "Select to prevent over-dramatizing one weak pressure indicator.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["evidence_ranking.primary_evidence"]
+    },
+    "mixed": {
+      "body": "The pressure signal is mixed. The place may demand more from the reader while also offering support, opportunity, or coherence. The report should describe the bargain clearly: what the location asks for and what it may make more available in return.",
+      "_note": "Select when demanding and supportive indicators both carry real weight.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["evidence_ranking.primary_evidence", "evidence_ranking.supporting_evidence"]
+    }
+  },
+  "movement": {
+    "_note": "Use when evidence speaks to motion, change, learning, experimentation, mobility, disruption, or forward momentum.",
+    "supportive": {
+      "body": "This place has a stronger argument for movement than stasis. The evidence supports learning, experimentation, travel, exchange, or a faster relationship with change. It is better suited to motion, discovery, or iteration than to staying exactly as life already is.",
+      "_note": "Select from Mercury/Jupiter/Uranus/3rd/9th/11th/Ascendant evidence when movement is supported.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["evidence_ranking.primary_evidence", "planet_house_changes", "relocated_angle_contacts"]
+    },
+    "demanding": {
+      "body": "Movement is emphasized here, but it may feel disruptive. The place can loosen old roles, speed decisions, or make stillness harder to maintain. That can be liberating for experimentation and destabilizing for someone seeking consistency.",
+      "_note": "Select when movement/change evidence is strong but restless, disruptive, or poorly matched to purpose.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["evidence_ranking.primary_evidence", "purpose_lens"]
+    },
+    "thin": {
+      "body": "The evidence for movement is thin. If the reader wants a place that catalyzes change, learning, travel, or reinvention, this record does not yet make that the strongest argument.",
+      "_note": "Select when movement/reinvention is the purpose but evidence points toward continuity, privacy, or low signal.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["purpose_lens", "evidence_ranking.primary_evidence"]
+    },
+    "mixed": {
+      "body": "The movement signal is mixed. The place may open change while also asking for structure, privacy, or slower integration. It can support motion if the reader chooses a container for it; otherwise the same evidence may feel scattered.",
+      "_note": "Select when movement and containment indicators both matter.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["evidence_ranking.primary_evidence", "evidence_ranking.supporting_evidence"]
+    }
+  },
+  "stability": {
+    "_note": "Use when evidence speaks to continuity, structure, material steadiness, routines, commitment, or the lack of those signals.",
+    "supportive": {
+      "body": "This place has a stronger argument for stability than reinvention. The evidence supports continuity, structure, material grounding, routine, or durable participation. It may be useful when the reader wants a place that can hold repeated effort rather than constant change.",
+      "_note": "Select from Saturn/Venus/2nd/4th/6th/10th/same_house evidence with stable tone.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["evidence_ranking.primary_evidence", "planet_house_changes"]
+    },
+    "demanding": {
+      "body": "Stability is available here through effort rather than ease. The place may ask for discipline, maintenance, financial realism, boundaries, or a slower pace. It can support a durable life, but not by removing responsibility.",
+      "_note": "Select when stability indicators are strong but Saturn/2nd/6th/10th pressure or strained condition is present.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["evidence_ranking.primary_evidence", "natal_modifiers"]
+    },
+    "thin": {
+      "body": "The evidence for stability is thin. If the reader's priority is steadiness, material grounding, or predictable support, the report should not overstate this location's case from the current chart evidence.",
+      "_note": "Select when stability is the desired lens but evidence points toward movement, volatility, exposure, or low signal.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["purpose_lens", "evidence_ranking.primary_evidence"]
+    },
+    "mixed": {
+      "body": "The stability signal is mixed. The place may offer structure in one area while stirring change, pressure, or uncertainty in another. The report should identify what can be built here and what is unlikely to remain simple.",
+      "_note": "Select when stable and destabilizing indicators both matter.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["evidence_ranking.primary_evidence", "evidence_ranking.supporting_evidence"]
+    }
+  },
+  "intimacy": {
+    "_note": "Use when evidence speaks to partnership, trust, vulnerability, shared resources, emotional exposure, or private relational depth.",
+    "supportive": {
+      "body": "This place has a stronger argument for intimacy, trust, or private relational depth than for broad social ease alone. The evidence supports meaningful contact, vulnerability, or shared life becoming more central when handled with care. It does not promise partnership, but it does make intimacy a real part of the place's story.",
+      "_note": "Select from Descendant/7th/8th/Moon/Venus/Pluto/IC evidence with supportive or workable tone.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["evidence_ranking.primary_evidence", "relocated_angle_contacts", "planet_house_changes"]
+    },
+    "demanding": {
+      "body": "Intimacy is emphasized here with pressure. The place may bring attachment patterns, trust questions, shared resources, projection, or vulnerability closer to the surface. That can deepen relationship work, but it should not be sold as easy romance or guaranteed closeness.",
+      "_note": "Select when intimate/relational evidence is strong and pressured by Saturn, Mars, Pluto, Neptune, Chiron, 8th, or strained condition.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["evidence_ranking.primary_evidence", "natal_modifiers"]
+    },
+    "thin": {
+      "body": "The evidence for intimacy or partnership support is thin. If the reader's main question is love, closeness, or relational repair, this location does not currently provide the strongest symbolic argument for that outcome.",
+      "_note": "Select when partnership/intimacy is the purpose but evidence is low-signal or points elsewhere.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["purpose_lens", "evidence_ranking.primary_evidence"]
+    },
+    "mixed": {
+      "body": "The intimacy signal is mixed. The place may increase relational depth while also surfacing pressure, projection, or boundary needs. The report should name both: where closeness becomes more available and where it asks for more honesty than comfort.",
+      "_note": "Select when intimacy support and intimacy pressure both exist.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["evidence_ranking.primary_evidence", "evidence_ranking.supporting_evidence"]
+    }
+  }
+}

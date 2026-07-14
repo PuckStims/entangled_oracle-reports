@@ -22,6 +22,7 @@ REPORT_BLOCK_DIRS = {
     "soul_journey":     os.path.join(PRODUCTS_DIR, "soul_ecosystem", "blocks"),
     "identity_profile": os.path.join(PRODUCTS_DIR, "identity_profile", "blocks"),
     "shared":           os.path.join(PRODUCTS_DIR, "identity_profile", "blocks"),
+    "location_services": os.path.join(PRODUCTS_DIR, "location_services", "blocks", "plainspeak"),
 }
 
 # ── Score Tier Thresholds ──────────────────────────────────────

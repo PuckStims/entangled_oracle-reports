@@ -1,0 +1,55 @@
+"""
+HTML rendering for the World Lines Companion draft report.
+"""
+from __future__ import annotations
+
+import copy
+import html
+import os
+import uuid
+from datetime import datetime
+from pathlib import Path
+from typing import Any
+
+from config import OUTPUT_DIR, TEMPLATES_DIR
+
+try:
+    from jinja2 import Environment, FileSystemLoader, TemplateNotFound, select_autoescape
+    JINJA2_AVAILABLE = True
+except ImportError:
+    JINJA2_AVAILABLE = False
+
+TEMPLATE_NAME = "location_services/templates/world_lines.html"
+RENDER_VERSION = "world_lines_render_v0.2.0"
+
+def _build_render_context(place_context: dict) -> dict:
+    return {
+        "render_version": RENDER_VERSION,
+        "report_title": place_context.get("product_name", "World Lines Companion"),
+        "report_subtitle": "Astrocartography draft",
+        "generation_date": datetime.now().strftime("%B %d, %Y"),
+        "destination_name": place_context.get("destination_name", "Unknown Location"),
+        "sections": place_context.get("sections", []),
+    }
+
+def render_world_lines_html(place_context: dict) -> str:
+    """
+    Render a World Lines context into HTML.
+    """
+    render_context = _build_render_context(place_context)
+
+    if JINJA2_AVAILABLE:
+        env = Environment(
+            loader=FileSystemLoader(TEMPLATES_DIR),
+            autoescape=select_autoescape(["html", "xml"]),
+        )
+        try:
+            template = env.get_template(TEMPLATE_NAME)
+            return template.render(**render_context)
+        except TemplateNotFound:
+            pass
+
+    return _render_fallback(render_context)
+
+def _render_fallback(render_context: dict) -> str:
+    return f"<html><body><h1>{render_context['report_title']}</h1><p>Jinja2 template failed or missing.</p></body></html>"

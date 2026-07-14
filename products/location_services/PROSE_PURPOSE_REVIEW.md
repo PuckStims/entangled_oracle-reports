@@ -16,6 +16,12 @@ The stronger EO block files are not simple text insert banks. They use JSON stru
 
 Location Services should follow that pattern. The first Place Resonance block pack should not ask for finished generic paragraphs like "Venus on the Midheaven means...". It should create evidence-shaped prose modules where the same base contact can deepen, soften, redirect, or become an aside depending on relocated angle, contact strength, natal condition, house movement, purpose lens, relationship to place, and repeated evidence.
 
+Just as important: the prose system should not confuse boundedness with
+hesitation. Location Services is not a vibes-only natal reflection product.
+It is a perspective service. The leaves should be capable of helping the
+report say which pattern is stronger, what kind of participation the place
+supports, and where the tradeoff actually lands.
+
 ## Active Product Patterns To Reuse
 
 ### Daily Horoscope: Concrete Localized Expression
@@ -91,10 +97,15 @@ Location Services use:
 - Best model for `location_synthesis_blocks.json`.
 - Place Resonance needs agreement labels: repeated planet, repeated angle/domain, angle plus house change, house-only, quiet/no-house-change, mixed public/private signals.
 - The synthesis family should decide whether an evidence item becomes a main section, supporting paragraph, tag, or appendix note.
+- The synthesis family should be able to deliver a sided conclusion when
+  several independent factors converge, rather than stopping at abstract
+  summary language.
 
 Risk if copied too directly:
 
 - Year Ahead predictive scaffolds deliberately hedge as research signals. Place Resonance can be more confident because relocated chart evidence is the product's actual supported method, but it must still avoid outcome guarantees.
+- In practice that means avoiding promises and commands, not avoiding clear
+  perspective.
 
 ### Personal Forecast: Domain By Method Family
 
@@ -212,6 +223,9 @@ Purpose standard:
   - what the body brings forward;
   - what `tight`, `moderate`, or `wide` changes;
   - what the claim does not guarantee.
+- When supported by convergence, the surrounding section should also be
+  able to say what this evidence is actually useful for and what it is less
+  suited to.
 
 Personalization variables that should modulate prose:
 
@@ -225,6 +239,9 @@ Avoid:
 
 - "Venus on the Midheaven means fame/love/money."
 - Single-paragraph leaves that ignore strength, natal condition, and purpose.
+- Overcorrecting into neutral prose that never says whether the place is
+  more supportive, more demanding, more visible, more private, or more
+  mixed.
 
 ### `planet_relocated_house_blocks.json`
 
@@ -406,6 +423,19 @@ Write after selector taxonomy:
 2. `purpose_lens_blocks.json`
 3. `duration_lens_blocks.json`
 4. `natal_modifier_blocks.json`
+
+New context/modifier bridge:
+
+```text
+place_context_modifier_blocks.json
+```
+
+This file can be authored before full selector wiring because it does not
+pretend to be standalone evidence. Its job is to hold small practical
+context leaves such as social connection, isolation, visibility,
+restoration, pressure, movement, stability, and intimacy. These leaves
+should be selected only after the primary evidence is known, so they can
+say hard things clearly without turning one factor into an outcome.
 
 Why:
 

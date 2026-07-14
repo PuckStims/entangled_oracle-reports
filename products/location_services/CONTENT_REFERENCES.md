@@ -23,6 +23,8 @@ Location Services implications:
 - Let the content be literary, adult, and psychologically exact without making system branding do the insight work.
 - Keep technical explanations available in appendix-style sections rather than hiding evidence.
 - Use interpretive commitment without slipping into deterministic future-fact claims.
+- Read "deterministic" narrowly: avoid guarantees, absolutes, and commands,
+  not confidence or sided conclusions.
 
 ### Anti-Monotony & Redundancy Protocol
 
@@ -35,6 +37,9 @@ Location Services implications:
 - Place Resonance sections must keep separate jobs: signature, mechanism, house shift, reward, adjustment, duration, purpose lens, evidence summary, appendix.
 - Avoid decorative vagueness. Broad resonance is allowed only when the evidence itself is broad.
 - Keep deterministic objective prediction separate from editorial confidence.
+- Do not let "claim-safe" drift into "perspective-free." A locational
+  report still has to say what a place is actually better for, worse for,
+  or more likely to emphasize when the evidence supports that distinction.
 
 ## Location Services-Specific Interpretation
 
@@ -52,11 +57,16 @@ This means a locational block should usually do four things:
 3. Add one distinct nuance or tradeoff.
 4. State the claim boundary without weakening the interpretation.
 
+If the evidence converges strongly, the block should also be willing to
+state the main practical perspective directly instead of leaving the reader
+to infer it alone.
+
 ## Agent Use
 
 Before writing final Location Services prose blocks, read:
 
 ```text
+products/location_services/CONTENT_AUDIT_PERSONAS.md
 products/location_services/PROSE_GUIDE.md
 products/location_services/EVIDENCE_TO_MEANING_MATRIX.md
 products/location_services/BLOCK_SCHEMA.md

@@ -518,6 +518,93 @@ Known v0.1 caveat:
 
 ## Block Family 7: Duration Lens
 
+## Block Family 6A: Place Context Modifiers
+
+File:
+
+```text
+place_context_modifier_blocks.json
+```
+
+Purpose:
+
+- Add practical perspective after the primary Place Resonance evidence has
+  already been selected.
+- Keep internal caution inside evidence thresholds and selector rules, not
+  in consumer-facing ambiguity.
+- Support clear context statements such as social connection, isolation,
+  visibility, restoration, pressure, movement, stability, and intimacy
+  without turning those statements into guarantees or commands.
+
+Selector key path:
+
+```text
+context_axis -> context_expression
+```
+
+Context axes:
+
+```text
+social_connection
+visibility
+restoration
+isolation
+pressure
+movement
+stability
+intimacy
+fallback
+```
+
+Context expressions:
+
+```text
+supportive
+demanding
+thin
+mixed
+fallback
+```
+
+Example:
+
+```json
+{
+  "isolation": {
+    "demanding": {
+      "body": "The place may lean toward isolation or social thinning in a way the report should name directly.",
+      "_note": "Select from repeated private/12th/Saturn/Pluto evidence when social support is thin."
+    }
+  }
+}
+```
+
+Required evidence fields:
+
+```text
+evidence_ranking.primary_evidence
+evidence_ranking.supporting_evidence
+relocated_angle_contacts
+planet_house_changes
+natal_modifiers
+purpose_lens
+relationship_to_place
+birth_context.birth_time_confidence
+```
+
+Known v0.1 caveat:
+
+- These leaves are authored but not yet wired into Place Resonance
+  assembly.
+- Selectors should not choose a context modifier from a single isolated
+  factor unless the leaf itself is explicitly written as low-signal or
+  thin.
+- A difficult context may be named directly. The forbidden move is not
+  negativity; it is turning symbolic emphasis into a guaranteed life
+  outcome.
+
+## Block Family 7: Duration Lens
+
 File:
 
 ```text

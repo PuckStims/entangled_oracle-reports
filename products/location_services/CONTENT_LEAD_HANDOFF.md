@@ -2,7 +2,7 @@
 
 **Status:** Round 3 reconciled content handoff; Round 4 block scaffold delivered (see "Round 4 Update" below).  
 **Owner:** ChatGPT content-analysis lane.  
-**Consumer:** Claude Code implementation lane.
+**Consumer:** Claude / implementation-review lane.
 
 ## Files Created
 
@@ -13,6 +13,7 @@ products/location_services/EVIDENCE_TO_MEANING_MATRIX.md
 products/location_services/BLOCK_SCHEMA.md
 products/location_services/CONTENT_REFERENCES.md
 products/location_services/PROSE_PURPOSE_REVIEW.md
+products/location_services/CONTENT_AUDIT_PERSONAS.md
 ```
 
 ## Reconciliation Update
@@ -95,6 +96,40 @@ No engine files were touched this round -- no loader/selector exists yet
 to wire these files into, and none was required to validate them (the
 test file reads the JSON directly).
 
+## Round 5 Content Start
+
+Codex began the first bounded prose-fill pass while preserving the large
+grid scaffolds for later authorship:
+
+```text
+products/location_services/blocks/plainspeak/technical_appendix_blocks.json
+products/location_services/blocks/plainspeak/location_synthesis_blocks.json
+```
+
+Historical authoring status at the end of Round 5:
+
+- `technical_appendix_blocks.json` now has authored first-pass `body` text for all 19 leaves.
+- `location_synthesis_blocks.json` now has authored first-pass `body` text for all 10 leaves.
+- `relocated_angle_contact_blocks.json` was still TODO-only.
+- `planet_relocated_house_blocks.json` was still TODO-only.
+
+That distinction is no longer current; see Round 6 below for the active
+status.
+
+## Round 6 Content Audit Status
+
+The large grid prose pass has now occurred. Current authoring status:
+
+- `technical_appendix_blocks.json` has authored `body` text for all 19 leaves.
+- `location_synthesis_blocks.json` has authored `body` text for all 10 leaves.
+- `relocated_angle_contact_blocks.json` has authored `body` text for all 241 leaves.
+- `planet_relocated_house_blocks.json` has authored `body` text for all 731 leaves.
+
+`tests/test_location_services_block_scaffold.py` now enforces the current
+state: every Place Resonance block leaf must have a non-empty body, must
+not be literal `TODO`, and must carry `_note`, `claim_level`, and
+`requires_evidence`.
+
 ## Prose Purpose Review
 
 Before block scaffolding, the content lane reviewed representative active JSON block libraries across Daily, Weekly, Year Ahead, Personal Forecast, Soul Ecosystem, and Identity Profile:
@@ -107,15 +142,17 @@ The working conclusion is that Location Services blocks should be evidence-shape
 
 ## Multi-Agent Optimization Flow
 
-The preferred Location Services build flow now uses three lead roles:
+The preferred Location Services build flow now uses two named partner lanes plus Codex as the local repo integrator:
 
 ```text
-ChatGPT / Codex  -> product direction, content architecture, prose purpose, evidence boundaries
-Claude Code      -> repo-grounded implementation, wiring, tests, schema discipline, stabilization
-Gemini           -> high-throughput first-pass breadth, product-suite scaffolding, basic infrastructure proposals
+ChatGPT / Codex -> product direction, content architecture, prose purpose, evidence boundaries, local repo verification
+Claude          -> implementation review, architecture critique, stabilization guidance, flaw-finding
+Gemini          -> high-throughput first-pass breadth, product-suite scaffolding, basic infrastructure proposals
 ```
 
-Gemini is useful for opening pathways and laying down broad scaffolds quickly. Gemini output should be treated as an expansion draft, not as architectural truth. Claude Code and ChatGPT/Codex should expect flaws and focus on auditing, fixing, upgrading, and reconciling rather than asking Gemini to be final.
+Gemini is useful for opening pathways and laying down broad scaffolds quickly. Gemini output should be treated as an expansion draft, not as architectural truth. Claude and ChatGPT/Codex should expect flaws and focus on auditing, fixing, upgrading, and reconciling rather than asking Gemini to be final.
+
+Because Claude may operate outside this local Codex workspace, Claude review can be advisory rather than directly committed. Codex remains responsible for applying any accepted local edits, running local verification, preserving repo boundaries, and keeping the committed workspace coherent.
 
 ### Gemini Is Allowed To Do
 
@@ -123,7 +160,7 @@ Gemini is useful for opening pathways and laying down broad scaffolds quickly. G
 - Draft non-client-facing product-suite outlines and implementation checklists.
 - Scaffold TODO-only JSON block grids when a schema already exists.
 - Add `_note`, `_version`, fallback, and test-oriented metadata to scaffold files.
-- Propose basic loader or selector integration plans for later Claude review.
+- Propose basic loader or selector integration plans for later Claude/Codex review.
 - Create repo-local planning docs that clearly label themselves as drafts.
 
 ### Gemini Must Not Do
@@ -139,7 +176,7 @@ Gemini is useful for opening pathways and laying down broad scaffolds quickly. G
 
 ### Claude Review Posture For Gemini Output
 
-Claude Code should review Gemini work as a broad first pass. The expected job is not perfection review; it is blocker and integrity repair:
+Claude should review Gemini work as a broad first pass. The expected job is not perfection review; it is blocker and integrity repair:
 
 - validate JSON and schemas;
 - confirm paths match active repo routing;
@@ -148,6 +185,18 @@ Claude Code should review Gemini work as a broad first pass. The expected job is
 - add focused tests;
 - reconcile any invented keys against `BLOCK_SCHEMA.md` and `LOCATION_EVIDENCE_RECORD_CONTRACT.md`;
 - keep sensitive computation boundaries intact.
+
+If Claude is not operating directly in the local repo, Claude should return a review report or patch plan. Codex should then perform any local edits and verification.
+
+### Gemini Pass 01 Review Status
+
+Gemini Expansion Pass 01 now has a local Codex review:
+
+```text
+products/location_services/gemini_expansion_pass_01/CODEX_REVIEW.md
+```
+
+Use `CODEX_REVIEW.md` as the active triage layer over the raw Gemini draft. The review accepts Gemini's broad planning value, but narrows the next implementation target to the Place Resonance selector foundation. It also downgrades Living Map timing claims, keeps all draft taxonomies unwired, and requires a dedicated batch no-mutation regression before Between Places.
 
 ### Gemini Prompt Guardrail Template
 
@@ -277,3 +326,189 @@ Current v0.1 decisions:
 - Read emphasized-body modifier confidence from `natal_modifiers[body].confidence`.
 - Treat `contradictory_evidence` as intentionally empty in v0.1 until the same domain taxonomy exists.
 - Render `warning_summary` for technical appendix prose; keep raw `warnings` for audit/debug displays.
+
+## Round 6 Selector Foundation Status
+
+Completed locally by Codex on 2026-07-14.
+
+Implemented:
+
+```text
+config.py
+selectors/location_services_selector.py
+tests/test_location_services_selector.py
+```
+
+Selector surface:
+
+```python
+select_technical_appendix_leaf(family: str, sub_key: str) -> dict
+select_angle_contact_leaf(angle: str, body: str, contact_strength: str) -> dict
+select_planet_house_leaf(body: str, relocated_house: int | None, movement_type: str) -> dict
+select_synthesis_leaf(synthesis_category: str) -> dict
+```
+
+Confirmed behavior:
+
+- Location Services now has a dedicated `REPORT_BLOCK_DIRS["location_services"]` root at `products/location_services/blocks/plainspeak`.
+- The selector returns whole structured leaf dictionaries, preserving `body`, `_note`, `claim_level`, and `requires_evidence`.
+- Short angle aliases (`ASC`, `MC`, `DSC`, `IC`) normalize through the shared standard normalization helper before traversal.
+- `Vertex` is rejected for relocated angle contacts because the current engine does not emit it in `relocated_angle_contacts`.
+- Non-core bodies route to the scaffold `fallback` body before traversal.
+- `movement_type == "unknown"` and missing relocated houses route to the body-level `unknown` leaf, not a house-level leaf.
+- Impossible movement/house combinations return the relevant house-level fallback leaf rather than raising.
+- Selector cache is separate from `selectors.block_selector._block_cache`.
+- The selector does not import or invoke `engine.location_services`; it reads block files only.
+
+Verification:
+
+```text
+python -m pytest tests/test_location_services_selector.py tests/test_location_services_block_scaffold.py tests/test_location_services_evidence_record.py tests/test_location_services_relocated_payload.py tests/test_planetary_condition_confidence.py
+156 passed
+```
+
+Open next seam:
+
+- Report assembly can now consume structured leaves without engine changes.
+- The large angle and house grids are now authored; prose depth remains an
+  audit and expansion lane, not a TODO-fill lane.
+- Do not wire draft house-domain taxonomy, purpose-fit taxonomy, contradictory evidence, astrocartography, Local Space, parans, relocated returns, or dynamic timing from this selector foundation.
+
+## Round 7 Place Resonance Assembly Status
+
+Completed locally by Codex on 2026-07-14.
+
+Implemented:
+
+```text
+products/location_services/place_resonance_assembler.py
+tests/test_place_resonance_assembler.py
+```
+
+Assembler surface:
+
+```python
+assemble_place_resonance_context(evidence_record: dict) -> dict
+build_place_resonance_context(
+    natal_payload: dict,
+    destination: dict,
+    *,
+    purpose_lens: str | None = None,
+    relationship_to_place: str | None = None,
+) -> dict
+select_synthesis_category(record: dict) -> str
+```
+
+Confirmed behavior:
+
+- The assembler consumes a `LocationEvidenceRecord` and returns a structured Place Resonance draft context.
+- It does not render HTML/PDF and does not author new prose.
+- It does not mutate the evidence record.
+- It builds sections for `place_signature`, `evidence_summary`, `relocated_angle_contacts`, `planet_house_changes`, and `technical_appendix`.
+- It selects existing structured leaves through `selectors/location_services_selector.py`.
+- It uses `warning_summary` for the technical appendix surface and only reports raw warning count.
+- Synthesis classification is selector-side and intentionally narrow:
+  - no primary evidence -> `low_signal_signature`
+  - no changed houses -> `quiet_continuity_signature`
+  - repeated angle-contact + changed-house body -> `convergent_place_signature`
+  - public/private angle split proxy -> `mixed_public_private_signature`
+  - angle-primary patterns -> `angle_led_signature`
+  - house-primary patterns -> `house_shift_led_signature`
+- Purpose-fit and purpose-tradeoff categories remain deferred; the assembler records `purpose_lens` but does not implement the missing taxonomy.
+
+Verification:
+
+```text
+python -m pytest tests/test_place_resonance_assembler.py tests/test_location_services_selector.py tests/test_location_services_block_scaffold.py tests/test_location_services_evidence_record.py tests/test_location_services_relocated_payload.py tests/test_planetary_condition_confidence.py
+166 passed
+```
+
+Open next seam:
+
+- Add a scaffold HTML/template renderer that consumes the Place Resonance context.
+- Or begin a targeted prose-depth pass for the highest-value TODO leaves in `relocated_angle_contact_blocks.json` and `planet_relocated_house_blocks.json`.
+- Do not treat the context assembler as a final client report; it is the inspectable report draft contract.
+
+## Round 8 Place Resonance HTML Status
+
+Completed locally by Codex on 2026-07-14.
+
+Implemented:
+
+```text
+products/location_services/place_resonance_renderer.py
+products/location_services/templates/place_resonance.html
+products/location_services/tooling/generate_place_resonance_ready.py
+tests/test_place_resonance_renderer.py
+```
+
+Renderer surface:
+
+```python
+render_place_resonance_html(place_context: dict) -> str
+build_place_resonance_html(
+    natal_payload: dict,
+    destination: dict,
+    *,
+    purpose_lens: str | None = None,
+    relationship_to_place: str | None = None,
+) -> str
+write_place_resonance_html(html_content: str, output_filename: str | None = None) -> str
+```
+
+Confirmed behavior:
+
+- The renderer consumes the assembled Place Resonance context and produces HTML.
+- Authored leaves render as report prose.
+- Unauthored scaffold leaves do not render raw `TODO`; they render as explicit browser-editable draft slots with the leaf `_note` preserved as the editing prompt and source note.
+- The HTML includes a synthesis lead, evidence summary table, angle-contact cards, house-change cards, and technical appendix cards.
+- The technical appendix surfaces `warning_summary` groups and warning counts, not the raw warning-string dump.
+- The renderer reuses `products/shared/report_visual_system.css` and preserves the standard EO report footer contract.
+- A lightweight generation script now exists for end-to-end local draft generation from natal birth data plus one destination.
+
+Verification:
+
+```text
+python -m pytest tests/test_place_resonance_renderer.py tests/test_place_resonance_assembler.py tests/test_location_services_selector.py tests/test_location_services_block_scaffold.py tests/test_location_services_evidence_record.py tests/test_location_services_relocated_payload.py tests/test_planetary_condition_confidence.py
+171 passed
+```
+
+Smoke test:
+
+```text
+python products/location_services/tooling/generate_place_resonance_ready.py --name "Place Resonance Sample" --date 1990-06-15 --time 14:22 --location "Chicago, Illinois" --destination "Sydney, Australia" --purpose-lens career --relationship-to-place possible_move --output-filename sample_place_resonance.html
+```
+
+Generated:
+
+```text
+output/location_services/sample_place_resonance.html
+```
+
+Open next seam:
+
+- Fill high-value angle-contact and relocated-house prose leaves and re-render the HTML.
+- Add a more polished export path only after the content lane is comfortable with the current HTML review surface.
+- Keep purpose-fit taxonomy, contradictory evidence, astrocartography, Local Space, parans, relocated returns, and dynamic timing out of the renderer until their data contracts are real.
+
+### Round 8.1 Visual Addendum
+
+Place Resonance HTML now includes:
+
+- a repo-native natal SVG wheel rendered through `engine/chart_wheel.py`
+- a reserved astrocartography visual slot with explicit unavailable status
+
+Boundaries preserved:
+
+- The natal wheel is only added on the wrapper path that has the full natal payload.
+- It uses the existing shared wheel renderer; no new chart engine was introduced.
+- The wheel is treated as a stable natal reference, not relocated evidence.
+- No astrocartography geometry, lines, map projections, or local-space visuals were implemented.
+- The astrocartography area is only a named placeholder so the future map seam already has a visual home in the HTML.
+
+Additional verification:
+
+```text
+python -m pytest tests/test_place_resonance_renderer.py tests/test_place_resonance_assembler.py tests/test_location_services_selector.py tests/test_location_services_block_scaffold.py tests/test_location_services_evidence_record.py tests/test_location_services_relocated_payload.py tests/test_planetary_condition_confidence.py
+172 passed
+```

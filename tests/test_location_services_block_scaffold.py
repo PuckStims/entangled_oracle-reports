@@ -2,14 +2,10 @@
 Tests for the Round 4 Place Resonance block scaffold under
 products/location_services/blocks/plainspeak/.
 
-These are JSON content scaffolds (TODO bodies + rich _note guidance), not
-runtime code -- there is no selector/loader wired to them yet (deliberately
-out of scope for this round; see BLOCK_SCHEMA.md's Initial Content Priority
-and PROSE_PURPOSE_REVIEW.md's Recommended Claude Boundary). This file
-validates the scaffold's structural contract against the real evidence
-record fields documented in LOCATION_EVIDENCE_RECORD_CONTRACT.md and
-BLOCK_SCHEMA.md -- not against any rendering behavior, since none exists
-yet.
+These are JSON content libraries with authored bodies, rich _note guidance,
+and selector-safe evidence requirements. The tests validate the structural
+contract against the real evidence-record fields documented in
+LOCATION_EVIDENCE_RECORD_CONTRACT.md and BLOCK_SCHEMA.md.
 
 Covers:
 - all four files exist and parse as valid JSON
@@ -17,8 +13,8 @@ Covers:
 - canonical long angle names only (no ASC/MC/DSC/IC, no Vertex)
 - contact strength bands match engine.location_services.CONTACT_STRENGTH_BANDS exactly
 - movement types match the real v0.1 set and exclude the deferred domain buckets
-- literal "TODO" bodies are present (intentional scaffold state) and every
-  TODO leaf carries a non-empty _note, claim_level, and requires_evidence
+- every leaf carries a non-empty body, _note, claim_level, and
+  requires_evidence
 - unsupported_method keys match engine.location_services.UNSUPPORTED_METHODS exactly
 """
 import json
@@ -49,6 +45,11 @@ FORBIDDEN_ANGLE_ALIASES = {"ASC", "MC", "DSC", "IC", "Asc", "Mc", "Dsc", "Ic"}
 # deferred house-domain taxonomy this round must not invent.
 REAL_MOVEMENT_TYPES = {"same_house", "newly_angular", "leaves_angular", "house_changed", "unknown"}
 FORBIDDEN_DOMAIN_MOVEMENT_TYPES = {"moves_public", "moves_private", "moves_relational", "moves_operational"}
+FORBIDDEN_VAGUE_PHRASES = (
+    "could mean many different things",
+    "only you can know",
+    "supportive and challenging qualities",
+)
 
 CORE_BODIES = ("Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto")
 ANGULAR_HOUSES = {1, 4, 7, 10}
@@ -139,6 +140,8 @@ def test_relocated_angle_contact_blocks_use_exactly_the_real_bands():
     for angle in CANONICAL_ANGLE_NAMES:
         for body in list(CORE_BODIES) + ["fallback"]:
             band_keys = set(data[angle][body].keys()) - {"_note", "fallback"}
+            if body == "fallback":
+                band_keys -= {"Chiron", "North_Node", "South_Node", "Lilith_BML"}
             assert band_keys == expected_bands, (angle, body, band_keys)
 
 
@@ -156,6 +159,8 @@ def test_planet_relocated_house_blocks_movement_types_are_real_and_reachable():
         block = data[body]
         for house_number in range(1, 13):
             movement_keys = set(block[str(house_number)].keys()) - {"_note", "fallback"}
+            if body == "fallback":
+                movement_keys -= {"Chiron", "North_Node", "South_Node", "Lilith_BML"}
             assert movement_keys <= REAL_MOVEMENT_TYPES, (body, house_number, movement_keys)
             assert movement_keys == _reachable_movement_types(house_number), (body, house_number, movement_keys)
 
@@ -244,25 +249,21 @@ def test_location_synthesis_does_not_populate_contradictory_evidence_logic():
 # ── TODO scaffold status (intentional, not final prose) ─────────────────────
 
 @pytest.mark.parametrize("key", list(FILES.keys()))
-def test_todo_leaves_are_present_and_are_the_only_body_value(key):
-    """
-    Literal TODO is allowed only in new scaffold-only files with tests that
-    knowingly permit it (CONTENT_LEAD_HANDOFF.md's No-Prose Scaffolding
-    Preference) -- this is that test. Every leaf's body must be exactly
-    "TODO"; this round must not author any final reader-facing prose.
-    """
-    leaves = list(_leaf_dicts(_load(key)))
-    assert leaves, f"{key} has no scaffold leaves at all"
-    non_todo = [leaf for leaf in leaves if leaf.get("body") != "TODO"]
-    assert not non_todo, f"{key} has {len(non_todo)} leaf(ves) with a non-TODO body -- this round must not author final prose"
-
-
-@pytest.mark.parametrize("key", list(FILES.keys()))
-def test_every_todo_leaf_has_note_claim_level_and_requires_evidence(key):
+def test_every_leaf_has_body_note_claim_level_and_requires_evidence(key):
     for leaf in _leaf_dicts(_load(key)):
+        assert isinstance(leaf.get("body"), str) and leaf["body"].strip(), leaf
+        assert leaf["body"] != "TODO", leaf
         assert isinstance(leaf.get("_note"), str) and leaf["_note"].strip(), leaf
         assert leaf.get("claim_level"), leaf
         assert isinstance(leaf.get("requires_evidence"), list) and leaf["requires_evidence"], leaf
+
+
+@pytest.mark.parametrize("key", list(FILES.keys()))
+def test_authored_leaves_do_not_use_empty_vague_escape_phrases(key):
+    for leaf in _leaf_dicts(_load(key)):
+        body = leaf["body"].lower()
+        for phrase in FORBIDDEN_VAGUE_PHRASES:
+            assert phrase not in body, leaf
 
 
 def test_technical_appendix_leaves_use_technical_disclosure_claim_level():
@@ -282,10 +283,11 @@ def test_relocated_angle_contact_blocks_leaf_count_matches_expected_grid_size():
     # 4 angles x (10 bodies + 1 fallback) x 3 bands = 132, plus 1 top-level
     # fallback, plus 4 angle-level fallback-body fallback leaves, plus 10
     # per-body fallback leaves, plus 4 per-fallback-body fallback leaves.
+    # PLUS non-core authored bodies: 64
     leaves = list(_leaf_dicts(_load("relocated_angle_contact")))
-    assert len(leaves) == 177
+    assert len(leaves) == 241
 
 
 def test_planet_relocated_house_blocks_leaf_count_matches_expected_grid_size():
     leaves = list(_leaf_dicts(_load("planet_relocated_house")))
-    assert len(leaves) == 539
+    assert len(leaves) == 731

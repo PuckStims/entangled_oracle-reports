@@ -5,6 +5,13 @@ polish pass and the next Soul Ecosystem expansion pass. It is meant to
 save the next agent from reconstructing the day from scattered diffs,
 chat history, and QA artifacts.
 
+## Blanket Agent Rule: Update Stale References
+
+If you notice referenced information in files is outdated, update it
+instead of acknowledging it and then ignoring it. If the update is unsafe
+or outside your assigned scope, record the exact stale reference and the
+needed correction in `agents/PLANNED_UPDATES.md` before moving on.
+
 ## Scope of today's work
 
 The active work today was a product-readiness polish pass across the
