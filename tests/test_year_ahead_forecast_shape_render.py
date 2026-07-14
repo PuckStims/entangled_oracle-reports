@@ -36,12 +36,12 @@ def test_forecast_shape_renders_in_three_report_outputs():
             "--output-filename", "test_noah_forecast_shape.html",
         ],
         [
-            "--name", "Visitor",
-            "--date", "1990-06-15",
+            "--name", "Mira",
+            "--date", "1988-11-04",
+            "--time", "14:35",
             "--location", "Peoria, IL",
-            "--simple",
             "--report-date", "2026-06-28",
-            "--output-filename", "test_visitor_forecast_shape.html",
+            "--output-filename", "test_mira_forecast_shape.html",
         ],
         [
             "--name", "Puck",

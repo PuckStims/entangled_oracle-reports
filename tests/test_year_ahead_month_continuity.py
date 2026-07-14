@@ -5,7 +5,7 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from generate import _build_month_continuity
+from generate import _build_annual_rhythm_quarters, _build_month_continuity
 
 
 def _event(
@@ -88,6 +88,38 @@ class YearAheadMonthContinuityTests(unittest.TestCase):
         self.assertEqual(result[1]["continuity_from_previous"], "")
         self.assertEqual(result[0]["continuity_signals"], [])
         self.assertEqual(result[1]["continuity_signals"], [])
+
+    def test_annual_rhythm_cards_use_month_data_instead_of_static_seasons(self):
+        months = [
+            {
+                "name": "March 2026",
+                "short_name": "Mar",
+                "arc_score": 0.22,
+                "activated_domains": [{"domain": "Home / Family", "score": 0.20}],
+            },
+            {
+                "name": "April 2026",
+                "short_name": "Apr",
+                "arc_score": 0.74,
+                "activated_domains": [{"domain": "Career / Public Life", "score": 0.80}],
+            },
+            {
+                "name": "May 2026",
+                "short_name": "May",
+                "arc_score": 0.38,
+                "activated_domains": [{"domain": "Career / Public Life", "score": 0.30}],
+            },
+        ]
+
+        cards = _build_annual_rhythm_quarters(months, all_events=[], house_domains={})
+
+        self.assertEqual(len(cards), 1)
+        self.assertEqual(cards[0]["season_name"], "April 2026 Carries the Emphasis")
+        self.assertEqual(cards[0]["peak_month"], "April 2026")
+        self.assertEqual(cards[0]["quiet_month"], "March 2026")
+        self.assertIn("April 2026", cards[0]["summary"])
+        self.assertIn("Career / Public Life", cards[0]["summary"])
+        self.assertNotIn(cards[0]["season_name"], {"Winter", "Spring", "Summer", "Autumn"})
 
 
 if __name__ == "__main__":

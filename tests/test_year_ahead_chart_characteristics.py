@@ -65,11 +65,10 @@ class YearAheadChartCharacteristicsTests(unittest.TestCase):
 
         self.assertFalse(characteristics["has_exact_birth_time"])
         self.assertEqual(cards["Leading element"]["value"], "Water leads (4)")
-        self.assertFalse(cards["Hemisphere balance"]["is_available"])
-        self.assertEqual(cards["Hemisphere balance"]["value"], "Unavailable without exact birth time")
-        self.assertFalse(cards["Angular emphasis"]["is_available"])
-        self.assertFalse(cards["House concentration"]["is_available"])
-        self.assertFalse(cards["House stellium indicator"]["is_available"])
+        self.assertNotIn("Hemisphere balance", cards)
+        self.assertNotIn("Angular emphasis", cards)
+        self.assertNotIn("House concentration", cards)
+        self.assertNotIn("House stellium indicator", cards)
 
     def test_dob_only_natal_positions_hide_houses_and_angles(self):
         positions = _build_natal_positions(_dob_only_payload())

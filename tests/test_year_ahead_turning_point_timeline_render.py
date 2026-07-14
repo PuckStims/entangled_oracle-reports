@@ -43,15 +43,15 @@ def test_turning_point_timeline_renders_dense_report():
     assert "Intensity" in html
 
 
-def test_turning_point_timeline_renders_sparse_report():
+def test_turning_point_timeline_renders_second_exact_report():
     html = _html(_generate(
         [
-            "--name", "Visitor",
-            "--date", "1990-06-15",
+            "--name", "Mira",
+            "--date", "1988-11-04",
+            "--time", "14:35",
             "--location", "Peoria, IL",
-            "--simple",
             "--report-date", "2026-06-28",
-            "--output-filename", "test_turning_timeline_visitor_empty.html",
+            "--output-filename", "test_turning_timeline_mira.html",
         ]
     ))
     assert "turning-guide-timeline" in html
@@ -61,4 +61,4 @@ def test_turning_point_timeline_renders_sparse_report():
 
 if __name__ == "__main__":
     test_turning_point_timeline_renders_dense_report()
-    test_turning_point_timeline_renders_sparse_report()
+    test_turning_point_timeline_renders_second_exact_report()
