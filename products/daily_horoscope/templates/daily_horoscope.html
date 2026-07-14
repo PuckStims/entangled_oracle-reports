@@ -286,8 +286,21 @@
 
   <div class="suite-note">
     <h3>How This Report Fits the Suite</h3>
-    <p>Daily Horoscope is the smallest signal in the Entangled Oracle suite: a compact daily activation based on what is most immediate in the day's sky.</p>
+    <p>Daily Horoscope starts with your Sun-sign weather, then narrows through the day's sky and, when birth time is available, your chart-specific activation.</p>
   </div>
+
+  <!-- Sun-Sign Weather -->
+  {% if solar_layer_available %}
+  <div class="section">
+    <div class="section-label">Your Sun-Sign Weather</div>
+    <div class="activation-header">
+      {{ solar_feature_planet }} moves through {{ solar_sign }}'s solar {{ solar_activation_house_name }}
+    </div>
+    <div class="block">{{ solar_activation_block }}</div>
+  </div>
+
+  <hr>
+  {% endif %}
 
   <!-- Today's Sky -->
   <div class="section">
@@ -324,6 +337,16 @@
   <hr>
   {% endif %}
 
+  <!-- Layer Bridge -->
+  {% if not simple_mode and solar_layer_available and solar_natal_bridge_block %}
+  <div class="section">
+    <div class="section-label">How The Two Layers Meet</div>
+    <div class="method-note">{{ solar_natal_bridge_block }}</div>
+  </div>
+
+  <hr>
+  {% endif %}
+
   <!-- The Day's Ruler -->
   <div class="section">
     <div class="section-label">The Day's Ruler</div>
@@ -354,6 +377,9 @@
     <h3>Calculation Basis</h3>
     <p><strong>Calculation basis.</strong> {{ horoscope_simplified_output_contract }}</p>
     <p><strong>Method note.</strong> Daily sky positions are calculated from the report date using {{ methodology_label | default('Tropical zodiac + Whole Sign houses') }} and Swiss Ephemeris positions where available.</p>
+    {% if solar_layer_available %}
+    <p><strong>Sun-sign layer.</strong> The solar section treats your natal Sun sign as the first house, following traditional solar-house horoscope logic.</p>
+    {% endif %}
     {% if not simple_mode %}
     <p><strong>Activation priority.</strong> The activation lane selects a planetary station, same-day natal contact, or Moon-house fallback in that order.</p>
     <p><strong>Birth-time confidence.</strong> {{ birth_time_confidence | default('Birth-time confidence unavailable') }}. House and angle references are interpreted in proportion to that confidence state.</p>

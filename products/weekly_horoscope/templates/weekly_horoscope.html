@@ -306,6 +306,21 @@
     </article>
   </div>
 
+  <!-- Sun-Sign Theme -->
+  {% if weekly_solar_layer_available %}
+  <div class="section weekly-summary">
+    <div class="section-label">Sun-Sign Theme</div>
+    <div class="weekly-headline">{{ weekly_solar_sign }} Weather: {{ weekly_solar_theme_house_name }}</div>
+    <div class="weekly-overview">{{ weekly_solar_feature_planet }} moves through your solar {{ weekly_solar_theme_house_name }} this week.</div>
+    <div class="weekly-guidance">
+      <div class="section-label" style="margin-bottom:6px;">Solar Frame</div>
+      {{ weekly_solar_theme_block }}
+    </div>
+  </div>
+
+  <hr>
+  {% endif %}
+
   <!-- Weekly Reading -->
   <div class="section weekly-summary">
     <div class="section-label">Week Theme</div>
@@ -326,6 +341,16 @@
   </div>
 
   <hr>
+
+  <!-- Layer Bridge -->
+  {% if weekly_solar_layer_available and weekly_solar_bridge_block %}
+  <div class="section">
+    <div class="section-label">How The Two Layers Meet</div>
+    <div class="weekly-guidance">{{ weekly_solar_bridge_block }}</div>
+  </div>
+
+  <hr>
+  {% endif %}
 
   <!-- Selected Exact Contacts -->
   <div class="section">
@@ -371,6 +396,9 @@
       <h3>Calculation Basis</h3>
       <p><strong>Calculation basis.</strong> {{ weekly_simplified_output_contract }}</p>
       <p><strong>Method note.</strong> Selected exact contacts are drawn from the report span, capped at {{ weekly_day_contact_cap | default(2) }} per day, and shown in chronological order using {{ methodology_label | default('Tropical zodiac + Whole Sign houses') }} with Swiss Ephemeris positions where available.</p>
+      {% if weekly_solar_layer_available %}
+      <p><strong>Sun-sign layer.</strong> The solar section treats your natal Sun sign as the first house, following traditional solar-house horoscope logic.</p>
+      {% endif %}
       <p><strong>Birth-time confidence.</strong> {{ birth_time_confidence | default('Birth-time confidence unavailable') }}. Birth-time-sensitive points are used only when an exact birth time is available.</p>
       <p><strong>Proprietary EO layer.</strong> Weekly guidance translates selected timing evidence into reflective next steps. It is meant to support discernment, not override practical judgment.</p>
       {% if weekly_narrative_basis %}

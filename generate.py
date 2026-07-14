@@ -209,6 +209,11 @@ def generate_report(
     Master report generator.
     Returns the path to the generated HTML file.
     """
+    if report_type == "year_ahead" and (birth_data.get("simple_mode") or not birth_data.get("time")):
+        raise InputValidationError(
+            "Year Ahead requires an exact birth time. Use --time HH:MM for this report type."
+        )
+
     from formulas.proprietary_indexes import compute_all_indexes
     from formulas.report_surface import build_layered_report_bundle
     from selectors.variable_resolver import resolve_all
@@ -330,7 +335,7 @@ def build_report_context(
     ctx.setdefault("report_version", report_version(report_type))
 
     if report_type == "horoscope":
-        ctx.update(_build_horoscope_context(variables, index_results, payload))
+        ctx.update(_build_horoscope_context(variables, index_results, payload, report_start))
 
     elif report_type == "weekly_horoscope":
         ctx.update(_build_weekly_horoscope_context(variables, index_results, payload, report_start, report_end))
@@ -1524,12 +1529,28 @@ def _build_personal_forecast_context(
         "voc_next_block":          voc_next_block,
     }
 
-def _build_horoscope_context(variables, index_results, payload) -> dict:
+def _build_horoscope_context(variables, index_results, payload, report_start: datetime | None = None) -> dict:
     from selectors.block_selector import select_block
     v = variables
     ctx = {}
     birth_meta = _build_birth_metadata(payload)
     methodology = _build_methodology_metadata(payload, v)
+    solar_context = {
+        "solar_layer_available": False,
+        "solar_bridge_relation": "fallback",
+        "solar_natal_bridge_block": "",
+    }
+    try:
+        from products.sun_sign_horoscope.runtime.solar_context import build_solar_day_context
+
+        solar_context = build_solar_day_context(
+            payload,
+            report_start or datetime.now(timezone.utc),
+            natal_activation_house=v.get("activation_house_number"),
+            bridge_report_type="daily_horoscope",
+        )
+    except Exception as exc:
+        _log_verbose(f"[Solar] Daily solar layer unavailable: {exc}")
 
     # Today's Sky block
     ctx["todays_sky_block"] = select_block(
@@ -1585,6 +1606,7 @@ def _build_horoscope_context(variables, index_results, payload) -> dict:
     )
     ctx["horoscope_complexity_capacity"] = [
         "Moon phase and Moon sign are calculated from the report date.",
+        "The Sun-sign section maps current sky movement through the native Sun sign as a solar first house.",
         "The day ruler is calculated from the report date.",
         (
             "The activation section is suppressed because birth-time-dependent "
@@ -1608,6 +1630,7 @@ def _build_horoscope_context(variables, index_results, payload) -> dict:
         "birth_time_status": birth_meta["birth_time_status"],
         "birth_time_confidence": birth_meta["birth_time_confidence"],
         "birth_time_state": birth_meta["birth_time_state"],
+        **solar_context,
         **methodology,
     })
 
@@ -2594,6 +2617,30 @@ def _build_weekly_horoscope_context(
         simple_mode,
         weekly_prose_ledger,
     )
+    weekly_solar_context = {
+        "weekly_solar_layer_available": False,
+        "weekly_solar_days": [],
+        "weekly_solar_bridge_block": "",
+    }
+    try:
+        from products.sun_sign_horoscope.runtime.solar_context import build_weekly_solar_context
+
+        weekly_natal_houses = []
+        for day in weekly_days:
+            day_moments = day.get("moments") or []
+            natal_house = day_moments[0].get("natal_house") if day_moments else None
+            try:
+                weekly_natal_houses.append(int(natal_house or 0))
+            except (TypeError, ValueError):
+                weekly_natal_houses.append(0)
+        weekly_solar_context = build_weekly_solar_context(
+            payload,
+            report_start,
+            report_end,
+            natal_houses=weekly_natal_houses,
+        )
+    except Exception as exc:
+        _log_verbose(f"[Solar] Weekly solar layer unavailable: {exc}")
 
     return {
         "simple_mode": simple_mode,
@@ -2628,6 +2675,7 @@ def _build_weekly_horoscope_context(
         "birth_time_confidence": birth_meta["birth_time_confidence"],
         "birth_time_state": birth_meta["birth_time_state"],
         **methodology,
+        **weekly_solar_context,
         **subscriber_narrative,
         "palette_name": _palette_name,
         "palette": _PALETTES.get(_palette_name, _PALETTES["vibrant"]),
@@ -5140,11 +5188,7 @@ def _build_forecast_shape_details(
             "curve_note": "No month-level concentration data is available yet.",
             "distribution_note": "No month-level concentration data is available yet.",
             "legend_label": "Relative month concentration",
-            "confidence_note": (
-                "Built from the current report's existing month-level concentration values."
-                if birth_time_status == "exact"
-                else "Built from the current report's existing month-level concentration values. Reduced birth-time confidence can narrow how precisely some patterns are localized elsewhere in the report."
-            ),
+            "confidence_note": "Built from the current report's existing month-level concentration values.",
             "months": [],
         }
 
@@ -5180,11 +5224,7 @@ def _build_forecast_shape_details(
         )
 
     curve_note = _forecast_distribution_note(label, scores)
-    confidence_note = (
-        "Built from the current report's existing month-level concentration values."
-        if birth_time_status == "exact"
-        else "Built from the current report's existing month-level concentration values. Reduced birth-time confidence can narrow how precisely some patterns are localized elsewhere in the report."
-    )
+    confidence_note = "Built from the current report's existing month-level concentration values."
 
     return {
         "label": label,
@@ -5626,33 +5666,6 @@ def _build_chart_characteristics(payload: dict) -> dict:
                     "Highlights the house or houses containing the largest number of the ten tracked planets.",
                 )
             )
-    else:
-        qualification = "With birth time unknown or approximate, angle- and house-dependent distributions are withheld rather than inferred from the noon placeholder chart."
-        cards.extend(
-            [
-                _make_characteristic_card(
-                    "Hemisphere balance",
-                    "Unavailable without exact birth time",
-                    "Upper/lower and eastern/western hemisphere counts depend on reliable houses and angles.",
-                    availability_note=qualification,
-                    is_available=False,
-                ),
-                _make_characteristic_card(
-                    "Angular emphasis",
-                    "Unavailable without exact birth time",
-                    "Angular, succedent, and cadent distributions depend on reliable house placement.",
-                    availability_note=qualification,
-                    is_available=False,
-                ),
-                _make_characteristic_card(
-                    "House concentration",
-                    "Unavailable without exact birth time",
-                    "House concentrations are not shown when the chart uses a reduced-confidence time.",
-                    availability_note=qualification,
-                    is_available=False,
-                ),
-            ]
-        )
 
     sign_stelliums = sorted(
         [
@@ -5690,17 +5703,6 @@ def _build_chart_characteristics(payload: dict) -> dict:
                     "Flags any house containing three or more of the ten tracked planets in the exact-time chart.",
                 )
             )
-    else:
-        cards.append(
-            _make_characteristic_card(
-                "House stellium indicator",
-                "Unavailable without exact birth time",
-                "House-based stellium checks depend on reliable house placement.",
-                availability_note="Noon placeholder houses are not surfaced as natal architecture.",
-                is_available=False,
-            )
-        )
-
     return {
         "cards": cards,
         "has_exact_birth_time": has_exact_time,
@@ -5838,6 +5840,61 @@ def _build_annual_rhythm_quarters(
             return f"{base} — resolves {leave.strftime('%b %d, %Y')}"
         return f"{base} — carries through this stretch"
 
+    def _quarter_domain_records(q_months: list[dict], limit: int = 2) -> list[dict]:
+        scores: dict[str, float] = {}
+        for month in q_months:
+            for domain in month.get("activated_domains", []) or []:
+                name = str(domain.get("domain") or "").strip()
+                if not name:
+                    continue
+                scores[name] = scores.get(name, 0.0) + float(domain.get("score", 0.0) or 0.0)
+        return [
+            {"domain": name, "score": round(score, 4)}
+            for name, score in sorted(scores.items(), key=lambda item: item[1], reverse=True)[:limit]
+        ]
+
+    def _quarter_title(q_months: list[dict], peak_month: dict, quiet_month: dict) -> str:
+        first = str(q_months[0].get("short_name") or q_months[0].get("name") or "This stretch")
+        last = str(q_months[-1].get("short_name") or q_months[-1].get("name") or "")
+        peak_score = float(peak_month.get("arc_score", 0.0) or 0.0)
+        quiet_score = float(quiet_month.get("arc_score", 0.0) or 0.0)
+        peak_label = str(peak_month.get("name") or peak_month.get("short_name") or "One month")
+        if peak_score >= max(quiet_score * 1.2, quiet_score + 0.05):
+            return f"{peak_label} Carries the Emphasis"
+        return f"{first} to {last}: Shared Rhythm"
+
+    def _quarter_summary(
+        q_months: list[dict],
+        peak_month: dict,
+        quiet_month: dict,
+        domains: list[dict],
+        dominant_cycles: list[dict],
+    ) -> str:
+        month_names = ", ".join(
+            str(month.get("name") or month.get("short_name") or "").strip()
+            for month in q_months
+        )
+        peak_score = float(peak_month.get("arc_score", 0.0) or 0.0)
+        quiet_score = float(quiet_month.get("arc_score", 0.0) or 0.0)
+        peak_name = str(peak_month.get("name") or peak_month.get("short_name") or "the strongest month")
+        quiet_name = str(quiet_month.get("name") or quiet_month.get("short_name") or "the quietest month")
+        if peak_score >= max(quiet_score * 1.2, quiet_score + 0.05):
+            sentence = (
+                f"Across {month_names}, the strongest concentration gathers in {peak_name}, "
+                f"while {quiet_name} carries the lighter part of the stretch."
+            )
+        else:
+            sentence = (
+                f"Across {month_names}, the rhythm stays comparatively even, "
+                "so the three monthly chapters are best read as a shared movement."
+            )
+        if domains:
+            domain_text = ", ".join(domain["domain"] for domain in domains[:2])
+            sentence += f" The most repeated chart area is {domain_text}."
+        if dominant_cycles:
+            sentence += f" The main carried cycle is {dominant_cycles[0]['description']}."
+        return sentence
+
     quarters: list[dict] = []
     for q_index in range(4):
         q_months = months[q_index * 3:(q_index + 1) * 3]
@@ -5853,7 +5910,6 @@ def _build_annual_rhythm_quarters(
             continue
 
         months_label = " · ".join(m.get("short_name", "") for m in q_months)
-        season_name = _season_from_month(q_start.month)
 
         q_active = [
             event for event in all_events
@@ -5884,7 +5940,17 @@ def _build_annual_rhythm_quarters(
             for e in slow_transits[:2]
         ]
 
-        activated_domains = _most_activated_domains(q_active, house_domains, q_start, q_end, top_n=2)
+        activated_domains = _quarter_domain_records(q_months, limit=2) or _most_activated_domains(
+            q_active,
+            house_domains,
+            q_start,
+            q_end,
+            top_n=2,
+        )
+        peak_month = max(q_months, key=lambda month: float(month.get("arc_score", 0.0) or 0.0))
+        quiet_month = min(q_months, key=lambda month: float(month.get("arc_score", 0.0) or 0.0))
+        season_name = _quarter_title(q_months, peak_month, quiet_month)
+        summary = _quarter_summary(q_months, peak_month, quiet_month, activated_domains, dominant_cycles)
 
         station_in_quarter = any(
             _year_ahead_primary_event_type(e) == "planetary_station"
@@ -5920,6 +5986,9 @@ def _build_annual_rhythm_quarters(
                 "index": f"0{q_index + 1}",
                 "months_label": months_label,
                 "season_name": season_name,
+                "summary": summary,
+                "peak_month": peak_month.get("name", ""),
+                "quiet_month": quiet_month.get("name", ""),
                 "dominant_cycles": dominant_cycles,
                 "activated_domains": activated_domains,
                 "footnote": footnote,
@@ -6862,11 +6931,7 @@ def _build_forecast_climate(
         "normalization_basis": "relative_within_report",
         "prominence_note": "These entries describe where concentration is most visible across the existing annual event set.",
         "certainty_note": "They do not predict outcomes or guarantee external events.",
-        "confidence_note": (
-            ""
-            if confidence == "exact"
-            else "Built from planet and retained target activity only. House- and angle-based routing is withheld without exact birth time."
-        ),
+        "confidence_note": "",
         "fields": rendered_fields,
     }
 
@@ -10154,7 +10219,7 @@ def main():
         except Exception:
             ChartCalculationError = None
         clean_exit_errors = tuple(
-            cls for cls in (LocationResolutionError, ChartCalculationError) if cls
+            cls for cls in (InputValidationError, LocationResolutionError, ChartCalculationError) if cls
         )
         if clean_exit_errors and isinstance(exc, clean_exit_errors):
             raise SystemExit(str(exc))

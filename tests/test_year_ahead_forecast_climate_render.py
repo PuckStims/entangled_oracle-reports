@@ -40,17 +40,6 @@ def test_client_report_omits_forecast_climate_section_in_three_report_outputs():
         },
         {
             "args": [
-                "--name", "Visitor",
-                "--date", "1990-06-15",
-                "--location", "Peoria, IL",
-                "--simple",
-                "--report-date", "2026-06-28",
-                "--output-filename", "test_visitor_forecast_climate.html",
-            ],
-            "must_include": ["House- and angle-based routing is withheld without exact birth time."],
-        },
-        {
-            "args": [
                 "--name", "Puck",
                 "--date", "1992-03-21",
                 "--time", "08:11",
@@ -71,6 +60,8 @@ def test_client_report_omits_forecast_climate_section_in_three_report_outputs():
         assert "Primary cycles:" not in html
         assert "Field qualities" not in html
         assert "No separate convergence window was isolated for this month." not in html
+        assert "withheld without exact birth time" not in html
+        assert "Unavailable without exact birth time" not in html
         assert "VII. Monthly chapters" in html
         assert "IX. Cycle ledger" in html
         assert "X. Technical appendix" in html
@@ -79,5 +70,26 @@ def test_client_report_omits_forecast_climate_section_in_three_report_outputs():
             assert text in html
 
 
+def test_year_ahead_rejects_simple_mode():
+    cmd = [
+        sys.executable,
+        str(PROJECT_ROOT / "generate.py"),
+        "year_ahead",
+        "--name",
+        "Visitor",
+        "--date",
+        "1990-06-15",
+        "--location",
+        "Peoria, IL",
+        "--simple",
+        "--no-browser",
+    ]
+    result = subprocess.run(cmd, capture_output=True, text=True, cwd=str(PROJECT_ROOT))
+
+    assert result.returncode != 0
+    assert "Year Ahead requires an exact birth time" in (result.stdout + result.stderr)
+
+
 if __name__ == "__main__":
     test_client_report_omits_forecast_climate_section_in_three_report_outputs()
+    test_year_ahead_rejects_simple_mode()

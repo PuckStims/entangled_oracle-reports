@@ -1,0 +1,8 @@
+{
+  "_note": "Key path: relation between solar-house layer and natalized activation. Used by the synthesized Daily Horoscope bridge.",
+  "same_house": "The broad Sun-sign weather and your personal chart activation point to the same part of life, so the signal is unusually concentrated. Let the solar layer name the general theme, then use the chart-specific activation to choose the concrete place where attention, language, or action belongs today.",
+  "supportive": "The Sun-sign layer and the personal chart layer are working in nearby territory. The day may not speak in one single sentence, but the themes can support each other: let the solar house describe the wider weather, and let the natal activation show where that weather becomes practical.",
+  "different_fields": "The Sun-sign layer describes the general weather, while your personal chart localizes the day somewhere more specific. Treat this as a two-step reading: the solar theme sets the atmosphere, and the natal activation tells you where the atmosphere is most likely to ask for response.",
+  "tension": "The Sun-sign layer and the personal chart layer pull attention toward different parts of life. That does not make the reading contradictory. It means the day's broad theme may need to be balanced against the place where your actual chart is more personally activated.",
+  "fallback": "The broad Sun-sign layer and the personal chart layer are both active today. Let the solar theme name the general weather, then use the natal activation to choose where the day asks for a more specific response."
+}

@@ -2314,10 +2314,7 @@ def _filter_moon_progression_events(progression_events: list[dict]) -> list[dict
     for event in progression_events:
         if event.get("method_variant") == "progression_lunation_phase":
             continue
-        if event.get("transit_planet") == "Moon":
-            kept.append(event)
-            continue
-        if event.get("method_variant") in ("progressed_to_progressed", "transit_to_progressed") and event.get("natal_target") == "Moon":
+        if event.get("clock_role") == "modifier" and event.get("transit_planet") == "Moon":
             kept.append(event)
     return kept
 

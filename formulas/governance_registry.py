@@ -282,8 +282,8 @@ PREDICTIVE_METHOD_REGISTRY: dict[str, PredictiveMethodRecord] = {
             "Can claim: which planet is time lord for a given year, and "
             "whether it's angular/retrograde/in a known house. Merely "
             "contextualizes: consumed as a transit-scoring weight via "
-            "time_lord_periods and promoted in Tier 5 as a live TODO "
-            "scaffold/report-surface tracking card, not finished prose."
+            "time_lord_periods and promoted in Year Ahead as a grouped "
+            "timing/context note, not a full annual-profection report."
         ),
     ),
     "progressions": PredictiveMethodRecord(
@@ -311,12 +311,12 @@ PREDICTIVE_METHOD_REGISTRY: dict[str, PredictiveMethodRecord] = {
             "client-facing today -- a real 'Progressions & Solar Arc "
             "Texture' template section, confirmed 2026-07-10 by generating "
             "a live report and reading the output HTML, not just tracing "
-            "code. Moon-progression contacts (personal_forecast, "
-            "include_moon_progressions) remain computed but genuinely "
-            "unused -- personal_forecast's context builder never reads "
-            "them back out of the timeline dict. Don't assume parity "
-            "between the two consumers just because both set an "
-            "include_* flag."
+            "code. Modifier-scale Moon-progression contacts "
+            "(personal_forecast, include_moon_progressions) are also "
+            "consumed through timeline['all_events'] and can affect themes, "
+            "timing windows, and the predictive research surface; they are "
+            "not a separate dedicated section. Chapter-scale secondary "
+            "progressions remain a Year Ahead texture concern."
         ),
     ),
     "solar_arc": PredictiveMethodRecord(
@@ -364,9 +364,9 @@ PREDICTIVE_METHOD_REGISTRY: dict[str, PredictiveMethodRecord] = {
             "return-chart interpretation is 'intentionally deferred.' Can "
             "claim: the date/time of a return, with a confidence score for "
             "that timing. Merely contextualizes: a bare timestamp today, "
-            "nothing about what the return 'means' beyond that moment; "
-            "promoted in Tier 5 as a live TODO scaffold/report-surface "
-            "tracking card, not finished return-chart interpretation."
+            "nothing about what the return chart 'means' beyond that "
+            "moment; promoted in Year Ahead as a grouped timing/context "
+            "note, not finished return-chart interpretation."
         ),
     ),
     "lots": PredictiveMethodRecord(
@@ -418,8 +418,8 @@ PREDICTIVE_METHOD_REGISTRY: dict[str, PredictiveMethodRecord] = {
             "exalted/fallen. Can claim: which sign/lord governs a given "
             "span at each of the four levels, whether that span is a peak "
             "or Loosing-of-the-Bond moment, and that lord's real house/"
-            "retrograde placement. Merely contextualizes: promoted in Tier "
-            "5 as a live TODO scaffold/report-surface tracking card; L3/L4 are "
+            "retrograde placement. Merely contextualizes: promoted in "
+            "Year Ahead as grouped timing/context notes; L3/L4 are "
             "explicitly modifier-scale only per the module's own docstring, "
             "not meant to justify a candidate on their own."
         ),
