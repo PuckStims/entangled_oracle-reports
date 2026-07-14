@@ -1,0 +1,1684 @@
+{
+  "_note": "Key path: relocated_angle_contacts[*].angle -> relocated_angle_contacts[*].body -> relocated_angle_contacts[*].contact_strength. Angles use long canonical names only (Ascendant, Midheaven, Descendant, Imum_Coeli -- Vertex never appears here; formulas/standard/angularity.py's AXIS_ANGLES excludes it from angle-contact detection). Bodies covered explicitly below are the 10 core planets (Sun through Pluto) -- see BODY-level 'fallback' under each angle for North_Node, South_Node, Lilith_BML, and custom asteroids, which are NOT given their own columns so this file stays a bounded grid instead of exploding to 30+ body keys per angle. Strength bands are tight (0.00-2.00 deg), moderate (2.01-5.00 deg), and wide (5.01-8.00 deg) -- these are evaluate_angularity's own computed bands, not editorial invention; see LOCATION_EVIDENCE_RECORD_CONTRACT.md's tolerances table. IMPORTANT: a same-place or otherwise 'quiet' relocation (zero house changes) can still have angle contacts -- relocated_angle_contacts describes the relocated chart's angularity as a standalone fact, not a diff against natal angularity. See LOCATION_EVIDENCE_RECORD_SAMPLES.md Sample B, where 0/14 houses changed but 5 angle contacts were still present. Do not write a leaf that assumes 'quiet' and 'no evidence' are the same thing. Modulation variables NOT built into this key path, to be applied by the selector/content layer at prose-selection time (per PROSE_PURPOSE_REVIEW.md): (1) natal_modifiers[body].condition_classification -- excellent/strong can support smoother, more available language; challenged/severely_challenged should add handling/friction language, not doom language; missing (nodes/Lilith/asteroids have no natal_modifiers entry) means describe the contact without a condition qualifier rather than inventing one. (2) natal_modifiers[body].was_natal_angular -- True means this is repeated emphasis (already a central natal function, now also relocated-angular); False means the place is newly foregrounding a function that was not already structurally central. These should read differently. (3) purpose_lens -- the same Venus/Midheaven contact is useful evidence for 'career' or 'creative_visibility', a mixed signal for 'rest' or 'retreat', and low-signal for an unrelated lens; see PROSE_GUIDE.md's Purpose Lens section and EVIDENCE_TO_MEANING_MATRIX.md's Purpose Lens Modifiers. (4) relationship_to_place -- a short_visit reads this contact as activation/testing; residence/current_home reads it as operating environment; past_home reads it retrospectively; remote_connection reads it symbolically rather than as embodied daily contact. claim_level 'bounded_interpretation' on every leaf below signals: name the mechanism, translate to lived language, state what it does not guarantee -- see PROSE_GUIDE.md's 'Mechanism -> lived expression -> useful participation -> boundary' pattern.",
+  "_version": "0.1.0-scaffold",
+  "fallback": {
+    "body": "TODO",
+    "_note": "Broad relocated-angle contact leaf for any angle not enumerated below (should not occur -- the engine only ever emits the four AXIS_ANGLES) or any future angle added to the evidence contract. Keep this leaf generic on purpose: it exists as a structural safety net, not a content target.",
+    "claim_level": "bounded_interpretation",
+    "requires_evidence": [
+      "relocated_angle_contacts"
+    ]
+  },
+  "Ascendant": {
+    "_note": "Ascendant core meaning: How the person enters the place: body, pace, self-presentation, immediate response. What becomes part of first contact with life. Pressure risk to name, not fear-monger about: Overidentifying with the activated planet, or feeling constantly called to perform that function. See EVIDENCE_TO_MEANING_MATRIX.md 'Relocated Angles > Ascendant' for the full prose-move examples this should draw from.",
+    "Sun": {
+      "_note": "Sun carries authorship, vitality, direction, confidence, central purpose. Conjunct the relocated Ascendant, this becomes part of how the person enters the place. Named risk to watch for, not warn about: overidentifying with recognition or role. Do not claim this contact guarantees an outcome -- name the foregrounded function, not a promised result.",
+      "tight": {
+        "body": "TODO",
+        "_note": "Sun/Ascendant at tight strength. Central, embodied language. This contact is close enough to read as a lead signature, especially if it repeats through a house change or purpose-lens alignment.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "moderate": {
+        "body": "TODO",
+        "_note": "Sun/Ascendant at moderate strength. Present but not the lead. Real evidence, softer centrality than tight -- name it clearly but do not build the whole place signature on it alone.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "wide": {
+        "body": "TODO",
+        "_note": "Sun/Ascendant at wide strength. Edge-of-contact language only. Still computed evidence (evaluate_angularity's own cutoff is 8 degrees, so nothing here is fabricated), but read as a background note unless another evidence item repeats the same body or theme.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "fallback": {
+        "body": "TODO",
+        "_note": "Sun conjunct Ascendant at a contact_strength this file does not enumerate (should not occur under the current three-band system; reserved for a future band change).",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts"
+        ]
+      }
+    },
+    "Moon": {
+      "_note": "Moon carries belonging, body rhythm, care, memory, emotional regulation. Conjunct the relocated Ascendant, this becomes part of how the person enters the place. Named risk to watch for, not warn about: habit, nostalgia, mood, or family pattern becoming too governing. Do not claim this contact guarantees an outcome -- name the foregrounded function, not a promised result.",
+      "tight": {
+        "body": "TODO",
+        "_note": "Moon/Ascendant at tight strength. Central, embodied language. This contact is close enough to read as a lead signature, especially if it repeats through a house change or purpose-lens alignment.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "moderate": {
+        "body": "TODO",
+        "_note": "Moon/Ascendant at moderate strength. Present but not the lead. Real evidence, softer centrality than tight -- name it clearly but do not build the whole place signature on it alone.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "wide": {
+        "body": "TODO",
+        "_note": "Moon/Ascendant at wide strength. Edge-of-contact language only. Still computed evidence (evaluate_angularity's own cutoff is 8 degrees, so nothing here is fabricated), but read as a background note unless another evidence item repeats the same body or theme.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "fallback": {
+        "body": "TODO",
+        "_note": "Moon conjunct Ascendant at a contact_strength this file does not enumerate (should not occur under the current three-band system; reserved for a future band change).",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts"
+        ]
+      }
+    },
+    "Mercury": {
+      "_note": "Mercury carries language, learning, mobility, interpretation, exchange. Conjunct the relocated Ascendant, this becomes part of how the person enters the place. Named risk to watch for, not warn about: nervous overactivity, scattered attention, too much mediation. Do not claim this contact guarantees an outcome -- name the foregrounded function, not a promised result.",
+      "tight": {
+        "body": "TODO",
+        "_note": "Mercury/Ascendant at tight strength. Central, embodied language. This contact is close enough to read as a lead signature, especially if it repeats through a house change or purpose-lens alignment.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "moderate": {
+        "body": "TODO",
+        "_note": "Mercury/Ascendant at moderate strength. Present but not the lead. Real evidence, softer centrality than tight -- name it clearly but do not build the whole place signature on it alone.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "wide": {
+        "body": "TODO",
+        "_note": "Mercury/Ascendant at wide strength. Edge-of-contact language only. Still computed evidence (evaluate_angularity's own cutoff is 8 degrees, so nothing here is fabricated), but read as a background note unless another evidence item repeats the same body or theme.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "fallback": {
+        "body": "TODO",
+        "_note": "Mercury conjunct Ascendant at a contact_strength this file does not enumerate (should not occur under the current three-band system; reserved for a future band change).",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts"
+        ]
+      }
+    },
+    "Venus": {
+      "_note": "Venus carries value, connection, aesthetics, pleasure, reciprocity, reception. Conjunct the relocated Ascendant, this becomes part of how the person enters the place. Named risk to watch for, not warn about: confusing charm with compatibility, ease with depth, or approval with value. Do not claim this contact guarantees an outcome -- name the foregrounded function, not a promised result.",
+      "tight": {
+        "body": "TODO",
+        "_note": "Venus/Ascendant at tight strength. Central, embodied language. This contact is close enough to read as a lead signature, especially if it repeats through a house change or purpose-lens alignment.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "moderate": {
+        "body": "TODO",
+        "_note": "Venus/Ascendant at moderate strength. Present but not the lead. Real evidence, softer centrality than tight -- name it clearly but do not build the whole place signature on it alone.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "wide": {
+        "body": "TODO",
+        "_note": "Venus/Ascendant at wide strength. Edge-of-contact language only. Still computed evidence (evaluate_angularity's own cutoff is 8 degrees, so nothing here is fabricated), but read as a background note unless another evidence item repeats the same body or theme.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "fallback": {
+        "body": "TODO",
+        "_note": "Venus conjunct Ascendant at a contact_strength this file does not enumerate (should not occur under the current three-band system; reserved for a future band change).",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts"
+        ]
+      }
+    },
+    "Mars": {
+      "_note": "Mars carries action, heat, courage, boundary, desire, conflict, stamina. Conjunct the relocated Ascendant, this becomes part of how the person enters the place. Named risk to watch for, not warn about: irritation, burnout, urgency without aim, conflict as default. Do not claim this contact guarantees an outcome -- name the foregrounded function, not a promised result.",
+      "tight": {
+        "body": "TODO",
+        "_note": "Mars/Ascendant at tight strength. Central, embodied language. This contact is close enough to read as a lead signature, especially if it repeats through a house change or purpose-lens alignment.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "moderate": {
+        "body": "TODO",
+        "_note": "Mars/Ascendant at moderate strength. Present but not the lead. Real evidence, softer centrality than tight -- name it clearly but do not build the whole place signature on it alone.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "wide": {
+        "body": "TODO",
+        "_note": "Mars/Ascendant at wide strength. Edge-of-contact language only. Still computed evidence (evaluate_angularity's own cutoff is 8 degrees, so nothing here is fabricated), but read as a background note unless another evidence item repeats the same body or theme.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "fallback": {
+        "body": "TODO",
+        "_note": "Mars conjunct Ascendant at a contact_strength this file does not enumerate (should not occur under the current three-band system; reserved for a future band change).",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts"
+        ]
+      }
+    },
+    "Jupiter": {
+      "_note": "Jupiter carries growth, opportunity, teaching, belief, scale, generosity. Conjunct the relocated Ascendant, this becomes part of how the person enters the place. Named risk to watch for, not warn about: overextension, optimism without proportion, saying yes too easily. Do not claim this contact guarantees an outcome -- name the foregrounded function, not a promised result.",
+      "tight": {
+        "body": "TODO",
+        "_note": "Jupiter/Ascendant at tight strength. Central, embodied language. This contact is close enough to read as a lead signature, especially if it repeats through a house change or purpose-lens alignment.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "moderate": {
+        "body": "TODO",
+        "_note": "Jupiter/Ascendant at moderate strength. Present but not the lead. Real evidence, softer centrality than tight -- name it clearly but do not build the whole place signature on it alone.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "wide": {
+        "body": "TODO",
+        "_note": "Jupiter/Ascendant at wide strength. Edge-of-contact language only. Still computed evidence (evaluate_angularity's own cutoff is 8 degrees, so nothing here is fabricated), but read as a background note unless another evidence item repeats the same body or theme.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "fallback": {
+        "body": "TODO",
+        "_note": "Jupiter conjunct Ascendant at a contact_strength this file does not enumerate (should not occur under the current three-band system; reserved for a future band change).",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts"
+        ]
+      }
+    },
+    "Saturn": {
+      "_note": "Saturn carries structure, commitment, responsibility, time, limits, maturity. Conjunct the relocated Ascendant, this becomes part of how the person enters the place. Named risk to watch for, not warn about: heaviness, isolation, fear of failure, duty replacing consent. Do not claim this contact guarantees an outcome -- name the foregrounded function, not a promised result.",
+      "tight": {
+        "body": "TODO",
+        "_note": "Saturn/Ascendant at tight strength. Central, embodied language. This contact is close enough to read as a lead signature, especially if it repeats through a house change or purpose-lens alignment.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "moderate": {
+        "body": "TODO",
+        "_note": "Saturn/Ascendant at moderate strength. Present but not the lead. Real evidence, softer centrality than tight -- name it clearly but do not build the whole place signature on it alone.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "wide": {
+        "body": "TODO",
+        "_note": "Saturn/Ascendant at wide strength. Edge-of-contact language only. Still computed evidence (evaluate_angularity's own cutoff is 8 degrees, so nothing here is fabricated), but read as a background note unless another evidence item repeats the same body or theme.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "fallback": {
+        "body": "TODO",
+        "_note": "Saturn conjunct Ascendant at a contact_strength this file does not enumerate (should not occur under the current three-band system; reserved for a future band change).",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts"
+        ]
+      }
+    },
+    "Uranus": {
+      "_note": "Uranus carries breakthrough, independence, disruption, experimentation, liberation. Conjunct the relocated Ascendant, this becomes part of how the person enters the place. Named risk to watch for, not warn about: instability, restlessness, change for its own sake. Do not claim this contact guarantees an outcome -- name the foregrounded function, not a promised result.",
+      "tight": {
+        "body": "TODO",
+        "_note": "Uranus/Ascendant at tight strength. Central, embodied language. This contact is close enough to read as a lead signature, especially if it repeats through a house change or purpose-lens alignment.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "moderate": {
+        "body": "TODO",
+        "_note": "Uranus/Ascendant at moderate strength. Present but not the lead. Real evidence, softer centrality than tight -- name it clearly but do not build the whole place signature on it alone.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "wide": {
+        "body": "TODO",
+        "_note": "Uranus/Ascendant at wide strength. Edge-of-contact language only. Still computed evidence (evaluate_angularity's own cutoff is 8 degrees, so nothing here is fabricated), but read as a background note unless another evidence item repeats the same body or theme.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "fallback": {
+        "body": "TODO",
+        "_note": "Uranus conjunct Ascendant at a contact_strength this file does not enumerate (should not occur under the current three-band system; reserved for a future band change).",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts"
+        ]
+      }
+    },
+    "Neptune": {
+      "_note": "Neptune carries imagination, sensitivity, spirituality, compassion, atmosphere, dissolution. Conjunct the relocated Ascendant, this becomes part of how the person enters the place. Named risk to watch for, not warn about: fog, projection, porous boundaries, idealization. Do not claim this contact guarantees an outcome -- name the foregrounded function, not a promised result.",
+      "tight": {
+        "body": "TODO",
+        "_note": "Neptune/Ascendant at tight strength. Central, embodied language. This contact is close enough to read as a lead signature, especially if it repeats through a house change or purpose-lens alignment.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "moderate": {
+        "body": "TODO",
+        "_note": "Neptune/Ascendant at moderate strength. Present but not the lead. Real evidence, softer centrality than tight -- name it clearly but do not build the whole place signature on it alone.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "wide": {
+        "body": "TODO",
+        "_note": "Neptune/Ascendant at wide strength. Edge-of-contact language only. Still computed evidence (evaluate_angularity's own cutoff is 8 degrees, so nothing here is fabricated), but read as a background note unless another evidence item repeats the same body or theme.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "fallback": {
+        "body": "TODO",
+        "_note": "Neptune conjunct Ascendant at a contact_strength this file does not enumerate (should not occur under the current three-band system; reserved for a future band change).",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts"
+        ]
+      }
+    },
+    "Pluto": {
+      "_note": "Pluto carries power, depth, compulsion, grief, transformation, truth under pressure. Conjunct the relocated Ascendant, this becomes part of how the person enters the place. Named risk to watch for, not warn about: control loops, obsession, isolation, treating intensity as proof. Do not claim this contact guarantees an outcome -- name the foregrounded function, not a promised result.",
+      "tight": {
+        "body": "TODO",
+        "_note": "Pluto/Ascendant at tight strength. Central, embodied language. This contact is close enough to read as a lead signature, especially if it repeats through a house change or purpose-lens alignment.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "moderate": {
+        "body": "TODO",
+        "_note": "Pluto/Ascendant at moderate strength. Present but not the lead. Real evidence, softer centrality than tight -- name it clearly but do not build the whole place signature on it alone.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "wide": {
+        "body": "TODO",
+        "_note": "Pluto/Ascendant at wide strength. Edge-of-contact language only. Still computed evidence (evaluate_angularity's own cutoff is 8 degrees, so nothing here is fabricated), but read as a background note unless another evidence item repeats the same body or theme.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "fallback": {
+        "body": "TODO",
+        "_note": "Pluto conjunct Ascendant at a contact_strength this file does not enumerate (should not occur under the current three-band system; reserved for a future band change).",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts"
+        ]
+      }
+    },
+    "fallback": {
+      "_note": "Covers North_Node, South_Node, Lilith_BML, and any custom asteroid conjunct the relocated Ascendant, without exploding this grid to 30+ body columns per angle. These bodies have no natal_modifiers entry (evaluate_all_planetary_conditions covers Sun through Pluto only), so leaves here should describe the contact on its own terms rather than reaching for a condition qualifier that does not exist. North_Node/South_Node carry directional/developmental meaning (not covered by EVIDENCE_TO_MEANING_MATRIX.md's Planetary Emphasis table -- do not invent node meaning here; defer to whatever node-interpretation convention other EO products already use). Lilith_BML and asteroids should stay especially bounded and specific rather than generic, since their natal-chart meaning is already a specialist layer in this system (see METHODS.md's established-niche material).",
+      "tight": {
+        "body": "TODO",
+        "_note": "An uncovered body (node, Lilith, or asteroid) conjunct Ascendant at tight strength. Central, embodied language. This contact is close enough to read as a lead signature, especially if it repeats through a house change or purpose-lens alignment.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts"
+        ]
+      },
+      "moderate": {
+        "body": "TODO",
+        "_note": "An uncovered body (node, Lilith, or asteroid) conjunct Ascendant at moderate strength. Present but not the lead. Real evidence, softer centrality than tight -- name it clearly but do not build the whole place signature on it alone.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts"
+        ]
+      },
+      "wide": {
+        "body": "TODO",
+        "_note": "An uncovered body (node, Lilith, or asteroid) conjunct Ascendant at wide strength. Edge-of-contact language only. Still computed evidence (evaluate_angularity's own cutoff is 8 degrees, so nothing here is fabricated), but read as a background note unless another evidence item repeats the same body or theme.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts"
+        ]
+      },
+      "fallback": {
+        "body": "TODO",
+        "_note": "An uncovered body conjunct Ascendant at an unrecognized contact_strength.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts"
+        ]
+      }
+    }
+  },
+  "Midheaven": {
+    "_note": "Midheaven core meaning: Public role, visibility, work, contribution, reputation. How the person becomes legible in the outer world. What the place asks them to take seriously. Pressure risk to name, not fear-monger about: Public exposure without support, or treating external recognition as the only proof of value. See EVIDENCE_TO_MEANING_MATRIX.md 'Relocated Angles > Midheaven' for the full prose-move examples this should draw from.",
+    "Sun": {
+      "_note": "Sun carries authorship, vitality, direction, confidence, central purpose. Conjunct the relocated Midheaven, this becomes part of the public-facing, legible part of life. Named risk to watch for, not warn about: overidentifying with recognition or role. Do not claim this contact guarantees an outcome -- name the foregrounded function, not a promised result.",
+      "tight": {
+        "body": "TODO",
+        "_note": "Sun/Midheaven at tight strength. Central, embodied language. This contact is close enough to read as a lead signature, especially if it repeats through a house change or purpose-lens alignment.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "moderate": {
+        "body": "TODO",
+        "_note": "Sun/Midheaven at moderate strength. Present but not the lead. Real evidence, softer centrality than tight -- name it clearly but do not build the whole place signature on it alone.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "wide": {
+        "body": "TODO",
+        "_note": "Sun/Midheaven at wide strength. Edge-of-contact language only. Still computed evidence (evaluate_angularity's own cutoff is 8 degrees, so nothing here is fabricated), but read as a background note unless another evidence item repeats the same body or theme.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "fallback": {
+        "body": "TODO",
+        "_note": "Sun conjunct Midheaven at a contact_strength this file does not enumerate (should not occur under the current three-band system; reserved for a future band change).",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts"
+        ]
+      }
+    },
+    "Moon": {
+      "_note": "Moon carries belonging, body rhythm, care, memory, emotional regulation. Conjunct the relocated Midheaven, this becomes part of the public-facing, legible part of life. Named risk to watch for, not warn about: habit, nostalgia, mood, or family pattern becoming too governing. Do not claim this contact guarantees an outcome -- name the foregrounded function, not a promised result.",
+      "tight": {
+        "body": "TODO",
+        "_note": "Moon/Midheaven at tight strength. Central, embodied language. This contact is close enough to read as a lead signature, especially if it repeats through a house change or purpose-lens alignment.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "moderate": {
+        "body": "TODO",
+        "_note": "Moon/Midheaven at moderate strength. Present but not the lead. Real evidence, softer centrality than tight -- name it clearly but do not build the whole place signature on it alone.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "wide": {
+        "body": "TODO",
+        "_note": "Moon/Midheaven at wide strength. Edge-of-contact language only. Still computed evidence (evaluate_angularity's own cutoff is 8 degrees, so nothing here is fabricated), but read as a background note unless another evidence item repeats the same body or theme.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "fallback": {
+        "body": "TODO",
+        "_note": "Moon conjunct Midheaven at a contact_strength this file does not enumerate (should not occur under the current three-band system; reserved for a future band change).",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts"
+        ]
+      }
+    },
+    "Mercury": {
+      "_note": "Mercury carries language, learning, mobility, interpretation, exchange. Conjunct the relocated Midheaven, this becomes part of the public-facing, legible part of life. Named risk to watch for, not warn about: nervous overactivity, scattered attention, too much mediation. Do not claim this contact guarantees an outcome -- name the foregrounded function, not a promised result.",
+      "tight": {
+        "body": "TODO",
+        "_note": "Mercury/Midheaven at tight strength. Central, embodied language. This contact is close enough to read as a lead signature, especially if it repeats through a house change or purpose-lens alignment.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "moderate": {
+        "body": "TODO",
+        "_note": "Mercury/Midheaven at moderate strength. Present but not the lead. Real evidence, softer centrality than tight -- name it clearly but do not build the whole place signature on it alone.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "wide": {
+        "body": "TODO",
+        "_note": "Mercury/Midheaven at wide strength. Edge-of-contact language only. Still computed evidence (evaluate_angularity's own cutoff is 8 degrees, so nothing here is fabricated), but read as a background note unless another evidence item repeats the same body or theme.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "fallback": {
+        "body": "TODO",
+        "_note": "Mercury conjunct Midheaven at a contact_strength this file does not enumerate (should not occur under the current three-band system; reserved for a future band change).",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts"
+        ]
+      }
+    },
+    "Venus": {
+      "_note": "Venus carries value, connection, aesthetics, pleasure, reciprocity, reception. Conjunct the relocated Midheaven, this becomes part of the public-facing, legible part of life. Named risk to watch for, not warn about: confusing charm with compatibility, ease with depth, or approval with value. Do not claim this contact guarantees an outcome -- name the foregrounded function, not a promised result.",
+      "tight": {
+        "body": "TODO",
+        "_note": "Venus/Midheaven at tight strength. Central, embodied language. This contact is close enough to read as a lead signature, especially if it repeats through a house change or purpose-lens alignment.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "moderate": {
+        "body": "TODO",
+        "_note": "Venus/Midheaven at moderate strength. Present but not the lead. Real evidence, softer centrality than tight -- name it clearly but do not build the whole place signature on it alone.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "wide": {
+        "body": "TODO",
+        "_note": "Venus/Midheaven at wide strength. Edge-of-contact language only. Still computed evidence (evaluate_angularity's own cutoff is 8 degrees, so nothing here is fabricated), but read as a background note unless another evidence item repeats the same body or theme.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "fallback": {
+        "body": "TODO",
+        "_note": "Venus conjunct Midheaven at a contact_strength this file does not enumerate (should not occur under the current three-band system; reserved for a future band change).",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts"
+        ]
+      }
+    },
+    "Mars": {
+      "_note": "Mars carries action, heat, courage, boundary, desire, conflict, stamina. Conjunct the relocated Midheaven, this becomes part of the public-facing, legible part of life. Named risk to watch for, not warn about: irritation, burnout, urgency without aim, conflict as default. Do not claim this contact guarantees an outcome -- name the foregrounded function, not a promised result.",
+      "tight": {
+        "body": "TODO",
+        "_note": "Mars/Midheaven at tight strength. Central, embodied language. This contact is close enough to read as a lead signature, especially if it repeats through a house change or purpose-lens alignment.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "moderate": {
+        "body": "TODO",
+        "_note": "Mars/Midheaven at moderate strength. Present but not the lead. Real evidence, softer centrality than tight -- name it clearly but do not build the whole place signature on it alone.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "wide": {
+        "body": "TODO",
+        "_note": "Mars/Midheaven at wide strength. Edge-of-contact language only. Still computed evidence (evaluate_angularity's own cutoff is 8 degrees, so nothing here is fabricated), but read as a background note unless another evidence item repeats the same body or theme.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "fallback": {
+        "body": "TODO",
+        "_note": "Mars conjunct Midheaven at a contact_strength this file does not enumerate (should not occur under the current three-band system; reserved for a future band change).",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts"
+        ]
+      }
+    },
+    "Jupiter": {
+      "_note": "Jupiter carries growth, opportunity, teaching, belief, scale, generosity. Conjunct the relocated Midheaven, this becomes part of the public-facing, legible part of life. Named risk to watch for, not warn about: overextension, optimism without proportion, saying yes too easily. Do not claim this contact guarantees an outcome -- name the foregrounded function, not a promised result.",
+      "tight": {
+        "body": "TODO",
+        "_note": "Jupiter/Midheaven at tight strength. Central, embodied language. This contact is close enough to read as a lead signature, especially if it repeats through a house change or purpose-lens alignment.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "moderate": {
+        "body": "TODO",
+        "_note": "Jupiter/Midheaven at moderate strength. Present but not the lead. Real evidence, softer centrality than tight -- name it clearly but do not build the whole place signature on it alone.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "wide": {
+        "body": "TODO",
+        "_note": "Jupiter/Midheaven at wide strength. Edge-of-contact language only. Still computed evidence (evaluate_angularity's own cutoff is 8 degrees, so nothing here is fabricated), but read as a background note unless another evidence item repeats the same body or theme.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "fallback": {
+        "body": "TODO",
+        "_note": "Jupiter conjunct Midheaven at a contact_strength this file does not enumerate (should not occur under the current three-band system; reserved for a future band change).",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts"
+        ]
+      }
+    },
+    "Saturn": {
+      "_note": "Saturn carries structure, commitment, responsibility, time, limits, maturity. Conjunct the relocated Midheaven, this becomes part of the public-facing, legible part of life. Named risk to watch for, not warn about: heaviness, isolation, fear of failure, duty replacing consent. Do not claim this contact guarantees an outcome -- name the foregrounded function, not a promised result.",
+      "tight": {
+        "body": "TODO",
+        "_note": "Saturn/Midheaven at tight strength. Central, embodied language. This contact is close enough to read as a lead signature, especially if it repeats through a house change or purpose-lens alignment.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "moderate": {
+        "body": "TODO",
+        "_note": "Saturn/Midheaven at moderate strength. Present but not the lead. Real evidence, softer centrality than tight -- name it clearly but do not build the whole place signature on it alone.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "wide": {
+        "body": "TODO",
+        "_note": "Saturn/Midheaven at wide strength. Edge-of-contact language only. Still computed evidence (evaluate_angularity's own cutoff is 8 degrees, so nothing here is fabricated), but read as a background note unless another evidence item repeats the same body or theme.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "fallback": {
+        "body": "TODO",
+        "_note": "Saturn conjunct Midheaven at a contact_strength this file does not enumerate (should not occur under the current three-band system; reserved for a future band change).",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts"
+        ]
+      }
+    },
+    "Uranus": {
+      "_note": "Uranus carries breakthrough, independence, disruption, experimentation, liberation. Conjunct the relocated Midheaven, this becomes part of the public-facing, legible part of life. Named risk to watch for, not warn about: instability, restlessness, change for its own sake. Do not claim this contact guarantees an outcome -- name the foregrounded function, not a promised result.",
+      "tight": {
+        "body": "TODO",
+        "_note": "Uranus/Midheaven at tight strength. Central, embodied language. This contact is close enough to read as a lead signature, especially if it repeats through a house change or purpose-lens alignment.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "moderate": {
+        "body": "TODO",
+        "_note": "Uranus/Midheaven at moderate strength. Present but not the lead. Real evidence, softer centrality than tight -- name it clearly but do not build the whole place signature on it alone.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "wide": {
+        "body": "TODO",
+        "_note": "Uranus/Midheaven at wide strength. Edge-of-contact language only. Still computed evidence (evaluate_angularity's own cutoff is 8 degrees, so nothing here is fabricated), but read as a background note unless another evidence item repeats the same body or theme.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "fallback": {
+        "body": "TODO",
+        "_note": "Uranus conjunct Midheaven at a contact_strength this file does not enumerate (should not occur under the current three-band system; reserved for a future band change).",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts"
+        ]
+      }
+    },
+    "Neptune": {
+      "_note": "Neptune carries imagination, sensitivity, spirituality, compassion, atmosphere, dissolution. Conjunct the relocated Midheaven, this becomes part of the public-facing, legible part of life. Named risk to watch for, not warn about: fog, projection, porous boundaries, idealization. Do not claim this contact guarantees an outcome -- name the foregrounded function, not a promised result.",
+      "tight": {
+        "body": "TODO",
+        "_note": "Neptune/Midheaven at tight strength. Central, embodied language. This contact is close enough to read as a lead signature, especially if it repeats through a house change or purpose-lens alignment.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "moderate": {
+        "body": "TODO",
+        "_note": "Neptune/Midheaven at moderate strength. Present but not the lead. Real evidence, softer centrality than tight -- name it clearly but do not build the whole place signature on it alone.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "wide": {
+        "body": "TODO",
+        "_note": "Neptune/Midheaven at wide strength. Edge-of-contact language only. Still computed evidence (evaluate_angularity's own cutoff is 8 degrees, so nothing here is fabricated), but read as a background note unless another evidence item repeats the same body or theme.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "fallback": {
+        "body": "TODO",
+        "_note": "Neptune conjunct Midheaven at a contact_strength this file does not enumerate (should not occur under the current three-band system; reserved for a future band change).",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts"
+        ]
+      }
+    },
+    "Pluto": {
+      "_note": "Pluto carries power, depth, compulsion, grief, transformation, truth under pressure. Conjunct the relocated Midheaven, this becomes part of the public-facing, legible part of life. Named risk to watch for, not warn about: control loops, obsession, isolation, treating intensity as proof. Do not claim this contact guarantees an outcome -- name the foregrounded function, not a promised result.",
+      "tight": {
+        "body": "TODO",
+        "_note": "Pluto/Midheaven at tight strength. Central, embodied language. This contact is close enough to read as a lead signature, especially if it repeats through a house change or purpose-lens alignment.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "moderate": {
+        "body": "TODO",
+        "_note": "Pluto/Midheaven at moderate strength. Present but not the lead. Real evidence, softer centrality than tight -- name it clearly but do not build the whole place signature on it alone.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "wide": {
+        "body": "TODO",
+        "_note": "Pluto/Midheaven at wide strength. Edge-of-contact language only. Still computed evidence (evaluate_angularity's own cutoff is 8 degrees, so nothing here is fabricated), but read as a background note unless another evidence item repeats the same body or theme.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "fallback": {
+        "body": "TODO",
+        "_note": "Pluto conjunct Midheaven at a contact_strength this file does not enumerate (should not occur under the current three-band system; reserved for a future band change).",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts"
+        ]
+      }
+    },
+    "fallback": {
+      "_note": "Covers North_Node, South_Node, Lilith_BML, and any custom asteroid conjunct the relocated Midheaven, without exploding this grid to 30+ body columns per angle. These bodies have no natal_modifiers entry (evaluate_all_planetary_conditions covers Sun through Pluto only), so leaves here should describe the contact on its own terms rather than reaching for a condition qualifier that does not exist. North_Node/South_Node carry directional/developmental meaning (not covered by EVIDENCE_TO_MEANING_MATRIX.md's Planetary Emphasis table -- do not invent node meaning here; defer to whatever node-interpretation convention other EO products already use). Lilith_BML and asteroids should stay especially bounded and specific rather than generic, since their natal-chart meaning is already a specialist layer in this system (see METHODS.md's established-niche material).",
+      "tight": {
+        "body": "TODO",
+        "_note": "An uncovered body (node, Lilith, or asteroid) conjunct Midheaven at tight strength. Central, embodied language. This contact is close enough to read as a lead signature, especially if it repeats through a house change or purpose-lens alignment.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts"
+        ]
+      },
+      "moderate": {
+        "body": "TODO",
+        "_note": "An uncovered body (node, Lilith, or asteroid) conjunct Midheaven at moderate strength. Present but not the lead. Real evidence, softer centrality than tight -- name it clearly but do not build the whole place signature on it alone.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts"
+        ]
+      },
+      "wide": {
+        "body": "TODO",
+        "_note": "An uncovered body (node, Lilith, or asteroid) conjunct Midheaven at wide strength. Edge-of-contact language only. Still computed evidence (evaluate_angularity's own cutoff is 8 degrees, so nothing here is fabricated), but read as a background note unless another evidence item repeats the same body or theme.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts"
+        ]
+      },
+      "fallback": {
+        "body": "TODO",
+        "_note": "An uncovered body conjunct Midheaven at an unrecognized contact_strength.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts"
+        ]
+      }
+    }
+  },
+  "Descendant": {
+    "_note": "Descendant core meaning: Partnership, clients, mirrors, direct others, negotiation. What arrives through encounter -- what the person meets across the table. Pressure risk to name, not fear-monger about: Projection, or expecting others to carry the activated planet entirely. See EVIDENCE_TO_MEANING_MATRIX.md 'Relocated Angles > Descendant' for the full prose-move examples this should draw from.",
+    "Sun": {
+      "_note": "Sun carries authorship, vitality, direction, confidence, central purpose. Conjunct the relocated Descendant, this becomes part of what arrives through direct encounter with others. Named risk to watch for, not warn about: overidentifying with recognition or role. Do not claim this contact guarantees an outcome -- name the foregrounded function, not a promised result.",
+      "tight": {
+        "body": "TODO",
+        "_note": "Sun/Descendant at tight strength. Central, embodied language. This contact is close enough to read as a lead signature, especially if it repeats through a house change or purpose-lens alignment.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "moderate": {
+        "body": "TODO",
+        "_note": "Sun/Descendant at moderate strength. Present but not the lead. Real evidence, softer centrality than tight -- name it clearly but do not build the whole place signature on it alone.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "wide": {
+        "body": "TODO",
+        "_note": "Sun/Descendant at wide strength. Edge-of-contact language only. Still computed evidence (evaluate_angularity's own cutoff is 8 degrees, so nothing here is fabricated), but read as a background note unless another evidence item repeats the same body or theme.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "fallback": {
+        "body": "TODO",
+        "_note": "Sun conjunct Descendant at a contact_strength this file does not enumerate (should not occur under the current three-band system; reserved for a future band change).",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts"
+        ]
+      }
+    },
+    "Moon": {
+      "_note": "Moon carries belonging, body rhythm, care, memory, emotional regulation. Conjunct the relocated Descendant, this becomes part of what arrives through direct encounter with others. Named risk to watch for, not warn about: habit, nostalgia, mood, or family pattern becoming too governing. Do not claim this contact guarantees an outcome -- name the foregrounded function, not a promised result.",
+      "tight": {
+        "body": "TODO",
+        "_note": "Moon/Descendant at tight strength. Central, embodied language. This contact is close enough to read as a lead signature, especially if it repeats through a house change or purpose-lens alignment.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "moderate": {
+        "body": "TODO",
+        "_note": "Moon/Descendant at moderate strength. Present but not the lead. Real evidence, softer centrality than tight -- name it clearly but do not build the whole place signature on it alone.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "wide": {
+        "body": "TODO",
+        "_note": "Moon/Descendant at wide strength. Edge-of-contact language only. Still computed evidence (evaluate_angularity's own cutoff is 8 degrees, so nothing here is fabricated), but read as a background note unless another evidence item repeats the same body or theme.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "fallback": {
+        "body": "TODO",
+        "_note": "Moon conjunct Descendant at a contact_strength this file does not enumerate (should not occur under the current three-band system; reserved for a future band change).",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts"
+        ]
+      }
+    },
+    "Mercury": {
+      "_note": "Mercury carries language, learning, mobility, interpretation, exchange. Conjunct the relocated Descendant, this becomes part of what arrives through direct encounter with others. Named risk to watch for, not warn about: nervous overactivity, scattered attention, too much mediation. Do not claim this contact guarantees an outcome -- name the foregrounded function, not a promised result.",
+      "tight": {
+        "body": "TODO",
+        "_note": "Mercury/Descendant at tight strength. Central, embodied language. This contact is close enough to read as a lead signature, especially if it repeats through a house change or purpose-lens alignment.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "moderate": {
+        "body": "TODO",
+        "_note": "Mercury/Descendant at moderate strength. Present but not the lead. Real evidence, softer centrality than tight -- name it clearly but do not build the whole place signature on it alone.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "wide": {
+        "body": "TODO",
+        "_note": "Mercury/Descendant at wide strength. Edge-of-contact language only. Still computed evidence (evaluate_angularity's own cutoff is 8 degrees, so nothing here is fabricated), but read as a background note unless another evidence item repeats the same body or theme.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "fallback": {
+        "body": "TODO",
+        "_note": "Mercury conjunct Descendant at a contact_strength this file does not enumerate (should not occur under the current three-band system; reserved for a future band change).",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts"
+        ]
+      }
+    },
+    "Venus": {
+      "_note": "Venus carries value, connection, aesthetics, pleasure, reciprocity, reception. Conjunct the relocated Descendant, this becomes part of what arrives through direct encounter with others. Named risk to watch for, not warn about: confusing charm with compatibility, ease with depth, or approval with value. Do not claim this contact guarantees an outcome -- name the foregrounded function, not a promised result.",
+      "tight": {
+        "body": "TODO",
+        "_note": "Venus/Descendant at tight strength. Central, embodied language. This contact is close enough to read as a lead signature, especially if it repeats through a house change or purpose-lens alignment.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "moderate": {
+        "body": "TODO",
+        "_note": "Venus/Descendant at moderate strength. Present but not the lead. Real evidence, softer centrality than tight -- name it clearly but do not build the whole place signature on it alone.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "wide": {
+        "body": "TODO",
+        "_note": "Venus/Descendant at wide strength. Edge-of-contact language only. Still computed evidence (evaluate_angularity's own cutoff is 8 degrees, so nothing here is fabricated), but read as a background note unless another evidence item repeats the same body or theme.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "fallback": {
+        "body": "TODO",
+        "_note": "Venus conjunct Descendant at a contact_strength this file does not enumerate (should not occur under the current three-band system; reserved for a future band change).",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts"
+        ]
+      }
+    },
+    "Mars": {
+      "_note": "Mars carries action, heat, courage, boundary, desire, conflict, stamina. Conjunct the relocated Descendant, this becomes part of what arrives through direct encounter with others. Named risk to watch for, not warn about: irritation, burnout, urgency without aim, conflict as default. Do not claim this contact guarantees an outcome -- name the foregrounded function, not a promised result.",
+      "tight": {
+        "body": "TODO",
+        "_note": "Mars/Descendant at tight strength. Central, embodied language. This contact is close enough to read as a lead signature, especially if it repeats through a house change or purpose-lens alignment.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "moderate": {
+        "body": "TODO",
+        "_note": "Mars/Descendant at moderate strength. Present but not the lead. Real evidence, softer centrality than tight -- name it clearly but do not build the whole place signature on it alone.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "wide": {
+        "body": "TODO",
+        "_note": "Mars/Descendant at wide strength. Edge-of-contact language only. Still computed evidence (evaluate_angularity's own cutoff is 8 degrees, so nothing here is fabricated), but read as a background note unless another evidence item repeats the same body or theme.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "fallback": {
+        "body": "TODO",
+        "_note": "Mars conjunct Descendant at a contact_strength this file does not enumerate (should not occur under the current three-band system; reserved for a future band change).",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts"
+        ]
+      }
+    },
+    "Jupiter": {
+      "_note": "Jupiter carries growth, opportunity, teaching, belief, scale, generosity. Conjunct the relocated Descendant, this becomes part of what arrives through direct encounter with others. Named risk to watch for, not warn about: overextension, optimism without proportion, saying yes too easily. Do not claim this contact guarantees an outcome -- name the foregrounded function, not a promised result.",
+      "tight": {
+        "body": "TODO",
+        "_note": "Jupiter/Descendant at tight strength. Central, embodied language. This contact is close enough to read as a lead signature, especially if it repeats through a house change or purpose-lens alignment.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "moderate": {
+        "body": "TODO",
+        "_note": "Jupiter/Descendant at moderate strength. Present but not the lead. Real evidence, softer centrality than tight -- name it clearly but do not build the whole place signature on it alone.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "wide": {
+        "body": "TODO",
+        "_note": "Jupiter/Descendant at wide strength. Edge-of-contact language only. Still computed evidence (evaluate_angularity's own cutoff is 8 degrees, so nothing here is fabricated), but read as a background note unless another evidence item repeats the same body or theme.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "fallback": {
+        "body": "TODO",
+        "_note": "Jupiter conjunct Descendant at a contact_strength this file does not enumerate (should not occur under the current three-band system; reserved for a future band change).",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts"
+        ]
+      }
+    },
+    "Saturn": {
+      "_note": "Saturn carries structure, commitment, responsibility, time, limits, maturity. Conjunct the relocated Descendant, this becomes part of what arrives through direct encounter with others. Named risk to watch for, not warn about: heaviness, isolation, fear of failure, duty replacing consent. Do not claim this contact guarantees an outcome -- name the foregrounded function, not a promised result.",
+      "tight": {
+        "body": "TODO",
+        "_note": "Saturn/Descendant at tight strength. Central, embodied language. This contact is close enough to read as a lead signature, especially if it repeats through a house change or purpose-lens alignment.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "moderate": {
+        "body": "TODO",
+        "_note": "Saturn/Descendant at moderate strength. Present but not the lead. Real evidence, softer centrality than tight -- name it clearly but do not build the whole place signature on it alone.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "wide": {
+        "body": "TODO",
+        "_note": "Saturn/Descendant at wide strength. Edge-of-contact language only. Still computed evidence (evaluate_angularity's own cutoff is 8 degrees, so nothing here is fabricated), but read as a background note unless another evidence item repeats the same body or theme.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "fallback": {
+        "body": "TODO",
+        "_note": "Saturn conjunct Descendant at a contact_strength this file does not enumerate (should not occur under the current three-band system; reserved for a future band change).",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts"
+        ]
+      }
+    },
+    "Uranus": {
+      "_note": "Uranus carries breakthrough, independence, disruption, experimentation, liberation. Conjunct the relocated Descendant, this becomes part of what arrives through direct encounter with others. Named risk to watch for, not warn about: instability, restlessness, change for its own sake. Do not claim this contact guarantees an outcome -- name the foregrounded function, not a promised result.",
+      "tight": {
+        "body": "TODO",
+        "_note": "Uranus/Descendant at tight strength. Central, embodied language. This contact is close enough to read as a lead signature, especially if it repeats through a house change or purpose-lens alignment.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "moderate": {
+        "body": "TODO",
+        "_note": "Uranus/Descendant at moderate strength. Present but not the lead. Real evidence, softer centrality than tight -- name it clearly but do not build the whole place signature on it alone.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "wide": {
+        "body": "TODO",
+        "_note": "Uranus/Descendant at wide strength. Edge-of-contact language only. Still computed evidence (evaluate_angularity's own cutoff is 8 degrees, so nothing here is fabricated), but read as a background note unless another evidence item repeats the same body or theme.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "fallback": {
+        "body": "TODO",
+        "_note": "Uranus conjunct Descendant at a contact_strength this file does not enumerate (should not occur under the current three-band system; reserved for a future band change).",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts"
+        ]
+      }
+    },
+    "Neptune": {
+      "_note": "Neptune carries imagination, sensitivity, spirituality, compassion, atmosphere, dissolution. Conjunct the relocated Descendant, this becomes part of what arrives through direct encounter with others. Named risk to watch for, not warn about: fog, projection, porous boundaries, idealization. Do not claim this contact guarantees an outcome -- name the foregrounded function, not a promised result.",
+      "tight": {
+        "body": "TODO",
+        "_note": "Neptune/Descendant at tight strength. Central, embodied language. This contact is close enough to read as a lead signature, especially if it repeats through a house change or purpose-lens alignment.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "moderate": {
+        "body": "TODO",
+        "_note": "Neptune/Descendant at moderate strength. Present but not the lead. Real evidence, softer centrality than tight -- name it clearly but do not build the whole place signature on it alone.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "wide": {
+        "body": "TODO",
+        "_note": "Neptune/Descendant at wide strength. Edge-of-contact language only. Still computed evidence (evaluate_angularity's own cutoff is 8 degrees, so nothing here is fabricated), but read as a background note unless another evidence item repeats the same body or theme.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "fallback": {
+        "body": "TODO",
+        "_note": "Neptune conjunct Descendant at a contact_strength this file does not enumerate (should not occur under the current three-band system; reserved for a future band change).",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts"
+        ]
+      }
+    },
+    "Pluto": {
+      "_note": "Pluto carries power, depth, compulsion, grief, transformation, truth under pressure. Conjunct the relocated Descendant, this becomes part of what arrives through direct encounter with others. Named risk to watch for, not warn about: control loops, obsession, isolation, treating intensity as proof. Do not claim this contact guarantees an outcome -- name the foregrounded function, not a promised result.",
+      "tight": {
+        "body": "TODO",
+        "_note": "Pluto/Descendant at tight strength. Central, embodied language. This contact is close enough to read as a lead signature, especially if it repeats through a house change or purpose-lens alignment.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "moderate": {
+        "body": "TODO",
+        "_note": "Pluto/Descendant at moderate strength. Present but not the lead. Real evidence, softer centrality than tight -- name it clearly but do not build the whole place signature on it alone.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "wide": {
+        "body": "TODO",
+        "_note": "Pluto/Descendant at wide strength. Edge-of-contact language only. Still computed evidence (evaluate_angularity's own cutoff is 8 degrees, so nothing here is fabricated), but read as a background note unless another evidence item repeats the same body or theme.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "fallback": {
+        "body": "TODO",
+        "_note": "Pluto conjunct Descendant at a contact_strength this file does not enumerate (should not occur under the current three-band system; reserved for a future band change).",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts"
+        ]
+      }
+    },
+    "fallback": {
+      "_note": "Covers North_Node, South_Node, Lilith_BML, and any custom asteroid conjunct the relocated Descendant, without exploding this grid to 30+ body columns per angle. These bodies have no natal_modifiers entry (evaluate_all_planetary_conditions covers Sun through Pluto only), so leaves here should describe the contact on its own terms rather than reaching for a condition qualifier that does not exist. North_Node/South_Node carry directional/developmental meaning (not covered by EVIDENCE_TO_MEANING_MATRIX.md's Planetary Emphasis table -- do not invent node meaning here; defer to whatever node-interpretation convention other EO products already use). Lilith_BML and asteroids should stay especially bounded and specific rather than generic, since their natal-chart meaning is already a specialist layer in this system (see METHODS.md's established-niche material).",
+      "tight": {
+        "body": "TODO",
+        "_note": "An uncovered body (node, Lilith, or asteroid) conjunct Descendant at tight strength. Central, embodied language. This contact is close enough to read as a lead signature, especially if it repeats through a house change or purpose-lens alignment.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts"
+        ]
+      },
+      "moderate": {
+        "body": "TODO",
+        "_note": "An uncovered body (node, Lilith, or asteroid) conjunct Descendant at moderate strength. Present but not the lead. Real evidence, softer centrality than tight -- name it clearly but do not build the whole place signature on it alone.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts"
+        ]
+      },
+      "wide": {
+        "body": "TODO",
+        "_note": "An uncovered body (node, Lilith, or asteroid) conjunct Descendant at wide strength. Edge-of-contact language only. Still computed evidence (evaluate_angularity's own cutoff is 8 degrees, so nothing here is fabricated), but read as a background note unless another evidence item repeats the same body or theme.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts"
+        ]
+      },
+      "fallback": {
+        "body": "TODO",
+        "_note": "An uncovered body conjunct Descendant at an unrecognized contact_strength.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts"
+        ]
+      }
+    }
+  },
+  "Imum_Coeli": {
+    "_note": "Imum_Coeli core meaning: Home, privacy, roots, memory, belonging, inner weather. What the place does underneath the visible life; emotional foundation and retreat pattern. Pressure risk to name, not fear-monger about: Feeling enclosed by the activated material, or old family/belonging patterns becoming louder. See EVIDENCE_TO_MEANING_MATRIX.md 'Relocated Angles > Imum Coeli' for the full prose-move examples this should draw from.",
+    "Sun": {
+      "_note": "Sun carries authorship, vitality, direction, confidence, central purpose. Conjunct the relocated Imum Coeli, this becomes part of the private, underlying emotional weather of daily life. Named risk to watch for, not warn about: overidentifying with recognition or role. Do not claim this contact guarantees an outcome -- name the foregrounded function, not a promised result.",
+      "tight": {
+        "body": "TODO",
+        "_note": "Sun/Imum Coeli at tight strength. Central, embodied language. This contact is close enough to read as a lead signature, especially if it repeats through a house change or purpose-lens alignment.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "moderate": {
+        "body": "TODO",
+        "_note": "Sun/Imum Coeli at moderate strength. Present but not the lead. Real evidence, softer centrality than tight -- name it clearly but do not build the whole place signature on it alone.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "wide": {
+        "body": "TODO",
+        "_note": "Sun/Imum Coeli at wide strength. Edge-of-contact language only. Still computed evidence (evaluate_angularity's own cutoff is 8 degrees, so nothing here is fabricated), but read as a background note unless another evidence item repeats the same body or theme.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "fallback": {
+        "body": "TODO",
+        "_note": "Sun conjunct Imum Coeli at a contact_strength this file does not enumerate (should not occur under the current three-band system; reserved for a future band change).",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts"
+        ]
+      }
+    },
+    "Moon": {
+      "_note": "Moon carries belonging, body rhythm, care, memory, emotional regulation. Conjunct the relocated Imum Coeli, this becomes part of the private, underlying emotional weather of daily life. Named risk to watch for, not warn about: habit, nostalgia, mood, or family pattern becoming too governing. Do not claim this contact guarantees an outcome -- name the foregrounded function, not a promised result.",
+      "tight": {
+        "body": "TODO",
+        "_note": "Moon/Imum Coeli at tight strength. Central, embodied language. This contact is close enough to read as a lead signature, especially if it repeats through a house change or purpose-lens alignment.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "moderate": {
+        "body": "TODO",
+        "_note": "Moon/Imum Coeli at moderate strength. Present but not the lead. Real evidence, softer centrality than tight -- name it clearly but do not build the whole place signature on it alone.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "wide": {
+        "body": "TODO",
+        "_note": "Moon/Imum Coeli at wide strength. Edge-of-contact language only. Still computed evidence (evaluate_angularity's own cutoff is 8 degrees, so nothing here is fabricated), but read as a background note unless another evidence item repeats the same body or theme.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "fallback": {
+        "body": "TODO",
+        "_note": "Moon conjunct Imum Coeli at a contact_strength this file does not enumerate (should not occur under the current three-band system; reserved for a future band change).",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts"
+        ]
+      }
+    },
+    "Mercury": {
+      "_note": "Mercury carries language, learning, mobility, interpretation, exchange. Conjunct the relocated Imum Coeli, this becomes part of the private, underlying emotional weather of daily life. Named risk to watch for, not warn about: nervous overactivity, scattered attention, too much mediation. Do not claim this contact guarantees an outcome -- name the foregrounded function, not a promised result.",
+      "tight": {
+        "body": "TODO",
+        "_note": "Mercury/Imum Coeli at tight strength. Central, embodied language. This contact is close enough to read as a lead signature, especially if it repeats through a house change or purpose-lens alignment.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "moderate": {
+        "body": "TODO",
+        "_note": "Mercury/Imum Coeli at moderate strength. Present but not the lead. Real evidence, softer centrality than tight -- name it clearly but do not build the whole place signature on it alone.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "wide": {
+        "body": "TODO",
+        "_note": "Mercury/Imum Coeli at wide strength. Edge-of-contact language only. Still computed evidence (evaluate_angularity's own cutoff is 8 degrees, so nothing here is fabricated), but read as a background note unless another evidence item repeats the same body or theme.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "fallback": {
+        "body": "TODO",
+        "_note": "Mercury conjunct Imum Coeli at a contact_strength this file does not enumerate (should not occur under the current three-band system; reserved for a future band change).",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts"
+        ]
+      }
+    },
+    "Venus": {
+      "_note": "Venus carries value, connection, aesthetics, pleasure, reciprocity, reception. Conjunct the relocated Imum Coeli, this becomes part of the private, underlying emotional weather of daily life. Named risk to watch for, not warn about: confusing charm with compatibility, ease with depth, or approval with value. Do not claim this contact guarantees an outcome -- name the foregrounded function, not a promised result.",
+      "tight": {
+        "body": "TODO",
+        "_note": "Venus/Imum Coeli at tight strength. Central, embodied language. This contact is close enough to read as a lead signature, especially if it repeats through a house change or purpose-lens alignment.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "moderate": {
+        "body": "TODO",
+        "_note": "Venus/Imum Coeli at moderate strength. Present but not the lead. Real evidence, softer centrality than tight -- name it clearly but do not build the whole place signature on it alone.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "wide": {
+        "body": "TODO",
+        "_note": "Venus/Imum Coeli at wide strength. Edge-of-contact language only. Still computed evidence (evaluate_angularity's own cutoff is 8 degrees, so nothing here is fabricated), but read as a background note unless another evidence item repeats the same body or theme.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "fallback": {
+        "body": "TODO",
+        "_note": "Venus conjunct Imum Coeli at a contact_strength this file does not enumerate (should not occur under the current three-band system; reserved for a future band change).",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts"
+        ]
+      }
+    },
+    "Mars": {
+      "_note": "Mars carries action, heat, courage, boundary, desire, conflict, stamina. Conjunct the relocated Imum Coeli, this becomes part of the private, underlying emotional weather of daily life. Named risk to watch for, not warn about: irritation, burnout, urgency without aim, conflict as default. Do not claim this contact guarantees an outcome -- name the foregrounded function, not a promised result.",
+      "tight": {
+        "body": "TODO",
+        "_note": "Mars/Imum Coeli at tight strength. Central, embodied language. This contact is close enough to read as a lead signature, especially if it repeats through a house change or purpose-lens alignment.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "moderate": {
+        "body": "TODO",
+        "_note": "Mars/Imum Coeli at moderate strength. Present but not the lead. Real evidence, softer centrality than tight -- name it clearly but do not build the whole place signature on it alone.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "wide": {
+        "body": "TODO",
+        "_note": "Mars/Imum Coeli at wide strength. Edge-of-contact language only. Still computed evidence (evaluate_angularity's own cutoff is 8 degrees, so nothing here is fabricated), but read as a background note unless another evidence item repeats the same body or theme.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "fallback": {
+        "body": "TODO",
+        "_note": "Mars conjunct Imum Coeli at a contact_strength this file does not enumerate (should not occur under the current three-band system; reserved for a future band change).",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts"
+        ]
+      }
+    },
+    "Jupiter": {
+      "_note": "Jupiter carries growth, opportunity, teaching, belief, scale, generosity. Conjunct the relocated Imum Coeli, this becomes part of the private, underlying emotional weather of daily life. Named risk to watch for, not warn about: overextension, optimism without proportion, saying yes too easily. Do not claim this contact guarantees an outcome -- name the foregrounded function, not a promised result.",
+      "tight": {
+        "body": "TODO",
+        "_note": "Jupiter/Imum Coeli at tight strength. Central, embodied language. This contact is close enough to read as a lead signature, especially if it repeats through a house change or purpose-lens alignment.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "moderate": {
+        "body": "TODO",
+        "_note": "Jupiter/Imum Coeli at moderate strength. Present but not the lead. Real evidence, softer centrality than tight -- name it clearly but do not build the whole place signature on it alone.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "wide": {
+        "body": "TODO",
+        "_note": "Jupiter/Imum Coeli at wide strength. Edge-of-contact language only. Still computed evidence (evaluate_angularity's own cutoff is 8 degrees, so nothing here is fabricated), but read as a background note unless another evidence item repeats the same body or theme.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "fallback": {
+        "body": "TODO",
+        "_note": "Jupiter conjunct Imum Coeli at a contact_strength this file does not enumerate (should not occur under the current three-band system; reserved for a future band change).",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts"
+        ]
+      }
+    },
+    "Saturn": {
+      "_note": "Saturn carries structure, commitment, responsibility, time, limits, maturity. Conjunct the relocated Imum Coeli, this becomes part of the private, underlying emotional weather of daily life. Named risk to watch for, not warn about: heaviness, isolation, fear of failure, duty replacing consent. Do not claim this contact guarantees an outcome -- name the foregrounded function, not a promised result.",
+      "tight": {
+        "body": "TODO",
+        "_note": "Saturn/Imum Coeli at tight strength. Central, embodied language. This contact is close enough to read as a lead signature, especially if it repeats through a house change or purpose-lens alignment.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "moderate": {
+        "body": "TODO",
+        "_note": "Saturn/Imum Coeli at moderate strength. Present but not the lead. Real evidence, softer centrality than tight -- name it clearly but do not build the whole place signature on it alone.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "wide": {
+        "body": "TODO",
+        "_note": "Saturn/Imum Coeli at wide strength. Edge-of-contact language only. Still computed evidence (evaluate_angularity's own cutoff is 8 degrees, so nothing here is fabricated), but read as a background note unless another evidence item repeats the same body or theme.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "fallback": {
+        "body": "TODO",
+        "_note": "Saturn conjunct Imum Coeli at a contact_strength this file does not enumerate (should not occur under the current three-band system; reserved for a future band change).",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts"
+        ]
+      }
+    },
+    "Uranus": {
+      "_note": "Uranus carries breakthrough, independence, disruption, experimentation, liberation. Conjunct the relocated Imum Coeli, this becomes part of the private, underlying emotional weather of daily life. Named risk to watch for, not warn about: instability, restlessness, change for its own sake. Do not claim this contact guarantees an outcome -- name the foregrounded function, not a promised result.",
+      "tight": {
+        "body": "TODO",
+        "_note": "Uranus/Imum Coeli at tight strength. Central, embodied language. This contact is close enough to read as a lead signature, especially if it repeats through a house change or purpose-lens alignment.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "moderate": {
+        "body": "TODO",
+        "_note": "Uranus/Imum Coeli at moderate strength. Present but not the lead. Real evidence, softer centrality than tight -- name it clearly but do not build the whole place signature on it alone.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "wide": {
+        "body": "TODO",
+        "_note": "Uranus/Imum Coeli at wide strength. Edge-of-contact language only. Still computed evidence (evaluate_angularity's own cutoff is 8 degrees, so nothing here is fabricated), but read as a background note unless another evidence item repeats the same body or theme.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "fallback": {
+        "body": "TODO",
+        "_note": "Uranus conjunct Imum Coeli at a contact_strength this file does not enumerate (should not occur under the current three-band system; reserved for a future band change).",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts"
+        ]
+      }
+    },
+    "Neptune": {
+      "_note": "Neptune carries imagination, sensitivity, spirituality, compassion, atmosphere, dissolution. Conjunct the relocated Imum Coeli, this becomes part of the private, underlying emotional weather of daily life. Named risk to watch for, not warn about: fog, projection, porous boundaries, idealization. Do not claim this contact guarantees an outcome -- name the foregrounded function, not a promised result.",
+      "tight": {
+        "body": "TODO",
+        "_note": "Neptune/Imum Coeli at tight strength. Central, embodied language. This contact is close enough to read as a lead signature, especially if it repeats through a house change or purpose-lens alignment.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "moderate": {
+        "body": "TODO",
+        "_note": "Neptune/Imum Coeli at moderate strength. Present but not the lead. Real evidence, softer centrality than tight -- name it clearly but do not build the whole place signature on it alone.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "wide": {
+        "body": "TODO",
+        "_note": "Neptune/Imum Coeli at wide strength. Edge-of-contact language only. Still computed evidence (evaluate_angularity's own cutoff is 8 degrees, so nothing here is fabricated), but read as a background note unless another evidence item repeats the same body or theme.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "fallback": {
+        "body": "TODO",
+        "_note": "Neptune conjunct Imum Coeli at a contact_strength this file does not enumerate (should not occur under the current three-band system; reserved for a future band change).",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts"
+        ]
+      }
+    },
+    "Pluto": {
+      "_note": "Pluto carries power, depth, compulsion, grief, transformation, truth under pressure. Conjunct the relocated Imum Coeli, this becomes part of the private, underlying emotional weather of daily life. Named risk to watch for, not warn about: control loops, obsession, isolation, treating intensity as proof. Do not claim this contact guarantees an outcome -- name the foregrounded function, not a promised result.",
+      "tight": {
+        "body": "TODO",
+        "_note": "Pluto/Imum Coeli at tight strength. Central, embodied language. This contact is close enough to read as a lead signature, especially if it repeats through a house change or purpose-lens alignment.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "moderate": {
+        "body": "TODO",
+        "_note": "Pluto/Imum Coeli at moderate strength. Present but not the lead. Real evidence, softer centrality than tight -- name it clearly but do not build the whole place signature on it alone.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "wide": {
+        "body": "TODO",
+        "_note": "Pluto/Imum Coeli at wide strength. Edge-of-contact language only. Still computed evidence (evaluate_angularity's own cutoff is 8 degrees, so nothing here is fabricated), but read as a background note unless another evidence item repeats the same body or theme.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts",
+          "natal_modifiers"
+        ]
+      },
+      "fallback": {
+        "body": "TODO",
+        "_note": "Pluto conjunct Imum Coeli at a contact_strength this file does not enumerate (should not occur under the current three-band system; reserved for a future band change).",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts"
+        ]
+      }
+    },
+    "fallback": {
+      "_note": "Covers North_Node, South_Node, Lilith_BML, and any custom asteroid conjunct the relocated Imum Coeli, without exploding this grid to 30+ body columns per angle. These bodies have no natal_modifiers entry (evaluate_all_planetary_conditions covers Sun through Pluto only), so leaves here should describe the contact on its own terms rather than reaching for a condition qualifier that does not exist. North_Node/South_Node carry directional/developmental meaning (not covered by EVIDENCE_TO_MEANING_MATRIX.md's Planetary Emphasis table -- do not invent node meaning here; defer to whatever node-interpretation convention other EO products already use). Lilith_BML and asteroids should stay especially bounded and specific rather than generic, since their natal-chart meaning is already a specialist layer in this system (see METHODS.md's established-niche material).",
+      "tight": {
+        "body": "TODO",
+        "_note": "An uncovered body (node, Lilith, or asteroid) conjunct Imum Coeli at tight strength. Central, embodied language. This contact is close enough to read as a lead signature, especially if it repeats through a house change or purpose-lens alignment.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts"
+        ]
+      },
+      "moderate": {
+        "body": "TODO",
+        "_note": "An uncovered body (node, Lilith, or asteroid) conjunct Imum Coeli at moderate strength. Present but not the lead. Real evidence, softer centrality than tight -- name it clearly but do not build the whole place signature on it alone.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts"
+        ]
+      },
+      "wide": {
+        "body": "TODO",
+        "_note": "An uncovered body (node, Lilith, or asteroid) conjunct Imum Coeli at wide strength. Edge-of-contact language only. Still computed evidence (evaluate_angularity's own cutoff is 8 degrees, so nothing here is fabricated), but read as a background note unless another evidence item repeats the same body or theme.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts"
+        ]
+      },
+      "fallback": {
+        "body": "TODO",
+        "_note": "An uncovered body conjunct Imum Coeli at an unrecognized contact_strength.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": [
+          "relocated_angle_contacts"
+        ]
+      }
+    }
+  }
+}

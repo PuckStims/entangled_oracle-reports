@@ -16,6 +16,8 @@ from formulas.standard.confidence import (
     ANGLE_DEPENDENT_UNAVAILABLE,
     APPROXIMATE_BIRTH_TIME,
     EXACT_BIRTH_TIME,
+    UNKNOWN_BIRTH_TIME,
+    VALID_CONFIDENCE_STATES,
 )
 from formulas.standard.contracts import PlanetConditionRecord
 from formulas.standard.dignity import evaluate_dignity
@@ -105,12 +107,37 @@ def _classify_condition(score: float) -> str:
 
 
 def _resolve_confidence(payload: dict, angularity: dict) -> str:
-    """CR-07 confidence state for a single body's condition record."""
+    """
+    CR-07 confidence state for a single body's condition record.
+
+    Reflects the chart's actual recorded birth-time state
+    (payload.user_profile.birth_time_state / birth_time_confidence)
+    first. A noon-placeholder Ascendant computed for a simple_mode/
+    unknown-time chart still resolves to a real house_type, so the
+    original Ascendant/house_type-only check could never actually detect
+    an unknown or approximate birth time in practice -- it only ever
+    fired for payloads missing angles entirely. Falls back to that
+    original check only when the payload carries no explicit birth-time
+    state at all (e.g. minimal hand-built test payloads), preserving
+    prior behavior for those.
+    """
     asc_lon = payload.get("angles", {}).get("Ascendant", {}).get("longitude")
     if asc_lon is None:
         return ANGLE_DEPENDENT_UNAVAILABLE
+
+    profile = payload.get("user_profile")
+    profile = profile if isinstance(profile, dict) else {}
+    birth_time_state = profile.get("birth_time_state") or profile.get("birth_time_confidence")
+
+    if birth_time_state in VALID_CONFIDENCE_STATES:
+        return birth_time_state
+
+    if bool(payload.get("simple_mode") or profile.get("simple_mode")):
+        return UNKNOWN_BIRTH_TIME
+
     if angularity.get("house_type") == "unknown":
         return APPROXIMATE_BIRTH_TIME
+
     return EXACT_BIRTH_TIME
 
 
