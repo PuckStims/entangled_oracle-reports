@@ -136,7 +136,9 @@ def _render_location_card(context: dict, location: dict) -> str:
     scores = location.get("scores") or {}
     themes = location.get("dominant_themes") or []
     rec_leaf = (context.get("recommendation_leaves") or {}).get(location.get("location_id"))
+    tile_leaves = (context.get("tile_detail_leaves") or {}).get(location.get("location_id")) or {}
     evidence_refs = location.get("evidence_refs") or []
+    alternates = location.get("cluster_alternates") or []
     score_labels = [
         ("Overall", scores.get("overall_resonance", 0)),
         ("Consensus", scores.get("consensus_score", 0)),
@@ -154,17 +156,44 @@ def _render_location_card(context: dict, location: dict) -> str:
         f'<div class="recommendation">{_escape(location.get("recommendation_label"))}</div>',
         f'<p class="themes">{_escape(theme_text)}</p>',
         _render_leaf(rec_leaf, "Write this recommendation label explanation."),
+        _render_leaf(tile_leaves.get("bucket_role"), "Write this city-specific bucket role."),
         f'<p class="place-texture">{_escape(_location_texture_sentence(location))}</p>',
+        f'<p class="place-texture">{_escape(location.get("sibling_difference"))}</p>' if location.get("sibling_difference") else "",
         '<div class="score-list">',
     ]
     for label, value in score_labels:
         parts.append(_score_bar(label, int(value or 0)))
     parts.extend([
         '</div>',
+        _render_cluster_alternates(alternates, tile_leaves.get("cluster_alternates")),
         f'<details><summary>Evidence refs</summary><p>{_escape(evidence_text)}</p></details>',
         '</article>',
     ])
     return "".join(parts)
+
+
+def _render_cluster_alternates(alternates: list[dict], leaf: dict | None) -> str:
+    if not alternates:
+        return ""
+    items = []
+    for alternate in alternates[:4]:
+        themes = ", ".join(_format_theme(theme) for theme in alternate.get("dominant_themes", [])[:2])
+        distance = alternate.get("distance_from_representative_miles")
+        distance_text = f" · {distance} mi" if distance is not None else ""
+        items.append(
+            "<li>"
+            f"<strong>{_escape(alternate.get('display_name'))}</strong>{_escape(distance_text)}"
+            f"<span>{_escape(themes)}</span>"
+            f"<small>{_escape(alternate.get('sibling_difference'))}</small>"
+            "</li>"
+        )
+    return (
+        '<div class="cluster-alternates">'
+        '<div class="eyebrow">Nearby Similar Alternates</div>'
+        f'{_render_leaf(leaf, "Write the clustered alternate explanation.")}'
+        f'<ul>{"".join(items)}</ul>'
+        '</div>'
+    )
 
 
 def render_place_resonance_search_results_html(search_context: dict) -> str:
@@ -209,6 +238,11 @@ def render_place_resonance_search_results_html(search_context: dict) -> str:
         .recommendation { display: inline-block; color: var(--search-accent); font-family: Verdana, sans-serif; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; margin-bottom: 8px; }
         .themes { color: var(--search-muted); margin: 0 0 12px; }
         .place-texture { color: var(--search-muted); border-left: 3px solid var(--search-line); margin: 12px 0 0; padding-left: 10px; font-size: 0.92rem; }
+        .cluster-alternates { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--search-line); }
+        .cluster-alternates ul { list-style: none; padding: 0; margin: 8px 0 0; display: grid; gap: 8px; }
+        .cluster-alternates li { display: grid; gap: 3px; color: var(--search-muted); font-size: 0.88rem; }
+        .cluster-alternates li strong { color: var(--search-ink); }
+        .cluster-alternates li span, .cluster-alternates li small { display: block; }
         .search-draft { background: #fbf5ea; border-style: dashed; margin: 12px 0; }
         .search-draft p { margin: 6px 0; }
         .search-draft small { color: var(--search-muted); }

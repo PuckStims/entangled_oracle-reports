@@ -74,6 +74,11 @@ UNSUPPORTED_METHODS = (
     "relocated_returns",
 )
 
+LOCATION_EVIDENCE_BODY_GROUPS = ("standard_planets",)
+CORE_CONDITION_BODIES = frozenset(
+    {"Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"}
+)
+
 
 # ── Internal helpers ────────────────────────────────────────────
 
@@ -286,7 +291,7 @@ def build_relocated_payload(natal_payload: dict, destination: dict) -> dict:
         "angles": relocated_angles,
         "houses": generate_whole_sign_houses(relocated_ascendant),
         "standard_planets": _reassign_bodies(natal_payload.get("standard_planets", {}), relocated_ascendant),
-        "custom_asteroids": _reassign_bodies(natal_payload.get("custom_asteroids", {}), relocated_ascendant),
+        "custom_asteroids": {},
         "aspects": relocated_aspects,
         "warnings": warnings,
     }
@@ -338,7 +343,7 @@ def compare_natal_to_relocated(natal_payload: dict, relocated_payload: dict) -> 
     house_changes: dict[str, dict[str, Any]] = {}
     angle_contacts: dict[str, dict[str, Any]] = {}
 
-    for group_name in ("standard_planets", "custom_asteroids"):
+    for group_name in LOCATION_EVIDENCE_BODY_GROUPS:
         natal_group = natal_payload.get(group_name) or {}
         relocated_group = relocated_payload.get(group_name) or {}
 
@@ -610,13 +615,18 @@ def _evidence_ranking(
 
     bodies_with_angle_contact: set[str] = set()
     for item in angle_contact_items:
-        primary_ids.append(item["id"])
         bodies_with_angle_contact.add(item["body"])
+        if item["body"] in CORE_CONDITION_BODIES:
+            primary_ids.append(item["id"])
+        else:
+            supporting_ids.append(item["id"])
 
     for item in house_change_items:
         if not item["house_changed"]:
             continue
-        if item["movement_type"] == "newly_angular":
+        if item["body"] not in CORE_CONDITION_BODIES:
+            supporting_ids.append(item["id"])
+        elif item["movement_type"] == "newly_angular":
             primary_ids.append(item["id"])
         elif item["body"] in bodies_with_angle_contact:
             # Repeats a body already flagged via angle contact.

@@ -42,29 +42,28 @@ and why.
 
 ### What canonical body names will the evidence record emit?
 
-Whatever `engine/natal_engine.py`'s `STANDARD_PLANETS` and
-`ASTEROID_DICTIONARY` already use — no new naming layer was introduced.
+Whatever `engine/natal_engine.py`'s `STANDARD_PLANETS` already use — no
+new naming layer was introduced. The EO custom asteroid load is deliberately
+excluded from Location Services evidence; it belongs to natal/report-specific
+EO products, not the astrocartography/relocation stack.
 Confirmed by `test_house_change_items_cover_every_standard_planet`:
 
 ```text
-Sun, Moon, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto
+Sun, Moon, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto,
+Chiron, North_Node, South_Node, Lilith_BML
 ```
 
-plus `North_Node`, `South_Node`, `Lilith_BML`, and any resolved custom
-asteroid (`Sirene`, `Aphrodite`, `Kassandra`, ... — the full
-`ASTEROID_DICTIONARY` in natal_engine.py:76-120), **if** those bodies are
-present in `natal_payload.standard_planets` / `.custom_asteroids`.
 `planet_house_changes` and `relocated_angle_contacts` will use these exact
 names in their `body` field.
 
 **Important asymmetry:** `natal_modifiers` covers only the 10 core bodies
 (`Sun` through `Pluto` — `formulas.standard.planetary_condition.STANDARD_BODIES`).
-If `North_Node`, `Lilith_BML`, or an asteroid is relocation-emphasized (a
-house change or angle contact), it will appear in `planet_house_changes` /
+If `Chiron`, `North_Node`, `South_Node`, or `Lilith_BML` is relocation-emphasized
+(a house change or angle contact), it will appear in `planet_house_changes` /
 `relocated_angle_contacts` but **not** in `natal_modifiers` — a warning is
 appended instead (`"{body} is relocation-emphasized but has no natal
-condition record..."`). Dignity/sect condition for nodes, Lilith, and
-asteroids is simply not computed anywhere in the standard formula layer
+condition record..."`). Dignity/sect condition for Chiron, nodes, and Lilith
+is simply not computed anywhere in the standard formula layer
 today; this isn't a gap this pass introduced.
 
 ### What canonical angle names will it emit: `ASC`/`MC`/`DSC`/`IC` or long names?
@@ -212,7 +211,7 @@ See §3 below — this is substantial enough to warrant its own section.
 methodology), `angles` (all 5 canonical angles, full `zodiac_position()`
 shape), `house_cusps` (all 12 `House_1..House_12` records).
 
-### `planet_house_changes` — list, one item per body in `standard_planets` + `custom_asteroids`
+### `planet_house_changes` — list, one item per Location Services standard body
 
 ```json
 {

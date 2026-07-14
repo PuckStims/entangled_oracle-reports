@@ -212,4 +212,14 @@ def assemble_place_resonance_search_results_context(
             )
             for item in selected_locations
         },
+        "tile_detail_leaves": {
+            item["location_id"]: {
+                "bucket_role": select_place_resonance_search_leaf("tile_detail", f"bucket_role_{item.get('bucket') or 'fallback'}"),
+                "sibling_difference": select_place_resonance_search_leaf("tile_detail", "sibling_difference"),
+                "cluster_alternates": select_place_resonance_search_leaf("tile_detail", "cluster_alternates"),
+                "best_use_case": select_place_resonance_search_leaf("tile_detail", "best_use_case"),
+                "fallback": select_place_resonance_search_leaf("tile_detail", "fallback"),
+            }
+            for item in selected_locations
+        },
     }

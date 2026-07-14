@@ -375,6 +375,16 @@ only and is not a real reported birth time.
 
 ## What production scale actually looks like
 
+**Current method-boundary correction:** the large custom-asteroid warning case
+documented below is historical. Location Services now excludes the EO custom
+asteroid load from relocated evidence entirely. Production records should emit
+house changes and angle contacts only for Location Services standard bodies
+(`standard_planets`): Sun through Pluto, Chiron, the lunar nodes, and Black
+Moon Lilith. `warning_summary` may still mention established non-core bodies
+without natal condition records, but it should not contain EO asteroid names
+such as Kassandra, Sirene, Aphrodite, or similar proprietary natal-report
+bodies.
+
 All three samples above used **standard-planets-only** charts for
 readability. A real `generate_payload()` chart also carries ~24 custom
 asteroids (`ASTEROID_DICTIONARY` in `engine/natal_engine.py`) plus nodes
@@ -385,7 +395,7 @@ looks like, and it surfaced a usability problem:
 - `planet_house_changes`: **47** items (not 10-14).
 - `warnings`: **38** items, of which **37** are the near-identical
   templated line ("X is relocation-emphasized but has no natal condition
-  record...") repeated once per un-covered asteroid, differing only by
+  record...") repeated once per previously uncovered body, differing only by
   body name.
 - `evidence_ranking.primary_evidence` / `supporting_evidence` similarly
   balloon into 20-30+ entry lists (unchanged by the Round 3 fix — see

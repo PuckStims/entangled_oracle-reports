@@ -31,13 +31,15 @@ every report type consumes. Relevant to Location Services:
   Julian Day.
 - `houses.House_1..House_12` — Whole Sign houses generated from the
   Ascendant sign via `generate_whole_sign_houses()` (natal_engine.py:223-242).
-- `standard_planets`, `custom_asteroids` — geocentric ecliptic longitudes
+- `standard_planets`, plus natal-only `custom_asteroids` — geocentric ecliptic longitudes
   from `swe.calc_ut(julian_day, body_id, CALC_FLAGS)`. **These do not change
   with location.** A planet's ecliptic longitude at a given instant is the
   same everywhere on Earth; only its house placement (which depends on the
   local Ascendant) changes. This is the physical fact that makes relocation
   computationally cheap and correct: recompute angles/houses, reuse
-  longitudes as-is.
+  longitudes as-is. Location Services reuses this principle for
+  `standard_planets` only; the EO custom asteroid load remains natal/report
+  product material and is excluded from relocated evidence.
 - `aspects` — a flat body-to-body (and body-to-angle) matrix computed once
   at generation time from those longitudes (natal_engine.py:583-625).
 
@@ -59,7 +61,7 @@ only, deliberately skipping the Nominatim network fallback — see §4).
 ### Standard formula layer (reusable on any correctly-shaped payload)
 
 Every module in `formulas/standard/` that exposes an `evaluate_*(payload)`
-function takes a single payload dict and reads only `angles`,
+function takes a single payload dict and may read `angles`,
 `standard_planets`, `custom_asteroids`, and `houses` from it — it does not
 care whether that payload came from `generate_payload()` or from a
 relocated reconstruction, as long as the shape matches:
@@ -120,7 +122,7 @@ and documenting condition as a natal-only lookup rather than recomputing it.
 - **Relocated angle contacts as structured evidence.** `evaluate_angularity()`
   already returns `is_conjunct_angle` / `conjunct_angle_name` / `orb` for a
   single body against a payload's angles. `compare_natal_to_relocated()`
-  (this pass) loops it across every standard planet and asteroid to build
+  loops it across Location Services standard bodies to build
   `relocated_angle_contacts`. This is evidence-shaped output, not prose —
   ready for the content lead's block-key mapping.
 - **Whole-sign house-change table.** Same idea: for every body, compare

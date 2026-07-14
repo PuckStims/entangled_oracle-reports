@@ -68,7 +68,9 @@ South_Node
 Lilith_BML
 ```
 
-Custom asteroid names can also appear when present in the natal payload.
+EO custom asteroid names must not appear in Location Services evidence. The
+asteroid load belongs to natal/report-specific EO products, not the
+astrocartography/relocation stack.
 
 ## Proposed Folder
 
@@ -113,7 +115,7 @@ relocated_angle_contact_blocks.json
 
 Purpose:
 
-- Interpret a planet, point, or asteroid conjunct a relocated angle.
+- Interpret a Location Services standard body or established point conjunct a relocated angle.
 - Treat angle contacts as standalone relocated-chart facts, not necessarily as differences from natal angularity.
 - A same-place or otherwise "quiet" relocation may still have angle contacts.
 
@@ -359,7 +361,7 @@ Round 3 confidence status:
 - `natal_modifiers[body].confidence` is now trustworthy for exact, approximate, and unknown birth-time charts.
 - Use `birth_context.birth_time_confidence` or `appendix_trace.birth_time_confidence` when the report needs one chart-level confidence statement.
 - Use `natal_modifiers[body].confidence` when a modifier leaf needs the confidence state attached to that specific emphasized body.
-- `natal_modifiers` covers emphasized core planets only (`Sun` through `Pluto`). Nodes, Lilith, and asteroids may appear in house changes or angle contacts without a natal modifier entry.
+- `natal_modifiers` covers emphasized core planets only (`Sun` through `Pluto`). Chiron, nodes, and Lilith may appear in house changes or angle contacts without a natal modifier entry. EO custom asteroids should not appear in Location Services evidence.
 
 ## Block Family 5: Purpose Lens
 
@@ -817,7 +819,7 @@ warning_summary
 
 Round 3 warning status:
 
-- Production-scale asteroid charts may emit many repeated warning strings for bodies with no natal condition record.
+- Location Services charts may emit warning strings for established bodies without natal condition records, such as Chiron, nodes, or Lilith.
 - The evidence record now provides aggregated `warning_summary` items with stable IDs, counts, and examples.
 - Appendix rendering should use `warning_summary` for prose and reserve raw `warnings` for diagnostic or audit displays.
 

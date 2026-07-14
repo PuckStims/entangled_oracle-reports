@@ -154,7 +154,10 @@ def _build_natal_payload() -> dict:
         "angles": angles,
         "houses": _houses(asc_longitude),
         "standard_planets": standard_planets,
-        "custom_asteroids": {},
+        "custom_asteroids": {
+            "Kassandra": _body(270.0, asc_longitude, speed=0.2),
+            "Sirene": _body(91.0, asc_longitude, speed=0.2),
+        },
         "aspects": aspects,
     }
 
@@ -248,6 +251,14 @@ def test_planetary_longitudes_are_reassigned_not_recomputed():
 
     for body_name, natal_body in natal["standard_planets"].items():
         assert relocated["standard_planets"][body_name]["longitude"] == natal_body["longitude"]
+
+
+def test_relocated_payload_excludes_eo_custom_asteroid_load():
+    natal = _build_natal_payload()
+    relocated = build_relocated_payload(natal, SYDNEY)
+
+    assert natal["custom_asteroids"], "fixture should include custom asteroid data"
+    assert relocated["custom_asteroids"] == {}
 
 
 # ── Stable relocated angle output shape ────────────────────────────────────
@@ -368,6 +379,7 @@ def test_relocated_angle_contacts_are_structured_not_prose():
 
     for body_name, contact in comparison["relocated_angle_contacts"].items():
         assert body_name in relocated["standard_planets"]
+        assert body_name not in natal["custom_asteroids"]
         assert contact["angle"] in {"Ascendant", "Descendant", "Midheaven", "Imum_Coeli"}
         assert isinstance(contact["orb"], (int, float))
 

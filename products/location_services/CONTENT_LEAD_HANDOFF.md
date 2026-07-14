@@ -68,7 +68,8 @@ Files created:
 technical_appendix_blocks.json          19 leaves  -- calculation_note, unsupported_method,
                                                        confidence_note, coordinate_precision_note, warning_summary
 relocated_angle_contact_blocks.json    177 leaves  -- angle -> body -> contact_strength (Sun-Pluto explicit,
-                                                       node/Lilith/asteroid coverage via a fallback body block per angle)
+                                                       Chiron/node/Lilith coverage via a fallback body block per angle;
+                                                       EO custom asteroids are excluded from Location Services)
 planet_relocated_house_blocks.json     539 leaves  -- body -> relocated_house(1-12) -> movement_type (Sun-Pluto
                                                        explicit, same fallback-body pattern; movement_type keys per
                                                        house are restricted to what is astronomically reachable --

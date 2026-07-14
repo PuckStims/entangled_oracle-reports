@@ -304,6 +304,22 @@ def test_evidence_ranking_prioritizes_angle_contacts_and_newly_angular_moves():
     assert "house_change:Saturn" not in ranking["supporting_evidence"]
 
 
+def test_evidence_ranking_treats_custom_body_contacts_as_supporting():
+    house_change_items = [
+        {"id": "house_change:Kassandra", "body": "Kassandra", "house_changed": True, "movement_type": "newly_angular"},
+    ]
+    angle_contact_items = [
+        {"id": "angle_contact:Kassandra:Midheaven", "body": "Kassandra", "angle": "Midheaven"},
+    ]
+
+    ranking = _evidence_ranking({}, {"angle_comparison": {}}, house_change_items, angle_contact_items, {})
+
+    assert "angle_contact:Kassandra:Midheaven" not in ranking["primary_evidence"]
+    assert "house_change:Kassandra" not in ranking["primary_evidence"]
+    assert "angle_contact:Kassandra:Midheaven" in ranking["supporting_evidence"]
+    assert "house_change:Kassandra" in ranking["supporting_evidence"]
+
+
 def test_evidence_ranking_promotes_repeated_body_to_primary():
     """
     A body with both an angle contact AND a house change is 'multiple

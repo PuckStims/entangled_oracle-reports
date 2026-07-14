@@ -168,13 +168,15 @@ bucket boundaries myself.
   family assuming `warnings` is always short.~~ **Fixed in Round 3** via a
   new `warning_summary` field (top level and
   `appendix_trace.warning_summary`) — render `warning_summary`, not raw
-  `warnings`, for appendix prose. It collapses the 37-line asteroid case
-  down to one entry with `count: 37` and an `examples` list of affected
-  bodies. Raw `warnings` is untouched for anyone who wants the literal
-  list. `technical_appendix_blocks.json`'s `warning_summary -> warning_key`
-  key path already anticipated this shape — you were right that it should
-  be selector-facing; it just turned out cheap enough to compute in the
-  engine too, so both are available. `evidence_ranking.primary_evidence` /
+  `warnings`, for appendix prose. A later method-boundary correction now
+  excludes EO custom asteroids from Location Services evidence entirely, so
+  the old 37-line asteroid warning case should no longer occur in this
+  product stack. Raw `warnings` is untouched for anyone who wants the
+  literal list. `technical_appendix_blocks.json`'s
+  `warning_summary -> warning_key` key path already anticipated this shape
+  — you were right that it should be selector-facing; it just turned out
+  cheap enough to compute in the engine too, so both are available.
+  `evidence_ranking.primary_evidence` /
   `supporting_evidence` can still balloon at production scale — that's a
   separate, still-open list-length question `warning_summary` doesn't
   touch.

@@ -24,6 +24,8 @@ from products.location_services.place_resonance_search.candidate_catalog import 
 from products.location_services.place_resonance_search.scoring import (
     BUCKET_KEYS,
     SCORE_KEYS,
+    normalize_raw_scores,
+    raw_score_location_record,
 )
 from products.location_services.place_resonance_search.renderer import (
     build_place_resonance_search_results_html,
@@ -102,6 +104,18 @@ PATTERN_SYNTHESIS_KEYS = {
     "fallback",
 }
 
+TILE_DETAIL_KEYS = {
+    "bucket_role_highest_resonance",
+    "bucket_role_goal_specific_allies",
+    "bucket_role_transformational_demanding",
+    "bucket_role_quiet_grounding_alternatives",
+    "bucket_role_pattern_outliers",
+    "sibling_difference",
+    "cluster_alternates",
+    "best_use_case",
+    "fallback",
+}
+
 FORBIDDEN_VAGUE_PHRASES = (
     "could mean many different things",
     "only you can know",
@@ -119,6 +133,14 @@ def _leaf_dicts(node):
             yield node
         for value in node.values():
             yield from _leaf_dicts(value)
+
+
+def _leaf_paths(node, path=()):
+    if isinstance(node, dict):
+        if "body" in node:
+            yield path, node
+        for key, value in node.items():
+            yield from _leaf_paths(value, (*path, key))
 
 
 def test_candidate_catalog_has_required_shape():
@@ -193,6 +215,58 @@ def test_scored_search_locations_preserve_relative_score_spread():
     assert all("normalization_profile" in location for location in scored)
 
 
+def test_search_scoring_discounts_custom_bodies_against_major_planets():
+    def _record_for(body):
+        return {
+            "relocated_angle_contacts": [
+                {
+                    "id": f"angle_contact:{body}:Midheaven",
+                    "body": body,
+                    "angle": "Midheaven",
+                    "orb": 0.5,
+                    "contact_strength": "tight",
+                }
+            ],
+            "planet_house_changes": [
+                {
+                    "id": f"house_change:{body}",
+                    "body": body,
+                    "house_changed": True,
+                    "relocated_house": 10,
+                    "movement_type": "newly_angular",
+                }
+            ],
+            "evidence_ranking": {
+                "primary_evidence": [
+                    f"angle_contact:{body}:Midheaven",
+                    f"house_change:{body}",
+                ],
+                "supporting_evidence": [],
+                "contradictory_evidence": [],
+            },
+        }
+
+    major = raw_score_location_record(_record_for("Sun"))
+    custom = raw_score_location_record(_record_for("Kassandra"))
+
+    assert custom["visibility_calling"] < major["visibility_calling"]
+    assert custom["consensus_score"] < major["consensus_score"]
+    assert custom["baseline_divergence"] < major["baseline_divergence"]
+
+
+def test_search_normalization_uses_actual_upper_bound_to_reduce_saturation():
+    normalized = normalize_raw_scores([
+        {"visibility_calling": 0, "consensus_score": 0, "baseline_divergence": 0},
+        {"visibility_calling": 10, "consensus_score": 10, "baseline_divergence": 10},
+        {"visibility_calling": 20, "consensus_score": 20, "baseline_divergence": 20},
+        {"visibility_calling": 30, "consensus_score": 30, "baseline_divergence": 30},
+    ])
+
+    visibility_scores = [item["visibility_calling"] for item in normalized]
+    assert visibility_scores[-1] == 100
+    assert visibility_scores[-2] < 100
+
+
 def test_search_results_context_selects_locations_and_profile_contexts():
     context = assemble_place_resonance_search_results_context(
         _build_natal_payload(),
@@ -211,11 +285,16 @@ def test_search_results_context_selects_locations_and_profile_contexts():
     assert len(context["selected_locations"]) == 3
     assert context["selected_leaves"]["search_summary"]["body"] != "TODO"
     assert context["selected_leaves"]["pattern_synthesis"]["body"] != "TODO"
+    assert context["tile_detail_leaves"]
 
     for location in context["selected_locations"]:
         assert location["profile_context"]["product_name"] == "Place Resonance Search"
         assert location["profile_context"]["source_product"] == "location_services.place_resonance"
+        assert "regional_role" in location
+        assert "cluster_alternates" in location
+        assert "similarity_signature" in location
         assert location["location_id"] in context["recommendation_leaves"]
+        assert location["location_id"] in context["tile_detail_leaves"]
         assert context["recommendation_leaves"][location["location_id"]]["body"] != "TODO"
 
 
@@ -240,6 +319,27 @@ def test_recommendation_prose_varies_within_repeated_buckets():
             assert len(bodies_by_bucket[bucket]) > 1
 
 
+def test_search_selection_clusters_nearby_similar_locations_as_alternates():
+    context = assemble_place_resonance_search_results_context(
+        _build_natal_payload(),
+        purpose_lens="creative visibility",
+        relationship_to_place="possible_move",
+        selection_limit=20,
+    )
+
+    clustered = [
+        location for location in context["selected_locations"]
+        if location.get("cluster_alternates")
+    ]
+
+    assert clustered, "expected at least one nearby similar location to collapse into alternates"
+    for location in clustered:
+        assert location["regional_role"] == "cluster_lead"
+        for alternate in location["cluster_alternates"]:
+            assert alternate["distance_from_representative_miles"] <= 500
+            assert alternate["sibling_difference"]
+
+
 def test_place_resonance_search_block_file_has_expected_scaffold_keys():
     data = json.loads(SEARCH_BLOCK_FILE.read_text(encoding="utf-8"))
 
@@ -247,15 +347,19 @@ def test_place_resonance_search_block_file_has_expected_scaffold_keys():
     assert set(data["search_summary"]) - {"_note"} == SEARCH_SUMMARY_KEYS
     assert set(data["bucket_intro"]) - {"_note"} == BUCKET_INTRO_KEYS
     assert set(data["recommendation_label"]) - {"_note"} == RECOMMENDATION_LABEL_KEYS
+    assert set(data["tile_detail"]) - {"_note"} == TILE_DETAIL_KEYS
     assert set(data["pattern_synthesis"]) - {"_note"} == PATTERN_SYNTHESIS_KEYS
 
 
 def test_place_resonance_search_leaves_are_authored_and_structured():
     data = json.loads(SEARCH_BLOCK_FILE.read_text(encoding="utf-8"))
 
-    for leaf in _leaf_dicts(data):
+    for path, leaf in _leaf_paths(data):
         assert isinstance(leaf["body"], str) and leaf["body"].strip()
-        assert leaf["body"] != "TODO"
+        if path and path[0] == "tile_detail":
+            assert leaf["body"] == "TODO"
+        else:
+            assert leaf["body"] != "TODO"
         assert isinstance(leaf["_note"], str) and leaf["_note"].strip()
         assert leaf["claim_level"] == "bounded_interpretation"
         assert isinstance(leaf["requires_evidence"], list) and leaf["requires_evidence"]
@@ -264,7 +368,9 @@ def test_place_resonance_search_leaves_are_authored_and_structured():
 def test_place_resonance_search_leaves_do_not_use_empty_vague_escape_phrases():
     data = json.loads(SEARCH_BLOCK_FILE.read_text(encoding="utf-8"))
 
-    for leaf in _leaf_dicts(data):
+    for path, leaf in _leaf_paths(data):
+        if path and path[0] == "tile_detail":
+            continue
         body = leaf["body"].lower()
         for phrase in FORBIDDEN_VAGUE_PHRASES:
             assert phrase not in body, leaf
@@ -290,7 +396,7 @@ def test_search_results_renderer_outputs_multi_location_shell_without_raw_todo()
     assert "Scores are relative indexes within this evaluated pool" in html
     assert "Bucket Distribution" in html
     assert "Place texture:" in html
-    assert "Draft Slot" not in html
+    assert "Draft Slot" in html
     assert ">TODO<" not in html
     for location in context["selected_locations"]:
         assert location["display_name"] in html
@@ -307,5 +413,5 @@ def test_build_search_results_html_wrapper_uses_candidate_catalog():
 
     assert "Place Resonance Search" in html
     assert "Selected" in html
-    assert "Draft Slot" not in html
+    assert "Draft Slot" in html
     assert "candidate_catalog_pool" in html
