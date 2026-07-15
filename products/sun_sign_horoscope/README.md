@@ -29,6 +29,7 @@ Methodology: Tropical zodiac · solar (whole-sign-from-Sun) houses.
 - `templates/sun_sign_card.html` — 1080×1080 Facebook card (Today's Sky · Your Activation · Day's Ruler)
 - `tooling/generate_sun_sign_batch.py` — batch loop → HTML cards + `captions.csv` + `manifest.json`
 - `tooling/render_cards.py` — Playwright HTML → 1080×1080 PNG
+- `tooling/generate_daily_briefing_frame.py` - combines generated Cosmic Weather + all 12 Sun-sign cards into one 1080x1920 PNG per date
 
 ## Usage
 
@@ -50,6 +51,28 @@ Output lands in `output/sun_sign_horoscope/<start>_<days>d/`:
 
 Then upload/schedule to Facebook by walking `captions.csv`: for each row, post
 `image_filename` with `caption`, scheduled for `date`.
+
+## Combined daily briefing frame
+
+When 12 separate sign cards are too much friction for social sharing, generate
+one portrait frame per date that combines the collective Cosmic Weather with all
+12 Sun-sign activations:
+
+```powershell
+python products/sun_sign_horoscope/tooling/generate_daily_briefing_frame.py `
+  --start 2026-01-01 `
+  --days 7 `
+  --sun-dir output/manual_tests/sun_sign `
+  --weather-dir output/manual_tests/cosmic_weather
+```
+
+The frame renderer reads the already-generated HTML cards as source material and
+draws PNGs directly. It keeps the Cosmic Weather prose intact and uses exact
+first-sentence excerpts from each sign activation rather than rewriting the
+horoscope copy. Each sign tile also gets a small daily inflection leaf (for
+example, `Opening signal - day 1 of 6` or `Closing pass - day 6 of 6`) computed
+from the contiguous manifest run where the same activation planet and solar
+house remain active.
 
 ### Options
 

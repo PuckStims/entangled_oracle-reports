@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Any
 
 
-CATALOG_VERSION = "place_resonance_search_candidates_v0.2.0"
+CATALOG_VERSION = "place_resonance_search_candidates_v0.3.0"
 PACKAGE_DIR = Path(__file__).resolve().parent
 DATA_DIR = PACKAGE_DIR / "data"
 DEFAULT_US_CATALOG_PATH = DATA_DIR / "us_candidate_fixture.json"
@@ -32,6 +32,15 @@ REQUIRED_CANDIDATE_FIELDS = {
     "source",
     "active",
     "notes",
+}
+
+OPTIONAL_ONTOLOGY_FIELDS = {
+    "selection_classes",
+    "place_archetypes",
+    "collections",
+    "geographic_hierarchy",
+    "climate_sensory_tags",
+    "interpretive_use_cases",
 }
 
 
@@ -75,6 +84,12 @@ def validate_search_candidate(candidate: dict[str, Any]) -> dict[str, Any]:
     normalized = copy.deepcopy(candidate)
     normalized["latitude"] = latitude
     normalized["longitude"] = longitude
+    for field in OPTIONAL_ONTOLOGY_FIELDS:
+        value = normalized.get(field)
+        if value is None:
+            normalized[field] = []
+        elif not isinstance(value, list) or any(not isinstance(item, str) or not item.strip() for item in value):
+            raise ValueError(f"Search candidate {location_id!r} {field} must be a list of non-empty strings.")
     return normalized
 
 

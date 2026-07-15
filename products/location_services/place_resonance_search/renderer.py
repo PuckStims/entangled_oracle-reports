@@ -77,11 +77,7 @@ def _location_texture_sentence(location: dict) -> str:
     traits = location.get("prose_variation_traits") or {}
     population = _format_population_tier(candidate.get("population_tier"))
     region = str(candidate.get("region") or "").strip()
-    notes = [
-        str(note).strip()
-        for note in (candidate.get("notes") or [])
-        if str(note).strip()
-    ][:2]
+    texture_tags = _candidate_texture_tags(candidate, limit=3)
     primary_family = str(traits.get("primary_family") or "signal").replace("_", " ")
 
     context_bits = []
@@ -89,24 +85,37 @@ def _location_texture_sentence(location: dict) -> str:
         context_bits.append(f"a {population} candidate")
     if region:
         context_bits.append(f"within {region}")
-    if notes:
-        context_bits.append(f"tagged for {', '.join(notes)}")
+    if texture_tags:
+        context_bits.append(f"tagged for {', '.join(texture_tags)}")
     if not context_bits:
         return ""
 
     setting = " ".join(context_bits)
+    texture_lookup = {tag.lower() for tag in texture_tags}
     if population in {"major metro", "large metro"}:
         expression = "with the signal likely to express through scale, density, and public circulation"
     elif population == "small town":
         expression = "with the signal likely to feel more concentrated, local, and harder to diffuse"
-    elif "Coastal" in notes or "Gulf Coast" in notes or "Island" in notes:
+    elif any(tag in {"ocean coast", "gulf coast", "great lakes", "island", "coastal"} for tag in texture_lookup):
         expression = "with the signal filtered through a more edge-facing or maritime setting"
-    elif "River Valley" in notes or "River valley" in notes or "River" in " ".join(notes):
+    elif any("river" in tag for tag in texture_lookup):
         expression = "with the signal shaped by movement, passage, and local continuity"
     else:
         expression = "with the catalog context giving this pattern a more specific place texture"
 
     return f"Place texture: {setting}, emphasizing the {primary_family} expression {expression}."
+
+
+def _candidate_texture_tags(candidate: dict[str, Any], limit: int = 4) -> list[str]:
+    tags: list[str] = []
+    for field in ("place_archetypes", "collections", "climate_sensory_tags", "interpretive_use_cases", "notes"):
+        for value in candidate.get(field) or []:
+            text = str(value).replace("_", " ").strip()
+            if text and text not in tags:
+                tags.append(text)
+            if len(tags) >= limit:
+                return tags
+    return tags
 
 
 def _render_bucket_sections(context: dict) -> str:

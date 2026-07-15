@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ frame_label }} Grid · {{ iso_date }}</title>
+  <style>
+    :root {
+      --bg: {{ palette.bg }};
+      --surface: {{ palette.surface }};
+      --surface-2: {{ palette.surface_2 | default(palette.surface) }};
+      --border: {{ palette.border }};
+      --text: {{ palette.text }};
+      --muted: {{ palette.muted }};
+      --accent: {{ ink.accent }};
+      --head: {{ ink.head }};
+      --gold: {{ ink.gold }};
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { margin: 0; }
+    #card {
+      width: {{ width }}px;
+      height: {{ height }}px;
+      overflow: hidden;
+      background:
+        linear-gradient(145deg, rgba(95, 140, 126, 0.10), transparent 34%),
+        linear-gradient(315deg, rgba(138, 116, 153, 0.12), transparent 42%),
+        var(--bg);
+      color: var(--text);
+      font-family: Georgia, "Times New Roman", serif;
+      padding: 44px 48px 38px;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.25;
+    }
+    .brand {
+      text-align: center;
+      color: var(--muted);
+      font-size: 16px;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+    }
+    .masthead {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: end;
+      gap: 22px;
+      margin-top: 18px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    .title {
+      text-align: center;
+    }
+    .title h1 {
+      font-size: 54px;
+      line-height: 0.95;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--text);
+      font-weight: normal;
+    }
+    .title .date {
+      margin-top: 12px;
+      color: var(--gold);
+      font-size: 22px;
+      letter-spacing: 2px;
+    }
+    .sky-note,
+    .method-note {
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.35;
+    }
+    .sky-note strong,
+    .method-note strong {
+      display: block;
+      color: var(--head);
+      font-size: 15px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      font-weight: normal;
+      margin-bottom: 6px;
+    }
+    .method-note { text-align: right; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(4, 1fr);
+      gap: 13px;
+      margin-top: 22px;
+      min-height: 0;
+      flex: 1;
+    }
+    .sign-card {
+      min-width: 0;
+      min-height: 0;
+      background: rgba(240, 235, 227, 0.82);
+      border: 1px solid rgba(212, 203, 192, 0.95);
+      border-radius: 8px;
+      padding: 17px 17px 15px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 10px 26px rgba(42, 36, 32, 0.055);
+    }
+    .sign-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+      min-height: 34px;
+    }
+    .glyph {
+      width: 32px;
+      color: var(--accent);
+      font-family: "Segoe UI Symbol", "Noto Sans Symbols", Georgia, serif;
+      font-size: 30px;
+      line-height: 1;
+    }
+    .sign-name {
+      color: var(--text);
+      font-size: 22px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    .activation {
+      color: var(--gold);
+      font-size: 15px;
+      line-height: 1.22;
+      margin-bottom: 8px;
+      min-height: 37px;
+    }
+    .copy {
+      color: var(--text);
+      font-size: 17px;
+      line-height: 1.28;
+    }
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 22px;
+      align-items: center;
+      margin-top: 22px;
+      color: var(--muted);
+      font-size: 15px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    .footer span:last-child { text-align: right; }
+  </style>
+</head>
+<body>
+  <div id="card">
+    <div class="brand">Entangled Oracle · {{ frame_label }} Horoscope</div>
+
+    <header class="masthead">
+      <div class="sky-note">
+        <strong>Today's Sky</strong>
+        {{ moon_phase }} in {{ moon_sign }} · ruled by {{ day_ruler }}
+      </div>
+      <div class="title">
+        <h1>All Signs</h1>
+        <div class="date">{{ display_date }}</div>
+      </div>
+      <div class="method-note">
+        <strong>Read This By</strong>
+        your {{ frame_anchor }} · tropical whole-sign houses
+      </div>
+    </header>
+
+    <main class="grid">
+      {% for sign in signs %}
+      <section class="sign-card">
+        <div class="sign-top">
+          <div class="glyph">{{ sign.glyph }}</div>
+          <div class="sign-name">{{ sign.sign }}</div>
+        </div>
+        <div class="activation">{{ sign.activation_head }}</div>
+        <div class="copy">{{ sign.excerpt }}</div>
+      </section>
+      {% endfor %}
+    </main>
+
+    <footer class="footer">
+      <span>Save your sign · share the grid</span>
+      <span>Ksisti-Puck LLC · entangled-oracle</span>
+    </footer>
+  </div>
+</body>
+</html>

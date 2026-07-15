@@ -1,9 +1,10 @@
 {
-  "catalog_version": "place_resonance_search_candidates_v0.2.0",
-  "scope": "expanded_us_city_pool",
+  "catalog_version": "place_resonance_search_candidates_v0.3.0",
+  "scope": "expanded_us_city_pool_with_seed_ontology",
   "notes": [
     "Expanded U.S. candidate catalog merged from the seed fixture plus Astrocartography fixture waves 1 and 2.",
-    "Duplicates were deduplicated, New York identity was canonicalized, and population tier plus region labels were normalized before promotion.",
+    "Version 0.3.0 adds optional ontology fields that separate inclusion logic from descriptive texture and geographic hierarchy.",
+    "Ontology tags are a first editorial seed for selection, clustering, and prose scaffolding; they should be researched and deepened before production-scale claims.",
     "Coordinates remain curated seed values and should still be audited before any production-scale claims or external rollout."
   ],
   "candidates": [
@@ -23,6 +24,37 @@
       "notes": [
         "Major Hub",
         "Extreme North"
+      ],
+      "selection_classes": [
+        "national_anchor",
+        "regional_anchor",
+        "geographic_test_anchor"
+      ],
+      "place_archetypes": [
+        "remote_service_hub",
+        "port_city",
+        "subarctic_city",
+        "major_regional_city"
+      ],
+      "collections": [
+        "alaska_regional_centers",
+        "coastal_sequence",
+        "remote_island_border_geographies"
+      ],
+      "geographic_hierarchy": [
+        "alaska",
+        "southcentral_alaska",
+        "cook_inlet"
+      ],
+      "climate_sensory_tags": [
+        "subarctic",
+        "extreme_seasonal_daylight",
+        "cold_maritime_edge"
+      ],
+      "interpretive_use_cases": [
+        "practical_base_city",
+        "edge_of_wilderness",
+        "pressure_test_location"
       ]
     },
     {
@@ -42,6 +74,36 @@
         "Kenai Peninsula",
         "Coastal",
         "Extreme North"
+      ],
+      "selection_classes": [
+        "destination_anchor",
+        "geographic_test_anchor"
+      ],
+      "place_archetypes": [
+        "small_town",
+        "coastal_enclave",
+        "remote_settlement",
+        "maritime_fishing"
+      ],
+      "collections": [
+        "alaska_coast",
+        "peninsula_tips",
+        "remote_island_border_geographies"
+      ],
+      "geographic_hierarchy": [
+        "alaska",
+        "kenai_peninsula",
+        "kachemak_bay"
+      ],
+      "climate_sensory_tags": [
+        "cool_marine",
+        "subarctic",
+        "extreme_seasonal_daylight"
+      ],
+      "interpretive_use_cases": [
+        "retreat_or_recovery",
+        "solitude_or_spiritual_practice",
+        "liminal_or_threshold_place"
       ]
     },
     {
@@ -60,7 +122,13 @@
       "notes": [
         "Coastal",
         "Isolated"
-      ]
+      ],
+      "selection_classes": [],
+      "place_archetypes": [],
+      "collections": [],
+      "geographic_hierarchy": [],
+      "climate_sensory_tags": [],
+      "interpretive_use_cases": []
     },
     {
       "location_id": "us-al-birmingham",
@@ -77,6 +145,36 @@
       "active": true,
       "notes": [
         "Iron District"
+      ],
+      "selection_classes": [
+        "regional_anchor",
+        "historic_cultural_anchor",
+        "difficult_important_place"
+      ],
+      "place_archetypes": [
+        "regional_metro",
+        "industrial_corridor",
+        "historic_memory_landscape",
+        "healthcare_center"
+      ],
+      "collections": [
+        "historic_memory_landscapes",
+        "southern_industrial_cities",
+        "civil_rights_history"
+      ],
+      "geographic_hierarchy": [
+        "southeast",
+        "appalachian_foothills",
+        "black_warrior_cahaba_region"
+      ],
+      "climate_sensory_tags": [
+        "hot_humid",
+        "four_season_southeast"
+      ],
+      "interpretive_use_cases": [
+        "ancestral_memory_landscape",
+        "pressure_test_location",
+        "practical_base_city"
       ]
     },
     {
@@ -95,7 +193,13 @@
       "notes": [
         "Ozarks",
         "Springs"
-      ]
+      ],
+      "selection_classes": [],
+      "place_archetypes": [],
+      "collections": [],
+      "geographic_hierarchy": [],
+      "climate_sensory_tags": [],
+      "interpretive_use_cases": []
     },
     {
       "location_id": "us-ar-hot-springs",
@@ -112,7 +216,13 @@
       "active": true,
       "notes": [
         "Thermal Waters"
-      ]
+      ],
+      "selection_classes": [],
+      "place_archetypes": [],
+      "collections": [],
+      "geographic_hierarchy": [],
+      "climate_sensory_tags": [],
+      "interpretive_use_cases": []
     },
     {
       "location_id": "us-az-sedona",
@@ -130,6 +240,36 @@
       "notes": [
         "Vortex lines",
         "Red rock"
+      ],
+      "selection_classes": [
+        "destination_anchor",
+        "geographic_test_anchor"
+      ],
+      "place_archetypes": [
+        "small_tourism_town",
+        "high_desert",
+        "spiritual_retreat_oriented",
+        "red_rock_landscape"
+      ],
+      "collections": [
+        "desert_systems",
+        "spiritual_destinations",
+        "migration_reinvention_destinations"
+      ],
+      "geographic_hierarchy": [
+        "southwest",
+        "colorado_plateau_edge",
+        "verde_valley"
+      ],
+      "climate_sensory_tags": [
+        "high_altitude_dry",
+        "dry_heat",
+        "big_sky"
+      ],
+      "interpretive_use_cases": [
+        "retreat_or_recovery",
+        "spiritual_relocation",
+        "creative_reinvention"
       ]
     },
     {
@@ -147,6 +287,36 @@
       "active": true,
       "notes": [
         "Deep desert"
+      ],
+      "selection_classes": [
+        "regional_anchor",
+        "geographic_test_anchor"
+      ],
+      "place_archetypes": [
+        "regional_metro",
+        "sonoran_desert",
+        "university_research",
+        "borderlands_city"
+      ],
+      "collections": [
+        "desert_systems",
+        "borderlands",
+        "college_university_towns"
+      ],
+      "geographic_hierarchy": [
+        "southwest",
+        "sonoran_desert",
+        "southern_arizona"
+      ],
+      "climate_sensory_tags": [
+        "dry_heat",
+        "monsoon_desert",
+        "high_sun"
+      ],
+      "interpretive_use_cases": [
+        "practical_base_city",
+        "study_or_research",
+        "borderlands_contrast"
       ]
     },
     {
@@ -165,6 +335,36 @@
       "notes": [
         "Desert",
         "High spiritual energy"
+      ],
+      "selection_classes": [
+        "destination_anchor",
+        "geographic_test_anchor"
+      ],
+      "place_archetypes": [
+        "small_town",
+        "mojave_desert",
+        "creative_enclave",
+        "remote_desert_arts_town"
+      ],
+      "collections": [
+        "desert_systems",
+        "creative_alternative_enclaves",
+        "migration_reinvention_destinations"
+      ],
+      "geographic_hierarchy": [
+        "southern_california",
+        "mojave_desert",
+        "high_desert"
+      ],
+      "climate_sensory_tags": [
+        "dry_heat",
+        "high_altitude_dry",
+        "wide_horizon"
+      ],
+      "interpretive_use_cases": [
+        "creative_reinvention",
+        "solitude_or_spiritual_practice",
+        "pressure_test_location"
       ]
     },
     {
@@ -182,6 +382,37 @@
       "active": true,
       "notes": [
         "Major Hub"
+      ],
+      "selection_classes": [
+        "national_anchor",
+        "state_coverage_anchor",
+        "destination_anchor"
+      ],
+      "place_archetypes": [
+        "global_city",
+        "sprawling_metro",
+        "film_media",
+        "high_mobility_transplant_heavy"
+      ],
+      "collections": [
+        "core_metropolitan_america",
+        "migration_reinvention_destinations",
+        "pacific_coast_sequence"
+      ],
+      "geographic_hierarchy": [
+        "southern_california",
+        "los_angeles_basin",
+        "pacific_coast"
+      ],
+      "climate_sensory_tags": [
+        "mediterranean",
+        "dry_summer",
+        "marine_influence"
+      ],
+      "interpretive_use_cases": [
+        "career_visibility",
+        "entertainment_migration",
+        "identity_transformation"
       ]
     },
     {
@@ -200,6 +431,36 @@
       "notes": [
         "Root Chakra of the Earth",
         "Mountain"
+      ],
+      "selection_classes": [
+        "destination_anchor",
+        "geographic_test_anchor"
+      ],
+      "place_archetypes": [
+        "small_town",
+        "volcanic_landscape",
+        "mountain_enclave",
+        "spiritual_retreat_oriented"
+      ],
+      "collections": [
+        "spiritual_destinations",
+        "mountain_systems",
+        "volcanic_landscapes"
+      ],
+      "geographic_hierarchy": [
+        "northern_california",
+        "cascade_range",
+        "shasta_region"
+      ],
+      "climate_sensory_tags": [
+        "mountain_four_season",
+        "snow_winter",
+        "forest_edge"
+      ],
+      "interpretive_use_cases": [
+        "spiritual_relocation",
+        "solitude_or_spiritual_practice",
+        "liminal_or_threshold_place"
       ]
     },
     {
@@ -218,7 +479,13 @@
       "notes": [
         "Valley Haven",
         "Spiritual"
-      ]
+      ],
+      "selection_classes": [],
+      "place_archetypes": [],
+      "collections": [],
+      "geographic_hierarchy": [],
+      "climate_sensory_tags": [],
+      "interpretive_use_cases": []
     },
     {
       "location_id": "us-ca-san-francisco",
@@ -236,7 +503,13 @@
       "notes": [
         "Major Hub",
         "Fault zone"
-      ]
+      ],
+      "selection_classes": [],
+      "place_archetypes": [],
+      "collections": [],
+      "geographic_hierarchy": [],
+      "climate_sensory_tags": [],
+      "interpretive_use_cases": []
     },
     {
       "location_id": "us-co-boulder",
@@ -254,6 +527,36 @@
       "notes": [
         "Mountain base",
         "Spiritual community"
+      ],
+      "selection_classes": [
+        "destination_anchor",
+        "regional_anchor"
+      ],
+      "place_archetypes": [
+        "college_town",
+        "mountain_city",
+        "technology",
+        "alternative_wellness"
+      ],
+      "collections": [
+        "college_university_towns",
+        "mountain_systems",
+        "migration_reinvention_destinations"
+      ],
+      "geographic_hierarchy": [
+        "mountain_west",
+        "front_range",
+        "rocky_mountain_foothills"
+      ],
+      "climate_sensory_tags": [
+        "high_altitude_dry",
+        "four_season_continental",
+        "sunny_winter"
+      ],
+      "interpretive_use_cases": [
+        "study_or_research",
+        "creative_reinvention",
+        "practical_base_city"
       ]
     },
     {
@@ -272,6 +575,36 @@
       "notes": [
         "High Altitude",
         "Spiritual Retreats"
+      ],
+      "selection_classes": [
+        "destination_anchor",
+        "geographic_test_anchor"
+      ],
+      "place_archetypes": [
+        "small_town",
+        "mountain_valley",
+        "spiritual_retreat_oriented",
+        "intentional_community_region"
+      ],
+      "collections": [
+        "spiritual_destinations",
+        "mountain_systems",
+        "remote_retreat_towns"
+      ],
+      "geographic_hierarchy": [
+        "mountain_west",
+        "san_luis_valley",
+        "sangre_de_cristo_range"
+      ],
+      "climate_sensory_tags": [
+        "high_altitude_dry",
+        "wide_horizon",
+        "cold_night_desert"
+      ],
+      "interpretive_use_cases": [
+        "spiritual_relocation",
+        "retreat_or_recovery",
+        "solitude_or_spiritual_practice"
       ]
     },
     {
@@ -290,7 +623,13 @@
       "notes": [
         "Major Hub",
         "High altitude"
-      ]
+      ],
+      "selection_classes": [],
+      "place_archetypes": [],
+      "collections": [],
+      "geographic_hierarchy": [],
+      "climate_sensory_tags": [],
+      "interpretive_use_cases": []
     },
     {
       "location_id": "us-ct-mystic",
@@ -308,7 +647,13 @@
       "notes": [
         "Maritime",
         "Historic"
-      ]
+      ],
+      "selection_classes": [],
+      "place_archetypes": [],
+      "collections": [],
+      "geographic_hierarchy": [],
+      "climate_sensory_tags": [],
+      "interpretive_use_cases": []
     },
     {
       "location_id": "us-fl-cassadaga",
@@ -326,6 +671,35 @@
       "notes": [
         "Psychic Capital of the World",
         "Spiritualist Camp"
+      ],
+      "selection_classes": [
+        "destination_anchor",
+        "historic_cultural_anchor"
+      ],
+      "place_archetypes": [
+        "small_town",
+        "spiritualist_settlement",
+        "retreat_destination",
+        "historic_compact_place"
+      ],
+      "collections": [
+        "spiritual_destinations",
+        "historic_memory_landscapes",
+        "creative_alternative_enclaves"
+      ],
+      "geographic_hierarchy": [
+        "florida",
+        "central_florida",
+        "inland_peninsula"
+      ],
+      "climate_sensory_tags": [
+        "hot_humid",
+        "subtropical_inland"
+      ],
+      "interpretive_use_cases": [
+        "spiritual_relocation",
+        "liminal_or_threshold_place",
+        "retreat_or_recovery"
       ]
     },
     {
@@ -344,6 +718,36 @@
       "notes": [
         "Extreme South",
         "Island"
+      ],
+      "selection_classes": [
+        "destination_anchor",
+        "geographic_test_anchor"
+      ],
+      "place_archetypes": [
+        "island",
+        "small_tourism_town",
+        "queer_magnet",
+        "seasonal_transient"
+      ],
+      "collections": [
+        "islands_separated_geographies",
+        "coastal_sequence",
+        "migration_reinvention_destinations"
+      ],
+      "geographic_hierarchy": [
+        "florida_keys",
+        "atlantic_gulf_threshold",
+        "southern_extreme"
+      ],
+      "climate_sensory_tags": [
+        "tropical",
+        "subtropical_coastal",
+        "storm_exposed"
+      ],
+      "interpretive_use_cases": [
+        "identity_transformation",
+        "liminal_or_threshold_place",
+        "retreat_or_recovery"
       ]
     },
     {
@@ -362,7 +766,13 @@
       "notes": [
         "Major Hub",
         "Coastal"
-      ]
+      ],
+      "selection_classes": [],
+      "place_archetypes": [],
+      "collections": [],
+      "geographic_hierarchy": [],
+      "climate_sensory_tags": [],
+      "interpretive_use_cases": []
     },
     {
       "location_id": "us-fl-st-augustine",
@@ -380,7 +790,13 @@
       "notes": [
         "Ancient Coastal",
         "Historic"
-      ]
+      ],
+      "selection_classes": [],
+      "place_archetypes": [],
+      "collections": [],
+      "geographic_hierarchy": [],
+      "climate_sensory_tags": [],
+      "interpretive_use_cases": []
     },
     {
       "location_id": "us-ga-atlanta",
@@ -397,6 +813,36 @@
       "active": true,
       "notes": [
         "Major Hub"
+      ],
+      "selection_classes": [
+        "national_anchor",
+        "regional_anchor",
+        "state_coverage_anchor"
+      ],
+      "place_archetypes": [
+        "major_metro",
+        "transportation_hub",
+        "arts_and_culture",
+        "high_mobility_transplant_heavy"
+      ],
+      "collections": [
+        "core_metropolitan_america",
+        "state_capitals",
+        "migration_reinvention_destinations"
+      ],
+      "geographic_hierarchy": [
+        "southeast",
+        "piedmont",
+        "greater_atlanta"
+      ],
+      "climate_sensory_tags": [
+        "hot_humid",
+        "long_growing_season"
+      ],
+      "interpretive_use_cases": [
+        "career_visibility",
+        "practical_base_city",
+        "creative_reinvention"
       ]
     },
     {
@@ -415,7 +861,13 @@
       "notes": [
         "Coastal",
         "Historic"
-      ]
+      ],
+      "selection_classes": [],
+      "place_archetypes": [],
+      "collections": [],
+      "geographic_hierarchy": [],
+      "climate_sensory_tags": [],
+      "interpretive_use_cases": []
     },
     {
       "location_id": "us-hi-hilo",
@@ -433,6 +885,36 @@
       "notes": [
         "Volcanic energy",
         "Tropical"
+      ],
+      "selection_classes": [
+        "regional_anchor",
+        "geographic_test_anchor"
+      ],
+      "place_archetypes": [
+        "island",
+        "volcanic_landscape",
+        "rainforest",
+        "remote_service_hub"
+      ],
+      "collections": [
+        "islands_separated_geographies",
+        "hawaiian_islands",
+        "volcanic_landscapes"
+      ],
+      "geographic_hierarchy": [
+        "hawaii",
+        "hawaii_island",
+        "windward_side"
+      ],
+      "climate_sensory_tags": [
+        "tropical",
+        "rainforest",
+        "storm_exposed"
+      ],
+      "interpretive_use_cases": [
+        "edge_of_wilderness",
+        "retreat_or_recovery",
+        "liminal_or_threshold_place"
       ]
     },
     {
@@ -451,7 +933,13 @@
       "notes": [
         "Major Hub",
         "Pacific Island"
-      ]
+      ],
+      "selection_classes": [],
+      "place_archetypes": [],
+      "collections": [],
+      "geographic_hierarchy": [],
+      "climate_sensory_tags": [],
+      "interpretive_use_cases": []
     },
     {
       "location_id": "us-hi-lahaina",
@@ -469,7 +957,13 @@
       "notes": [
         "Historic",
         "Coastal"
-      ]
+      ],
+      "selection_classes": [],
+      "place_archetypes": [],
+      "collections": [],
+      "geographic_hierarchy": [],
+      "climate_sensory_tags": [],
+      "interpretive_use_cases": []
     },
     {
       "location_id": "us-ia-des-moines",
@@ -486,7 +980,13 @@
       "active": true,
       "notes": [
         "Heartland"
-      ]
+      ],
+      "selection_classes": [],
+      "place_archetypes": [],
+      "collections": [],
+      "geographic_hierarchy": [],
+      "climate_sensory_tags": [],
+      "interpretive_use_cases": []
     },
     {
       "location_id": "us-id-boise",
@@ -503,7 +1003,13 @@
       "active": true,
       "notes": [
         "High desert"
-      ]
+      ],
+      "selection_classes": [],
+      "place_archetypes": [],
+      "collections": [],
+      "geographic_hierarchy": [],
+      "climate_sensory_tags": [],
+      "interpretive_use_cases": []
     },
     {
       "location_id": "us-id-coeur-dalene",
@@ -521,7 +1027,13 @@
       "notes": [
         "Lake",
         "Alpine"
-      ]
+      ],
+      "selection_classes": [],
+      "place_archetypes": [],
+      "collections": [],
+      "geographic_hierarchy": [],
+      "climate_sensory_tags": [],
+      "interpretive_use_cases": []
     },
     {
       "location_id": "us-il-chicago",
@@ -539,6 +1051,36 @@
       "notes": [
         "Major Hub",
         "Lake Michigan"
+      ],
+      "selection_classes": [
+        "national_anchor",
+        "regional_anchor"
+      ],
+      "place_archetypes": [
+        "global_city",
+        "great_lakes",
+        "dense_urban_core",
+        "transportation_hub"
+      ],
+      "collections": [
+        "core_metropolitan_america",
+        "great_lakes_chain",
+        "river_systems"
+      ],
+      "geographic_hierarchy": [
+        "midwest",
+        "great_lakes",
+        "lake_michigan"
+      ],
+      "climate_sensory_tags": [
+        "four_season_continental",
+        "lake_effect",
+        "wind_heavy"
+      ],
+      "interpretive_use_cases": [
+        "career_visibility",
+        "practical_base_city",
+        "pressure_test_location"
       ]
     },
     {
@@ -556,7 +1098,13 @@
       "active": true,
       "notes": [
         "River valley"
-      ]
+      ],
+      "selection_classes": [],
+      "place_archetypes": [],
+      "collections": [],
+      "geographic_hierarchy": [],
+      "climate_sensory_tags": [],
+      "interpretive_use_cases": []
     },
     {
       "location_id": "us-in-indianapolis",
@@ -573,7 +1121,13 @@
       "active": true,
       "notes": [
         "Major Hub"
-      ]
+      ],
+      "selection_classes": [],
+      "place_archetypes": [],
+      "collections": [],
+      "geographic_hierarchy": [],
+      "climate_sensory_tags": [],
+      "interpretive_use_cases": []
     },
     {
       "location_id": "us-ks-lawrence",
@@ -590,6 +1144,36 @@
       "active": true,
       "notes": [
         "River Valley"
+      ],
+      "selection_classes": [
+        "regional_anchor",
+        "destination_anchor"
+      ],
+      "place_archetypes": [
+        "college_town",
+        "river_city",
+        "alternative",
+        "arts_and_culture"
+      ],
+      "collections": [
+        "college_university_towns",
+        "creative_alternative_enclaves",
+        "river_systems"
+      ],
+      "geographic_hierarchy": [
+        "plains",
+        "kansas_river_valley",
+        "eastern_kansas"
+      ],
+      "climate_sensory_tags": [
+        "four_season_continental",
+        "wind_heavy",
+        "prairie"
+      ],
+      "interpretive_use_cases": [
+        "study_or_research",
+        "creative_reinvention",
+        "belonging_or_community"
       ]
     },
     {
@@ -607,7 +1191,13 @@
       "active": true,
       "notes": [
         "Central plains"
-      ]
+      ],
+      "selection_classes": [],
+      "place_archetypes": [],
+      "collections": [],
+      "geographic_hierarchy": [],
+      "climate_sensory_tags": [],
+      "interpretive_use_cases": []
     },
     {
       "location_id": "us-ky-berea",
@@ -625,7 +1215,13 @@
       "notes": [
         "Appalachian",
         "Artisan"
-      ]
+      ],
+      "selection_classes": [],
+      "place_archetypes": [],
+      "collections": [],
+      "geographic_hierarchy": [],
+      "climate_sensory_tags": [],
+      "interpretive_use_cases": []
     },
     {
       "location_id": "us-la-new-orleans",
@@ -644,6 +1240,37 @@
         "Major Hub",
         "Historic",
         "Gulf Coast"
+      ],
+      "selection_classes": [
+        "national_anchor",
+        "destination_anchor",
+        "historic_cultural_anchor"
+      ],
+      "place_archetypes": [
+        "river_city",
+        "delta",
+        "music_city",
+        "historic_memory_landscape"
+      ],
+      "collections": [
+        "river_systems",
+        "gulf_coast_sequence",
+        "historic_memory_landscapes"
+      ],
+      "geographic_hierarchy": [
+        "gulf_south",
+        "mississippi_delta",
+        "lake_pontchartrain_region"
+      ],
+      "climate_sensory_tags": [
+        "hot_humid",
+        "subtropical_coastal",
+        "storm_exposed"
+      ],
+      "interpretive_use_cases": [
+        "creative_reinvention",
+        "ancestral_memory_landscape",
+        "liminal_or_threshold_place"
       ]
     },
     {
@@ -662,7 +1289,13 @@
       "notes": [
         "Major Hub",
         "Coastal"
-      ]
+      ],
+      "selection_classes": [],
+      "place_archetypes": [],
+      "collections": [],
+      "geographic_hierarchy": [],
+      "climate_sensory_tags": [],
+      "interpretive_use_cases": []
     },
     {
       "location_id": "us-ma-salem",
@@ -680,7 +1313,13 @@
       "notes": [
         "Historic",
         "Coastal"
-      ]
+      ],
+      "selection_classes": [],
+      "place_archetypes": [],
+      "collections": [],
+      "geographic_hierarchy": [],
+      "climate_sensory_tags": [],
+      "interpretive_use_cases": []
     },
     {
       "location_id": "us-md-annapolis",
@@ -698,7 +1337,13 @@
       "notes": [
         "Bay",
         "Maritime"
-      ]
+      ],
+      "selection_classes": [],
+      "place_archetypes": [],
+      "collections": [],
+      "geographic_hierarchy": [],
+      "climate_sensory_tags": [],
+      "interpretive_use_cases": []
     },
     {
       "location_id": "us-me-bar-harbor",
@@ -715,7 +1360,13 @@
       "active": true,
       "notes": [
         "Rugged Coast"
-      ]
+      ],
+      "selection_classes": [],
+      "place_archetypes": [],
+      "collections": [],
+      "geographic_hierarchy": [],
+      "climate_sensory_tags": [],
+      "interpretive_use_cases": []
     },
     {
       "location_id": "us-me-portland",
@@ -732,7 +1383,13 @@
       "active": true,
       "notes": [
         "Coastal"
-      ]
+      ],
+      "selection_classes": [],
+      "place_archetypes": [],
+      "collections": [],
+      "geographic_hierarchy": [],
+      "climate_sensory_tags": [],
+      "interpretive_use_cases": []
     },
     {
       "location_id": "us-mi-ann-arbor",
@@ -749,7 +1406,13 @@
       "active": true,
       "notes": [
         "Wooded University Town"
-      ]
+      ],
+      "selection_classes": [],
+      "place_archetypes": [],
+      "collections": [],
+      "geographic_hierarchy": [],
+      "climate_sensory_tags": [],
+      "interpretive_use_cases": []
     },
     {
       "location_id": "us-mi-detroit",
@@ -767,6 +1430,37 @@
       "notes": [
         "Major Hub",
         "River border"
+      ],
+      "selection_classes": [
+        "national_anchor",
+        "historic_cultural_anchor",
+        "difficult_important_place"
+      ],
+      "place_archetypes": [
+        "major_metro",
+        "industrial_corridor",
+        "river_border_city",
+        "arts_and_culture"
+      ],
+      "collections": [
+        "great_lakes_chain",
+        "northern_industrial_cities",
+        "borderlands"
+      ],
+      "geographic_hierarchy": [
+        "great_lakes",
+        "detroit_river",
+        "us_canada_border"
+      ],
+      "climate_sensory_tags": [
+        "four_season_continental",
+        "lake_effect",
+        "cold_winter"
+      ],
+      "interpretive_use_cases": [
+        "pressure_test_location",
+        "creative_reinvention",
+        "ancestral_memory_landscape"
       ]
     },
     {
@@ -785,7 +1479,13 @@
       "notes": [
         "Northern bay",
         "Freshwater"
-      ]
+      ],
+      "selection_classes": [],
+      "place_archetypes": [],
+      "collections": [],
+      "geographic_hierarchy": [],
+      "climate_sensory_tags": [],
+      "interpretive_use_cases": []
     },
     {
       "location_id": "us-mn-duluth",
@@ -803,6 +1503,36 @@
       "notes": [
         "Lake Superior",
         "Harbor"
+      ],
+      "selection_classes": [
+        "regional_anchor",
+        "geographic_test_anchor"
+      ],
+      "place_archetypes": [
+        "small_regional_city",
+        "great_lakes_port",
+        "cold_climate_city",
+        "university_healthcare_center"
+      ],
+      "collections": [
+        "great_lakes_chain",
+        "northern_industrial_cities",
+        "remote_regional_hubs"
+      ],
+      "geographic_hierarchy": [
+        "upper_midwest",
+        "lake_superior",
+        "north_shore_gateway"
+      ],
+      "climate_sensory_tags": [
+        "four_season_continental",
+        "lake_effect",
+        "cold_winter"
+      ],
+      "interpretive_use_cases": [
+        "practical_base_city",
+        "edge_of_wilderness",
+        "regional_reset"
       ]
     },
     {
@@ -820,7 +1550,13 @@
       "active": true,
       "notes": [
         "Rugged North Shore"
-      ]
+      ],
+      "selection_classes": [],
+      "place_archetypes": [],
+      "collections": [],
+      "geographic_hierarchy": [],
+      "climate_sensory_tags": [],
+      "interpretive_use_cases": []
     },
     {
       "location_id": "us-mt-bozeman",
@@ -838,7 +1574,13 @@
       "notes": [
         "Mountain",
         "Valley"
-      ]
+      ],
+      "selection_classes": [],
+      "place_archetypes": [],
+      "collections": [],
+      "geographic_hierarchy": [],
+      "climate_sensory_tags": [],
+      "interpretive_use_cases": []
     },
     {
       "location_id": "us-mt-missoula",
@@ -855,6 +1597,36 @@
       "active": true,
       "notes": [
         "River valley"
+      ],
+      "selection_classes": [
+        "regional_anchor",
+        "destination_anchor"
+      ],
+      "place_archetypes": [
+        "college_town",
+        "mountain_valley",
+        "river_city",
+        "creative_alternative_enclave"
+      ],
+      "collections": [
+        "college_university_towns",
+        "mountain_systems",
+        "migration_reinvention_destinations"
+      ],
+      "geographic_hierarchy": [
+        "mountain_west",
+        "northern_rockies",
+        "clark_fork_valley"
+      ],
+      "climate_sensory_tags": [
+        "four_season_mountain",
+        "dry_summer",
+        "cold_winter"
+      ],
+      "interpretive_use_cases": [
+        "study_or_research",
+        "creative_reinvention",
+        "regional_reset"
       ]
     },
     {
@@ -873,6 +1645,36 @@
       "notes": [
         "Appalachian",
         "Mountain"
+      ],
+      "selection_classes": [
+        "destination_anchor",
+        "regional_anchor"
+      ],
+      "place_archetypes": [
+        "mountain_city",
+        "creative_alternative_enclave",
+        "tourism",
+        "spiritual_retreat_oriented"
+      ],
+      "collections": [
+        "appalachian_mountain_towns",
+        "creative_alternative_enclaves",
+        "migration_reinvention_destinations"
+      ],
+      "geographic_hierarchy": [
+        "southeast",
+        "blue_ridge",
+        "southern_appalachia"
+      ],
+      "climate_sensory_tags": [
+        "four_season_mountain",
+        "humid_summer",
+        "mist_fog"
+      ],
+      "interpretive_use_cases": [
+        "creative_reinvention",
+        "retreat_or_recovery",
+        "belonging_or_community"
       ]
     },
     {
@@ -890,7 +1692,13 @@
       "active": true,
       "notes": [
         "Northern plains"
-      ]
+      ],
+      "selection_classes": [],
+      "place_archetypes": [],
+      "collections": [],
+      "geographic_hierarchy": [],
+      "climate_sensory_tags": [],
+      "interpretive_use_cases": []
     },
     {
       "location_id": "us-ne-lincoln",
@@ -907,7 +1715,13 @@
       "active": true,
       "notes": [
         "Plains"
-      ]
+      ],
+      "selection_classes": [],
+      "place_archetypes": [],
+      "collections": [],
+      "geographic_hierarchy": [],
+      "climate_sensory_tags": [],
+      "interpretive_use_cases": []
     },
     {
       "location_id": "us-ne-omaha",
@@ -925,7 +1739,13 @@
       "notes": [
         "Major Hub",
         "River plains"
-      ]
+      ],
+      "selection_classes": [],
+      "place_archetypes": [],
+      "collections": [],
+      "geographic_hierarchy": [],
+      "climate_sensory_tags": [],
+      "interpretive_use_cases": []
     },
     {
       "location_id": "us-nj-cape-may",
@@ -943,7 +1763,13 @@
       "notes": [
         "Coastal",
         "Historic"
-      ]
+      ],
+      "selection_classes": [],
+      "place_archetypes": [],
+      "collections": [],
+      "geographic_hierarchy": [],
+      "climate_sensory_tags": [],
+      "interpretive_use_cases": []
     },
     {
       "location_id": "us-nm-santa-fe",
@@ -961,6 +1787,37 @@
       "notes": [
         "High altitude",
         "Artisan"
+      ],
+      "selection_classes": [
+        "state_coverage_anchor",
+        "destination_anchor",
+        "historic_cultural_anchor"
+      ],
+      "place_archetypes": [
+        "state_capital",
+        "high_desert",
+        "arts_and_culture",
+        "historic_preservation_economy"
+      ],
+      "collections": [
+        "state_capitals",
+        "desert_systems",
+        "historic_memory_landscapes"
+      ],
+      "geographic_hierarchy": [
+        "southwest",
+        "northern_new_mexico",
+        "sangre_de_cristo_foothills"
+      ],
+      "climate_sensory_tags": [
+        "high_altitude_dry",
+        "four_season_desert",
+        "intense_sun"
+      ],
+      "interpretive_use_cases": [
+        "creative_reinvention",
+        "spiritual_relocation",
+        "ancestral_memory_landscape"
       ]
     },
     {
@@ -979,6 +1836,37 @@
       "notes": [
         "Artisan",
         "Pueblo energy"
+      ],
+      "selection_classes": [
+        "destination_anchor",
+        "historic_cultural_anchor",
+        "geographic_test_anchor"
+      ],
+      "place_archetypes": [
+        "small_town",
+        "high_desert",
+        "arts_and_culture",
+        "indigenous_cultural_center"
+      ],
+      "collections": [
+        "creative_alternative_enclaves",
+        "desert_systems",
+        "historic_memory_landscapes"
+      ],
+      "geographic_hierarchy": [
+        "southwest",
+        "taos_plateau",
+        "rio_grande_gorge_region"
+      ],
+      "climate_sensory_tags": [
+        "high_altitude_dry",
+        "cold_night_desert",
+        "wide_horizon"
+      ],
+      "interpretive_use_cases": [
+        "creative_reinvention",
+        "ancestral_memory_landscape",
+        "spiritual_relocation"
       ]
     },
     {
@@ -997,7 +1885,13 @@
       "notes": [
         "Major Hub",
         "Desert basin"
-      ]
+      ],
+      "selection_classes": [],
+      "place_archetypes": [],
+      "collections": [],
+      "geographic_hierarchy": [],
+      "climate_sensory_tags": [],
+      "interpretive_use_cases": []
     },
     {
       "location_id": "us-ny-ithaca",
@@ -1015,7 +1909,13 @@
       "notes": [
         "Finger Lakes",
         "Gorges"
-      ]
+      ],
+      "selection_classes": [],
+      "place_archetypes": [],
+      "collections": [],
+      "geographic_hierarchy": [],
+      "climate_sensory_tags": [],
+      "interpretive_use_cases": []
     },
     {
       "location_id": "us-ny-new-york",
@@ -1032,6 +1932,36 @@
       "active": true,
       "notes": [
         "Major Hub"
+      ],
+      "selection_classes": [
+        "national_anchor",
+        "destination_anchor"
+      ],
+      "place_archetypes": [
+        "global_city",
+        "dense_urban_core",
+        "finance_media_arts",
+        "immigration_gateway"
+      ],
+      "collections": [
+        "core_metropolitan_america",
+        "atlantic_coast_sequence",
+        "historic_memory_landscapes"
+      ],
+      "geographic_hierarchy": [
+        "mid_atlantic",
+        "new_york_harbor",
+        "hudson_river_mouth"
+      ],
+      "climate_sensory_tags": [
+        "four_season_coastal",
+        "humid_summer",
+        "dense_urban_heat"
+      ],
+      "interpretive_use_cases": [
+        "career_visibility",
+        "pressure_test_location",
+        "identity_transformation"
       ]
     },
     {
@@ -1050,7 +1980,13 @@
       "notes": [
         "Catskills Arts",
         "Spiritual"
-      ]
+      ],
+      "selection_classes": [],
+      "place_archetypes": [],
+      "collections": [],
+      "geographic_hierarchy": [],
+      "climate_sensory_tags": [],
+      "interpretive_use_cases": []
     },
     {
       "location_id": "us-oh-cleveland",
@@ -1068,7 +2004,13 @@
       "notes": [
         "Major Hub",
         "Lake Erie"
-      ]
+      ],
+      "selection_classes": [],
+      "place_archetypes": [],
+      "collections": [],
+      "geographic_hierarchy": [],
+      "climate_sensory_tags": [],
+      "interpretive_use_cases": []
     },
     {
       "location_id": "us-oh-columbus",
@@ -1085,7 +2027,13 @@
       "active": true,
       "notes": [
         "Major Hub"
-      ]
+      ],
+      "selection_classes": [],
+      "place_archetypes": [],
+      "collections": [],
+      "geographic_hierarchy": [],
+      "climate_sensory_tags": [],
+      "interpretive_use_cases": []
     },
     {
       "location_id": "us-oh-yellow-springs",
@@ -1103,6 +2051,35 @@
       "notes": [
         "Alternative",
         "Springs"
+      ],
+      "selection_classes": [
+        "destination_anchor",
+        "geographic_test_anchor"
+      ],
+      "place_archetypes": [
+        "small_town",
+        "college_town",
+        "alternative",
+        "bohemian"
+      ],
+      "collections": [
+        "creative_alternative_enclaves",
+        "college_university_towns",
+        "migration_reinvention_destinations"
+      ],
+      "geographic_hierarchy": [
+        "midwest",
+        "miami_valley",
+        "southwest_ohio"
+      ],
+      "climate_sensory_tags": [
+        "four_season_continental",
+        "humid_summer"
+      ],
+      "interpretive_use_cases": [
+        "belonging_or_community",
+        "creative_reinvention",
+        "regional_reset"
       ]
     },
     {
@@ -1120,7 +2097,13 @@
       "active": true,
       "notes": [
         "Heartland"
-      ]
+      ],
+      "selection_classes": [],
+      "place_archetypes": [],
+      "collections": [],
+      "geographic_hierarchy": [],
+      "climate_sensory_tags": [],
+      "interpretive_use_cases": []
     },
     {
       "location_id": "us-or-astoria",
@@ -1138,6 +2121,37 @@
       "notes": [
         "Coastal",
         "Historical"
+      ],
+      "selection_classes": [
+        "destination_anchor",
+        "geographic_test_anchor",
+        "historic_cultural_anchor"
+      ],
+      "place_archetypes": [
+        "small_town",
+        "river_mouth",
+        "port_city",
+        "fog_heavy_coastal"
+      ],
+      "collections": [
+        "coastal_sequence",
+        "river_systems",
+        "historic_memory_landscapes"
+      ],
+      "geographic_hierarchy": [
+        "pacific_northwest",
+        "columbia_river_mouth",
+        "oregon_coast"
+      ],
+      "climate_sensory_tags": [
+        "cool_marine",
+        "fog_heavy",
+        "rain_heavy"
+      ],
+      "interpretive_use_cases": [
+        "liminal_or_threshold_place",
+        "retreat_or_recovery",
+        "edge_of_wilderness"
       ]
     },
     {
@@ -1156,7 +2170,13 @@
       "notes": [
         "Mountain",
         "High desert"
-      ]
+      ],
+      "selection_classes": [],
+      "place_archetypes": [],
+      "collections": [],
+      "geographic_hierarchy": [],
+      "climate_sensory_tags": [],
+      "interpretive_use_cases": []
     },
     {
       "location_id": "us-or-eugene",
@@ -1174,7 +2194,13 @@
       "notes": [
         "Willamette Valley",
         "Forested"
-      ]
+      ],
+      "selection_classes": [],
+      "place_archetypes": [],
+      "collections": [],
+      "geographic_hierarchy": [],
+      "climate_sensory_tags": [],
+      "interpretive_use_cases": []
     },
     {
       "location_id": "us-or-portland",
@@ -1191,7 +2217,13 @@
       "active": true,
       "notes": [
         "Major Hub"
-      ]
+      ],
+      "selection_classes": [],
+      "place_archetypes": [],
+      "collections": [],
+      "geographic_hierarchy": [],
+      "climate_sensory_tags": [],
+      "interpretive_use_cases": []
     },
     {
       "location_id": "us-pa-gettysburg",
@@ -1209,6 +2241,35 @@
       "notes": [
         "Historic",
         "High Energy"
+      ],
+      "selection_classes": [
+        "historic_cultural_anchor",
+        "geographic_test_anchor"
+      ],
+      "place_archetypes": [
+        "small_town",
+        "historic_memory_landscape",
+        "tourism",
+        "rural_service_center"
+      ],
+      "collections": [
+        "historic_memory_landscapes",
+        "civil_war_locations",
+        "mid_atlantic_small_towns"
+      ],
+      "geographic_hierarchy": [
+        "mid_atlantic",
+        "south_central_pennsylvania",
+        "appalachian_piedmont"
+      ],
+      "climate_sensory_tags": [
+        "four_season_continental",
+        "humid_summer"
+      ],
+      "interpretive_use_cases": [
+        "ancestral_memory_landscape",
+        "pressure_test_location",
+        "contemplative_visit"
       ]
     },
     {
@@ -1227,7 +2288,13 @@
       "notes": [
         "Major Hub",
         "Historic"
-      ]
+      ],
+      "selection_classes": [],
+      "place_archetypes": [],
+      "collections": [],
+      "geographic_hierarchy": [],
+      "climate_sensory_tags": [],
+      "interpretive_use_cases": []
     },
     {
       "location_id": "us-pa-pittsburgh",
@@ -1245,6 +2312,37 @@
       "notes": [
         "Major Hub",
         "Confluence of Rivers"
+      ],
+      "selection_classes": [
+        "national_anchor",
+        "regional_anchor",
+        "historic_cultural_anchor"
+      ],
+      "place_archetypes": [
+        "major_metro",
+        "river_confluence",
+        "industrial_heritage",
+        "university_healthcare_center"
+      ],
+      "collections": [
+        "river_systems",
+        "northern_industrial_cities",
+        "core_metropolitan_america"
+      ],
+      "geographic_hierarchy": [
+        "mid_atlantic",
+        "allegheny_plateau",
+        "ohio_river_headwaters"
+      ],
+      "climate_sensory_tags": [
+        "four_season_continental",
+        "river_valley",
+        "cloud_heavy"
+      ],
+      "interpretive_use_cases": [
+        "practical_base_city",
+        "career_visibility",
+        "ancestral_memory_landscape"
       ]
     },
     {
@@ -1263,7 +2361,13 @@
       "notes": [
         "Coastal",
         "Historic"
-      ]
+      ],
+      "selection_classes": [],
+      "place_archetypes": [],
+      "collections": [],
+      "geographic_hierarchy": [],
+      "climate_sensory_tags": [],
+      "interpretive_use_cases": []
     },
     {
       "location_id": "us-sc-charleston",
@@ -1281,7 +2385,13 @@
       "notes": [
         "Coastal",
         "Historic"
-      ]
+      ],
+      "selection_classes": [],
+      "place_archetypes": [],
+      "collections": [],
+      "geographic_hierarchy": [],
+      "climate_sensory_tags": [],
+      "interpretive_use_cases": []
     },
     {
       "location_id": "us-sd-rapid-city",
@@ -1298,6 +2408,36 @@
       "active": true,
       "notes": [
         "Black Hills"
+      ],
+      "selection_classes": [
+        "regional_anchor",
+        "geographic_test_anchor"
+      ],
+      "place_archetypes": [
+        "small_regional_city",
+        "remote_service_hub",
+        "black_hills_gateway",
+        "tourism"
+      ],
+      "collections": [
+        "mountain_systems",
+        "remote_regional_hubs",
+        "plains_edge_cities"
+      ],
+      "geographic_hierarchy": [
+        "northern_plains",
+        "black_hills",
+        "western_south_dakota"
+      ],
+      "climate_sensory_tags": [
+        "four_season_continental",
+        "wind_heavy",
+        "high_plains"
+      ],
+      "interpretive_use_cases": [
+        "practical_base_city",
+        "edge_of_wilderness",
+        "regional_reset"
       ]
     },
     {
@@ -1315,7 +2455,13 @@
       "active": true,
       "notes": [
         "Mountain River"
-      ]
+      ],
+      "selection_classes": [],
+      "place_archetypes": [],
+      "collections": [],
+      "geographic_hierarchy": [],
+      "climate_sensory_tags": [],
+      "interpretive_use_cases": []
     },
     {
       "location_id": "us-tn-nashville",
@@ -1332,7 +2478,13 @@
       "active": true,
       "notes": [
         "Major Hub"
-      ]
+      ],
+      "selection_classes": [],
+      "place_archetypes": [],
+      "collections": [],
+      "geographic_hierarchy": [],
+      "climate_sensory_tags": [],
+      "interpretive_use_cases": []
     },
     {
       "location_id": "us-tx-austin",
@@ -1349,7 +2501,13 @@
       "active": true,
       "notes": [
         "Major Hub"
-      ]
+      ],
+      "selection_classes": [],
+      "place_archetypes": [],
+      "collections": [],
+      "geographic_hierarchy": [],
+      "climate_sensory_tags": [],
+      "interpretive_use_cases": []
     },
     {
       "location_id": "us-tx-denton",
@@ -1366,7 +2524,13 @@
       "active": true,
       "notes": [
         "Alternative Arts"
-      ]
+      ],
+      "selection_classes": [],
+      "place_archetypes": [],
+      "collections": [],
+      "geographic_hierarchy": [],
+      "climate_sensory_tags": [],
+      "interpretive_use_cases": []
     },
     {
       "location_id": "us-tx-galveston",
@@ -1384,7 +2548,13 @@
       "notes": [
         "Gulf Coast",
         "Island"
-      ]
+      ],
+      "selection_classes": [],
+      "place_archetypes": [],
+      "collections": [],
+      "geographic_hierarchy": [],
+      "climate_sensory_tags": [],
+      "interpretive_use_cases": []
     },
     {
       "location_id": "us-tx-marfa",
@@ -1402,6 +2572,36 @@
       "notes": [
         "High Desert",
         "Artisan"
+      ],
+      "selection_classes": [
+        "destination_anchor",
+        "geographic_test_anchor"
+      ],
+      "place_archetypes": [
+        "small_town",
+        "remote_desert_arts_town",
+        "high_desert",
+        "tourism"
+      ],
+      "collections": [
+        "desert_systems",
+        "creative_alternative_enclaves",
+        "migration_reinvention_destinations"
+      ],
+      "geographic_hierarchy": [
+        "west_texas",
+        "chihuahuan_desert",
+        "marfa_plateau"
+      ],
+      "climate_sensory_tags": [
+        "high_altitude_dry",
+        "wide_horizon",
+        "cold_night_desert"
+      ],
+      "interpretive_use_cases": [
+        "creative_reinvention",
+        "solitude_or_spiritual_practice",
+        "pressure_test_location"
       ]
     },
     {
@@ -1420,6 +2620,37 @@
       "notes": [
         "Major Hub",
         "Historic"
+      ],
+      "selection_classes": [
+        "national_anchor",
+        "regional_anchor",
+        "historic_cultural_anchor"
+      ],
+      "place_archetypes": [
+        "major_metro",
+        "historic_memory_landscape",
+        "military",
+        "borderlands_city"
+      ],
+      "collections": [
+        "core_metropolitan_america",
+        "historic_memory_landscapes",
+        "borderlands"
+      ],
+      "geographic_hierarchy": [
+        "south_texas",
+        "texas_hill_country_edge",
+        "san_antonio_river"
+      ],
+      "climate_sensory_tags": [
+        "hot_humid",
+        "dry_heat_edge",
+        "long_summer"
+      ],
+      "interpretive_use_cases": [
+        "practical_base_city",
+        "ancestral_memory_landscape",
+        "belonging_or_community"
       ]
     },
     {
@@ -1438,6 +2669,36 @@
       "notes": [
         "Canyon",
         "Red rock"
+      ],
+      "selection_classes": [
+        "destination_anchor",
+        "geographic_test_anchor"
+      ],
+      "place_archetypes": [
+        "small_town",
+        "canyonlands",
+        "outdoor_recreation_town",
+        "high_desert"
+      ],
+      "collections": [
+        "desert_systems",
+        "colorado_plateau",
+        "migration_reinvention_destinations"
+      ],
+      "geographic_hierarchy": [
+        "mountain_west",
+        "colorado_plateau",
+        "canyonlands_region"
+      ],
+      "climate_sensory_tags": [
+        "dry_heat",
+        "high_altitude_dry",
+        "wide_horizon"
+      ],
+      "interpretive_use_cases": [
+        "retreat_or_recovery",
+        "edge_of_wilderness",
+        "pressure_test_location"
       ]
     },
     {
@@ -1456,7 +2717,13 @@
       "notes": [
         "Major Hub",
         "Valley"
-      ]
+      ],
+      "selection_classes": [],
+      "place_archetypes": [],
+      "collections": [],
+      "geographic_hierarchy": [],
+      "climate_sensory_tags": [],
+      "interpretive_use_cases": []
     },
     {
       "location_id": "us-va-richmond",
@@ -1474,6 +2741,36 @@
       "notes": [
         "River Fall Line",
         "Historic"
+      ],
+      "selection_classes": [
+        "regional_anchor",
+        "historic_cultural_anchor",
+        "state_coverage_anchor"
+      ],
+      "place_archetypes": [
+        "state_capital",
+        "river_city",
+        "historic_memory_landscape",
+        "regional_metro"
+      ],
+      "collections": [
+        "state_capitals",
+        "river_systems",
+        "historic_memory_landscapes"
+      ],
+      "geographic_hierarchy": [
+        "mid_atlantic",
+        "james_river_fall_line",
+        "virginia_piedmont"
+      ],
+      "climate_sensory_tags": [
+        "hot_humid",
+        "four_season_mid_atlantic"
+      ],
+      "interpretive_use_cases": [
+        "ancestral_memory_landscape",
+        "practical_base_city",
+        "regional_reset"
       ]
     },
     {
@@ -1491,7 +2788,13 @@
       "active": true,
       "notes": [
         "Lake Champlain"
-      ]
+      ],
+      "selection_classes": [],
+      "place_archetypes": [],
+      "collections": [],
+      "geographic_hierarchy": [],
+      "climate_sensory_tags": [],
+      "interpretive_use_cases": []
     },
     {
       "location_id": "us-wa-forks",
@@ -1509,6 +2812,36 @@
       "notes": [
         "Atmospheric",
         "Deep coastal forest"
+      ],
+      "selection_classes": [
+        "geographic_test_anchor",
+        "destination_anchor"
+      ],
+      "place_archetypes": [
+        "small_town",
+        "rainforest",
+        "remote_service_hub",
+        "coastal_forest"
+      ],
+      "collections": [
+        "coastal_sequence",
+        "remote_regional_hubs",
+        "climate_sensory_environments"
+      ],
+      "geographic_hierarchy": [
+        "pacific_northwest",
+        "olympic_peninsula",
+        "hoh_rainforest_region"
+      ],
+      "climate_sensory_tags": [
+        "rain_heavy",
+        "fog_heavy",
+        "cool_marine"
+      ],
+      "interpretive_use_cases": [
+        "solitude_or_spiritual_practice",
+        "retreat_or_recovery",
+        "edge_of_wilderness"
       ]
     },
     {
@@ -1527,7 +2860,13 @@
       "notes": [
         "Puget Sound",
         "Capital"
-      ]
+      ],
+      "selection_classes": [],
+      "place_archetypes": [],
+      "collections": [],
+      "geographic_hierarchy": [],
+      "climate_sensory_tags": [],
+      "interpretive_use_cases": []
     },
     {
       "location_id": "us-wa-seattle",
@@ -1545,7 +2884,13 @@
       "notes": [
         "Major Hub",
         "Extreme western longitude"
-      ]
+      ],
+      "selection_classes": [],
+      "place_archetypes": [],
+      "collections": [],
+      "geographic_hierarchy": [],
+      "climate_sensory_tags": [],
+      "interpretive_use_cases": []
     },
     {
       "location_id": "us-wi-madison",
@@ -1563,6 +2908,37 @@
       "notes": [
         "Lakes",
         "Isthmus"
+      ],
+      "selection_classes": [
+        "state_coverage_anchor",
+        "regional_anchor",
+        "destination_anchor"
+      ],
+      "place_archetypes": [
+        "state_capital",
+        "college_town",
+        "isthmus_city",
+        "lakeside_city"
+      ],
+      "collections": [
+        "state_capitals",
+        "college_university_towns",
+        "great_lakes_upper_midwest"
+      ],
+      "geographic_hierarchy": [
+        "upper_midwest",
+        "southern_wisconsin",
+        "yahara_lakes_region"
+      ],
+      "climate_sensory_tags": [
+        "four_season_continental",
+        "cold_winter",
+        "lake_influenced"
+      ],
+      "interpretive_use_cases": [
+        "study_or_research",
+        "practical_base_city",
+        "belonging_or_community"
       ]
     },
     {
@@ -1581,7 +2957,13 @@
       "notes": [
         "Major Hub",
         "Lake Michigan"
-      ]
+      ],
+      "selection_classes": [],
+      "place_archetypes": [],
+      "collections": [],
+      "geographic_hierarchy": [],
+      "climate_sensory_tags": [],
+      "interpretive_use_cases": []
     },
     {
       "location_id": "us-wy-jackson",
@@ -1599,7 +2981,21 @@
       "notes": [
         "Alpine",
         "Valley"
-      ]
+      ],
+      "selection_classes": [],
+      "place_archetypes": [],
+      "collections": [],
+      "geographic_hierarchy": [],
+      "climate_sensory_tags": [],
+      "interpretive_use_cases": []
     }
-  ]
+  ],
+  "ontology_schema": {
+    "selection_classes": "Why the bank includes this place: national_anchor, regional_anchor, state_coverage_anchor, geographic_test_anchor, destination_anchor, difficult_important_place.",
+    "place_archetypes": "Controlled lived-environment descriptors such as major_metro, college_town, great_lakes_port, high_desert, river_city, spiritual_retreat_oriented.",
+    "collections": "Curated expansion sets such as core_metropolitan_america, state_capitals, desert_systems, river_systems, historic_memory_landscapes.",
+    "geographic_hierarchy": "Physical and administrative grouping beyond the single region label.",
+    "climate_sensory_tags": "Climate and sensory environment tags used for place texture, not deterministic claims.",
+    "interpretive_use_cases": "Report-selection roles such as practical_base_city, retreat_or_recovery, creative_reinvention, pressure_test_location."
+  }
 }

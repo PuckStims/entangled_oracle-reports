@@ -18,6 +18,7 @@ from products.location_services.place_resonance_search.assembler import (
     build_scored_search_locations,
 )
 from products.location_services.place_resonance_search.candidate_catalog import (
+    OPTIONAL_ONTOLOGY_FIELDS,
     REQUIRED_CANDIDATE_FIELDS,
     load_candidate_catalog,
 )
@@ -154,6 +155,25 @@ def test_candidate_catalog_has_required_shape():
         assert isinstance(candidate["latitude"], float)
         assert isinstance(candidate["longitude"], float)
         assert "/" in candidate["timezone"]
+        for field in OPTIONAL_ONTOLOGY_FIELDS:
+            assert field in candidate
+            assert isinstance(candidate[field], list)
+
+
+def test_candidate_catalog_has_seed_place_ontology_for_exemplars():
+    candidates = {candidate["location_id"]: candidate for candidate in load_candidate_catalog()}
+    enriched = [
+        candidate for candidate in candidates.values()
+        if candidate["selection_classes"]
+    ]
+
+    assert len(enriched) >= 30
+    assert "regional_anchor" in candidates["us-mn-duluth"]["selection_classes"]
+    assert "great_lakes_port" in candidates["us-mn-duluth"]["place_archetypes"]
+    assert "spiritual_destinations" in candidates["us-az-sedona"]["collections"]
+    assert "difficult_important_place" in candidates["us-mi-detroit"]["selection_classes"]
+    assert "river_systems" in candidates["us-la-new-orleans"]["collections"]
+    assert "remote_service_hub" in candidates["us-ak-anchorage"]["place_archetypes"]
 
 
 def test_batch_search_evidence_generation_does_not_mutate_inputs():

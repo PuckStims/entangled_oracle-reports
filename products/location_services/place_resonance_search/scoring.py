@@ -190,11 +190,13 @@ def _lead_evidence_signature(item: dict[str, Any]) -> str:
 
 def _place_texture_signature(item: dict[str, Any]) -> str:
     candidate = item.get("candidate") or {}
-    notes = tuple(str(note).strip().lower() for note in (candidate.get("notes") or [])[:2])
+    texture_tags = []
+    for field in ("place_archetypes", "collections", "climate_sensory_tags", "interpretive_use_cases", "notes"):
+        texture_tags.extend(str(tag).strip().lower() for tag in (candidate.get(field) or [])[:2] if str(tag).strip())
     return "|".join([
         str(candidate.get("population_tier") or ""),
         str(candidate.get("region") or ""),
-        ",".join(notes),
+        ",".join(texture_tags[:6]),
     ])
 
 
@@ -233,18 +235,30 @@ def _sibling_difference(item: dict[str, Any], representative: dict[str, Any], di
     distance_text = f"about {round(distance)} miles from {representative.get('display_name')}" if distance is not None else "near the selected representative"
     population = str(candidate.get("population_tier") or "").replace("_", " ")
     rep_population = str(rep_candidate.get("population_tier") or "").replace("_", " ")
-    notes = ", ".join(str(note) for note in (candidate.get("notes") or [])[:2])
+    texture = _candidate_texture_summary(candidate)
     if population and rep_population and population != rep_population:
         return (
             f"{item.get('display_name')} carries a similar evidence signature {distance_text}, "
             f"but expresses it through a {population} setting rather than {rep_population}."
         )
-    if notes:
+    if texture:
         return (
             f"{item.get('display_name')} carries a similar evidence signature {distance_text}, "
-            f"with catalog texture marked by {notes}."
+            f"with catalog texture marked by {texture}."
         )
     return f"{item.get('display_name')} carries a similar evidence signature {distance_text}."
+
+
+def _candidate_texture_summary(candidate: dict[str, Any], limit: int = 3) -> str:
+    tags: list[str] = []
+    for field in ("place_archetypes", "collections", "climate_sensory_tags", "interpretive_use_cases", "notes"):
+        for value in candidate.get(field) or []:
+            text = str(value).replace("_", " ").strip()
+            if text and text not in tags:
+                tags.append(text)
+            if len(tags) >= limit:
+                return ", ".join(tags)
+    return ", ".join(tags)
 
 
 def _initialize_tile_metadata(item: dict[str, Any]) -> None:
