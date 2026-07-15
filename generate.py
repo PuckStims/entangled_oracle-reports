@@ -5096,6 +5096,52 @@ def _normalize_shape_values(scores: list[float]) -> list[int]:
     return [round((score / peak) * 100) for score in scores]
 
 
+def _shape_display_labels(scores: list[float]) -> list[str]:
+    """
+    Build display bands for the forecast-shape graphic from the year-wide curve itself.
+
+    These labels should stay separate from the monthly chapter `arc_label` values so the
+    shape card does not simply inherit whatever intensity language the month pipeline uses.
+    """
+    if not scores:
+        return []
+
+    spread = max(scores) - min(scores)
+    if spread <= 0.08:
+        return ["Active" for _ in scores]
+
+    labels = ["Active" for _ in scores]
+    ranked_indexes = sorted(range(len(scores)), key=lambda index: (scores[index], index))
+
+    if spread <= 0.16:
+        background_count = max(1, round(len(scores) * 0.25))
+        significant_count = max(1, round(len(scores) * 0.17))
+        for index in ranked_indexes[:background_count]:
+            labels[index] = "Background"
+        for index in ranked_indexes[-significant_count:]:
+            labels[index] = "Significant"
+        return labels
+
+    background_count = max(1, round(len(scores) * 0.25))
+    key_window_count = max(1, round(len(scores) * 0.17))
+    significant_count = min(
+        max(1, round(len(scores) * 0.25)),
+        max(0, len(scores) - background_count - key_window_count),
+    )
+
+    for index in ranked_indexes[:background_count]:
+        labels[index] = "Background"
+
+    for index in ranked_indexes[-key_window_count:]:
+        labels[index] = "Key Window"
+
+    significant_start = len(scores) - key_window_count - significant_count
+    for index in ranked_indexes[significant_start:len(scores) - key_window_count]:
+        labels[index] = "Significant"
+
+    return labels
+
+
 def _forecast_distribution_note(label: str, scores: list[float]) -> str:
     if not scores:
         return "No month-level concentration data is available yet."
@@ -5155,25 +5201,28 @@ def _build_forecast_shape_details(
 
     scores = [score for _index, _month, score in scored_months]
     normalized = _normalize_shape_values(scores)
+    shape_labels = _shape_display_labels(scores)
     peak_entry = max(scored_months, key=lambda item: item[2])
     quiet_entry = min(scored_months, key=lambda item: item[2])
     peak_month_index = peak_entry[0]
     peak_month = peak_entry[1]
     quiet_month = quiet_entry[1]
+    peak_shape_label = shape_labels[peak_month_index] if peak_month_index < len(shape_labels) else "Active"
+    quiet_shape_label = shape_labels[quiet_entry[0]] if quiet_entry[0] < len(shape_labels) else "Active"
 
     detail_months = []
-    for normalized_value, (_index, month, score) in zip(normalized, scored_months):
+    for shape_label, normalized_value, (_index, month, score) in zip(shape_labels, normalized, scored_months):
         detail_months.append(
             {
                 "name": month.get("name", ""),
                 "short_name": month.get("short_name", ""),
-                "arc_label": month.get("arc_label", ""),
+                "arc_label": shape_label,
                 "score": round(score, 4),
                 "normalized_value": normalized_value,
                 "display_value": max(6, normalized_value) if normalized_value > 0 else 0,
                 "aria_label": (
                     f"{month.get('name', month.get('short_name', 'Month'))}: "
-                    f"{month.get('arc_label', 'Concentration recorded')} "
+                    f"{shape_label} "
                     f"at {normalized_value}% of this year's peak month concentration."
                 ),
             }
@@ -5189,8 +5238,8 @@ def _build_forecast_shape_details(
     return {
         "label": label,
         "short_explanation": "This label summarizes how the existing monthly concentration is distributed across the forecast year.",
-        "peak_month": f"{peak_month.get('name', '')} - {peak_month.get('arc_label', '')}",
-        "quiet_month": f"{quiet_month.get('name', '')} - {quiet_month.get('arc_label', '')}",
+        "peak_month": f"{peak_month.get('name', '')} - {peak_shape_label}",
+        "quiet_month": f"{quiet_month.get('name', '')} - {quiet_shape_label}",
         "peak_season": _season_title_for_month_index(peak_month_index),
         "curve_note": curve_note,
         "distribution_note": curve_note,

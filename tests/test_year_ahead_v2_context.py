@@ -4,7 +4,7 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from generate import _build_forecast_shape_details, _derive_forecast_shape
+from generate import _build_forecast_shape_details, _derive_forecast_shape, _shape_display_labels
 
 
 def test_derive_forecast_shape_uses_existing_arc_scores():
@@ -53,6 +53,7 @@ def test_build_forecast_shape_details_handles_flat_curve():
     assert details["label"] == "A Developing Annual Story"
     assert details["curve_note"] == "Month-level concentration is relatively even across the forecast window."
     assert all(month["normalized_value"] == 100 for month in details["months"])
+    assert all(month["arc_label"] == "Active" for month in details["months"])
 
 
 def test_build_forecast_shape_details_handles_mixed_curve():
@@ -74,6 +75,39 @@ def test_build_forecast_shape_details_handles_mixed_curve():
 
     assert details["label"] == "Late-Year Expansion"
     assert details["peak_month"] == "May 2027 - Key Window"
-    assert details["quiet_month"] == "June 2026 - Supportive"
+    assert details["quiet_month"] == "June 2026 - Background"
     assert details["peak_season"] == "Integration Season"
     assert details["months"][-1]["normalized_value"] == 100
+    assert [month["arc_label"] for month in details["months"]] == [
+        "Background",
+        "Background",
+        "Background",
+        "Active",
+        "Active",
+        "Active",
+        "Active",
+        "Significant",
+        "Significant",
+        "Significant",
+        "Key Window",
+        "Key Window",
+    ]
+
+
+def test_shape_display_labels_do_not_copy_month_labels():
+    scores = [0.92, 0.88, 0.95, 0.96, 0.93, 0.76, 0.87, 0.68, 0.94, 0.92, 0.98, 1.00]
+
+    assert _shape_display_labels(scores) == [
+        "Active",
+        "Active",
+        "Significant",
+        "Significant",
+        "Active",
+        "Background",
+        "Background",
+        "Background",
+        "Significant",
+        "Active",
+        "Key Window",
+        "Key Window",
+    ]
