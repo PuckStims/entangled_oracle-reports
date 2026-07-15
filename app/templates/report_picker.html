@@ -1,0 +1,40 @@
+{% extends "app_shell.html" %}
+{% block title %}Choose a Report{% endblock %}
+{% block content %}
+<section class="page-intro">
+  <h1>Choose the report to generate.</h1>
+  <p>The beta studio exposes the strongest controlled surfaces first. Deferred reports remain visible as roadmap truth, not erased scope.</p>
+</section>
+
+<section class="report-grid" aria-label="Available reports">
+  {% for report in reports %}
+  <article class="report-card">
+    <div class="card-topline">
+      <span>{{ report.depth }}</span>
+      <span>{{ report.status }}</span>
+    </div>
+    <h2>{{ report.label }}</h2>
+    <p>{{ report.promise }}</p>
+    <dl>
+      <div><dt>Best for</dt><dd>{{ report.best_for }}</dd></div>
+      <div><dt>Birth time</dt><dd>{{ report.birth_time_rule }}</dd></div>
+    </dl>
+    <a class="button primary" href="{{ url_for('create_form', report_type=report.key) }}">Create {{ report.label }}</a>
+  </article>
+  {% endfor %}
+</section>
+
+<section class="deferred-scope">
+  <h2>Planned, not dropped</h2>
+  <p>These surfaces are part of the larger build plan but are not exposed in this first studio slice.</p>
+  <div class="deferred-list">
+    {% for report in deferred_reports %}
+    <article>
+      <strong>{{ report.label }}</strong>
+      <span>{{ report.status }}</span>
+    </article>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}
+

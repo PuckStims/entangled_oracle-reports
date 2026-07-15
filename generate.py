@@ -5808,22 +5808,13 @@ def _build_annual_rhythm_quarters(
     Builds four fixed-calendar quarterly orientation cards for the Annual Rhythm section.
 
     Groups the 12 forecast months into four blocks of three. Each card surfaces which
-    slow-planet transit cycles are structurally active across the quarter and which life
-    areas are most activated. No intensity labels or pacing claims are emitted.
+    slow-planet transit cycles are structurally active across the quarter, which life
+    areas are most activated, and how the three-month contour hangs together.
     """
     if not months:
         return []
 
     _SLOW_PLANETS = {"Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"}
-
-    def _season_from_month(month_number: int) -> str:
-        if month_number in {12, 1, 2}:
-            return "Winter"
-        if month_number in {3, 4, 5}:
-            return "Spring"
-        if month_number in {6, 7, 8}:
-            return "Summer"
-        return "Autumn"
 
     def _format_quarter_cycle(event: dict, q_start: datetime, q_end: datetime) -> str:
         planet = str(event.get("transit_planet") or "").strip()
@@ -5837,6 +5828,61 @@ def _build_annual_rhythm_quarters(
         if leave is not None and q_start <= leave < q_end:
             return f"{base} — resolves {leave.strftime('%b %d, %Y')}"
         return f"{base} — carries through this stretch"
+
+    def _quarter_domain_records(q_months: list[dict], limit: int = 2) -> list[dict]:
+        scores: dict[str, float] = {}
+        for month in q_months:
+            for domain in month.get("activated_domains", []) or []:
+                name = str(domain.get("domain") or "").strip()
+                if not name:
+                    continue
+                scores[name] = scores.get(name, 0.0) + float(domain.get("score", 0.0) or 0.0)
+        return [
+            {"domain": name, "score": round(score, 4)}
+            for name, score in sorted(scores.items(), key=lambda item: item[1], reverse=True)[:limit]
+        ]
+
+    def _quarter_title(q_months: list[dict], peak_month: dict, quiet_month: dict) -> str:
+        first = str(q_months[0].get("short_name") or q_months[0].get("name") or "This stretch")
+        last = str(q_months[-1].get("short_name") or q_months[-1].get("name") or "")
+        peak_score = float(peak_month.get("arc_score", 0.0) or 0.0)
+        quiet_score = float(quiet_month.get("arc_score", 0.0) or 0.0)
+        peak_label = str(peak_month.get("name") or peak_month.get("short_name") or "One month")
+        if peak_score >= max(quiet_score * 1.2, quiet_score + 0.05):
+            return f"{peak_label} Carries the Emphasis"
+        return f"{first} to {last}: Shared Rhythm"
+
+    def _quarter_summary(
+        q_months: list[dict],
+        peak_month: dict,
+        quiet_month: dict,
+        domains: list[dict],
+        dominant_cycles: list[dict],
+    ) -> str:
+        month_names = ", ".join(
+            str(month.get("name") or month.get("short_name") or "").strip()
+            for month in q_months
+        )
+        peak_score = float(peak_month.get("arc_score", 0.0) or 0.0)
+        quiet_score = float(quiet_month.get("arc_score", 0.0) or 0.0)
+        peak_name = str(peak_month.get("name") or peak_month.get("short_name") or "the strongest month")
+        quiet_name = str(quiet_month.get("name") or quiet_month.get("short_name") or "the quietest month")
+        if peak_score >= max(quiet_score * 1.2, quiet_score + 0.05):
+            sentence = (
+                f"Across {month_names}, the strongest concentration gathers in {peak_name}, "
+                f"while {quiet_name} carries the lighter part of the stretch."
+            )
+        else:
+            sentence = (
+                f"Across {month_names}, the rhythm stays comparatively even, "
+                "so the three monthly chapters are best read as a shared movement."
+            )
+        if domains:
+            domain_text = ", ".join(domain["domain"] for domain in domains[:2])
+            sentence += f" The most repeated chart area is {domain_text}."
+        if dominant_cycles:
+            sentence += f" The main carried cycle is {dominant_cycles[0]['description']}."
+        return sentence
 
     quarters: list[dict] = []
     for q_index in range(4):
@@ -5853,7 +5899,6 @@ def _build_annual_rhythm_quarters(
             continue
 
         months_label = " · ".join(m.get("short_name", "") for m in q_months)
-        season_name = _season_from_month(q_start.month)
 
         q_active = [
             event for event in all_events
@@ -5884,7 +5929,17 @@ def _build_annual_rhythm_quarters(
             for e in slow_transits[:2]
         ]
 
-        activated_domains = _most_activated_domains(q_active, house_domains, q_start, q_end, top_n=2)
+        activated_domains = _quarter_domain_records(q_months, limit=2) or _most_activated_domains(
+            q_active,
+            house_domains,
+            q_start,
+            q_end,
+            top_n=2,
+        )
+        peak_month = max(q_months, key=lambda month: float(month.get("arc_score", 0.0) or 0.0))
+        quiet_month = min(q_months, key=lambda month: float(month.get("arc_score", 0.0) or 0.0))
+        season_name = _quarter_title(q_months, peak_month, quiet_month)
+        summary = _quarter_summary(q_months, peak_month, quiet_month, activated_domains, dominant_cycles)
 
         station_in_quarter = any(
             _year_ahead_primary_event_type(e) == "planetary_station"
@@ -5920,6 +5975,9 @@ def _build_annual_rhythm_quarters(
                 "index": f"0{q_index + 1}",
                 "months_label": months_label,
                 "season_name": season_name,
+                "summary": summary,
+                "peak_month": peak_month.get("name", ""),
+                "quiet_month": quiet_month.get("name", ""),
                 "dominant_cycles": dominant_cycles,
                 "activated_domains": activated_domains,
                 "footnote": footnote,

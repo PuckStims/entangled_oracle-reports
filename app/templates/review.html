@@ -1,0 +1,41 @@
+{% extends "app_shell.html" %}
+{% block title %}Review {{ report.label }}{% endblock %}
+{% block content %}
+<section class="review-shell">
+  <h1>Review before generation.</h1>
+  <p>Please check the details. Report generation can take several seconds.</p>
+  <dl class="review-list">
+    <div><dt>Report</dt><dd>{{ report.label }}</dd></div>
+    <div><dt>Name</dt><dd>{{ values.name }}</dd></div>
+    <div><dt>Birth date</dt><dd>{{ values.birth_date }}</dd></div>
+    <div><dt>Birth time</dt><dd>{{ values.birth_time }}</dd></div>
+    <div><dt>Birth location</dt><dd>{{ values.location }}</dd></div>
+    {% if values.report_date %}<div><dt>{{ report.report_date_label }}</dt><dd>{{ values.report_date }}</dd></div>{% endif %}
+    <div><dt>Palette</dt><dd>{{ values.palette }}</dd></div>
+    <div><dt>Content pack</dt><dd>{{ values.content_pack.replace("_", " ").title() }}</dd></div>
+  </dl>
+  <form action="{{ url_for('generate') }}" method="post" data-loading-form>
+    <input type="hidden" name="report_type" value="{{ values.report_type }}">
+    <input type="hidden" name="name" value="{{ values.name }}">
+    <input type="hidden" name="birth_date" value="{{ values.birth_date }}">
+    <input type="hidden" name="birth_time" value="{{ values.birth_time or '' }}">
+    <input type="hidden" name="location" value="{{ values.location }}">
+    <input type="hidden" name="report_date" value="{{ values.report_date or '' }}">
+    <input type="hidden" name="palette" value="{{ values.palette }}">
+    <input type="hidden" name="content_pack" value="{{ values.content_pack }}">
+    <input type="hidden" name="consent_acknowledged" value="yes">
+    <div class="actions">
+      <a class="button secondary" href="{{ url_for('create_form', report_type=values.report_type) }}">Edit details</a>
+      <button class="button primary" type="submit">Generate report</button>
+    </div>
+  </form>
+</section>
+<div class="loading-overlay" hidden>
+  <div>
+    <strong>Generating the report</strong>
+    <p data-loading-phrase>Resolving place and time</p>
+    <span>Please keep this browser window open.</span>
+  </div>
+</div>
+{% endblock %}
+

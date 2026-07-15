@@ -1,0 +1,27 @@
+{% extends "app_shell.html" %}
+{% block content %}
+<section class="studio-hero">
+  <div class="hero-copy">
+    <h1>Generate a report through the engine that already exists.</h1>
+    <p>
+      Report Studio is a private beta interface for local Entangled Oracle generation:
+      calculated chart data, structured selection logic, authored libraries, and a
+      controlled report viewer.
+    </p>
+    <div class="actions">
+      <a class="button primary" href="{{ url_for('reports') }}">Create a report</a>
+      <a class="button secondary" href="{{ url_for('companion') }}">Open companion prompts</a>
+    </div>
+  </div>
+  <aside class="studio-panel">
+    <h2>Private beta boundary</h2>
+    <p>Generation stays local/private. Public self-serve hosting, payments, accounts, and API-backed AI are intentionally outside this first implementation pass.</p>
+    <dl>
+      <div><dt>Engine</dt><dd>Existing Python generator</dd></div>
+      <div><dt>Output</dt><dd>HTML report + manifest</dd></div>
+      <div><dt>Storage</dt><dd>Local session folder</dd></div>
+    </dl>
+  </aside>
+</section>
+{% endblock %}
+

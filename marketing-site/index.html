@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Entangled Oracle - Astrological Reports</title>
-<meta name="description" content="Human-reviewed astrology reports generated from precise chart data, authored interpretive libraries, and procedural software. Ordered by email and delivered as polished reports.">
+<title>Entangled Oracle - Private Beta Report Studio</title>
+<meta name="description" content="Astrology reports generated from calculated chart data, structured selection logic, and authored interpretive libraries. Private beta Report Studio now in progress.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -53,21 +53,33 @@
   .brand{display:flex; align-items:baseline; gap:10px;}
   .brand-name{font-family:var(--serif); font-size:22px; letter-spacing:0.03em;}
   .brand-sub{font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:var(--subtle); border-left:1px solid var(--border); padding-left:10px;}
-  .nav-links{display:flex; gap:36px; font-size:14px; color:var(--muted);}
+  .nav-links{display:flex; gap:28px; font-size:14px; color:var(--muted);}
   .nav-links a:hover{color:var(--text);}
   .nav-cta{display:flex; align-items:center; gap:20px;}
-  @media(max-width:760px){ .nav-links{display:none;} }
+  @media(max-width:760px){
+    .nav-links{display:none;}
+    .nav-cta .btn{padding:12px 14px; font-size:12px; white-space:nowrap;}
+  }
 
   /* ---- Hero ---- */
   .hero{padding:140px 0 100px; position:relative; overflow:hidden;}
-  .hero::before{
-    content:''; position:absolute; top:-200px; right:-200px; width:600px; height:600px;
-    background:radial-gradient(circle, rgba(201,109,91,0.12), transparent 70%);
-    pointer-events:none;
-  }
   .hero h1{font-size:clamp(40px,6vw,68px); max-width:820px; margin-bottom:28px;}
   .hero .lede{margin-bottom:40px; font-size:19px;}
   .hero-cta{display:flex; gap:20px; align-items:center; flex-wrap:wrap;}
+  .studio-proof{
+    margin-top:64px; border:1px solid var(--border); background:var(--surface);
+    display:grid; grid-template-columns:1.1fr .9fr; min-height:260px;
+  }
+  .studio-proof-copy{padding:36px;}
+  .studio-proof-copy h2{font-size:32px; margin-bottom:14px;}
+  .studio-proof-copy p{color:var(--muted); font-size:15px;}
+  .studio-proof-visual{
+    background:
+      linear-gradient(135deg, rgba(142,165,138,.28), rgba(143,167,190,.22)),
+      url("assets/img/entangled_oracle_cover_photo.png") center/cover;
+    min-height:240px;
+  }
+  @media(max-width:760px){ .studio-proof{grid-template-columns:1fr;} }
 
   /* ---- Philosophy ---- */
   .philosophy{border-top:1px solid var(--border);}
@@ -93,6 +105,45 @@
   .report-price{font-size:13px; color:var(--subtle); letter-spacing:0.03em;}
   .report-price strong{color:var(--text); font-size:15px;}
   @media(max-width:760px){ .report-grid{grid-template-columns:1fr;} }
+
+  /* ---- Beta Studio ---- */
+  .beta-studio{border-top:1px solid var(--border); background:var(--surface-2);}
+  .beta-layout{display:grid; grid-template-columns:0.9fr 1.1fr; gap:56px; align-items:start;}
+  .beta-studio h2{font-size:clamp(30px,4vw,46px); margin-bottom:20px;}
+  .beta-studio p{color:var(--muted);}
+  .pipeline{display:grid; gap:1px; background:var(--border); border:1px solid var(--border);}
+  .pipeline div{background:var(--surface); padding:22px 24px; display:grid; grid-template-columns:34px minmax(0,1fr); gap:14px; align-items:start;}
+  .pipeline span{color:var(--accent); font-family:var(--serif); font-size:26px; line-height:1;}
+  .pipeline strong{display:block; margin-bottom:4px;}
+  .pipeline p{font-size:13px; margin:0;}
+  @media(max-width:820px){ .beta-layout{grid-template-columns:1fr;} }
+
+  /* ---- Interactive ---- */
+  .interactive{border-top:1px solid var(--border);}
+  .interactive h2{font-size:clamp(30px,4vw,44px); margin-bottom:24px;}
+  .tool-grid{display:grid; grid-template-columns:1fr 1fr; gap:24px;}
+  .tool{
+    background:var(--surface); border:1px solid var(--border); border-radius:4px; padding:30px;
+  }
+  .tool h3{font-family:var(--serif); font-size:28px; margin-bottom:12px;}
+  .tool label{display:block; color:var(--muted); font-size:13px; margin:18px 0 8px;}
+  .tool select{
+    width:100%; border:1px solid var(--border); background:var(--surface-2); color:var(--text);
+    padding:12px; font-family:var(--sans); font-size:14px;
+  }
+  .tool-output{margin-top:20px; padding-top:20px; border-top:1px solid var(--border); color:var(--text);}
+  .tool-output strong{display:block; margin-bottom:6px;}
+  @media(max-width:760px){ .tool-grid{grid-template-columns:1fr;} }
+
+  /* ---- Method ---- */
+  .method{border-top:1px solid var(--border); background:var(--surface);}
+  .method h2{font-size:clamp(30px,4vw,44px); margin-bottom:24px;}
+  .method-rail{display:grid; grid-template-columns:repeat(6,1fr); gap:1px; background:var(--border); border:1px solid var(--border);}
+  .method-rail div{background:var(--bg); padding:22px 16px; min-height:150px;}
+  .method-rail strong{display:block; color:var(--accent); margin-bottom:10px; font-size:13px;}
+  .method-rail p{font-size:13px; color:var(--muted); line-height:1.55;}
+  @media(max-width:920px){ .method-rail{grid-template-columns:repeat(2,1fr);} }
+  @media(max-width:560px){ .method-rail{grid-template-columns:1fr;} }
 
   /* ---- Pricing ---- */
   .pricing{border-top:1px solid var(--border); background:var(--surface);}
@@ -141,26 +192,40 @@
     <div class="nav-links">
       <a href="#philosophy">Philosophy</a>
       <a href="#reports">Reports</a>
+      <a href="#studio">Studio Beta</a>
+      <a href="#method">Method</a>
       <a href="#pricing">Pricing</a>
     </div>
     <div class="nav-cta">
-      <a href="#order" class="btn btn-ghost">Order by email</a>
+      <a href="#beta" class="btn btn-ghost">Request beta access</a>
     </div>
   </nav>
 </header>
 
 <section class="hero">
   <div class="wrap">
-    <span class="eyebrow">Entangled Oracle - Astrological Reports</span>
-    <h1>Personal astrology reports, generated with care.</h1>
+    <span class="eyebrow">Entangled Oracle - Private Beta</span>
+    <h1>Astrology reports with an engine underneath them.</h1>
     <p class="lede">
-      Entangled Oracle creates emailed astrology reports from real birth data, precise chart
-      calculations, procedural selection logic, and authored interpretive libraries. No app,
-      no account, no feed: just a carefully generated report sent directly to your inbox.
+      Entangled Oracle creates personal astrology reports from calculated chart data,
+      structured selection logic, and authored interpretive libraries. The report engine
+      already runs locally; a private beta Report Studio is now being built around it.
     </p>
     <div class="hero-cta">
-      <a href="#order" class="btn btn-primary">Order by email</a>
-      <a href="#reports" class="btn btn-ghost">See what's inside</a>
+      <a href="#beta" class="btn btn-primary">Request beta access</a>
+      <a href="#reports" class="btn btn-ghost">Explore the reports</a>
+      <a href="#studio" class="btn btn-ghost">See the studio plan</a>
+    </div>
+    <div class="studio-proof">
+      <div class="studio-proof-copy">
+        <h2>Private generation, public clarity.</h2>
+        <p>
+          The public website stays static and lightweight. Report generation remains local,
+          private, and invitation-led until hosting, privacy, payment, rate-limiting, and
+          deletion flows are ready for public self-serve use.
+        </p>
+      </div>
+      <div class="studio-proof-visual" aria-label="Entangled Oracle visual identity"></div>
     </div>
   </div>
 </section>
@@ -177,7 +242,7 @@
     <div class="feature-grid">
       <div class="feature">
         <h3>Computed, not guessed</h3>
-        <p>Reports use real ephemeris data and birth details, with exact time used where the report requires it and softer handling when time is unknown.</p>
+        <p>Reports use real ephemeris data and birth details, with exact time required for timing-heavy beta reports.</p>
       </div>
       <div class="feature">
         <h3>Written, not templated</h3>
@@ -194,73 +259,142 @@
 <section class="reports" id="reports">
   <div class="wrap">
     <span class="eyebrow">Choose your report</span>
-    <h2>Four email-delivered report options</h2>
+    <h2>Current report surfaces and beta priority</h2>
     <div class="report-grid">
       <div class="report-card" style="--card-accent:#8EA58A">
         <h3>Daily Horoscope</h3>
-        <p>A short daily read tuned to the active sky and available chart context, useful for quick orientation without turning the day into a verdict.</p>
-        <div class="report-price">From <strong>$X</strong></div>
-        <a href="mailto:orders@entangledoracle.com?subject=Order%3A%20Daily%20Horoscope" class="btn btn-ghost" style="margin-top:18px; padding:10px 20px; font-size:13px;">Order this report</a>
+        <p>A short daily read tuned to the active sky and available chart context. This surface is being revalidated before it becomes part of the Studio beta promise.</p>
+        <div class="report-price"><strong>Deferred validation</strong></div>
       </div>
       <div class="report-card" style="--card-accent:#8FA7BE">
         <h3>Personal Forecast</h3>
         <p>A focused look at the weeks ahead, built around calculated timing and the strongest current activations in your chart.</p>
-        <div class="report-price"><strong>$20</strong></div>
-        <a href="mailto:orders@entangledoracle.com?subject=Order%3A%20Personal%20Forecast" class="btn btn-ghost" style="margin-top:18px; padding:10px 20px; font-size:13px;">Order this report</a>
+        <div class="report-price"><strong>Private beta priority</strong></div>
       </div>
       <div class="report-card" style="--card-accent:#B7A6C9">
         <h3>Soul Ecosystem</h3>
         <p>A fuller portrait of your natal chart's interpretive architecture: archetypes, indexes, and the pattern underneath them.</p>
-        <div class="report-price"><strong>$25</strong></div>
-        <a href="mailto:orders@entangledoracle.com?subject=Order%3A%20Soul%20Ecosystem" class="btn btn-ghost" style="margin-top:18px; padding:10px 20px; font-size:13px;">Order this report</a>
+        <div class="report-price"><strong>Premium beta extension</strong></div>
       </div>
       <div class="report-card" style="--card-accent:#C96D5B">
         <h3>Year Ahead</h3>
         <p>A long-form annual timing report: major themes, meaningful windows, and the larger pattern of the year ahead.</p>
-        <div class="report-price"><strong>$35</strong></div>
-        <a href="mailto:orders@entangledoracle.com?subject=Order%3A%20Year%20Ahead" class="btn btn-ghost" style="margin-top:18px; padding:10px 20px; font-size:13px;">Order this report</a>
+        <div class="report-price"><strong>Private beta priority</strong></div>
       </div>
+    </div>
+  </div>
+</section>
+
+<section class="beta-studio" id="studio">
+  <div class="wrap beta-layout">
+    <div>
+      <span class="eyebrow">Report Studio beta</span>
+      <h2>A controlled browser doorway, not a public generator yet.</h2>
+      <p class="lede">
+        The Report Studio wraps the existing local report engine in a private browser flow:
+        choose a report, enter birth details, review the request, generate locally, view the
+        HTML report, print or save through the browser, and delete the local session.
+      </p>
+      <p>
+        Public self-serve generation is deliberately not being rushed. Birth data, generated
+        reports, payment flow, privacy, and hosting deserve careful handling before a public
+        dynamic app exists.
+      </p>
+    </div>
+    <div class="pipeline" aria-label="Report Studio flow">
+      <div><span>1</span><p><strong>Choose report</strong>Year Ahead, Personal Forecast, and Soul Ecosystem lead the private beta.</p></div>
+      <div><span>2</span><p><strong>Enter details</strong>Exact birth time is required for the timing-heavy beta reports.</p></div>
+      <div><span>3</span><p><strong>Generate locally</strong>The existing Python engine creates HTML output and a traceable manifest.</p></div>
+      <div><span>4</span><p><strong>Read and delete</strong>The studio viewer supports print/save and local session cleanup.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="interactive" id="interactive">
+  <div class="wrap">
+    <span class="eyebrow">Optional companion layer</span>
+    <h2>Interactive help without making AI the engine.</h2>
+    <div class="tool-grid">
+      <div class="tool">
+        <h3>Report finder</h3>
+        <p>Choose the kind of reading you want. This is deterministic guidance, not a chatbot.</p>
+        <label for="finder-goal">What are you looking for?</label>
+        <select id="finder-goal">
+          <option value="year">A yearly map</option>
+          <option value="weather">Current life weather</option>
+          <option value="structure">A deep natal portrait</option>
+          <option value="quick">A quick check-in</option>
+        </select>
+        <div class="tool-output" id="finder-output"></div>
+      </div>
+      <div class="tool">
+        <h3>Reflection prompt</h3>
+        <p>Generate a reading prompt without sending birth data, report text, or private context anywhere.</p>
+        <label for="prompt-mode">Reading mode</label>
+        <select id="prompt-mode">
+          <option value="gentle">Gentle</option>
+          <option value="direct">Direct</option>
+          <option value="practical">Practical</option>
+        </select>
+        <div class="tool-output" id="prompt-output"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="method" id="method">
+  <div class="wrap">
+    <span class="eyebrow">How it works</span>
+    <h2>Calculated astrology, routed prose, designed report.</h2>
+    <div class="method-rail">
+      <div><strong>Birth details</strong><p>Client-provided date, time, and location create the report input.</p></div>
+      <div><strong>Chart calculation</strong><p>Swiss Ephemeris and local chart utilities produce the chart payload.</p></div>
+      <div><strong>Formula layers</strong><p>Standard and EO-specific structures are computed before prose selection.</p></div>
+      <div><strong>Variable routing</strong><p>Report fields and key paths decide which authored blocks apply.</p></div>
+      <div><strong>Authored libraries</strong><p>Human-written interpretation blocks are selected, not improvised by AI.</p></div>
+      <div><strong>HTML report</strong><p>The final reading renders as designed HTML with a traceable manifest sidecar.</p></div>
     </div>
   </div>
 </section>
 
 <section class="pricing" id="pricing">
   <div class="wrap">
-    <span class="eyebrow">Accessible founding pricing</span>
-    <h2>Lowered while the business gets off the ground</h2>
+    <span class="eyebrow">Method and limits</span>
+    <h2>Wonder does not require overclaiming.</h2>
     <p class="lede">
-      These are intentionally accessible founding rates. Entangled Oracle is still early, and the
-      current prices are meant to keep the work reachable for people who are often priced out of
-      deeper astrology offerings. Every price above is what you'll actually pay today, with no
-      hidden tiers.
+      Entangled Oracle is symbolic reflection, not certainty, diagnosis, crisis guidance, or
+      professional medical, legal, or financial advice. AI may appear as an optional companion
+      layer for reflection and navigation, but core reports are built from calculations,
+      structured selection rules, and authored interpretation libraries.
     </p>
   </div>
 </section>
 
-<section class="waitlist" id="order">
+<section class="waitlist" id="beta">
   <div class="wrap">
-    <span class="eyebrow">How to order</span>
-    <h2>No account. No portal. Just an email.</h2>
+    <span class="eyebrow">Beta request</span>
+    <h2>Private beta access is opening gradually.</h2>
     <p class="lede">
-      Entangled Oracle is deliberately old-school by default: you request the report, receive the
-      details, and get the finished file by email.
+      You can request access, indicate which report interests you, and share what kind of reading
+      experience would be useful. Full birth details are collected only if a beta report is
+      actually scheduled.
     </p>
     <div class="feature-grid" style="margin-bottom:48px;">
       <div class="feature">
-        <h3>1. Email your order</h3>
-        <p>Tell us the report you want, your name, birth date, birth time if known, and birth location. We will confirm anything missing.</p>
+        <h3>1. Request access</h3>
+        <p>Send your contact info, report interest, and what you hope to explore. Do not send full birth data yet.</p>
       </div>
       <div class="feature">
-        <h3>2. We reply within 48 hours</h3>
-        <p>You'll get a confirmation, any needed intake questions, payment instructions, and the current delivery window.</p>
+        <h3>2. Manual scheduling</h3>
+        <p>If selected for beta, intake happens directly and intentionally rather than through an open public form.</p>
       </div>
       <div class="feature">
-        <h3>3. Receive the report by email</h3>
-        <p>Once payment clears, the report is generated, checked, and emailed to you as a polished file.</p>
+        <h3>3. Controlled generation</h3>
+        <p>The report is generated privately through the local engine or beta studio, then reviewed before delivery.</p>
       </div>
     </div>
-    <a href="mailto:orders@entangledoracle.com?subject=Order%3A%20" class="btn btn-primary">Email us your order</a>
-    <p class="waitlist-note">orders@entangledoracle.com - direct report requests and collaboration inquiries.</p>
+    <a href="mailto:orders@entangledoracle.com?subject=Beta%20Access%20Request" class="btn btn-primary">Request beta access</a>
+    <p class="waitlist-note">orders@entangledoracle.com - beta requests, report questions, and collaboration inquiries.</p>
   </div>
 </section>
 
@@ -268,16 +402,48 @@
   <div class="wrap">
     <div>
       <div class="brand-name" style="font-family:var(--serif)">Entangled Oracle</div>
-      <p>Astrological Reports is the first Entangled Oracle offering: chart-led reports requested by email and delivered directly.</p>
+      <p>Astrological Reports is the first Entangled Oracle offering: chart-led reports generated through a local-first engine and moving into private beta Studio workflows.</p>
       <p class="legal">© 2026 Ksisti-Puck LLC. Symbolic reflection, not prediction or certainty.</p>
     </div>
     <div class="nav-links" style="flex-direction:column; align-items:flex-end; gap:10px;">
       <a href="#philosophy">Philosophy</a>
       <a href="#reports">Reports</a>
+      <a href="#studio">Studio Beta</a>
+      <a href="#method">Method</a>
       <a href="#pricing">Pricing</a>
     </div>
   </div>
 </footer>
 
+<script>
+  const finderCopy = {
+    year: ["Year Ahead", "Best when you want a flagship annual timing experience with major themes and meaningful windows."],
+    weather: ["Personal Forecast", "Best when you want present-tense life weather, active pressures, and near-term timing awareness."],
+    structure: ["Soul Ecosystem", "Best when you want a deep natal architecture portrait rather than a timing-first report."],
+    quick: ["Daily Horoscope", "Useful later for a smaller check-in; this surface is being revalidated before Studio beta exposure."]
+  };
+  const promptCopy = {
+    gentle: "While reading, mark one sentence that gives language to something you already sensed. You do not have to act on it today.",
+    direct: "Separate what the report describes from what you decide. Symbolic language can clarify without becoming an instruction.",
+    practical: "Choose one theme to observe for a week. Keep the next step small enough to verify in ordinary life."
+  };
+  function renderFinder() {
+    const select = document.getElementById("finder-goal");
+    const output = document.getElementById("finder-output");
+    if (!select || !output) return;
+    const [title, body] = finderCopy[select.value];
+    output.innerHTML = `<strong>${title}</strong><p>${body}</p>`;
+  }
+  function renderPrompt() {
+    const select = document.getElementById("prompt-mode");
+    const output = document.getElementById("prompt-output");
+    if (!select || !output) return;
+    output.innerHTML = `<strong>Try this while reading</strong><p>${promptCopy[select.value]}</p>`;
+  }
+  document.getElementById("finder-goal")?.addEventListener("change", renderFinder);
+  document.getElementById("prompt-mode")?.addEventListener("change", renderPrompt);
+  renderFinder();
+  renderPrompt();
+</script>
 </body>
 </html>

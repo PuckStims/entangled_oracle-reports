@@ -1,0 +1,25 @@
+{% extends "app_shell.html" %}
+{% block title %}Companion Prompts{% endblock %}
+{% block content %}
+<section class="page-intro">
+  <h1>Companion prompts, no API required.</h1>
+  <p>This layer helps with pacing and reflection. It does not calculate astrology, create report claims, or send private data anywhere.</p>
+</section>
+<section class="companion-strip standalone">
+  <div class="prompt-columns">
+    {% for group, prompts in prompt_groups.items() %}
+    <article>
+      <h2>{{ group.title() }} Reading</h2>
+      {% for prompt in prompts %}
+      <p>{{ prompt }}</p>
+      {% endfor %}
+    </article>
+    {% endfor %}
+  </div>
+  <div class="copy-prompt">
+    <textarea readonly>{{ copy_prompt }}</textarea>
+    <button class="button secondary" type="button" data-copy-prompt>Copy prompt</button>
+  </div>
+</section>
+{% endblock %}
+

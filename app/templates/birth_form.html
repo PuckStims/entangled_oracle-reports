@@ -1,0 +1,66 @@
+{% extends "app_shell.html" %}
+{% block title %}Create {{ report.label }}{% endblock %}
+{% block content %}
+<section class="form-shell">
+  <div class="form-intro">
+    <a class="back-link" href="{{ url_for('reports') }}">Back to reports</a>
+    <h1>Create {{ report.label }}</h1>
+    <p>{{ report.promise }}</p>
+    <p class="rule">{{ report.birth_time_rule }}</p>
+  </div>
+
+  {% if errors %}
+  <div class="error-list" role="alert">
+    {% for error in errors %}<p>{{ error }}</p>{% endfor %}
+  </div>
+  {% endif %}
+
+  <form class="studio-form" action="{{ url_for('review', report_type=report.key) }}" method="post">
+    <label>
+      Display name
+      <input name="name" value="{{ values.name }}" autocomplete="name" required>
+    </label>
+    <div class="field-row">
+      <label>
+        Birth date
+        <input type="date" name="birth_date" value="{{ values.birth_date }}" required>
+      </label>
+      <label>
+        Birth time
+        <input type="time" name="birth_time" value="{{ values.birth_time or '' }}" {% if not report.allow_unknown_time %}required{% endif %}>
+      </label>
+    </div>
+    <label>
+      Birth location
+      <input name="location" value="{{ values.location }}" placeholder="City, state or country" required>
+    </label>
+    <div class="field-row">
+      <label>
+        {{ report.report_date_label }}
+        <input type="date" name="report_date" value="{{ values.report_date or '' }}">
+      </label>
+      <label>
+        Palette
+        <select name="palette">
+          <option value="vibrant" {% if values.palette == "vibrant" %}selected{% endif %}>Vibrant</option>
+          <option value="muted" {% if values.palette == "muted" %}selected{% endif %}>Muted</option>
+        </select>
+      </label>
+    </div>
+    <label>
+      Content pack
+      <select name="content_pack">
+        {% for pack in report.content_packs %}
+        <option value="{{ pack }}" {% if values.content_pack == pack %}selected{% endif %}>{{ pack.replace("_", " ").title() }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label class="check-row">
+      <input type="checkbox" name="consent_acknowledged" value="yes" {% if values.consent_acknowledged %}checked{% endif %}>
+      <span>I understand this private beta flow generates and stores report files locally on this machine.</span>
+    </label>
+    <button class="button primary" type="submit">Review request</button>
+  </form>
+</section>
+{% endblock %}
+

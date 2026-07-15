@@ -1,0 +1,53 @@
+{% extends "app_shell.html" %}
+{% block title %}Generated Report{% endblock %}
+{% block content %}
+<section class="viewer-shell">
+  <div class="viewer-toolbar">
+    <div>
+      <h1>{{ report.label if report else "Generated report" }}</h1>
+      <p>Local/private session: {{ session_id }}</p>
+    </div>
+    <div class="toolbar-actions">
+      <a class="button secondary" href="{{ url_for('report_raw', session_id=session_id) }}" target="_blank" rel="noopener">Open full screen</a>
+      <button class="button secondary" type="button" data-print-report>Print / save</button>
+      <a class="button secondary" href="{{ url_for('reports') }}">Create another</a>
+      <form action="{{ url_for('report_delete', session_id=session_id) }}" method="post" data-delete-report>
+        <button class="button danger" type="submit">Delete local report</button>
+      </form>
+    </div>
+  </div>
+
+  {% if method_details %}
+  <details class="method-details">
+    <summary>Method details</summary>
+    <dl>
+      {% for label, value in method_details %}
+      <div><dt>{{ label }}</dt><dd>{{ value }}</dd></div>
+      {% endfor %}
+    </dl>
+  </details>
+  {% endif %}
+
+  <div class="viewer-frame">
+    <iframe title="Generated report" src="{{ url_for('report_raw', session_id=session_id) }}"></iframe>
+  </div>
+</section>
+
+<section class="companion-strip">
+  <h2>Static reading companion</h2>
+  <div class="prompt-columns">
+    {% for group, prompts in prompt_groups.items() %}
+    <article>
+      <h3>{{ group.title() }} Reading</h3>
+      {% for prompt in prompts %}
+      <p>{{ prompt }}</p>
+      {% endfor %}
+    </article>
+    {% endfor %}
+  </div>
+  <div class="copy-prompt">
+    <textarea readonly>{{ copy_prompt }}</textarea>
+    <button class="button secondary" type="button" data-copy-prompt>Copy prompt</button>
+  </div>
+</section>
+{% endblock %}

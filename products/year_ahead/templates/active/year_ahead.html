@@ -1272,6 +1272,7 @@
     }
 
     #annual-rhythm .q-title,
+    #annual-rhythm .q-summary,
     #annual-rhythm .q-row,
     #annual-rhythm .q-footnote {
       grid-column: 2;
@@ -1571,6 +1572,7 @@
       #year-arcs .predictive-research-meta,
       #year-arcs .predictive-research-dates,
       #annual-rhythm .q-title,
+      #annual-rhythm .q-summary,
       #annual-rhythm .q-row,
       #annual-rhythm .q-footnote,
       .month-index-wrap,
@@ -2099,6 +2101,7 @@
     .q-index { font-size:.62rem; letter-spacing:2px; color:var(--faint); }
     .q-months { font-size:.72rem; letter-spacing:.04em; font-variant-caps:all-small-caps; text-transform:none; color:var(--muted); margin-left:auto; }
     .q-title { margin:2px 0 14px; font-size:1.15rem; font-weight:normal; color:var(--text); }
+    .q-summary { margin:0 0 14px; color:var(--muted); font-size:.9rem; line-height:1.6; }
     .q-row { margin-top:12px; }
     .q-row-label { font-size:.6rem; letter-spacing:.04em; font-variant-caps:all-small-caps; text-transform:none; color:var(--faint); margin:0 0 5px; }
     .q-cycle { margin:0 0 4px; font-size:.92rem; color:var(--text); line-height:1.4; }
@@ -4018,6 +4021,16 @@
               <span class="q-months">{{ q.months_label }}</span>
             </div>
             <h3 class="q-title">{{ q.season_name }}</h3>
+            {% if q.summary %}
+            <p class="q-summary">{{ q.summary }}</p>
+            {% endif %}
+            {% if q.peak_month or q.quiet_month %}
+            <div class="q-row">
+              <p class="q-row-label">Monthly contour</p>
+              {% if q.peak_month %}<p>Strongest concentration: {{ q.peak_month }}</p>{% endif %}
+              {% if q.quiet_month %}<p>Quietest point: {{ q.quiet_month }}</p>{% endif %}
+            </div>
+            {% endif %}
             {% if q.dominant_cycles %}
             <div class="q-row">
               <p class="q-row-label">Carrying through this stretch</p>

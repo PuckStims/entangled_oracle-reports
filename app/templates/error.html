@@ -1,0 +1,10 @@
+{% extends "app_shell.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<section class="message-shell">
+  <h1>{{ title }}</h1>
+  <p>{{ message }}</p>
+  <a class="button primary" href="{{ url_for('reports') }}">Back to reports</a>
+</section>
+{% endblock %}
+

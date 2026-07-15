@@ -1,0 +1,10 @@
+{% extends "app_shell.html" %}
+{% block title %}Report Deleted{% endblock %}
+{% block content %}
+<section class="message-shell">
+  <h1>Local report deleted.</h1>
+  <p>The session folder has been removed from this machine.</p>
+  <a class="button primary" href="{{ url_for('reports') }}">Create another report</a>
+</section>
+{% endblock %}
+

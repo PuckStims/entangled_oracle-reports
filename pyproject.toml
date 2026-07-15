@@ -9,6 +9,7 @@ description = "Local-first astrology report generator."
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
+    "flask",
     "geonamescache",
     "geopy",
     "jinja2",
@@ -19,4 +20,21 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "pytest",
+]
+
+[tool.setuptools]
+py-modules = [
+    "config",
+    "generate",
+    "product_versions",
+    "run_app",
+    "test_offline_location",
+]
+
+[tool.setuptools.packages.find]
+include = [
+    "app*",
+    "formulas*",
+    "products*",
+    "selectors*",
 ]
