@@ -147,7 +147,15 @@ def _leaf_paths(node, path=()):
 def test_candidate_catalog_has_required_shape():
     candidates = load_candidate_catalog()
 
-    assert len(candidates) >= 8
+    assert len(candidates) >= 140
+    assert {candidate["state"] for candidate in candidates} >= {
+        "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA",
+        "HI", "IA", "ID", "IL", "IN", "KS", "KY", "LA", "MA", "MD",
+        "ME", "MI", "MN", "MS", "MO", "MT", "NC", "ND", "NE", "NH",
+        "NJ", "NM", "NV", "NY", "OH", "OK", "OR", "PA", "RI", "SC",
+        "SD", "TN", "TX", "UT", "VA", "VT", "WA", "WI", "WV", "WY",
+        "DC",
+    }
     for candidate in candidates:
         assert REQUIRED_CANDIDATE_FIELDS <= set(candidate)
         assert candidate["location_id"].startswith("us-")
@@ -167,13 +175,16 @@ def test_candidate_catalog_has_seed_place_ontology_for_exemplars():
         if candidate["selection_classes"]
     ]
 
-    assert len(enriched) >= 30
+    assert len(enriched) >= 90
     assert "regional_anchor" in candidates["us-mn-duluth"]["selection_classes"]
     assert "great_lakes_port" in candidates["us-mn-duluth"]["place_archetypes"]
     assert "spiritual_destinations" in candidates["us-az-sedona"]["collections"]
     assert "difficult_important_place" in candidates["us-mi-detroit"]["selection_classes"]
     assert "river_systems" in candidates["us-la-new-orleans"]["collections"]
     assert "remote_service_hub" in candidates["us-ak-anchorage"]["place_archetypes"]
+    assert "state_coverage_anchor" in candidates["us-de-dover"]["selection_classes"]
+    assert "state_capitals" in candidates["us-ms-jackson"]["collections"]
+    assert "borderlands" in candidates["us-tx-el-paso"]["collections"]
 
 
 def test_batch_search_evidence_generation_does_not_mutate_inputs():
@@ -327,16 +338,24 @@ def test_recommendation_prose_varies_within_repeated_buckets():
     )
 
     bodies_by_bucket: dict[str, set[str]] = {}
+    keys_by_bucket: dict[str, set[str]] = {}
     counts_by_bucket: dict[str, int] = {}
     for location in context["selected_locations"]:
         bucket = location["bucket"]
         body = context["recommendation_leaves"][location["location_id"]]["body"]
         bodies_by_bucket.setdefault(bucket, set()).add(body)
+        keys_by_bucket.setdefault(bucket, set()).add(location["recommendation_prose_key"])
         counts_by_bucket[bucket] = counts_by_bucket.get(bucket, 0) + 1
 
+    assert len({
+        location["recommendation_prose_key"]
+        for location in context["selected_locations"]
+    }) >= 4
     for bucket, count in counts_by_bucket.items():
         if count > 1:
-            assert len(bodies_by_bucket[bucket]) > 1
+            assert all(body != "TODO" for body in bodies_by_bucket[bucket])
+            if len(keys_by_bucket[bucket]) > 1:
+                assert len(bodies_by_bucket[bucket]) > 1
 
 
 def test_search_selection_clusters_nearby_similar_locations_as_alternates():

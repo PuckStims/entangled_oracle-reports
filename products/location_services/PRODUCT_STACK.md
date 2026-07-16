@@ -5,6 +5,10 @@
 **Primary anchor:** Place Resonance Search.
 **Reusable evidence unit:** Place Profile, currently implemented by the
 `place_resonance` package and legacy root-level Place Resonance modules.
+**Current implementation note:** Place Resonance Search now has an active
+candidate-catalog, scoring, proximity-clustering, bucket-routing, and draft
+tile-prose scaffold. The catalog is still a seed bank, not a final production
+gazetteer.
 
 ## Product Thesis
 
@@ -25,6 +29,9 @@ more pressured, more available, or more consequential.
 - Tropical zodiac and Whole Sign houses remain the production baseline.
 - Natal condition modifies relocated expression; relocation does not overwrite natal condition.
 - Static place evidence comes before map lines, Local Space, parans, or dynamic timing.
+- Astrocartography and location products use standard locational evidence only;
+  EO custom asteroid influence is reserved for natal/report-specific products
+  and must not enter Location Services scoring or map stacks.
 - No product declares a single universal best place.
 - No product claims guaranteed love, wealth, safety, illness, destiny, success, or failure.
 - Technical transparency is part of the premium product, not a backend footnote.
@@ -56,9 +63,11 @@ publish a bulk "best places" list. It evaluates a curated candidate pool,
 selects a smaller set of meaningful locations, groups them into interpretive
 buckets, and explains what each place is asking from the natal chart.
 
-The current `place_resonance_search` package is a transitional product identity:
-it is registry-wired but still wraps the single-location Place Resonance output
-until candidate catalog, scoring, curation, and bucket logic are built.
+The current `place_resonance_search` package is now the active search shell. It
+generates one evidence record per candidate, scores the candidate pool, assigns
+buckets and recommendation labels, selects a curated set, collapses near-duplicate
+regional peers, and routes both authored search prose and draft city-specific
+tile-prose slots.
 
 ### Required Inputs
 
@@ -75,6 +84,8 @@ until candidate catalog, scoring, curation, and bucket logic are built.
 ### Included Evidence
 
 - One `LocationEvidenceRecord` per evaluated candidate location.
+- Candidate-bank context: coordinates, region label, population tier, notes, and
+  optional ontology tags.
 - Theme-vector scores by life dimension.
 - Overall resonance score.
 - Complexity or pressure index.
@@ -82,6 +93,7 @@ until candidate catalog, scoring, curation, and bucket logic are built.
 - Grounding score for quieter or stabilizing places.
 - Baseline divergence or novelty score.
 - Bucket assignment with evidence references.
+- Proximity-cluster role and nearby similar alternates for selected cities.
 - Technical appendix preserving candidate, coordinate, and scoring trace.
 
 ### Excluded Until Later Versions
@@ -91,7 +103,68 @@ until candidate catalog, scoring, curation, and bucket logic are built.
 - Parans as a primary scoring layer.
 - Local Space directionality.
 - Current-year timing overlays.
+- Proprietary EO custom asteroid influence.
 - Claims of one objective best or worst location.
+
+### Candidate Bank Architecture
+
+The candidate bank should be treated as an editorially curated location ontology,
+not a long city dropdown. Dynamic or imported gazetteer data may eventually
+supply broad coverage, coordinates, population, administrative hierarchy,
+timezone, and nearby-place discovery. It should not replace curated place
+selection, because interpretive inclusion requires human-controlled judgment
+about place type, cultural texture, and report usefulness.
+
+The bank separates:
+
+- **Selection classes** - why the location belongs in the pool, such as national
+  anchor, regional anchor, state coverage anchor, geographic test anchor,
+  destination anchor, or difficult but important place.
+- **Place archetypes** - what kind of lived environment it represents, such as
+  global city, college town, high desert, Great Lakes port, river confluence,
+  spiritual retreat-oriented town, industrial corridor, or remote service hub.
+- **Collections** - curated expansion sets, such as state capitals, river
+  systems, desert systems, mountain systems, coastal sequence, historic memory
+  landscapes, borderlands, islands, creative/alternative enclaves, and migration
+  or reinvention destinations.
+- **Geographic hierarchy** - physical and administrative belonging beyond the
+  single region label.
+- **Climate and sensory tags** - grounded environmental texture, such as cool
+  marine, hot humid, high-altitude dry, lake-effect, fog-heavy, storm-exposed,
+  tropical, subarctic, or four-season continental.
+- **Interpretive use cases** - why the place is useful in a reading, such as
+  practical base city, retreat or recovery, career visibility, creative
+  reinvention, ancestral memory landscape, belonging or community, pressure-test
+  location, or liminal threshold place.
+
+The current seed catalog includes 147 U.S. candidate locations across all 50
+states plus Washington, D.C. Ontology waves have enriched 92 of them. Unenriched
+locations remain valid candidates and normalize the ontology fields to empty
+lists until later research passes.
+
+### Proximity And Regional Collapse
+
+For Place Resonance Search, "region" means practical geographic proximity, not
+only the catalog's region label. The current selector treats cities within about
+500 miles of one another as nearby regional peers when their bucket, dominant
+themes, and lead evidence signature are similar.
+
+Current policy:
+
+- Up to two similar nearby cities may appear as full tiles.
+- Third-and-later similar nearby cities collapse under a selected representative
+  as nearby similar alternates.
+- Selected tiles expose `regional_role`, `similarity_signature`,
+  `cluster_alternates`, and `sibling_difference`.
+- This prevents one dense regional cluster from filling the report with many
+  variations of the same symbolic result.
+
+### Tile Prose Status
+
+The tile-detail prose layer is scaffolded but intentionally not authored yet.
+Current `tile_detail` leaves contain `TODO` bodies with full `_note` guidance so
+content strategy can be discussed before prose is committed. Renderer output
+shows these as draft slots rather than exposing raw TODO text.
 
 ### Selection Buckets
 
@@ -111,23 +184,32 @@ until candidate catalog, scoring, curation, and bucket logic are built.
 4. **Curated Location Table** - selected cities, buckets, labels, and scores.
 5. **Location Profiles** - compact one-place interpretations powered by the
    reusable Place Profile unit.
-6. **Pattern Synthesis** - what the selected places reveal together.
-7. **Practical Use Guidance** - how to use symbolic perspective without turning
+6. **Nearby Similar Alternates** - collapsed regional peers where multiple
+   cities share the same broad symbolic signature.
+7. **Pattern Synthesis** - what the selected places reveal together.
+8. **Practical Use Guidance** - how to use symbolic perspective without turning
    it into a command.
-8. **Uncertainty And Safety Notes** - method boundaries, birth-time sensitivity,
+9. **Uncertainty And Safety Notes** - method boundaries, birth-time sensitivity,
    and unsupported methods.
-9. **Technical Appendix** - candidate pool, coordinates, scoring trace, and
+10. **Technical Appendix** - candidate pool, coordinates, scoring trace, and
    exclusions.
 
 ### End-State Backend Needs
 
-- U.S. candidate location catalog.
-- Batch `LocationEvidenceRecord` generation.
-- Theme-vector scoring.
+- U.S. candidate location catalog. **Seed implemented; expansion and audit ongoing.**
+- Candidate-bank ontology for selection class, place archetype, collection,
+  geographic hierarchy, climate/sensory texture, and interpretive use case.
+  **Seed implemented.**
+- Batch `LocationEvidenceRecord` generation. **Implemented for current search
+  shell.**
+- Theme-vector scoring. **Implemented as transparent first-pass scoring.**
 - Complexity, consensus, grounding, and baseline-divergence indexes.
-- Curated selection rules that avoid monotony and near-duplicates.
-- Bucket assignment.
-- Search-level prose routing.
+  **Implemented as first-pass indexes.**
+- Curated selection rules that avoid monotony and near-duplicates. **Implemented
+  with state/bucket caps and proximity clustering.**
+- Bucket assignment. **Implemented.**
+- Search-level prose routing. **Implemented for authored families; tile-detail
+  prose remains scaffolded.**
 - Technical appendix export for evaluated and selected candidates.
 
 ## Reusable Unit: Place Profile

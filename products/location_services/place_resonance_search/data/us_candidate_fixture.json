@@ -4,7 +4,8 @@
   "notes": [
     "Expanded U.S. candidate catalog merged from the seed fixture plus Astrocartography fixture waves 1 and 2.",
     "Version 0.3.0 adds optional ontology fields that separate inclusion logic from descriptive texture and geographic hierarchy.",
-    "Ontology tags are a first editorial seed for selection, clustering, and prose scaffolding; they should be researched and deepened before production-scale claims.",
+    "Expansion wave 2026-07-15 adds 57 ontology-tagged U.S. anchors across missing states, capitals, secondary cities, borderlands, coastlines, rivers, college towns, and difficult-but-important places.",
+    "Ontology tags are an editorial seed for selection, clustering, and prose scaffolding; they should be researched and deepened before production-scale claims.",
     "Coordinates remain curated seed values and should still be audited before any production-scale claims or external rollout."
   ],
   "candidates": [
@@ -178,6 +179,99 @@
       ]
     },
     {
+      "location_id": "us-al-mobile",
+      "display_name": "Mobile, Alabama, United States",
+      "city": "Mobile",
+      "state": "AL",
+      "country": "US",
+      "latitude": 30.6954,
+      "longitude": -88.0399,
+      "timezone": "America/Chicago",
+      "population_tier": "mid_metro",
+      "region": "Gulf South",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Gulf Coast",
+        "Port"
+      ],
+      "selection_classes": [
+        "regional_anchor",
+        "geographic_test_anchor"
+      ],
+      "place_archetypes": [
+        "port_city",
+        "gulf_coast",
+        "historic_compact_city"
+      ],
+      "collections": [
+        "gulf_coast_sequence",
+        "coastal_sequence",
+        "southern_port_cities"
+      ],
+      "geographic_hierarchy": [
+        "gulf_south",
+        "mobile_bay",
+        "alabama_coast"
+      ],
+      "climate_sensory_tags": [
+        "hot_humid",
+        "subtropical_coastal",
+        "storm_exposed"
+      ],
+      "interpretive_use_cases": [
+        "practical_base_city",
+        "liminal_or_threshold_place",
+        "regional_reset"
+      ]
+    },
+    {
+      "location_id": "us-al-montgomery",
+      "display_name": "Montgomery, Alabama, United States",
+      "city": "Montgomery",
+      "state": "AL",
+      "country": "US",
+      "latitude": 32.3668,
+      "longitude": -86.3,
+      "timezone": "America/Chicago",
+      "population_tier": "mid_metro",
+      "region": "Southeast",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Capital",
+        "Civil Rights History"
+      ],
+      "selection_classes": [
+        "state_coverage_anchor",
+        "historic_cultural_anchor"
+      ],
+      "place_archetypes": [
+        "state_capital",
+        "historic_memory_landscape",
+        "river_city"
+      ],
+      "collections": [
+        "state_capitals",
+        "historic_memory_landscapes",
+        "civil_rights_history"
+      ],
+      "geographic_hierarchy": [
+        "southeast",
+        "alabama_river",
+        "black_belt_edge"
+      ],
+      "climate_sensory_tags": [
+        "hot_humid",
+        "long_summer"
+      ],
+      "interpretive_use_cases": [
+        "ancestral_memory_landscape",
+        "practical_base_city",
+        "pressure_test_location"
+      ]
+    },
+    {
       "location_id": "us-ar-eureka-springs",
       "display_name": "Eureka Springs, Arkansas, United States",
       "city": "Eureka Springs",
@@ -223,6 +317,147 @@
       "geographic_hierarchy": [],
       "climate_sensory_tags": [],
       "interpretive_use_cases": []
+    },
+    {
+      "location_id": "us-ar-little-rock",
+      "display_name": "Little Rock, Arkansas, United States",
+      "city": "Little Rock",
+      "state": "AR",
+      "country": "US",
+      "latitude": 34.7465,
+      "longitude": -92.2896,
+      "timezone": "America/Chicago",
+      "population_tier": "mid_metro",
+      "region": "Southeast",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Capital",
+        "River"
+      ],
+      "selection_classes": [
+        "state_coverage_anchor",
+        "regional_anchor"
+      ],
+      "place_archetypes": [
+        "state_capital",
+        "river_city",
+        "regional_metro"
+      ],
+      "collections": [
+        "state_capitals",
+        "river_systems",
+        "southern_regional_anchors"
+      ],
+      "geographic_hierarchy": [
+        "southeast",
+        "arkansas_river",
+        "central_arkansas"
+      ],
+      "climate_sensory_tags": [
+        "hot_humid",
+        "four_season_southeast"
+      ],
+      "interpretive_use_cases": [
+        "practical_base_city",
+        "regional_reset",
+        "belonging_or_community"
+      ]
+    },
+    {
+      "location_id": "us-az-flagstaff",
+      "display_name": "Flagstaff, Arizona, United States",
+      "city": "Flagstaff",
+      "state": "AZ",
+      "country": "US",
+      "latitude": 35.1983,
+      "longitude": -111.6513,
+      "timezone": "America/Phoenix",
+      "population_tier": "small_metro",
+      "region": "Southwest",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "High Altitude",
+        "College"
+      ],
+      "selection_classes": [
+        "regional_anchor",
+        "geographic_test_anchor"
+      ],
+      "place_archetypes": [
+        "college_town",
+        "mountain_city",
+        "high_desert"
+      ],
+      "collections": [
+        "college_university_towns",
+        "mountain_systems",
+        "desert_systems"
+      ],
+      "geographic_hierarchy": [
+        "southwest",
+        "colorado_plateau",
+        "san_francisco_peaks"
+      ],
+      "climate_sensory_tags": [
+        "high_altitude_dry",
+        "snow_winter",
+        "big_sky"
+      ],
+      "interpretive_use_cases": [
+        "study_or_research",
+        "retreat_or_recovery",
+        "edge_of_wilderness"
+      ]
+    },
+    {
+      "location_id": "us-az-phoenix",
+      "display_name": "Phoenix, Arizona, United States",
+      "city": "Phoenix",
+      "state": "AZ",
+      "country": "US",
+      "latitude": 33.4484,
+      "longitude": -112.074,
+      "timezone": "America/Phoenix",
+      "population_tier": "major_metro",
+      "region": "Southwest",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Major Hub",
+        "Desert Metro"
+      ],
+      "selection_classes": [
+        "national_anchor",
+        "state_coverage_anchor",
+        "geographic_test_anchor"
+      ],
+      "place_archetypes": [
+        "major_metro",
+        "desert_metro",
+        "sprawling_metro"
+      ],
+      "collections": [
+        "core_metropolitan_america",
+        "state_capitals",
+        "desert_systems"
+      ],
+      "geographic_hierarchy": [
+        "southwest",
+        "sonoran_desert",
+        "salt_river_valley"
+      ],
+      "climate_sensory_tags": [
+        "dry_heat",
+        "extreme_summer_heat",
+        "wide_horizon"
+      ],
+      "interpretive_use_cases": [
+        "practical_base_city",
+        "career_visibility",
+        "pressure_test_location"
+      ]
     },
     {
       "location_id": "us-az-sedona",
@@ -317,6 +552,101 @@
         "practical_base_city",
         "study_or_research",
         "borderlands_contrast"
+      ]
+    },
+    {
+      "location_id": "us-ca-eureka",
+      "display_name": "Eureka, California, United States",
+      "city": "Eureka",
+      "state": "CA",
+      "country": "US",
+      "latitude": 40.8021,
+      "longitude": -124.1637,
+      "timezone": "America/Los_Angeles",
+      "population_tier": "small_metro",
+      "region": "Northern California",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Redwood Coast",
+        "Remote"
+      ],
+      "selection_classes": [
+        "regional_anchor",
+        "geographic_test_anchor"
+      ],
+      "place_archetypes": [
+        "small_regional_city",
+        "ocean_coast",
+        "remote_service_hub",
+        "forest"
+      ],
+      "collections": [
+        "coastal_sequence",
+        "remote_regional_hubs",
+        "pacific_northwest_edge"
+      ],
+      "geographic_hierarchy": [
+        "northern_california",
+        "redwood_coast",
+        "humboldt_bay"
+      ],
+      "climate_sensory_tags": [
+        "cool_marine",
+        "fog_heavy",
+        "rain_heavy"
+      ],
+      "interpretive_use_cases": [
+        "edge_of_wilderness",
+        "retreat_or_recovery",
+        "regional_reset"
+      ]
+    },
+    {
+      "location_id": "us-ca-fresno",
+      "display_name": "Fresno, California, United States",
+      "city": "Fresno",
+      "state": "CA",
+      "country": "US",
+      "latitude": 36.7378,
+      "longitude": -119.7871,
+      "timezone": "America/Los_Angeles",
+      "population_tier": "large_metro",
+      "region": "Central California",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Central Valley",
+        "Agriculture"
+      ],
+      "selection_classes": [
+        "regional_anchor",
+        "difficult_important_place",
+        "geographic_test_anchor"
+      ],
+      "place_archetypes": [
+        "inland_valley_city",
+        "agricultural_center",
+        "regional_metro"
+      ],
+      "collections": [
+        "secondary_cities",
+        "sacramento_san_joaquin",
+        "difficult_important_places"
+      ],
+      "geographic_hierarchy": [
+        "california_central_valley",
+        "san_joaquin_valley"
+      ],
+      "climate_sensory_tags": [
+        "hot_dry_summer",
+        "valley_heat",
+        "fog_winter"
+      ],
+      "interpretive_use_cases": [
+        "practical_base_city",
+        "pressure_test_location",
+        "regional_reset"
       ]
     },
     {
@@ -488,6 +818,149 @@
       "interpretive_use_cases": []
     },
     {
+      "location_id": "us-ca-palm-springs",
+      "display_name": "Palm Springs, California, United States",
+      "city": "Palm Springs",
+      "state": "CA",
+      "country": "US",
+      "latitude": 33.8303,
+      "longitude": -116.5453,
+      "timezone": "America/Los_Angeles",
+      "population_tier": "small_metro",
+      "region": "Southern California",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Desert Resort",
+        "Queer Destination"
+      ],
+      "selection_classes": [
+        "destination_anchor",
+        "geographic_test_anchor"
+      ],
+      "place_archetypes": [
+        "resort_town",
+        "low_desert",
+        "queer_magnet",
+        "retirement_oriented"
+      ],
+      "collections": [
+        "desert_systems",
+        "migration_reinvention_destinations",
+        "retirement_destinations"
+      ],
+      "geographic_hierarchy": [
+        "southern_california",
+        "coachella_valley",
+        "colorado_desert"
+      ],
+      "climate_sensory_tags": [
+        "dry_heat",
+        "extreme_summer_heat",
+        "winter_sun"
+      ],
+      "interpretive_use_cases": [
+        "identity_transformation",
+        "retreat_or_recovery",
+        "creative_reinvention"
+      ]
+    },
+    {
+      "location_id": "us-ca-sacramento",
+      "display_name": "Sacramento, California, United States",
+      "city": "Sacramento",
+      "state": "CA",
+      "country": "US",
+      "latitude": 38.5816,
+      "longitude": -121.4944,
+      "timezone": "America/Los_Angeles",
+      "population_tier": "large_metro",
+      "region": "Northern California",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Capital",
+        "River Valley"
+      ],
+      "selection_classes": [
+        "state_coverage_anchor",
+        "regional_anchor"
+      ],
+      "place_archetypes": [
+        "state_capital",
+        "river_city",
+        "inland_valley_city"
+      ],
+      "collections": [
+        "state_capitals",
+        "river_systems",
+        "sacramento_san_joaquin"
+      ],
+      "geographic_hierarchy": [
+        "northern_california",
+        "central_valley",
+        "sacramento_river"
+      ],
+      "climate_sensory_tags": [
+        "hot_dry_summer",
+        "valley_heat",
+        "four_season_mild"
+      ],
+      "interpretive_use_cases": [
+        "practical_base_city",
+        "long_term_build",
+        "regional_reset"
+      ]
+    },
+    {
+      "location_id": "us-ca-san-diego",
+      "display_name": "San Diego, California, United States",
+      "city": "San Diego",
+      "state": "CA",
+      "country": "US",
+      "latitude": 32.7157,
+      "longitude": -117.1611,
+      "timezone": "America/Los_Angeles",
+      "population_tier": "large_metro",
+      "region": "Southern California",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Border Coast",
+        "Military"
+      ],
+      "selection_classes": [
+        "national_anchor",
+        "geographic_test_anchor"
+      ],
+      "place_archetypes": [
+        "major_metro",
+        "ocean_coast",
+        "borderlands_city",
+        "military"
+      ],
+      "collections": [
+        "core_metropolitan_america",
+        "pacific_coast_sequence",
+        "borderlands"
+      ],
+      "geographic_hierarchy": [
+        "southern_california",
+        "pacific_coast",
+        "us_mexico_border_region"
+      ],
+      "climate_sensory_tags": [
+        "cool_marine",
+        "mediterranean",
+        "marine_influence"
+      ],
+      "interpretive_use_cases": [
+        "practical_base_city",
+        "career_visibility",
+        "borderlands_contrast"
+      ]
+    },
+    {
       "location_id": "us-ca-san-francisco",
       "display_name": "San Francisco, California, United States",
       "city": "San Francisco",
@@ -557,6 +1030,53 @@
         "study_or_research",
         "creative_reinvention",
         "practical_base_city"
+      ]
+    },
+    {
+      "location_id": "us-co-colorado-springs",
+      "display_name": "Colorado Springs, Colorado, United States",
+      "city": "Colorado Springs",
+      "state": "CO",
+      "country": "US",
+      "latitude": 38.8339,
+      "longitude": -104.8214,
+      "timezone": "America/Denver",
+      "population_tier": "large_metro",
+      "region": "Mountain West",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Front Range",
+        "Military"
+      ],
+      "selection_classes": [
+        "regional_anchor",
+        "state_coverage_anchor"
+      ],
+      "place_archetypes": [
+        "mountain_city",
+        "military",
+        "sprawling_metro"
+      ],
+      "collections": [
+        "mountain_systems",
+        "secondary_cities",
+        "front_range"
+      ],
+      "geographic_hierarchy": [
+        "mountain_west",
+        "front_range",
+        "pikes_peak_region"
+      ],
+      "climate_sensory_tags": [
+        "high_altitude_dry",
+        "four_season_continental",
+        "sunny_winter"
+      ],
+      "interpretive_use_cases": [
+        "practical_base_city",
+        "pressure_test_location",
+        "long_term_build"
       ]
     },
     {
@@ -632,6 +1152,51 @@
       "interpretive_use_cases": []
     },
     {
+      "location_id": "us-ct-hartford",
+      "display_name": "Hartford, Connecticut, United States",
+      "city": "Hartford",
+      "state": "CT",
+      "country": "US",
+      "latitude": 41.7658,
+      "longitude": -72.6734,
+      "timezone": "America/New_York",
+      "population_tier": "mid_metro",
+      "region": "Northeast",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Capital",
+        "Insurance"
+      ],
+      "selection_classes": [
+        "state_coverage_anchor",
+        "regional_anchor"
+      ],
+      "place_archetypes": [
+        "state_capital",
+        "river_city",
+        "institutional_city"
+      ],
+      "collections": [
+        "state_capitals",
+        "river_systems",
+        "northeast_secondary_cities"
+      ],
+      "geographic_hierarchy": [
+        "new_england",
+        "connecticut_river_valley"
+      ],
+      "climate_sensory_tags": [
+        "four_season_continental",
+        "humid_summer"
+      ],
+      "interpretive_use_cases": [
+        "practical_base_city",
+        "long_term_build",
+        "regional_reset"
+      ]
+    },
+    {
       "location_id": "us-ct-mystic",
       "display_name": "Mystic, Connecticut, United States",
       "city": "Mystic",
@@ -654,6 +1219,191 @@
       "geographic_hierarchy": [],
       "climate_sensory_tags": [],
       "interpretive_use_cases": []
+    },
+    {
+      "location_id": "us-ct-new-haven",
+      "display_name": "New Haven, Connecticut, United States",
+      "city": "New Haven",
+      "state": "CT",
+      "country": "US",
+      "latitude": 41.3083,
+      "longitude": -72.9279,
+      "timezone": "America/New_York",
+      "population_tier": "mid_metro",
+      "region": "Northeast",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "University",
+        "Coastal"
+      ],
+      "selection_classes": [
+        "regional_anchor",
+        "historic_cultural_anchor"
+      ],
+      "place_archetypes": [
+        "college_town",
+        "coastal_city",
+        "historic_compact_city"
+      ],
+      "collections": [
+        "college_university_towns",
+        "coastal_sequence",
+        "historic_memory_landscapes"
+      ],
+      "geographic_hierarchy": [
+        "new_england",
+        "long_island_sound",
+        "connecticut_coast"
+      ],
+      "climate_sensory_tags": [
+        "four_season_coastal",
+        "humid_summer",
+        "marine_influence"
+      ],
+      "interpretive_use_cases": [
+        "study_or_research",
+        "ancestral_memory_landscape",
+        "career_visibility"
+      ]
+    },
+    {
+      "location_id": "us-dc-washington",
+      "display_name": "Washington, District of Columbia, United States",
+      "city": "Washington",
+      "state": "DC",
+      "country": "US",
+      "latitude": 38.9072,
+      "longitude": -77.0369,
+      "timezone": "America/New_York",
+      "population_tier": "major_metro",
+      "region": "Mid-Atlantic",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "National Capital",
+        "Institutional"
+      ],
+      "selection_classes": [
+        "national_anchor",
+        "historic_cultural_anchor"
+      ],
+      "place_archetypes": [
+        "global_city",
+        "government_capital",
+        "politically_institutional"
+      ],
+      "collections": [
+        "core_metropolitan_america",
+        "state_capitals",
+        "historic_memory_landscapes"
+      ],
+      "geographic_hierarchy": [
+        "mid_atlantic",
+        "potomac_river",
+        "national_capital_region"
+      ],
+      "climate_sensory_tags": [
+        "four_season_mid_atlantic",
+        "hot_humid_summer"
+      ],
+      "interpretive_use_cases": [
+        "career_visibility",
+        "pressure_test_location",
+        "public_role"
+      ]
+    },
+    {
+      "location_id": "us-de-dover",
+      "display_name": "Dover, Delaware, United States",
+      "city": "Dover",
+      "state": "DE",
+      "country": "US",
+      "latitude": 39.1582,
+      "longitude": -75.5244,
+      "timezone": "America/New_York",
+      "population_tier": "small_metro",
+      "region": "Mid-Atlantic",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Capital",
+        "Coastal Plain"
+      ],
+      "selection_classes": [
+        "state_coverage_anchor",
+        "geographic_test_anchor"
+      ],
+      "place_archetypes": [
+        "state_capital",
+        "small_regional_city",
+        "coastal_plain_city"
+      ],
+      "collections": [
+        "state_capitals",
+        "mid_atlantic_small_cities",
+        "state_coverage_anchors"
+      ],
+      "geographic_hierarchy": [
+        "mid_atlantic",
+        "delmarva_peninsula",
+        "delaware_coastal_plain"
+      ],
+      "climate_sensory_tags": [
+        "four_season_mid_atlantic",
+        "humid_summer"
+      ],
+      "interpretive_use_cases": [
+        "practical_base_city",
+        "regional_reset",
+        "quiet_grounding"
+      ]
+    },
+    {
+      "location_id": "us-de-wilmington",
+      "display_name": "Wilmington, Delaware, United States",
+      "city": "Wilmington",
+      "state": "DE",
+      "country": "US",
+      "latitude": 39.7391,
+      "longitude": -75.5398,
+      "timezone": "America/New_York",
+      "population_tier": "mid_metro",
+      "region": "Mid-Atlantic",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "River Port",
+        "Finance"
+      ],
+      "selection_classes": [
+        "regional_anchor",
+        "state_coverage_anchor"
+      ],
+      "place_archetypes": [
+        "river_city",
+        "finance",
+        "industrial_corridor"
+      ],
+      "collections": [
+        "secondary_cities",
+        "river_systems",
+        "mid_atlantic_corridor"
+      ],
+      "geographic_hierarchy": [
+        "mid_atlantic",
+        "delaware_river",
+        "northeast_corridor"
+      ],
+      "climate_sensory_tags": [
+        "four_season_mid_atlantic",
+        "humid_summer"
+      ],
+      "interpretive_use_cases": [
+        "career_visibility",
+        "practical_base_city",
+        "pressure_test_location"
+      ]
     },
     {
       "location_id": "us-fl-cassadaga",
@@ -775,6 +1525,100 @@
       "interpretive_use_cases": []
     },
     {
+      "location_id": "us-fl-orlando",
+      "display_name": "Orlando, Florida, United States",
+      "city": "Orlando",
+      "state": "FL",
+      "country": "US",
+      "latitude": 28.5383,
+      "longitude": -81.3792,
+      "timezone": "America/New_York",
+      "population_tier": "large_metro",
+      "region": "Southeast",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Tourism",
+        "Inland Florida"
+      ],
+      "selection_classes": [
+        "national_anchor",
+        "regional_anchor"
+      ],
+      "place_archetypes": [
+        "major_metro",
+        "tourism_dominant",
+        "inland_peninsula"
+      ],
+      "collections": [
+        "core_metropolitan_america",
+        "migration_reinvention_destinations",
+        "florida_inland"
+      ],
+      "geographic_hierarchy": [
+        "florida",
+        "central_florida",
+        "inland_peninsula"
+      ],
+      "climate_sensory_tags": [
+        "hot_humid",
+        "subtropical_inland",
+        "storm_exposed"
+      ],
+      "interpretive_use_cases": [
+        "career_visibility",
+        "practical_base_city",
+        "identity_transformation"
+      ]
+    },
+    {
+      "location_id": "us-fl-pensacola",
+      "display_name": "Pensacola, Florida, United States",
+      "city": "Pensacola",
+      "state": "FL",
+      "country": "US",
+      "latitude": 30.4213,
+      "longitude": -87.2169,
+      "timezone": "America/Chicago",
+      "population_tier": "mid_metro",
+      "region": "Gulf South",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Gulf Coast",
+        "Military"
+      ],
+      "selection_classes": [
+        "regional_anchor",
+        "geographic_test_anchor"
+      ],
+      "place_archetypes": [
+        "gulf_coast",
+        "military",
+        "port_city"
+      ],
+      "collections": [
+        "gulf_coast_sequence",
+        "coastal_sequence",
+        "border_time_zone_places"
+      ],
+      "geographic_hierarchy": [
+        "florida_panhandle",
+        "gulf_coast",
+        "western_florida"
+      ],
+      "climate_sensory_tags": [
+        "hot_humid",
+        "subtropical_coastal",
+        "storm_exposed"
+      ],
+      "interpretive_use_cases": [
+        "practical_base_city",
+        "liminal_or_threshold_place",
+        "regional_reset"
+      ]
+    },
+    {
       "location_id": "us-fl-st-augustine",
       "display_name": "St. Augustine, Florida, United States",
       "city": "St. Augustine",
@@ -797,6 +1641,144 @@
       "geographic_hierarchy": [],
       "climate_sensory_tags": [],
       "interpretive_use_cases": []
+    },
+    {
+      "location_id": "us-fl-tallahassee",
+      "display_name": "Tallahassee, Florida, United States",
+      "city": "Tallahassee",
+      "state": "FL",
+      "country": "US",
+      "latitude": 30.4383,
+      "longitude": -84.2807,
+      "timezone": "America/New_York",
+      "population_tier": "mid_metro",
+      "region": "Southeast",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Capital",
+        "College"
+      ],
+      "selection_classes": [
+        "state_coverage_anchor",
+        "regional_anchor"
+      ],
+      "place_archetypes": [
+        "state_capital",
+        "college_town",
+        "inland_southern_city"
+      ],
+      "collections": [
+        "state_capitals",
+        "college_university_towns",
+        "southern_regional_anchors"
+      ],
+      "geographic_hierarchy": [
+        "florida_panhandle",
+        "red_hills_region"
+      ],
+      "climate_sensory_tags": [
+        "hot_humid",
+        "long_summer"
+      ],
+      "interpretive_use_cases": [
+        "study_or_research",
+        "practical_base_city",
+        "regional_reset"
+      ]
+    },
+    {
+      "location_id": "us-fl-tampa",
+      "display_name": "Tampa, Florida, United States",
+      "city": "Tampa",
+      "state": "FL",
+      "country": "US",
+      "latitude": 27.9506,
+      "longitude": -82.4572,
+      "timezone": "America/New_York",
+      "population_tier": "large_metro",
+      "region": "Southeast",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Gulf Metro",
+        "Bay"
+      ],
+      "selection_classes": [
+        "national_anchor",
+        "regional_anchor"
+      ],
+      "place_archetypes": [
+        "major_metro",
+        "gulf_coast",
+        "bay_city"
+      ],
+      "collections": [
+        "core_metropolitan_america",
+        "gulf_coast_sequence",
+        "retirement_destinations"
+      ],
+      "geographic_hierarchy": [
+        "florida",
+        "tampa_bay",
+        "gulf_coast"
+      ],
+      "climate_sensory_tags": [
+        "hot_humid",
+        "subtropical_coastal",
+        "storm_exposed"
+      ],
+      "interpretive_use_cases": [
+        "practical_base_city",
+        "retreat_or_recovery",
+        "career_visibility"
+      ]
+    },
+    {
+      "location_id": "us-ga-athens",
+      "display_name": "Athens, Georgia, United States",
+      "city": "Athens",
+      "state": "GA",
+      "country": "US",
+      "latitude": 33.9519,
+      "longitude": -83.3576,
+      "timezone": "America/New_York",
+      "population_tier": "mid_metro",
+      "region": "Southeast",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "College",
+        "Music"
+      ],
+      "selection_classes": [
+        "destination_anchor",
+        "regional_anchor"
+      ],
+      "place_archetypes": [
+        "college_town",
+        "music_city",
+        "arts_and_culture"
+      ],
+      "collections": [
+        "college_university_towns",
+        "creative_alternative_enclaves",
+        "southern_secondary_cities"
+      ],
+      "geographic_hierarchy": [
+        "southeast",
+        "georgia_piedmont",
+        "oconee_river_region"
+      ],
+      "climate_sensory_tags": [
+        "hot_humid",
+        "four_season_southeast"
+      ],
+      "interpretive_use_cases": [
+        "study_or_research",
+        "creative_reinvention",
+        "belonging_or_community"
+      ]
     },
     {
       "location_id": "us-ga-atlanta",
@@ -989,6 +1971,53 @@
       "interpretive_use_cases": []
     },
     {
+      "location_id": "us-ia-iowa-city",
+      "display_name": "Iowa City, Iowa, United States",
+      "city": "Iowa City",
+      "state": "IA",
+      "country": "US",
+      "latitude": 41.6611,
+      "longitude": -91.5302,
+      "timezone": "America/Chicago",
+      "population_tier": "small_metro",
+      "region": "Midwest",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "College",
+        "Literary"
+      ],
+      "selection_classes": [
+        "destination_anchor",
+        "state_coverage_anchor"
+      ],
+      "place_archetypes": [
+        "college_town",
+        "arts_and_culture",
+        "river_city"
+      ],
+      "collections": [
+        "college_university_towns",
+        "creative_alternative_enclaves",
+        "river_systems"
+      ],
+      "geographic_hierarchy": [
+        "midwest",
+        "iowa_river",
+        "eastern_iowa"
+      ],
+      "climate_sensory_tags": [
+        "four_season_continental",
+        "humid_summer",
+        "cold_winter"
+      ],
+      "interpretive_use_cases": [
+        "study_or_research",
+        "creative_reinvention",
+        "belonging_or_community"
+      ]
+    },
+    {
       "location_id": "us-id-boise",
       "display_name": "Boise, Idaho, United States",
       "city": "Boise",
@@ -1034,6 +2063,53 @@
       "geographic_hierarchy": [],
       "climate_sensory_tags": [],
       "interpretive_use_cases": []
+    },
+    {
+      "location_id": "us-id-moscow",
+      "display_name": "Moscow, Idaho, United States",
+      "city": "Moscow",
+      "state": "ID",
+      "country": "US",
+      "latitude": 46.7324,
+      "longitude": -117.0002,
+      "timezone": "America/Los_Angeles",
+      "population_tier": "small_town",
+      "region": "Mountain West",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "College",
+        "Palouse"
+      ],
+      "selection_classes": [
+        "state_coverage_anchor",
+        "geographic_test_anchor"
+      ],
+      "place_archetypes": [
+        "college_town",
+        "agricultural_center",
+        "small_town"
+      ],
+      "collections": [
+        "college_university_towns",
+        "inland_northwest",
+        "geographic_test_anchors"
+      ],
+      "geographic_hierarchy": [
+        "inland_northwest",
+        "palouse",
+        "idaho_washington_border"
+      ],
+      "climate_sensory_tags": [
+        "four_season_continental",
+        "wind_heavy",
+        "cold_winter"
+      ],
+      "interpretive_use_cases": [
+        "study_or_research",
+        "regional_reset",
+        "quiet_grounding"
+      ]
     },
     {
       "location_id": "us-il-chicago",
@@ -1105,6 +2181,52 @@
       "geographic_hierarchy": [],
       "climate_sensory_tags": [],
       "interpretive_use_cases": []
+    },
+    {
+      "location_id": "us-in-bloomington",
+      "display_name": "Bloomington, Indiana, United States",
+      "city": "Bloomington",
+      "state": "IN",
+      "country": "US",
+      "latitude": 39.1653,
+      "longitude": -86.5264,
+      "timezone": "America/Indiana/Indianapolis",
+      "population_tier": "mid_metro",
+      "region": "Midwest",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "College",
+        "Limestone Hills"
+      ],
+      "selection_classes": [
+        "destination_anchor",
+        "state_coverage_anchor"
+      ],
+      "place_archetypes": [
+        "college_town",
+        "arts_and_culture",
+        "small_city"
+      ],
+      "collections": [
+        "college_university_towns",
+        "creative_alternative_enclaves",
+        "midwest_secondary_cities"
+      ],
+      "geographic_hierarchy": [
+        "midwest",
+        "southern_indiana",
+        "limestone_hills"
+      ],
+      "climate_sensory_tags": [
+        "four_season_continental",
+        "humid_summer"
+      ],
+      "interpretive_use_cases": [
+        "study_or_research",
+        "creative_reinvention",
+        "belonging_or_community"
+      ]
     },
     {
       "location_id": "us-in-indianapolis",
@@ -1224,6 +2346,99 @@
       "interpretive_use_cases": []
     },
     {
+      "location_id": "us-ky-louisville",
+      "display_name": "Louisville, Kentucky, United States",
+      "city": "Louisville",
+      "state": "KY",
+      "country": "US",
+      "latitude": 38.2527,
+      "longitude": -85.7585,
+      "timezone": "America/New_York",
+      "population_tier": "large_metro",
+      "region": "Southeast",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Ohio River",
+        "Regional Hub"
+      ],
+      "selection_classes": [
+        "regional_anchor",
+        "state_coverage_anchor"
+      ],
+      "place_archetypes": [
+        "major_regional_city",
+        "river_city",
+        "logistics"
+      ],
+      "collections": [
+        "river_systems",
+        "secondary_cities",
+        "ohio_river_chain"
+      ],
+      "geographic_hierarchy": [
+        "southeast",
+        "ohio_river",
+        "kentuckiana"
+      ],
+      "climate_sensory_tags": [
+        "hot_humid",
+        "four_season_ohio_valley"
+      ],
+      "interpretive_use_cases": [
+        "practical_base_city",
+        "career_visibility",
+        "regional_reset"
+      ]
+    },
+    {
+      "location_id": "us-la-baton-rouge",
+      "display_name": "Baton Rouge, Louisiana, United States",
+      "city": "Baton Rouge",
+      "state": "LA",
+      "country": "US",
+      "latitude": 30.4515,
+      "longitude": -91.1871,
+      "timezone": "America/Chicago",
+      "population_tier": "mid_metro",
+      "region": "Gulf South",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Capital",
+        "Mississippi River"
+      ],
+      "selection_classes": [
+        "state_coverage_anchor",
+        "regional_anchor"
+      ],
+      "place_archetypes": [
+        "state_capital",
+        "river_city",
+        "industrial_corridor"
+      ],
+      "collections": [
+        "state_capitals",
+        "river_systems",
+        "gulf_south_industrial_corridors"
+      ],
+      "geographic_hierarchy": [
+        "gulf_south",
+        "mississippi_river",
+        "south_louisiana"
+      ],
+      "climate_sensory_tags": [
+        "hot_humid",
+        "subtropical",
+        "storm_exposed"
+      ],
+      "interpretive_use_cases": [
+        "practical_base_city",
+        "pressure_test_location",
+        "regional_reset"
+      ]
+    },
+    {
       "location_id": "us-la-new-orleans",
       "display_name": "New Orleans, Louisiana, United States",
       "city": "New Orleans",
@@ -1298,6 +2513,54 @@
       "interpretive_use_cases": []
     },
     {
+      "location_id": "us-ma-northampton",
+      "display_name": "Northampton, Massachusetts, United States",
+      "city": "Northampton",
+      "state": "MA",
+      "country": "US",
+      "latitude": 42.3251,
+      "longitude": -72.6412,
+      "timezone": "America/New_York",
+      "population_tier": "small_town",
+      "region": "Northeast",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "College Valley",
+        "Queer Magnet"
+      ],
+      "selection_classes": [
+        "destination_anchor",
+        "historic_cultural_anchor"
+      ],
+      "place_archetypes": [
+        "college_town",
+        "queer_magnet",
+        "arts_and_culture",
+        "bohemian"
+      ],
+      "collections": [
+        "college_university_towns",
+        "creative_alternative_enclaves",
+        "migration_reinvention_destinations"
+      ],
+      "geographic_hierarchy": [
+        "new_england",
+        "pioneer_valley",
+        "connecticut_river_valley"
+      ],
+      "climate_sensory_tags": [
+        "four_season_continental",
+        "humid_summer",
+        "cold_winter"
+      ],
+      "interpretive_use_cases": [
+        "belonging_or_community",
+        "creative_reinvention",
+        "identity_transformation"
+      ]
+    },
+    {
       "location_id": "us-ma-salem",
       "display_name": "Salem, Massachusetts, United States",
       "city": "Salem",
@@ -1344,6 +2607,102 @@
       "geographic_hierarchy": [],
       "climate_sensory_tags": [],
       "interpretive_use_cases": []
+    },
+    {
+      "location_id": "us-md-baltimore",
+      "display_name": "Baltimore, Maryland, United States",
+      "city": "Baltimore",
+      "state": "MD",
+      "country": "US",
+      "latitude": 39.2904,
+      "longitude": -76.6122,
+      "timezone": "America/New_York",
+      "population_tier": "large_metro",
+      "region": "Mid-Atlantic",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Port",
+        "Historic"
+      ],
+      "selection_classes": [
+        "national_anchor",
+        "historic_cultural_anchor",
+        "difficult_important_place"
+      ],
+      "place_archetypes": [
+        "major_metro",
+        "port_city",
+        "historic_memory_landscape",
+        "industrial_corridor"
+      ],
+      "collections": [
+        "core_metropolitan_america",
+        "coastal_sequence",
+        "historic_memory_landscapes"
+      ],
+      "geographic_hierarchy": [
+        "mid_atlantic",
+        "chesapeake_bay",
+        "patapsco_river"
+      ],
+      "climate_sensory_tags": [
+        "four_season_coastal",
+        "hot_humid_summer",
+        "bay_influence"
+      ],
+      "interpretive_use_cases": [
+        "career_visibility",
+        "pressure_test_location",
+        "ancestral_memory_landscape"
+      ]
+    },
+    {
+      "location_id": "us-me-bangor",
+      "display_name": "Bangor, Maine, United States",
+      "city": "Bangor",
+      "state": "ME",
+      "country": "US",
+      "latitude": 44.8016,
+      "longitude": -68.7712,
+      "timezone": "America/New_York",
+      "population_tier": "small_metro",
+      "region": "New England",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Remote Regional Hub",
+        "Penobscot River"
+      ],
+      "selection_classes": [
+        "regional_anchor",
+        "geographic_test_anchor"
+      ],
+      "place_archetypes": [
+        "small_regional_city",
+        "remote_service_hub",
+        "river_city"
+      ],
+      "collections": [
+        "remote_regional_hubs",
+        "river_systems",
+        "northern_new_england"
+      ],
+      "geographic_hierarchy": [
+        "new_england",
+        "penobscot_river",
+        "interior_maine"
+      ],
+      "climate_sensory_tags": [
+        "cold_winter",
+        "four_season_continental",
+        "forest_edge"
+      ],
+      "interpretive_use_cases": [
+        "practical_base_city",
+        "edge_of_wilderness",
+        "regional_reset"
+      ]
     },
     {
       "location_id": "us-me-bar-harbor",
@@ -1559,6 +2918,289 @@
       "interpretive_use_cases": []
     },
     {
+      "location_id": "us-mn-minneapolis",
+      "display_name": "Minneapolis, Minnesota, United States",
+      "city": "Minneapolis",
+      "state": "MN",
+      "country": "US",
+      "latitude": 44.9778,
+      "longitude": -93.265,
+      "timezone": "America/Chicago",
+      "population_tier": "large_metro",
+      "region": "Midwest",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Major Hub",
+        "Mississippi River"
+      ],
+      "selection_classes": [
+        "national_anchor",
+        "regional_anchor"
+      ],
+      "place_archetypes": [
+        "major_metro",
+        "river_city",
+        "arts_and_culture"
+      ],
+      "collections": [
+        "core_metropolitan_america",
+        "river_systems",
+        "northern_metros"
+      ],
+      "geographic_hierarchy": [
+        "upper_midwest",
+        "mississippi_river",
+        "twin_cities"
+      ],
+      "climate_sensory_tags": [
+        "four_season_continental",
+        "cold_winter",
+        "lake_influenced"
+      ],
+      "interpretive_use_cases": [
+        "career_visibility",
+        "practical_base_city",
+        "creative_reinvention"
+      ]
+    },
+    {
+      "location_id": "us-mo-kansas-city",
+      "display_name": "Kansas City, Missouri, United States",
+      "city": "Kansas City",
+      "state": "MO",
+      "country": "US",
+      "latitude": 39.0997,
+      "longitude": -94.5786,
+      "timezone": "America/Chicago",
+      "population_tier": "large_metro",
+      "region": "Plains",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Regional Hub",
+        "Missouri River"
+      ],
+      "selection_classes": [
+        "national_anchor",
+        "regional_anchor"
+      ],
+      "place_archetypes": [
+        "major_metro",
+        "river_city",
+        "logistics",
+        "music_city"
+      ],
+      "collections": [
+        "core_metropolitan_america",
+        "river_systems",
+        "plains_metros"
+      ],
+      "geographic_hierarchy": [
+        "plains",
+        "missouri_river",
+        "state_border_metro"
+      ],
+      "climate_sensory_tags": [
+        "four_season_continental",
+        "wind_heavy",
+        "hot_summer"
+      ],
+      "interpretive_use_cases": [
+        "practical_base_city",
+        "career_visibility",
+        "creative_reinvention"
+      ]
+    },
+    {
+      "location_id": "us-mo-st-louis",
+      "display_name": "St. Louis, Missouri, United States",
+      "city": "St. Louis",
+      "state": "MO",
+      "country": "US",
+      "latitude": 38.627,
+      "longitude": -90.1994,
+      "timezone": "America/Chicago",
+      "population_tier": "large_metro",
+      "region": "Midwest",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Mississippi River",
+        "Gateway"
+      ],
+      "selection_classes": [
+        "national_anchor",
+        "historic_cultural_anchor",
+        "difficult_important_place"
+      ],
+      "place_archetypes": [
+        "major_metro",
+        "river_confluence",
+        "industrial_heritage"
+      ],
+      "collections": [
+        "core_metropolitan_america",
+        "river_systems",
+        "historic_memory_landscapes"
+      ],
+      "geographic_hierarchy": [
+        "midwest",
+        "mississippi_missouri_confluence_region",
+        "gateway_city"
+      ],
+      "climate_sensory_tags": [
+        "four_season_continental",
+        "hot_humid_summer",
+        "river_valley"
+      ],
+      "interpretive_use_cases": [
+        "career_visibility",
+        "ancestral_memory_landscape",
+        "pressure_test_location"
+      ]
+    },
+    {
+      "location_id": "us-ms-biloxi",
+      "display_name": "Biloxi, Mississippi, United States",
+      "city": "Biloxi",
+      "state": "MS",
+      "country": "US",
+      "latitude": 30.396,
+      "longitude": -88.8853,
+      "timezone": "America/Chicago",
+      "population_tier": "small_metro",
+      "region": "Gulf South",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Gulf Coast",
+        "Barrier Coast"
+      ],
+      "selection_classes": [
+        "regional_anchor",
+        "geographic_test_anchor"
+      ],
+      "place_archetypes": [
+        "gulf_coast",
+        "tourism",
+        "storm_recovery_city"
+      ],
+      "collections": [
+        "gulf_coast_sequence",
+        "coastal_sequence",
+        "difficult_important_places"
+      ],
+      "geographic_hierarchy": [
+        "gulf_south",
+        "mississippi_sound",
+        "gulf_coast"
+      ],
+      "climate_sensory_tags": [
+        "hot_humid",
+        "subtropical_coastal",
+        "storm_exposed"
+      ],
+      "interpretive_use_cases": [
+        "retreat_or_recovery",
+        "pressure_test_location",
+        "liminal_or_threshold_place"
+      ]
+    },
+    {
+      "location_id": "us-ms-jackson",
+      "display_name": "Jackson, Mississippi, United States",
+      "city": "Jackson",
+      "state": "MS",
+      "country": "US",
+      "latitude": 32.2988,
+      "longitude": -90.1848,
+      "timezone": "America/Chicago",
+      "population_tier": "mid_metro",
+      "region": "Southeast",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Capital",
+        "Civil Rights History"
+      ],
+      "selection_classes": [
+        "state_coverage_anchor",
+        "historic_cultural_anchor",
+        "difficult_important_place"
+      ],
+      "place_archetypes": [
+        "state_capital",
+        "historic_memory_landscape",
+        "regional_metro"
+      ],
+      "collections": [
+        "state_capitals",
+        "historic_memory_landscapes",
+        "civil_rights_history"
+      ],
+      "geographic_hierarchy": [
+        "southeast",
+        "central_mississippi",
+        "pearl_river"
+      ],
+      "climate_sensory_tags": [
+        "hot_humid",
+        "long_summer"
+      ],
+      "interpretive_use_cases": [
+        "ancestral_memory_landscape",
+        "pressure_test_location",
+        "practical_base_city"
+      ]
+    },
+    {
+      "location_id": "us-ms-oxford",
+      "display_name": "Oxford, Mississippi, United States",
+      "city": "Oxford",
+      "state": "MS",
+      "country": "US",
+      "latitude": 34.3665,
+      "longitude": -89.5192,
+      "timezone": "America/Chicago",
+      "population_tier": "small_town",
+      "region": "Southeast",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "College",
+        "Literary"
+      ],
+      "selection_classes": [
+        "destination_anchor",
+        "state_coverage_anchor"
+      ],
+      "place_archetypes": [
+        "college_town",
+        "arts_and_culture",
+        "small_town"
+      ],
+      "collections": [
+        "college_university_towns",
+        "creative_alternative_enclaves",
+        "southern_small_towns"
+      ],
+      "geographic_hierarchy": [
+        "southeast",
+        "north_mississippi",
+        "hill_country"
+      ],
+      "climate_sensory_tags": [
+        "hot_humid",
+        "four_season_southeast"
+      ],
+      "interpretive_use_cases": [
+        "study_or_research",
+        "creative_reinvention",
+        "belonging_or_community"
+      ]
+    },
+    {
       "location_id": "us-mt-bozeman",
       "display_name": "Bozeman, Montana, United States",
       "city": "Bozeman",
@@ -1678,6 +3320,100 @@
       ]
     },
     {
+      "location_id": "us-nc-raleigh",
+      "display_name": "Raleigh, North Carolina, United States",
+      "city": "Raleigh",
+      "state": "NC",
+      "country": "US",
+      "latitude": 35.7796,
+      "longitude": -78.6382,
+      "timezone": "America/New_York",
+      "population_tier": "large_metro",
+      "region": "Southeast",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Capital",
+        "Research Triangle"
+      ],
+      "selection_classes": [
+        "state_coverage_anchor",
+        "national_anchor"
+      ],
+      "place_archetypes": [
+        "state_capital",
+        "technology",
+        "university_research",
+        "sprawling_metro"
+      ],
+      "collections": [
+        "state_capitals",
+        "core_metropolitan_america",
+        "college_university_towns"
+      ],
+      "geographic_hierarchy": [
+        "southeast",
+        "piedmont",
+        "research_triangle"
+      ],
+      "climate_sensory_tags": [
+        "hot_humid",
+        "four_season_southeast"
+      ],
+      "interpretive_use_cases": [
+        "career_visibility",
+        "study_or_research",
+        "practical_base_city"
+      ]
+    },
+    {
+      "location_id": "us-nd-bismarck",
+      "display_name": "Bismarck, North Dakota, United States",
+      "city": "Bismarck",
+      "state": "ND",
+      "country": "US",
+      "latitude": 46.8083,
+      "longitude": -100.7837,
+      "timezone": "America/Chicago",
+      "population_tier": "small_metro",
+      "region": "Plains",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Capital",
+        "Missouri River"
+      ],
+      "selection_classes": [
+        "state_coverage_anchor",
+        "geographic_test_anchor"
+      ],
+      "place_archetypes": [
+        "state_capital",
+        "river_city",
+        "remote_service_hub"
+      ],
+      "collections": [
+        "state_capitals",
+        "river_systems",
+        "northern_plains"
+      ],
+      "geographic_hierarchy": [
+        "northern_plains",
+        "missouri_river",
+        "central_north_dakota"
+      ],
+      "climate_sensory_tags": [
+        "cold_winter",
+        "wind_heavy",
+        "four_season_continental"
+      ],
+      "interpretive_use_cases": [
+        "practical_base_city",
+        "regional_reset",
+        "quiet_grounding"
+      ]
+    },
+    {
       "location_id": "us-nd-fargo",
       "display_name": "Fargo, North Dakota, United States",
       "city": "Fargo",
@@ -1748,6 +3484,99 @@
       "interpretive_use_cases": []
     },
     {
+      "location_id": "us-nh-concord",
+      "display_name": "Concord, New Hampshire, United States",
+      "city": "Concord",
+      "state": "NH",
+      "country": "US",
+      "latitude": 43.2081,
+      "longitude": -71.5376,
+      "timezone": "America/New_York",
+      "population_tier": "small_metro",
+      "region": "Northeast",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Capital",
+        "Interior New England"
+      ],
+      "selection_classes": [
+        "state_coverage_anchor",
+        "geographic_test_anchor"
+      ],
+      "place_archetypes": [
+        "state_capital",
+        "small_regional_city",
+        "river_city"
+      ],
+      "collections": [
+        "state_capitals",
+        "northern_new_england",
+        "river_systems"
+      ],
+      "geographic_hierarchy": [
+        "new_england",
+        "merrimack_river",
+        "central_new_hampshire"
+      ],
+      "climate_sensory_tags": [
+        "cold_winter",
+        "four_season_continental"
+      ],
+      "interpretive_use_cases": [
+        "practical_base_city",
+        "regional_reset",
+        "quiet_grounding"
+      ]
+    },
+    {
+      "location_id": "us-nh-portsmouth",
+      "display_name": "Portsmouth, New Hampshire, United States",
+      "city": "Portsmouth",
+      "state": "NH",
+      "country": "US",
+      "latitude": 43.0718,
+      "longitude": -70.7626,
+      "timezone": "America/New_York",
+      "population_tier": "small_town",
+      "region": "Northeast",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Seacoast",
+        "Historic"
+      ],
+      "selection_classes": [
+        "destination_anchor",
+        "historic_cultural_anchor"
+      ],
+      "place_archetypes": [
+        "small_town",
+        "ocean_coast",
+        "historic_compact_city"
+      ],
+      "collections": [
+        "coastal_sequence",
+        "historic_memory_landscapes",
+        "new_england_coast"
+      ],
+      "geographic_hierarchy": [
+        "new_england",
+        "new_hampshire_seacoast",
+        "piscataqua_river"
+      ],
+      "climate_sensory_tags": [
+        "cool_marine",
+        "four_season_coastal",
+        "fog_heavy"
+      ],
+      "interpretive_use_cases": [
+        "retreat_or_recovery",
+        "ancestral_memory_landscape",
+        "liminal_or_threshold_place"
+      ]
+    },
+    {
       "location_id": "us-nj-cape-may",
       "display_name": "Cape May, New Jersey, United States",
       "city": "Cape May",
@@ -1770,6 +3599,102 @@
       "geographic_hierarchy": [],
       "climate_sensory_tags": [],
       "interpretive_use_cases": []
+    },
+    {
+      "location_id": "us-nj-newark",
+      "display_name": "Newark, New Jersey, United States",
+      "city": "Newark",
+      "state": "NJ",
+      "country": "US",
+      "latitude": 40.7357,
+      "longitude": -74.1724,
+      "timezone": "America/New_York",
+      "population_tier": "large_metro",
+      "region": "Mid-Atlantic",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Transport Hub",
+        "Industrial Corridor"
+      ],
+      "selection_classes": [
+        "national_anchor",
+        "difficult_important_place"
+      ],
+      "place_archetypes": [
+        "satellite_city",
+        "transportation_hub",
+        "industrial_corridor",
+        "port_city"
+      ],
+      "collections": [
+        "core_metropolitan_america",
+        "mid_atlantic_corridor",
+        "difficult_important_places"
+      ],
+      "geographic_hierarchy": [
+        "mid_atlantic",
+        "new_york_harbor",
+        "northeast_corridor"
+      ],
+      "climate_sensory_tags": [
+        "four_season_coastal",
+        "dense_urban_heat"
+      ],
+      "interpretive_use_cases": [
+        "career_visibility",
+        "pressure_test_location",
+        "practical_base_city"
+      ]
+    },
+    {
+      "location_id": "us-nm-albuquerque",
+      "display_name": "Albuquerque, New Mexico, United States",
+      "city": "Albuquerque",
+      "state": "NM",
+      "country": "US",
+      "latitude": 35.0844,
+      "longitude": -106.6504,
+      "timezone": "America/Denver",
+      "population_tier": "large_metro",
+      "region": "Southwest",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "High Desert Metro",
+        "Rio Grande"
+      ],
+      "selection_classes": [
+        "regional_anchor",
+        "state_coverage_anchor",
+        "geographic_test_anchor"
+      ],
+      "place_archetypes": [
+        "regional_metro",
+        "high_desert",
+        "river_city",
+        "borderlands_city"
+      ],
+      "collections": [
+        "desert_systems",
+        "river_systems",
+        "borderlands"
+      ],
+      "geographic_hierarchy": [
+        "southwest",
+        "rio_grande_valley",
+        "central_new_mexico"
+      ],
+      "climate_sensory_tags": [
+        "high_altitude_dry",
+        "wide_horizon",
+        "dry_heat"
+      ],
+      "interpretive_use_cases": [
+        "practical_base_city",
+        "borderlands_contrast",
+        "regional_reset"
+      ]
     },
     {
       "location_id": "us-nm-santa-fe",
@@ -1892,6 +3817,101 @@
       "geographic_hierarchy": [],
       "climate_sensory_tags": [],
       "interpretive_use_cases": []
+    },
+    {
+      "location_id": "us-nv-reno",
+      "display_name": "Reno, Nevada, United States",
+      "city": "Reno",
+      "state": "NV",
+      "country": "US",
+      "latitude": 39.5296,
+      "longitude": -119.8138,
+      "timezone": "America/Los_Angeles",
+      "population_tier": "mid_metro",
+      "region": "Mountain West",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "High Desert",
+        "Sierra Edge"
+      ],
+      "selection_classes": [
+        "regional_anchor",
+        "geographic_test_anchor"
+      ],
+      "place_archetypes": [
+        "regional_metro",
+        "high_desert",
+        "mountain_edge_city"
+      ],
+      "collections": [
+        "desert_systems",
+        "mountain_systems",
+        "migration_reinvention_destinations"
+      ],
+      "geographic_hierarchy": [
+        "great_basin",
+        "sierra_nevada_edge",
+        "truckee_meadows"
+      ],
+      "climate_sensory_tags": [
+        "high_altitude_dry",
+        "four_season_desert",
+        "wind_heavy"
+      ],
+      "interpretive_use_cases": [
+        "practical_base_city",
+        "identity_transformation",
+        "regional_reset"
+      ]
+    },
+    {
+      "location_id": "us-ny-buffalo",
+      "display_name": "Buffalo, New York, United States",
+      "city": "Buffalo",
+      "state": "NY",
+      "country": "US",
+      "latitude": 42.8864,
+      "longitude": -78.8784,
+      "timezone": "America/New_York",
+      "population_tier": "large_metro",
+      "region": "Great Lakes",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Lake Erie",
+        "Border"
+      ],
+      "selection_classes": [
+        "regional_anchor",
+        "difficult_important_place"
+      ],
+      "place_archetypes": [
+        "large_metro",
+        "great_lakes",
+        "river_border_city",
+        "industrial_heritage"
+      ],
+      "collections": [
+        "great_lakes_chain",
+        "borderlands",
+        "northern_industrial_cities"
+      ],
+      "geographic_hierarchy": [
+        "great_lakes",
+        "lake_erie",
+        "niagara_frontier"
+      ],
+      "climate_sensory_tags": [
+        "lake_effect",
+        "cold_winter",
+        "four_season_continental"
+      ],
+      "interpretive_use_cases": [
+        "pressure_test_location",
+        "practical_base_city",
+        "ancestral_memory_landscape"
+      ]
     },
     {
       "location_id": "us-ny-ithaca",
@@ -2083,6 +4103,54 @@
       ]
     },
     {
+      "location_id": "us-ok-oklahoma-city",
+      "display_name": "Oklahoma City, Oklahoma, United States",
+      "city": "Oklahoma City",
+      "state": "OK",
+      "country": "US",
+      "latitude": 35.4676,
+      "longitude": -97.5164,
+      "timezone": "America/Chicago",
+      "population_tier": "large_metro",
+      "region": "Plains",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Capital",
+        "Plains Metro"
+      ],
+      "selection_classes": [
+        "state_coverage_anchor",
+        "national_anchor"
+      ],
+      "place_archetypes": [
+        "state_capital",
+        "major_metro",
+        "energy_extraction",
+        "sprawling_metro"
+      ],
+      "collections": [
+        "state_capitals",
+        "core_metropolitan_america",
+        "plains_metros"
+      ],
+      "geographic_hierarchy": [
+        "southern_plains",
+        "central_oklahoma",
+        "cross_timbers_edge"
+      ],
+      "climate_sensory_tags": [
+        "hot_summer",
+        "wind_heavy",
+        "storm_exposed"
+      ],
+      "interpretive_use_cases": [
+        "practical_base_city",
+        "career_visibility",
+        "pressure_test_location"
+      ]
+    },
+    {
       "location_id": "us-ok-tulsa",
       "display_name": "Tulsa, Oklahoma, United States",
       "city": "Tulsa",
@@ -2104,6 +4172,54 @@
       "geographic_hierarchy": [],
       "climate_sensory_tags": [],
       "interpretive_use_cases": []
+    },
+    {
+      "location_id": "us-or-ashland",
+      "display_name": "Ashland, Oregon, United States",
+      "city": "Ashland",
+      "state": "OR",
+      "country": "US",
+      "latitude": 42.1946,
+      "longitude": -122.7095,
+      "timezone": "America/Los_Angeles",
+      "population_tier": "small_town",
+      "region": "Pacific Northwest",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Theater",
+        "Mountain Valley"
+      ],
+      "selection_classes": [
+        "destination_anchor",
+        "geographic_test_anchor"
+      ],
+      "place_archetypes": [
+        "small_town",
+        "arts_and_culture",
+        "mountain_valley",
+        "retreat_destination"
+      ],
+      "collections": [
+        "creative_alternative_enclaves",
+        "mountain_systems",
+        "migration_reinvention_destinations"
+      ],
+      "geographic_hierarchy": [
+        "pacific_northwest",
+        "rogue_valley",
+        "siskiyou_region"
+      ],
+      "climate_sensory_tags": [
+        "mediterranean",
+        "dry_summer",
+        "mountain_valley"
+      ],
+      "interpretive_use_cases": [
+        "creative_reinvention",
+        "retreat_or_recovery",
+        "belonging_or_community"
+      ]
     },
     {
       "location_id": "us-or-astoria",
@@ -2346,6 +4462,54 @@
       ]
     },
     {
+      "location_id": "us-ri-newport",
+      "display_name": "Newport, Rhode Island, United States",
+      "city": "Newport",
+      "state": "RI",
+      "country": "US",
+      "latitude": 41.4901,
+      "longitude": -71.3128,
+      "timezone": "America/New_York",
+      "population_tier": "small_town",
+      "region": "Northeast",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Island Coast",
+        "Historic"
+      ],
+      "selection_classes": [
+        "destination_anchor",
+        "historic_cultural_anchor",
+        "geographic_test_anchor"
+      ],
+      "place_archetypes": [
+        "ocean_coast",
+        "historic_compact_city",
+        "resort_town"
+      ],
+      "collections": [
+        "coastal_sequence",
+        "historic_memory_landscapes",
+        "new_england_coast"
+      ],
+      "geographic_hierarchy": [
+        "new_england",
+        "aquidneck_island",
+        "narragansett_bay"
+      ],
+      "climate_sensory_tags": [
+        "cool_marine",
+        "four_season_coastal",
+        "storm_exposed"
+      ],
+      "interpretive_use_cases": [
+        "retreat_or_recovery",
+        "ancestral_memory_landscape",
+        "liminal_or_threshold_place"
+      ]
+    },
+    {
       "location_id": "us-ri-providence",
       "display_name": "Providence, Rhode Island, United States",
       "city": "Providence",
@@ -2392,6 +4556,52 @@
       "geographic_hierarchy": [],
       "climate_sensory_tags": [],
       "interpretive_use_cases": []
+    },
+    {
+      "location_id": "us-sc-columbia",
+      "display_name": "Columbia, South Carolina, United States",
+      "city": "Columbia",
+      "state": "SC",
+      "country": "US",
+      "latitude": 34.0007,
+      "longitude": -81.0348,
+      "timezone": "America/New_York",
+      "population_tier": "mid_metro",
+      "region": "Southeast",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Capital",
+        "River"
+      ],
+      "selection_classes": [
+        "state_coverage_anchor",
+        "regional_anchor"
+      ],
+      "place_archetypes": [
+        "state_capital",
+        "river_city",
+        "college_town"
+      ],
+      "collections": [
+        "state_capitals",
+        "river_systems",
+        "college_university_towns"
+      ],
+      "geographic_hierarchy": [
+        "southeast",
+        "congaree_river",
+        "south_carolina_midlands"
+      ],
+      "climate_sensory_tags": [
+        "hot_humid",
+        "long_summer"
+      ],
+      "interpretive_use_cases": [
+        "practical_base_city",
+        "study_or_research",
+        "regional_reset"
+      ]
     },
     {
       "location_id": "us-sd-rapid-city",
@@ -2464,6 +4674,55 @@
       "interpretive_use_cases": []
     },
     {
+      "location_id": "us-tn-memphis",
+      "display_name": "Memphis, Tennessee, United States",
+      "city": "Memphis",
+      "state": "TN",
+      "country": "US",
+      "latitude": 35.1495,
+      "longitude": -90.049,
+      "timezone": "America/Chicago",
+      "population_tier": "large_metro",
+      "region": "Gulf South",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Mississippi River",
+        "Music"
+      ],
+      "selection_classes": [
+        "national_anchor",
+        "historic_cultural_anchor",
+        "difficult_important_place"
+      ],
+      "place_archetypes": [
+        "major_metro",
+        "river_city",
+        "music_city",
+        "logistics"
+      ],
+      "collections": [
+        "river_systems",
+        "historic_memory_landscapes",
+        "core_metropolitan_america"
+      ],
+      "geographic_hierarchy": [
+        "gulf_south",
+        "mississippi_river",
+        "delta_edge"
+      ],
+      "climate_sensory_tags": [
+        "hot_humid",
+        "long_summer",
+        "river_valley"
+      ],
+      "interpretive_use_cases": [
+        "creative_reinvention",
+        "ancestral_memory_landscape",
+        "pressure_test_location"
+      ]
+    },
+    {
       "location_id": "us-tn-nashville",
       "display_name": "Nashville, Tennessee, United States",
       "city": "Nashville",
@@ -2510,6 +4769,54 @@
       "interpretive_use_cases": []
     },
     {
+      "location_id": "us-tx-dallas",
+      "display_name": "Dallas, Texas, United States",
+      "city": "Dallas",
+      "state": "TX",
+      "country": "US",
+      "latitude": 32.7767,
+      "longitude": -96.797,
+      "timezone": "America/Chicago",
+      "population_tier": "large_metro",
+      "region": "Southwest",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Major Hub",
+        "Finance"
+      ],
+      "selection_classes": [
+        "national_anchor",
+        "regional_anchor"
+      ],
+      "place_archetypes": [
+        "major_metro",
+        "finance",
+        "sprawling_metro",
+        "transportation_hub"
+      ],
+      "collections": [
+        "core_metropolitan_america",
+        "migration_reinvention_destinations",
+        "texas_triangle"
+      ],
+      "geographic_hierarchy": [
+        "north_texas",
+        "blackland_prairie",
+        "dallas_fort_worth"
+      ],
+      "climate_sensory_tags": [
+        "hot_summer",
+        "humid_subtropical",
+        "storm_exposed"
+      ],
+      "interpretive_use_cases": [
+        "career_visibility",
+        "practical_base_city",
+        "pressure_test_location"
+      ]
+    },
+    {
       "location_id": "us-tx-denton",
       "display_name": "Denton, Texas, United States",
       "city": "Denton",
@@ -2531,6 +4838,53 @@
       "geographic_hierarchy": [],
       "climate_sensory_tags": [],
       "interpretive_use_cases": []
+    },
+    {
+      "location_id": "us-tx-el-paso",
+      "display_name": "El Paso, Texas, United States",
+      "city": "El Paso",
+      "state": "TX",
+      "country": "US",
+      "latitude": 31.7619,
+      "longitude": -106.485,
+      "timezone": "America/Denver",
+      "population_tier": "large_metro",
+      "region": "Southwest",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Border",
+        "Chihuahuan Desert"
+      ],
+      "selection_classes": [
+        "regional_anchor",
+        "geographic_test_anchor"
+      ],
+      "place_archetypes": [
+        "borderlands_city",
+        "desert_metro",
+        "river_city"
+      ],
+      "collections": [
+        "borderlands",
+        "desert_systems",
+        "river_systems"
+      ],
+      "geographic_hierarchy": [
+        "southwest",
+        "chihuahuan_desert",
+        "rio_grande"
+      ],
+      "climate_sensory_tags": [
+        "dry_heat",
+        "high_altitude_dry",
+        "wide_horizon"
+      ],
+      "interpretive_use_cases": [
+        "borderlands_contrast",
+        "practical_base_city",
+        "liminal_or_threshold_place"
+      ]
     },
     {
       "location_id": "us-tx-galveston",
@@ -2555,6 +4909,55 @@
       "geographic_hierarchy": [],
       "climate_sensory_tags": [],
       "interpretive_use_cases": []
+    },
+    {
+      "location_id": "us-tx-houston",
+      "display_name": "Houston, Texas, United States",
+      "city": "Houston",
+      "state": "TX",
+      "country": "US",
+      "latitude": 29.7604,
+      "longitude": -95.3698,
+      "timezone": "America/Chicago",
+      "population_tier": "major_metro",
+      "region": "Gulf South",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Energy",
+        "Gulf Metro"
+      ],
+      "selection_classes": [
+        "national_anchor",
+        "regional_anchor",
+        "difficult_important_place"
+      ],
+      "place_archetypes": [
+        "global_city",
+        "energy_extraction",
+        "port_city",
+        "sprawling_metro"
+      ],
+      "collections": [
+        "core_metropolitan_america",
+        "gulf_coast_sequence",
+        "difficult_important_places"
+      ],
+      "geographic_hierarchy": [
+        "gulf_south",
+        "upper_texas_coast",
+        "buffalo_bayou"
+      ],
+      "climate_sensory_tags": [
+        "hot_humid",
+        "storm_exposed",
+        "subtropical_coastal"
+      ],
+      "interpretive_use_cases": [
+        "career_visibility",
+        "pressure_test_location",
+        "practical_base_city"
+      ]
     },
     {
       "location_id": "us-tx-marfa",
@@ -2726,6 +5129,53 @@
       "interpretive_use_cases": []
     },
     {
+      "location_id": "us-va-norfolk",
+      "display_name": "Norfolk, Virginia, United States",
+      "city": "Norfolk",
+      "state": "VA",
+      "country": "US",
+      "latitude": 36.8508,
+      "longitude": -76.2859,
+      "timezone": "America/New_York",
+      "population_tier": "large_metro",
+      "region": "Mid-Atlantic",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Port",
+        "Military"
+      ],
+      "selection_classes": [
+        "regional_anchor",
+        "geographic_test_anchor"
+      ],
+      "place_archetypes": [
+        "port_city",
+        "military",
+        "coastal_metro"
+      ],
+      "collections": [
+        "coastal_sequence",
+        "mid_atlantic_corridor",
+        "military_cities"
+      ],
+      "geographic_hierarchy": [
+        "mid_atlantic",
+        "hampton_roads",
+        "chesapeake_bay"
+      ],
+      "climate_sensory_tags": [
+        "four_season_coastal",
+        "hot_humid_summer",
+        "storm_exposed"
+      ],
+      "interpretive_use_cases": [
+        "practical_base_city",
+        "pressure_test_location",
+        "career_visibility"
+      ]
+    },
+    {
       "location_id": "us-va-richmond",
       "display_name": "Richmond, Virginia, United States",
       "city": "Richmond",
@@ -2795,6 +5245,53 @@
       "geographic_hierarchy": [],
       "climate_sensory_tags": [],
       "interpretive_use_cases": []
+    },
+    {
+      "location_id": "us-vt-montpelier",
+      "display_name": "Montpelier, Vermont, United States",
+      "city": "Montpelier",
+      "state": "VT",
+      "country": "US",
+      "latitude": 44.2601,
+      "longitude": -72.5754,
+      "timezone": "America/New_York",
+      "population_tier": "small_town",
+      "region": "Northeast",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Capital",
+        "Small State Hub"
+      ],
+      "selection_classes": [
+        "state_coverage_anchor",
+        "geographic_test_anchor"
+      ],
+      "place_archetypes": [
+        "state_capital",
+        "small_town",
+        "river_valley"
+      ],
+      "collections": [
+        "state_capitals",
+        "northern_new_england",
+        "small_capitals"
+      ],
+      "geographic_hierarchy": [
+        "new_england",
+        "green_mountains",
+        "winooski_river_region"
+      ],
+      "climate_sensory_tags": [
+        "cold_winter",
+        "four_season_mountain",
+        "snow_winter"
+      ],
+      "interpretive_use_cases": [
+        "quiet_grounding",
+        "practical_base_city",
+        "regional_reset"
+      ]
     },
     {
       "location_id": "us-wa-forks",
@@ -2893,6 +5390,53 @@
       "interpretive_use_cases": []
     },
     {
+      "location_id": "us-wa-spokane",
+      "display_name": "Spokane, Washington, United States",
+      "city": "Spokane",
+      "state": "WA",
+      "country": "US",
+      "latitude": 47.6588,
+      "longitude": -117.426,
+      "timezone": "America/Los_Angeles",
+      "population_tier": "mid_metro",
+      "region": "Pacific Northwest",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Inland Northwest",
+        "River"
+      ],
+      "selection_classes": [
+        "regional_anchor",
+        "state_coverage_anchor"
+      ],
+      "place_archetypes": [
+        "regional_metro",
+        "river_city",
+        "inland_northwest"
+      ],
+      "collections": [
+        "secondary_cities",
+        "river_systems",
+        "inland_northwest"
+      ],
+      "geographic_hierarchy": [
+        "pacific_northwest",
+        "spokane_river",
+        "inland_empire"
+      ],
+      "climate_sensory_tags": [
+        "four_season_continental",
+        "cold_winter",
+        "dry_summer"
+      ],
+      "interpretive_use_cases": [
+        "practical_base_city",
+        "regional_reset",
+        "career_visibility"
+      ]
+    },
+    {
       "location_id": "us-wi-madison",
       "display_name": "Madison, Wisconsin, United States",
       "city": "Madison",
@@ -2964,6 +5508,149 @@
       "geographic_hierarchy": [],
       "climate_sensory_tags": [],
       "interpretive_use_cases": []
+    },
+    {
+      "location_id": "us-wv-charleston",
+      "display_name": "Charleston, West Virginia, United States",
+      "city": "Charleston",
+      "state": "WV",
+      "country": "US",
+      "latitude": 38.3498,
+      "longitude": -81.6326,
+      "timezone": "America/New_York",
+      "population_tier": "small_metro",
+      "region": "Appalachia",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Capital",
+        "Kanawha River"
+      ],
+      "selection_classes": [
+        "state_coverage_anchor",
+        "regional_anchor",
+        "difficult_important_place"
+      ],
+      "place_archetypes": [
+        "state_capital",
+        "river_city",
+        "appalachian_city",
+        "industrial_corridor"
+      ],
+      "collections": [
+        "state_capitals",
+        "river_systems",
+        "appalachian_mountain_towns"
+      ],
+      "geographic_hierarchy": [
+        "appalachia",
+        "kanawha_river_valley",
+        "central_west_virginia"
+      ],
+      "climate_sensory_tags": [
+        "four_season_appalachian",
+        "humid_summer",
+        "river_valley"
+      ],
+      "interpretive_use_cases": [
+        "practical_base_city",
+        "pressure_test_location",
+        "regional_reset"
+      ]
+    },
+    {
+      "location_id": "us-wv-morgantown",
+      "display_name": "Morgantown, West Virginia, United States",
+      "city": "Morgantown",
+      "state": "WV",
+      "country": "US",
+      "latitude": 39.6295,
+      "longitude": -79.9559,
+      "timezone": "America/New_York",
+      "population_tier": "small_metro",
+      "region": "Appalachia",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "University",
+        "Mountain River"
+      ],
+      "selection_classes": [
+        "state_coverage_anchor",
+        "regional_anchor"
+      ],
+      "place_archetypes": [
+        "college_town",
+        "mountain_city",
+        "river_city"
+      ],
+      "collections": [
+        "college_university_towns",
+        "appalachian_mountain_towns",
+        "river_systems"
+      ],
+      "geographic_hierarchy": [
+        "appalachia",
+        "monongahela_river",
+        "northern_west_virginia"
+      ],
+      "climate_sensory_tags": [
+        "four_season_appalachian",
+        "cold_winter",
+        "humid_summer"
+      ],
+      "interpretive_use_cases": [
+        "study_or_research",
+        "regional_reset",
+        "edge_of_wilderness"
+      ]
+    },
+    {
+      "location_id": "us-wy-cheyenne",
+      "display_name": "Cheyenne, Wyoming, United States",
+      "city": "Cheyenne",
+      "state": "WY",
+      "country": "US",
+      "latitude": 41.14,
+      "longitude": -104.8202,
+      "timezone": "America/Denver",
+      "population_tier": "small_metro",
+      "region": "Mountain West",
+      "source": "manual_fixture",
+      "active": true,
+      "notes": [
+        "Capital",
+        "High Plains"
+      ],
+      "selection_classes": [
+        "state_coverage_anchor",
+        "geographic_test_anchor"
+      ],
+      "place_archetypes": [
+        "state_capital",
+        "small_regional_city",
+        "high_plains"
+      ],
+      "collections": [
+        "state_capitals",
+        "plains_edge_cities",
+        "geographic_test_anchors"
+      ],
+      "geographic_hierarchy": [
+        "mountain_west",
+        "high_plains",
+        "southeast_wyoming"
+      ],
+      "climate_sensory_tags": [
+        "high_altitude_dry",
+        "wind_heavy",
+        "four_season_continental"
+      ],
+      "interpretive_use_cases": [
+        "practical_base_city",
+        "regional_reset",
+        "quiet_grounding"
+      ]
     },
     {
       "location_id": "us-wy-jackson",
