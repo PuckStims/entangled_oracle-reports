@@ -1866,13 +1866,13 @@ def _weekly_polish_legacy_focus(legacy_focus: str, moment: dict) -> str:
     elif planet == "sun":
         if character == "challenging":
             variants = [
-                f"Sun localizes the timing through {house_theme}. Let the awkward fit be visible enough to work with, especially where pretending it is simple would create more strain later.",
-                f"Sun puts the emphasis on {house_theme}. Let the mismatch show clearly enough to adjust before it hardens into a bigger problem.",
+                f"Sun localizes the timing through {house_theme}.",
+                f"Sun puts the emphasis on {house_theme}.",
                 f"Sun brings the live question into view around {house_theme}; work with what the light reveals instead of forcing a cleaner story than the timing supports.",
             ]
         elif character == "flowing":
             variants = [
-                f"Sun localizes the timing through {house_theme}. Let the opening be visible enough that the right person, choice, or next step can recognize you in return.",
+                f"Sun localizes the timing through {house_theme}.",
                 f"Sun puts the emphasis on {house_theme}, where recognition, traction, or clarity may be easier to use if you keep the move concrete.",
                 f"Sun makes the live question easier to see in {house_theme}; let what is working become practical instead of leaving it at the level of promise.",
             ]
@@ -2893,6 +2893,22 @@ def _top_planet_connection(connections: list[dict], classifications: tuple[str, 
     return ranked[0]
 
 
+# Maps all active primary EAS indexes to their Soul Ecosystem display titles.
+# NGE uses "Narrative Current" here (vs. "Narrative Gravity" used by other
+# reports) because the Soul Ecosystem framing emphasises ongoing story voice.
+# Shared at module scope so any card referencing a raw index code (e.g. the
+# Integration Bridge card) can resolve it to a reader-facing name instead of
+# leaking the internal abbreviation.
+_SE_EAS_TITLES = {
+    "KVQ":      "Your Foresight Pattern",
+    "MKI":      "Your Knowledge Legacy",
+    "RWI":      "Your Reality Field",
+    "DFIS":     "Your Power Current",
+    "CATALYST": "Your Impact Radius",
+    "NGE":      "Your Narrative Current",
+}
+
+
 def _build_soul_ecosystem_standard_support(
     variables: dict,
     selector,
@@ -2965,7 +2981,7 @@ def _build_soul_ecosystem_standard_support(
             "core",
             "orientation",
             "Orientation Layer",
-            f"{dominant_element.title()} / {dominant_modality} / {sun_moon_relationship}",
+            f"{dominant_element.title()} / {dominant_modality.title()} / {sun_moon_relationship.title()}",
             "core_pattern_foundation",
             ("orientation", dominant_element, dominant_modality, sun_moon_relationship),
             {
@@ -3181,7 +3197,7 @@ def _build_soul_ecosystem_standard_support(
             "world",
             "convergence",
             "Convergence Theme",
-            primary_theme,
+            primary_theme.title(),
             "world_pattern_foundation",
             ("convergence", primary_theme_slug),
             {
@@ -3207,6 +3223,7 @@ def _build_soul_ecosystem_standard_support(
         )
 
     public_theme_record = _safe_mapping(convergence.get("vocational / public structure"))
+    public_theme_label = str(public_theme_record.get("label") or "vocational / public structure")
     public_theme_slug = _soul_support_slug(
         public_theme_record.get("label") or "vocational_public_structure"
     )
@@ -3215,7 +3232,7 @@ def _build_soul_ecosystem_standard_support(
             "interface",
             "public_structure",
             "Public Structure",
-            f"{public_theme_record.get('label') or 'vocational / public structure'} / house {top_house}",
+            f"{public_theme_label.title()} / house {top_house}",
             "world_interface_foundation",
             ("public_structure", public_theme_slug, top_house),
             {
@@ -3230,12 +3247,14 @@ def _build_soul_ecosystem_standard_support(
         or variables.get("soul_ecosystem_dominant_index")
         or "fallback"
     )
+    dominant_index_label = _SE_EAS_TITLES.get(dominant_index, dominant_index.replace("_", " ").title())
+    dominant_index_label = dominant_index_label.removeprefix("Your ")
     if primary_theme:
         add_card(
             "integration",
             "integration_bridge",
             "Integration Bridge",
-            f"{primary_theme} with {dominant_index}",
+            f"{primary_theme.title()} with {dominant_index_label}",
             "living_integration_foundation",
             ("integration_bridge", primary_theme_slug, dominant_index),
             {
@@ -3404,17 +3423,9 @@ def _build_soul_ecosystem_context(variables, index_results, payload) -> dict:
     )
 
     # ── Proprietary EAS routing ──────────────────────────────────
-    # Maps all active primary indexes to their Soul Ecosystem display titles.
-    # NGE uses "Narrative Current" here (vs. "Narrative Gravity" used by other
-    # reports) because the Soul Ecosystem framing emphasises ongoing story voice.
-    _SE_EAS_TITLES = {
-        "KVQ":      "Your Foresight Pattern",
-        "MKI":      "Your Knowledge Legacy",
-        "RWI":      "Your Reality Field",
-        "DFIS":     "Your Power Current",
-        "CATALYST": "Your Impact Radius",
-        "NGE":      "Your Narrative Current",
-    }
+    # _SE_EAS_TITLES is defined at module scope (see above
+    # _build_soul_ecosystem_standard_support) so it can also resolve raw
+    # index codes surfaced on other cards, e.g. the Integration Bridge title.
 
     # One dedicated block file per index. No longer routes non-MKI indexes
     # through the legacy impact_pattern.json (which only held CATALYST and KVQ).

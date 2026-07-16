@@ -41,6 +41,13 @@
       margin-top: 6px;
       letter-spacing: 1px;
     }
+    header .report-title {
+      font-size: 0.74rem;
+      color: var(--muted);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-top: 8px;
+    }
     hr { border: none; border-top: 1px solid var(--border); margin: 28px 0; }
     .section { margin-bottom: 28px; }
     .section-label {
@@ -278,8 +285,9 @@
 
   <header>
     <div class="name">{{ querent_name }}</div>
+    <div class="report-title">Weekly Horoscope</div>
     <div class="meta">{{ week_start_display }} - {{ week_end_display }}</div>
-    <div class="meta" style="margin-top:4px;">Weekly Horoscope - {{ report_brand_line | default('Entangled Oracle - Ksisti-Puck LLC') }}</div>
+    <div class="meta" style="margin-top:4px;">{{ report_brand_line | default('Entangled Oracle - Ksisti-Puck LLC') }}</div>
     {% if simple_mode %}
     <div class="meta" style="margin-top:4px;">Simple mode - birth time not provided</div>
     {% endif %}
@@ -301,9 +309,14 @@
     </article>
     <article class="report-record-card">
       <p class="report-record-label">Version</p>
-      <p class="report-record-value">{{ report_version | default('Weekly Horoscope v0.1') }}</p>
+      <p class="report-record-value">{{ report_version | default('Weekly Horoscope v1.0') }}</p>
       <p class="report-record-detail">Generated {{ generation_date }}</p>
     </article>
+  </div>
+
+  <div class="suite-note">
+    <h3>How This Report Fits the Suite</h3>
+    <p>Weekly Horoscope is the short-range timing layer of the Entangled Oracle suite, built to orient you to the week's rhythm and selected exact contacts.</p>
   </div>
 
   <!-- Weekly Reading -->
@@ -362,10 +375,6 @@
     {% else %}
       <div class="empty-state">No standout moments detected for this week.</div>
     {% endif %}
-    <div class="suite-note">
-      <h3>How This Report Fits the Suite</h3>
-      <p>Weekly Horoscope is the short-range timing layer of the Entangled Oracle suite, built to orient you to the week's rhythm and selected exact contacts.</p>
-    </div>
     {% if weekly_simplified_output_contract %}
     <div class="trust-note">
       <h3>Calculation Basis</h3>

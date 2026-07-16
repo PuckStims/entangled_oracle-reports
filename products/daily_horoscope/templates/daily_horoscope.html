@@ -268,7 +268,7 @@
     <article class="report-record-card">
       <p class="report-record-label">Birth-time confidence</p>
       <p class="report-record-value">{{ birth_time_confidence | default(birth_time_status | default('unknown')) }}</p>
-      <p class="report-record-detail">{{ report_version | default('Horoscope v1.0') }} - Generated {{ generation_date }}</p>
+      <p class="report-record-detail">{{ report_version | default('Daily Horoscope v1.0') }} - Generated {{ generation_date }}</p>
     </article>
     {% else %}
     <article class="report-record-card">
@@ -278,7 +278,7 @@
     </article>
     <article class="report-record-card">
       <p class="report-record-label">Version</p>
-      <p class="report-record-value">{{ report_version | default('Horoscope v1.0') }}</p>
+      <p class="report-record-value">{{ report_version | default('Daily Horoscope v1.0') }}</p>
       <p class="report-record-detail">Generated {{ generation_date }}</p>
     </article>
     {% endif %}
@@ -336,7 +336,7 @@
   <!-- Proprietary Reference (Full Mode only) -->
   {% if not simple_mode and activated_index_name %}
   <div class="section">
-    <div class="section-label">Your Narrative Genre / EO Reference</div>
+    <div class="section-label">EO Reference</div>
     <div class="proprietary-card">
       <div class="proprietary-name">{{ activated_index_name }}</div>
       <div class="block">{{ proprietary_block }}</div>

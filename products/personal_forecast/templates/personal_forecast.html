@@ -126,6 +126,8 @@
       border: 1px solid var(--border);
       border-top: 2px solid var(--accent);
       border-radius: 10px;
+      break-inside: avoid;
+      page-break-inside: avoid;
     }
     .forecast-intro .section-label { margin-bottom: 12px; }
     .forecast-intro p {
@@ -1002,13 +1004,15 @@
     <div class="predictive-card-list">
       {% for card in predictive_report_surface.chapters %}
       <div class="predictive-card">
-        <div class="predictive-card-kicker">{{ card.source }} - {{ card.tier4_label }}</div>
+        <div class="predictive-card-kicker">Forecast evidence{% if card.tier4_label %} - {{ card.tier4_label | replace('_', ' ') }}{% endif %}</div>
         <h3>{{ card.title }}</h3>
         <p>{{ card.body }}</p>
+        {% if (card.chapter_kind) or (card.domain_key and card.domain_key != 'fallback') %}
         <div class="predictive-meta">
-          <span>{{ card.chapter_kind }}</span>
-          <span>{{ card.domain_key }}</span>
+          {% if card.chapter_kind %}<span>{% if card.chapter_kind == 'sustained_transit_chapter' %}Sustained research signal{% else %}{{ card.chapter_kind | replace('_', ' ') | title }}{% endif %}</span>{% endif %}
+          {% if card.domain_key and card.domain_key != 'fallback' %}<span>{{ card.domain_key | replace('_', ' ') | title }}</span>{% endif %}
         </div>
+        {% endif %}
       </div>
       {% endfor %}
     </div>
@@ -1017,13 +1021,9 @@
     <div class="predictive-card-list">
       {% for card in predictive_report_surface.candidates %}
       <div class="predictive-card">
-        <div class="predictive-card-kicker">{{ card.kicker }}</div>
+        <div class="predictive-card-kicker">{{ card.kicker | replace('_', ' ') | title }}</div>
         <h3>{{ card.title }}</h3>
         <p>{{ card.body }}</p>
-        <div class="predictive-meta">
-          <span>{{ card.domain_key }}</span>
-          <span>{{ card.family_key }}</span>
-        </div>
       </div>
       {% endfor %}
     </div>
