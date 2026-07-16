@@ -46,6 +46,11 @@ def test_world_lines_assembler_renders_computed_lines():
     assert closest_lines["blocks"]
     assert " on the " in closest_lines["blocks"][0]["title"]
     assert "Distance:" in closest_lines["blocks"][0]["leaf"]["note"]
+    opening_sentences = [
+        block["leaf"]["body"].split(". ", 1)[0]
+        for block in closest_lines["blocks"][:3]
+    ]
+    assert len(set(opening_sentences)) == len(opening_sentences)
 
     natal_context = sections["natal_context"]
     assert natal_context["blocks"]

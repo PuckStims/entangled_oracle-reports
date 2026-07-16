@@ -48,19 +48,41 @@ BAND_LANGUAGE = {
     "background": "This is background context. It may help explain the field, but it should not be treated as a primary reason to choose the place.",
 }
 
+BOUNDARY_LANGUAGE = (
+    "The line is evidence of spatial emphasis, not a promise that an event has to occur.",
+    "Use it as map context rather than a guaranteed outcome.",
+    "Keep the claim bounded: the line describes where planetary material gets louder, not what life must deliver.",
+)
 
-def _line_body(line: dict) -> str:
+
+def _line_body(line: dict, index: int = 0) -> str:
     body = line["body"]
     angle = line["angle"]
     theme = BODY_THEMES.get(body, "a specific planetary topic")
     angle_action = ANGLE_ACTIONS.get(angle, "shows up through a specific angular channel")
     band_text = BAND_LANGUAGE.get(line.get("strength_band"), BAND_LANGUAGE["background"])
-    return (
-        f"The nearest {body} {angle} line sits about {line['distance_km']} km from this destination. "
-        f"In this place, {body} themes - {theme} - are most likely to be noticed where the {angle} "
-        f"{angle_action}. {band_text} The line does not promise an event or outcome; it tells the "
-        "report which planetary material has spatial emphasis here."
-    )
+    boundary_text = BOUNDARY_LANGUAGE[index % len(BOUNDARY_LANGUAGE)]
+    distance_km = line["distance_km"]
+
+    if index % 3 == 0:
+        opening = f"The nearest {body} {angle} line sits about {distance_km} km from this destination."
+        meaning = (
+            f"In this place, {body} themes - {theme} - are most likely to be noticed where the "
+            f"{angle} {angle_action}."
+        )
+    elif index % 3 == 1:
+        opening = f"At about {distance_km} km from the destination, the closest {body} {angle} line is a supporting map signal."
+        meaning = (
+            f"It points {body}'s material - {theme} - toward the {angle}, where it {angle_action}."
+        )
+    else:
+        opening = f"{body} on the {angle} is part of the nearby line field, with its nearest point about {distance_km} km away."
+        meaning = (
+            f"The practical reading is to watch for {theme} through the angular channel of the {angle}, which "
+            f"{angle_action}."
+        )
+
+    return f"{opening} {meaning} {band_text} {boundary_text}"
 
 
 def _natal_context_body(line: dict) -> str:
@@ -137,12 +159,12 @@ def assemble_world_lines_context(evidence_record: WorldLinesEvidenceRecord) -> d
                         "id": f"line_{line['id']}",
                         "title": f"{line['body']} on the {line['angle']}",
                         "leaf": {
-                            "body": _line_body(line),
+                            "body": _line_body(line, index),
                             "note": f"Distance: {line['distance_km']} km ({line['strength_band']})"
                         },
                         "evidence": line
                     }
-                    for line in lines
+                    for index, line in enumerate(lines)
                 ]
             },
             {

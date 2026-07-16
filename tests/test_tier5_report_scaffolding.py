@@ -132,6 +132,71 @@ class TestTier5ReportScaffolding(unittest.TestCase):
             self.assertNotEqual(body, "TODO")
             self.assertGreater(len(body), 40)
 
+    def test_year_ahead_forecast_terrain_compacts_broad_month_lists(self):
+        month_names = [
+            "January 2027",
+            "February 2027",
+            "March 2027",
+            "April 2027",
+            "May 2027",
+            "June 2027",
+            "July 2027",
+            "August 2027",
+            "September 2027",
+            "October 2027",
+            "November 2027",
+            "December 2027",
+        ]
+        synthesis = {
+            "annual_terrain_map": {
+                "label": "convergent",
+                "method_families": ["TRANSIT"],
+                "dominant_topics": ["house:10"],
+            },
+            "monthly_terrain": [
+                {
+                    "month_index": index,
+                    "month_name": month_name,
+                    "zone": "pressure",
+                    "relative_intensity": index / 12,
+                    "method_families": ["TRANSIT"],
+                    "dominant_topics": ["house:10"],
+                }
+                for index, month_name in enumerate(month_names, start=1)
+            ],
+            "evidence_chapters": [
+                {
+                    "chapter_type": "monthly_terrain",
+                    "label": "trigger",
+                    "time_scope": "January 2027",
+                    "topic_keys": ["house:10"],
+                },
+                {
+                    "chapter_type": "monthly_terrain",
+                    "label": "trigger",
+                    "time_scope": ", ".join(month_names),
+                    "topic_keys": ["house:10"],
+                }
+            ],
+            "contradictions": [],
+        }
+
+        surface = generate._build_tier5_year_ahead_surfaces(
+            {"time_lord_periods": [], "zodiacal_releasing_events": [], "return_events": []},
+            synthesis,
+            CONTENT_PACKS["plainspeak"],
+        )
+
+        month_card = surface["forecast_terrain"]["months"][0]
+        chapter_card = surface["forecast_terrain"]["chapters"][0]
+
+        self.assertEqual(month_card["title"], "Recurring Pressure Pattern")
+        self.assertEqual(month_card["date_label_prefix"], "Selected concentration points")
+        self.assertLessEqual(len(month_card["date_labels"]), 4)
+        self.assertNotEqual(month_card["date_labels"], month_names)
+        self.assertEqual(chapter_card["title"], "Year-Wide Trigger Pattern")
+        self.assertEqual(chapter_card["date_labels"], ["recurs across the forecast year"])
+
     def test_tier5_recurring_methods_are_grouped_as_timing_notes(self):
         synthesis = {
             "annual_terrain_map": {

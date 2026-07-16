@@ -187,7 +187,6 @@ def _render_location_card(context: dict, location: dict) -> str:
         _render_leaf(tile_leaves.get("bucket_role"), "Write this city-specific bucket role.", context_vars),
         _render_leaf(tile_leaves.get("best_use_case"), "Write this city's best use case.", context_vars),
         f'<p class="place-texture">{_escape(_location_texture_sentence(location))}</p>',
-        _render_leaf(tile_leaves.get("sibling_difference"), "Write the sibling difference explanation.", context_vars) if location.get("sibling_difference") else "",
         f'<p class="place-texture">{_escape(location.get("sibling_difference"))}</p>' if location.get("sibling_difference") else "",
         '<div class="score-list">',
     ]

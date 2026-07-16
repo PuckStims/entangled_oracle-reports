@@ -27,7 +27,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from config import OUTPUT_DIR, TEMPLATES_DIR, PRODUCTS_DIR
+from config import OUTPUT_DIR, TEMPLATES_DIR, PRODUCTS_DIR, REPORT_BLOCK_DIRS
 from formulas.standard.forecast_activation import build_ranking_diagnostics
 from formulas.standard.forecast_synthesis import build_forecast_synthesis
 from formulas.standard.methodology_profiles import get_active_methodology_metadata
@@ -512,6 +512,53 @@ def _display_any_date(value) -> str:
     return ""
 
 
+_MONTH_SCOPE_RE = re.compile(
+    r"\b(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{4}\b"
+)
+
+
+def _month_scope_labels(value: object) -> list[str]:
+    text = str(value or "")
+    labels: list[str] = []
+    for match in _MONTH_SCOPE_RE.findall(text):
+        _append_unique(labels, match)
+    return labels
+
+
+def _compact_month_scope_label(value: object, broad_label: str = "recurs across the forecast year") -> str:
+    labels = _month_scope_labels(value)
+    if len(labels) >= 10:
+        return broad_label
+    if len(labels) > 4:
+        return f"{', '.join(labels[:4])}, and {len(labels) - 4} more months"
+    return str(value or "").strip()
+
+
+def _broad_chapter_title(label: str) -> str:
+    normalized = str(label or "").strip().lower()
+    if normalized == "trigger":
+        return "Year-Wide Trigger Pattern"
+    if normalized == "chapter":
+        return "Year-Wide Repeating Theme"
+    if normalized == "pressure":
+        return "Year-Wide Pressure Pattern"
+    return "Year-Wide Pattern"
+
+
+def _representative_terrain_month_labels(records: list[dict], limit: int = 4) -> list[str]:
+    if not records:
+        return []
+    selected = sorted(
+        records,
+        key=lambda item: (
+            -float(item.get("relative_intensity") or 0.0),
+            int(item.get("month_index") or 0),
+        ),
+    )[:limit]
+    selected.sort(key=lambda item: int(item.get("month_index") or 0))
+    return [str(item.get("month_name") or "").strip() for item in selected if str(item.get("month_name") or "").strip()]
+
+
 def _period_date_range(period: dict) -> str:
     start = _display_any_date(period.get("start_at"))
     end = _display_any_date(period.get("end_at"))
@@ -770,6 +817,8 @@ def _build_tier5_year_ahead_surfaces(timeline: dict, forecast_synthesis: dict, p
             "method_families": [],
             "dominant_topics": [],
             "date_labels": [],
+            "date_label_prefix": "Months",
+            "_month_records": [],
             "source_label": "Monthly pattern",
         })
         card["relative_intensity"] = max(float(card.get("relative_intensity") or 0.0), float(month.get("relative_intensity") or 0.0))
@@ -777,7 +826,29 @@ def _build_tier5_year_ahead_surfaces(timeline: dict, forecast_synthesis: dict, p
             _append_unique(card["method_families"], family)
         for topic in list(month.get("dominant_topics") or []):
             _append_unique(card["dominant_topics"], topic)
-        _append_unique(card["date_labels"], month.get("month_name", ""))
+        card["_month_records"].append(
+            {
+                "month_index": int(month.get("month_index") or 0),
+                "month_name": str(month.get("month_name") or ""),
+                "relative_intensity": float(month.get("relative_intensity") or 0.0),
+            }
+        )
+
+    terrain_month_cards = []
+    for card in terrain_month_groups.values():
+        records = list(card.pop("_month_records", []) or [])
+        is_broad = len(records) >= 10
+        if is_broad:
+            card["title"] = f"Recurring {card['kicker'].replace('_', ' ').title()} Pattern"
+            card["date_label_prefix"] = "Selected concentration points"
+            card["date_labels"] = _representative_terrain_month_labels(records)
+        else:
+            card["date_labels"] = [
+                str(record.get("month_name") or "")
+                for record in sorted(records, key=lambda item: int(item.get("month_index") or 0))
+                if str(record.get("month_name") or "").strip()
+            ]
+        terrain_month_cards.append(card)
 
     terrain_chapter_groups = {}
     for chapter in (forecast_synthesis.get("evidence_chapters") or []):
@@ -785,19 +856,37 @@ def _build_tier5_year_ahead_surfaces(timeline: dict, forecast_synthesis: dict, p
             continue
         chapter_type = str(chapter.get("chapter_type") or "fallback")
         label = str(chapter.get("label") or "fallback")
+        time_scope = str(chapter.get("time_scope") or "")
+        broad_scope = len(_month_scope_labels(time_scope)) >= 10
         body = _raw_select_block(terrain_path, "chapter_types", chapter_type, label)
         group_key = (chapter_type, label, body)
         card = terrain_chapter_groups.setdefault(group_key, {
-            "title": _timing_group_title(label, "Forecast Chapter"),
+            "title": _broad_chapter_title(label) if broad_scope else _timing_group_title(label, "Forecast Chapter"),
             "kicker": label,
             "body": body,
             "topic_keys": [],
             "date_labels": [],
+            "date_label_prefix": "Scope" if broad_scope else "",
+            "_has_broad_scope": broad_scope,
             "source_label": "Chapter pattern",
         })
+        if broad_scope:
+            card["title"] = _broad_chapter_title(label)
+            card["date_label_prefix"] = "Scope"
+            card["_has_broad_scope"] = True
         for topic in list(chapter.get("topic_keys") or []):
             _append_unique(card["topic_keys"], topic)
-        _append_unique(card["date_labels"], chapter.get("time_scope", ""))
+        _append_unique(card["date_labels"], _compact_month_scope_label(time_scope))
+
+    terrain_chapter_cards = []
+    for card in terrain_chapter_groups.values():
+        combined_scope = ", ".join(card.get("date_labels") or [])
+        if card.get("_has_broad_scope") or len(_month_scope_labels(combined_scope)) >= 10:
+            card["title"] = _broad_chapter_title(str(card.get("kicker") or ""))
+            card["date_label_prefix"] = "Scope"
+            card["date_labels"] = ["recurs across the forecast year"]
+        card.pop("_has_broad_scope", None)
+        terrain_chapter_cards.append(card)
 
     terrain = {
         "annual": {
@@ -808,8 +897,8 @@ def _build_tier5_year_ahead_surfaces(timeline: dict, forecast_synthesis: dict, p
             "dominant_topics": list(annual.get("dominant_topics") or [])[:6],
             "source_label": "Annual pattern",
         },
-        "months": list(terrain_month_groups.values())[:6],
-        "chapters": list(terrain_chapter_groups.values())[:6],
+        "months": terrain_month_cards[:6],
+        "chapters": terrain_chapter_cards[:6],
         "contradictions": [
             {
                 "title": "Forecast contradiction",
@@ -1847,19 +1936,19 @@ def _weekly_polish_legacy_focus(legacy_focus: str, moment: dict) -> str:
     if planet == "moon":
         if character == "challenging":
             variants = [
-                f"The Moon makes this a mood-and-body cue around {house_theme}; do not confuse intensity with final truth.",
-                f"The Moon brings the timing into body, mood, and immediate response around {house_theme}; let intensity be information, not verdict.",
-                f"The Moon turns this into a felt-time cue around {house_theme}; what spikes first may still need a second look.",
-                f"The Moon presses the timing closer to instinct around {house_theme}; name the reaction before you decide what it means.",
-                f"The Moon makes this more immediate around {house_theme}; stay close to what is actually happening instead of arguing with the first feeling.",
+                f"Body and mood register this first in {house_theme}; do not confuse intensity with final truth.",
+                f"A reaction may arrive quickly around {house_theme}; let the feeling speak before you let it decide.",
+                f"What flares first in {house_theme} is useful information, but it may not be the whole story.",
+                f"Around {house_theme}, the body may register the mismatch before language catches up.",
+                f"The Moon makes this immediate in {house_theme}; give the first feeling a beat before you turn it into a conclusion.",
             ]
         elif character == "flowing":
             variants = [
-                f"The Moon makes this a softer timing cue around {house_theme}, where response may matter more than effort.",
-                f"The Moon softens the timing around {house_theme}; what is easier to feel may also be easier to answer well.",
-                f"The Moon keeps this light but noticeable around {house_theme}, where rhythm may matter more than force.",
-                f"The Moon makes this more receptive around {house_theme}; sometimes the useful move is to notice what is already landing.",
-                f"The Moon brings a quieter ease to {house_theme}; let the response stay simple enough to follow.",
+                f"The Moon softens the pace around {house_theme}; response may matter more than effort here.",
+                f"Around {house_theme}, what is easier to feel may also be easier to answer well.",
+                f"The opening stays gentle in {house_theme}; rhythm may carry more than force.",
+                f"The Moon makes {house_theme} easier to receive for a moment; notice what is already landing.",
+                f"A quieter steadiness moves through {house_theme}; keep the response simple enough to trust.",
             ]
         else:
             return text
@@ -3440,7 +3529,7 @@ def _build_soul_ecosystem_context(variables, index_results, payload) -> dict:
     ctx["proprietary_section_title"] = _SE_EAS_TITLES.get(soul_idx, "Your Knowledge Legacy")
 
     _prop_file  = _SE_EAS_BLOCK_FILES.get(soul_idx, "knowledge_legacy")
-    _blocks_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "blocks", "soul_ecosystem")
+    _blocks_dir = REPORT_BLOCK_DIRS.get("soul_ecosystem", "")
 
     if soul_idx == "NGE" and not os.path.exists(
         os.path.join(_blocks_dir, "narrative_current.json")
