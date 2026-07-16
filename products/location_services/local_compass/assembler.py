@@ -6,50 +6,168 @@ for the Local Compass directional interpretation product.
 """
 from __future__ import annotations
 
-CONTEXT_VERSION = "local_compass_context_v0.2.0"
+CONTEXT_VERSION = "local_compass_context_v0.3.0"
 REPORT_TYPE = "location_services.local_compass"
 PRODUCT_NAME = "Local Compass"
 
-def assemble_local_compass_context(evidence_record: dict) -> dict:
+from engine.location_services import resolve_destination_context
+from engine.local_space import build_local_space_evidence, LocalSpaceEvidenceRecord
+
+
+MODE_THEMES = {
+    "Visibility": "public presence, authorship, confidence, and the choice to be seen directly",
+    "Restoration": "emotional pacing, belonging, habit, and the kind of environment that lets the body settle",
+    "Study": "learning, writing, errands, conversation, and the way attention moves through daily life",
+    "Relationship": "contact, reciprocity, pleasure, taste, and the quality of exchange with other people",
+    "Movement": "action, courage, friction, exercise, conflict, and the need for an honest outlet",
+    "Expansion": "teaching, travel, opportunity, optimism, and the search for a wider field",
+    "Structure": "commitment, limits, discipline, responsibility, and work that has to become durable",
+    "Experimentation": "change, invention, disruption, freedom, and a break from stale patterning",
+    "Retreat": "imagination, spiritual quiet, permeability, art, and the need for clearer boundaries",
+    "Deep Work": "depth, repair, power, grief, consequence, and the material that cannot stay superficial",
+}
+
+DIRECTION_USES = {
+    "North": "orientation, planning, and a cooler long-view posture",
+    "North-Northeast": "planning that is beginning to move from idea into experiment",
+    "Northeast": "study, opening, and a willingness to follow a new horizon",
+    "East-Northeast": "fresh contact, early action, and the first test of a new direction",
+    "East": "beginnings, visibility, initiation, and meeting the day directly",
+    "East-Southeast": "momentum, conversation, and active adjustment",
+    "Southeast": "creative heat, pursuit, and outward movement",
+    "South-Southeast": "sustained effort, embodiment, and a warmer practical push",
+    "South": "full expression, visibility, and active participation",
+    "South-Southwest": "integration after effort, recovery, and sorting what has been activated",
+    "Southwest": "relationship, memory, repair, and return to what needs tending",
+    "West-Southwest": "release, negotiation, and making room for what is no longer central",
+    "West": "encounter, reflection, exchange, and the mirror of other people",
+    "West-Northwest": "discernment, closure, and the need to choose what remains useful",
+    "Northwest": "structure, simplification, and mature perspective",
+    "North-Northwest": "quiet preparation, containment, and a more deliberate next step",
+}
+
+
+def _direction_body(direction: dict) -> str:
+    mode = direction["practical_mode"]
+    mode_theme = MODE_THEMES.get(mode, "a specific planetary topic")
+    direction_use = DIRECTION_USES.get(direction["direction_label"], "a particular spatial emphasis")
+    return (
+        f"Rank {direction['rank']} brings {direction['body']} forward as a {mode.lower()} direction, "
+        f"pointing {direction['direction_label']} from the anchor. That direction is useful for "
+        f"{direction_use}, while the planetary mode emphasizes {mode_theme}. The score "
+        f"({direction['weighted_score']}) describes relative strength inside this compass, not a "
+        "command to face that direction for every decision."
+    )
+
+
+def _relationship_body(direction: dict) -> str:
+    cross_track = direction.get("cross_track_distance_km")
+    bearing = direction.get("bearing_to_destination")
+    if cross_track is None or bearing is None:
+        return (
+            f"No destination bearing was available for {direction['body']}; the report can "
+            "still use the raw local-space direction, but cannot compare it to a route or place."
+        )
+    alignment = (
+        "very close to"
+        if cross_track <= 100
+        else "near"
+        if cross_track <= 500
+        else "well away from"
+    )
+    return (
+        f"The destination bearing is {bearing} degrees, and the {direction['body']} direction runs "
+        f"{alignment} that bearing at about {cross_track} km of cross-track distance. This says whether "
+        "the place itself participates in the planetary direction, not whether the destination will "
+        "deliver the planet's desired outcome."
+    )
+
+
+def _route_body(direction: dict) -> str:
+    route_geometry = direction.get("route_geometry") or {}
+    strength = route_geometry.get("strength")
+    route_read = {
+        "high": "The route repeatedly stays inside this planetary corridor.",
+        "medium": "The route intersects the corridor enough to matter, but not enough to define the whole path.",
+        "low": "The route only brushes the corridor; treat it as context, not the route's main signature.",
+    }.get(strength, "The route relationship is present but should be read cautiously.")
+    return (
+        f"The route comes within about {route_geometry.get('minimum_offset_km')} km of the "
+        f"{direction['body']} directional ray, with roughly {route_geometry.get('overlap_length_km')} km "
+        f"inside the defined corridor. {route_read} This is geometric alignment, not travel advice "
+        "or a promise about what will happen on the path."
+    )
+
+
+def _signature_body(name: str, directions: list[dict]) -> str:
+    if not directions:
+        return "No planetary local-space directions were available for this anchor."
+    lead = directions[0]
+    mode_theme = MODE_THEMES.get(lead["practical_mode"], "a specific planetary topic")
+    direction_use = DIRECTION_USES.get(lead["direction_label"], "a particular spatial emphasis")
+    return (
+        f"{name}'s strongest compass signal is {lead['body']} toward {lead['direction_label']}. "
+        f"That points the reading toward {mode_theme}, carried through {direction_use}. "
+        "The compass is not choosing a destination for the reader; it is showing which planetary "
+        "topic has the clearest directional handle from this anchor."
+    )
+
+
+def assemble_local_compass_context(evidence_record: LocalSpaceEvidenceRecord) -> dict:
     """
     Build a structured Local Compass draft context from an evidence record.
     """
     dest = evidence_record.get("destination_context", {})
     name = dest.get("display_name", "Destination")
-    
-    return {
-        "context_version": CONTEXT_VERSION,
-        "report_type": REPORT_TYPE,
-        "product_name": PRODUCT_NAME,
-        "destination_name": name,
-        "destination_context": dest,
-        "sections": [
+    directions = evidence_record.get("directions", [])
+    route_context = evidence_record.get("route_context", {})
+    has_route_geometry = any(direction.get("route_geometry") for direction in directions)
+    sections = [
             {
                 "id": "directional_signature",
                 "title": "Directional Signature",
                 "kicker": "Core Compass Alignment",
-                "is_future_method": True,
-                "future_title": "Local Space Signature (Coming Soon)",
-                "future_description": "Our upcoming engine will convert planetary positions into 360-degree horizon azimuths relative to your current location.",
-                "blocks": []
+                "blocks": [
+                    {
+                        "id": "directional_signature_computed",
+                        "leaf": {
+                            "body": _signature_body(name, directions)
+                        }
+                    }
+                ]
             },
             {
                 "id": "planetary_directions",
                 "title": "Planetary Directions",
                 "kicker": "Lines of Force",
-                "is_future_method": True,
-                "future_title": "Azimuth Mapping (Coming Soon)",
-                "future_description": "Maps which planets pull in which geographic directions—e.g. Venus lines for aesthetic quarters, Mars for high-energy zones.",
-                "blocks": []
+                "blocks": [
+                    {
+                        "id": f"direction_{direction['id']}",
+                        "title": f"{direction['body']} towards {direction['direction_label']}",
+                        "leaf": {
+                            "body": _direction_body(direction),
+                            "note": f"Mode: {direction['practical_mode']}; score {direction['weighted_score']}"
+                        },
+                        "evidence": direction
+                    }
+                    for direction in directions
+                ]
             },
             {
                 "id": "destination_relationship",
                 "title": "Destination Relationship",
                 "kicker": "Geographic Connection",
-                "is_future_method": True,
-                "future_title": "City-to-City Vectors (Coming Soon)",
-                "future_description": "Calculates exactly which planetary line connects your current location to the target destination.",
-                "blocks": []
+                "blocks": [
+                    {
+                        "id": f"relationship_{direction['id']}",
+                        "title": f"Distance to {direction['body']}",
+                        "leaf": {
+                            "body": _relationship_body(direction),
+                            "note": f"Distance metric for {direction['body']}"
+                        }
+                    }
+                    for direction in directions
+                ]
             },
             {
                 "id": "use_modes",
@@ -59,9 +177,13 @@ def assemble_local_compass_context(evidence_record: dict) -> dict:
                     {
                         "id": "feng_shui",
                         "leaf": {
-                            "is_draft": True,
-                            "draft_prompt": "Suggest how to arrange a room or travel routes based on these directional lines.",
-                            "note": "Awaiting azimuth data."
+                            "body": (
+                                "Use these directions as a practical layer after the main locational question is clear. "
+                                "A strong direction can support where to place attention, movement, ritual, study, "
+                                "conversation, or recovery inside an environment. It should not replace ordinary "
+                                "judgment about safety, logistics, accessibility, or the real purpose of the trip."
+                            ),
+                            "note": "Route-corridor geometry is geometric alignment evidence, not travel advice."
                         }
                     }
                 ]
@@ -74,14 +196,47 @@ def assemble_local_compass_context(evidence_record: dict) -> dict:
                     {
                         "id": "compass_trace",
                         "leaf": {
-                            "is_draft": True,
-                            "draft_prompt": "Display raw azimuths and zenith data.",
-                            "note": "Awaiting local space layer."
-                        }
+                            "body": "Computed with Swiss Ephemeris equatorial positions projected to local horizon azimuths at the anchor place.",
+                            "note": "Computed local-space azimuth, direction-strength weighting, and optional route-corridor geometry are available."
+                        },
+                        "trace": evidence_record.get("appendix_trace")
                     }
                 ]
-            }
+            },
         ]
+
+    if has_route_geometry:
+        sections.insert(3, {
+            "id": "route_relationship",
+            "title": "Route Relationship",
+            "kicker": "Path Corridor Alignment",
+            "present": True,
+            "blocks": [
+                {
+                    "id": f"route_{direction['id']}",
+                    "title": f"Route alignment for {direction['body']}",
+                    "leaf": {
+                        "body": _route_body(direction),
+                        "note": (
+                            f"Route {direction['route_geometry']['route_id']}; "
+                            f"strength {direction['route_geometry']['strength']}"
+                        ),
+                    },
+                    "evidence": direction["route_geometry"],
+                }
+                for direction in directions
+                if direction.get("route_geometry")
+            ],
+            "route_context": route_context,
+        })
+
+    return {
+        "context_version": CONTEXT_VERSION,
+        "report_type": REPORT_TYPE,
+        "product_name": PRODUCT_NAME,
+        "destination_name": name,
+        "destination_context": dest,
+        "sections": sections,
     }
 
 def build_local_compass_context(
@@ -93,5 +248,11 @@ def build_local_compass_context(
     """
     Evidence-record wrapper seam for Local Compass.
     """
-    record = {"destination_context": destination} if destination else {"destination_context": {"display_name": "Location"}}
+    resolved_destination = resolve_destination_context(destination or {"display_name": "Location"})
+    record = build_local_space_evidence(
+        natal_payload,
+        resolved_destination,
+        resolved_destination,
+        route=(destination or {}).get("route"),
+    )
     return assemble_local_compass_context(record)

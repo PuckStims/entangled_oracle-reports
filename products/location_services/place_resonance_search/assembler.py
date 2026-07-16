@@ -62,6 +62,13 @@ def build_place_resonance_search_context(
     purpose_lens: str | None = None,
     relationship_to_place: str | None = None,
 ) -> dict:
+    """
+    Builds a single-destination context mapped into the Search namespace.
+    
+    NOTE: This is a legacy/compatibility path preserved so older routing
+    does not break. The canonical path for this product is now
+    assemble_place_resonance_search_results_context().
+    """
     return _retitle_context(
         _build_place_resonance_context(
             natal_payload,
@@ -212,14 +219,25 @@ def assemble_place_resonance_search_results_context(
             )
             for item in selected_locations
         },
-        "tile_detail_leaves": {
-            item["location_id"]: {
-                "bucket_role": select_place_resonance_search_leaf("tile_detail", f"bucket_role_{item.get('bucket') or 'fallback'}"),
-                "sibling_difference": select_place_resonance_search_leaf("tile_detail", "sibling_difference"),
-                "cluster_alternates": select_place_resonance_search_leaf("tile_detail", "cluster_alternates"),
-                "best_use_case": select_place_resonance_search_leaf("tile_detail", "best_use_case"),
-                "fallback": select_place_resonance_search_leaf("tile_detail", "fallback"),
-            }
-            for item in selected_locations
-        },
+        "tile_detail_leaves": _build_tile_detail_leaves(selected_locations, dominant_theme),
     }
+
+def _build_tile_detail_leaves(selected_locations: list[dict], dominant_theme: str) -> dict:
+    leaves = {}
+    for item in selected_locations:
+        bucket = item.get("bucket") or "fallback"
+        grammar = item.get("profile_context", {}).get("_grammar", {})
+        clusters = grammar.get("theme_clusters", {}).get("clusters", [])
+        
+        dominant_cluster = "fallback"
+        if clusters and clusters[0].get("theme_keys"):
+            dominant_cluster = clusters[0]["theme_keys"][0]
+            
+        leaves[item["location_id"]] = {
+            "bucket_role": select_place_resonance_search_leaf("tile_detail", f"bucket_role_{bucket}"),
+            "sibling_difference": select_place_resonance_search_leaf("tile_detail", f"sibling_difference_{dominant_theme}"),
+            "cluster_alternates": select_place_resonance_search_leaf("tile_detail", f"cluster_alternates_{dominant_cluster}"),
+            "best_use_case": select_place_resonance_search_leaf("tile_detail", f"best_use_case_{dominant_cluster}"),
+            "fallback": select_place_resonance_search_leaf("tile_detail", "fallback"),
+        }
+    return leaves

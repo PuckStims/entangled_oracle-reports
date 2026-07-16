@@ -10,12 +10,103 @@ CONTEXT_VERSION = "world_lines_context_v0.2.0"
 REPORT_TYPE = "location_services.world_lines"
 PRODUCT_NAME = "World Lines Companion"
 
-def assemble_world_lines_context(evidence_record: dict) -> dict:
+from engine.location_services import resolve_destination_context
+from engine.world_lines import build_line_evidence, WorldLinesEvidenceRecord
+
+
+ANGLE_DESCRIPTIONS = {
+    "Ascendant": "how a place meets your body, visibility, and immediate self-presentation",
+    "Descendant": "how a place draws partnership, clients, mirrors, and other people into focus",
+    "Midheaven": "how a place speaks to public life, vocation, reputation, and outward direction",
+    "Imum_Coeli": "how a place touches privacy, home, roots, memory, and inner steadiness",
+}
+
+BODY_THEMES = {
+    "Sun": "direction, authorship, confidence, and the question of being visibly yourself",
+    "Moon": "emotional rhythm, belonging, memory, and the conditions that help life feel habitable",
+    "Mercury": "language, movement, study, negotiation, and the everyday nervous system",
+    "Venus": "relationship, taste, reciprocity, pleasure, and the way value becomes visible",
+    "Mars": "drive, conflict, assertion, stamina, and the need for clean outlets",
+    "Jupiter": "growth, opportunity, teaching, generosity, and the sense of a larger horizon",
+    "Saturn": "structure, responsibility, limits, craft, and the pressure to make something durable",
+    "Uranus": "freedom, disruption, experimentation, and the need to break stale patterns",
+    "Neptune": "imagination, permeability, longing, retreat, and the risk of losing definition",
+    "Pluto": "depth, consequence, exposure, power, grief, and real transformation",
+}
+
+ANGLE_ACTIONS = {
+    "Ascendant": "meets you through body, first response, visibility, and the way you enter the environment",
+    "Descendant": "arrives through other people: partners, clients, open mirrors, and direct encounters",
+    "Midheaven": "moves through public life, reputation, vocation, responsibility, and contribution",
+    "Imum_Coeli": "works through home, privacy, roots, memory, and the ground under the public self",
+}
+
+BAND_LANGUAGE = {
+    "tight": "This is close enough to treat as one of the location's lead line signals.",
+    "moderate": "This is not the loudest possible contact, but it is close enough to matter when the same theme repeats elsewhere.",
+    "wide": "This is a real but softer contact; it should color the reading rather than carry the whole interpretation.",
+    "background": "This is background context. It may help explain the field, but it should not be treated as a primary reason to choose the place.",
+}
+
+
+def _line_body(line: dict) -> str:
+    body = line["body"]
+    angle = line["angle"]
+    theme = BODY_THEMES.get(body, "a specific planetary topic")
+    angle_action = ANGLE_ACTIONS.get(angle, "shows up through a specific angular channel")
+    band_text = BAND_LANGUAGE.get(line.get("strength_band"), BAND_LANGUAGE["background"])
+    return (
+        f"The nearest {body} {angle} line sits about {line['distance_km']} km from this destination. "
+        f"In this place, {body} themes - {theme} - are most likely to be noticed where the {angle} "
+        f"{angle_action}. {band_text} The line does not promise an event or outcome; it tells the "
+        "report which planetary material has spatial emphasis here."
+    )
+
+
+def _natal_context_body(line: dict) -> str:
+    condition = line.get("natal_condition") or {}
+    sign = condition.get("natal_sign") or "its natal sign"
+    house = condition.get("natal_house")
+    house_text = f" and house {house}" if house else ""
+    theme = BODY_THEMES.get(line["body"], "this planetary function")
+    return (
+        f"{line['body']} still comes from the natal chart through {sign}{house_text}. "
+        f"The location can foreground {theme}, but it does not improve, erase, or rewrite "
+        "the natal pattern. Read the line as emphasis, then let natal condition describe "
+        "how easy or demanding that material is to live."
+    )
+
+
+def _distance_body(line: dict) -> str:
+    band_text = BAND_LANGUAGE.get(line.get("strength_band"), BAND_LANGUAGE["background"])
+    return (
+        f"The nearest point is {line['distance_km']} km from the destination, with "
+        f"{line['birth_time_sensitivity']} birth-time sensitivity for this angle. {band_text} "
+        "If birth time confidence is lower, keep the interpretation quieter; the same line "
+        "can remain useful context without becoming a decisive relocation claim."
+    )
+
+
+def _map_summary_body(name: str, lines: list[dict]) -> str:
+    if not lines:
+        return "No angular line proximity signals were available for this destination."
+    lead = lines[0]
+    lead_theme = BODY_THEMES.get(lead["body"], "a planetary topic")
+    return (
+        f"{name} is organized first around {lead['body']} on the {lead['angle']}: "
+        f"{lead_theme}. The report includes {len(lines)} nearby ASC, DSC, MC, and IC "
+        "line signals, but the nearest line sets the first interpretive question rather "
+        "than declaring this place good or bad."
+    )
+
+
+def assemble_world_lines_context(evidence_record: WorldLinesEvidenceRecord) -> dict:
     """
     Build a structured World Lines draft context from an evidence record.
     """
-    dest = evidence_record.get("destination_context", {})
+    dest = evidence_record.get("destination", {})
     name = dest.get("display_name", "Destination")
+    lines = evidence_record.get("lines", [])
     
     return {
         "context_version": CONTEXT_VERSION,
@@ -28,28 +119,49 @@ def assemble_world_lines_context(evidence_record: dict) -> dict:
                 "id": "map_summary",
                 "title": "Map Summary",
                 "kicker": "Astrocartography Overview",
-                "is_future_method": True,
-                "future_title": "Astrocartography Baseline (Coming Soon)",
-                "future_description": "Our upcoming spatial engine will calculate precise planetary line distances and intersections at this exact longitude and latitude.",
-                "blocks": []
+                "blocks": [
+                    {
+                        "id": "map_summary_computed",
+                        "leaf": {
+                            "body": _map_summary_body(name, lines)
+                        }
+                    }
+                ]
             },
             {
                 "id": "closest_lines",
                 "title": "Closest Lines",
                 "kicker": "Primary Planetary Influence",
-                "is_future_method": True,
-                "future_title": "Line Detection (Coming Soon)",
-                "future_description": "Identifies the closest planetary lines (within 500km) to this location, highlighting their core themes.",
-                "blocks": []
+                "blocks": [
+                    {
+                        "id": f"line_{line['id']}",
+                        "title": f"{line['body']} on the {line['angle']}",
+                        "leaf": {
+                            "body": _line_body(line),
+                            "note": f"Distance: {line['distance_km']} km ({line['strength_band']})"
+                        },
+                        "evidence": line
+                    }
+                    for line in lines
+                ]
             },
             {
                 "id": "angle_meaning",
                 "title": "Angle Meaning",
                 "kicker": "The Four Angles",
-                "is_future_method": True,
-                "future_title": "Angular Expression (Coming Soon)",
-                "future_description": "Analyzes how lines on the Ascendant, Midheaven, Descendant, and IC differ in their worldly expression.",
-                "blocks": []
+                "blocks": [
+                    {
+                        "id": f"angle_meaning_{angle}",
+                        "title": angle.replace("_", " "),
+                        "leaf": {
+                            "body": (
+                                f"{angle.replace('_', ' ')} lines describe "
+                                f"{ANGLE_DESCRIPTIONS.get(angle, 'a specific form of angular emphasis')}."
+                            )
+                        }
+                    }
+                    for angle in sorted({line["angle"] for line in lines})
+                ]
             },
             {
                 "id": "natal_context",
@@ -57,33 +169,45 @@ def assemble_world_lines_context(evidence_record: dict) -> dict:
                 "kicker": "Your Blueprint",
                 "blocks": [
                     {
-                        "id": "natal_integration",
-                        "title": "How You Carry These Lines",
+                        "id": f"natal_integration_{line['id']}",
+                        "title": f"How You Carry {line['body']}",
                         "leaf": {
-                            "is_draft": True,
-                            "draft_prompt": "Explain how the natal condition of the line's planet modifies the map's raw promise.",
-                            "note": "Requires the planet identification from the astrocartography layer."
+                            "body": _natal_context_body(line)
                         }
                     }
+                    for line in lines
                 ]
             },
             {
                 "id": "distance_and_uncertainty",
                 "title": "Distance and Uncertainty",
                 "kicker": "Precision Metrics",
-                "is_future_method": True,
-                "future_title": "Orb Calculation (Coming Soon)",
-                "future_description": "Calculates the exact orb and distance attenuation of the planetary lines to determine their relative strength.",
-                "blocks": []
+                "blocks": [
+                    {
+                        "id": f"distance_metrics_{line['id']}",
+                        "leaf": {
+                            "body": _distance_body(line)
+                        }
+                    }
+                    for line in lines
+                ]
             },
             {
                 "id": "line_clusters",
-                "title": "Line Clusters",
-                "kicker": "Complex Intersections",
-                "is_future_method": True,
-                "future_title": "Parans & Crossings (Coming Soon)",
-                "future_description": "Identifies localized line crossings, parans, and complex multi-planetary signatures unique to this latitude.",
-                "blocks": []
+                "title": "Calculation Boundaries",
+                "kicker": "Unsupported Advanced Methods",
+                "blocks": [
+                    {
+                        "id": "unsupported_world_lines_methods",
+                        "leaf": {
+                            "body": (
+                                "This report includes planetary ASC, DSC, MC, and IC line proximity. "
+                                "It does not yet include parans, remote activation, or line-crossing interpretation."
+                            )
+                        },
+                        "unsupported_methods": evidence_record.get("unsupported_methods", [])
+                    }
+                ]
             },
             {
                 "id": "technical_appendix",
@@ -93,10 +217,10 @@ def assemble_world_lines_context(evidence_record: dict) -> dict:
                     {
                         "id": "astrocartography_trace",
                         "leaf": {
-                            "is_draft": True,
-                            "draft_prompt": "Show calculation boundaries and method references.",
-                            "note": "Awaiting geometry layer."
-                        }
+                            "body": "Computed with Swiss Ephemeris equatorial positions, meridian longitudes, and sampled horizon curves.",
+                            "note": "Parans, crossings, and remote activation remain excluded."
+                        },
+                        "trace": evidence_record.get("appendix_trace")
                     }
                 ]
             }
@@ -112,6 +236,6 @@ def build_world_lines_context(
     """
     Evidence-record wrapper seam for World Lines Companion.
     """
-    # For now, pass empty record with destination info.
-    record = {"destination_context": destination} if destination else {"destination_context": {"display_name": "Location"}}
+    resolved_destination = resolve_destination_context(destination or {"display_name": "Location"})
+    record = build_line_evidence(natal_payload, resolved_destination)
     return assemble_world_lines_context(record)

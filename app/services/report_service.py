@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from pathlib import Path
+import traceback
 
 from generate import InputValidationError, generate_report
 
@@ -19,6 +20,7 @@ class ReportRequest:
     birth_date: str
     birth_time: str | None
     location: str
+    destination: str | None = None
     report_date: str | None = None
     palette: str = "vibrant"
     content_pack: str = "plainspeak"
@@ -76,6 +78,7 @@ def validate_report_request(request: ReportRequest) -> ReportRequest:
     birth_date = _validate_yyyy_mm_dd(_require(request.birth_date, "Please enter a birth date."), "birth date")
     birth_time = _validate_time(request.birth_time)
     location = _require(request.location, "Please enter a birth location.")
+    destination = request.destination.strip() if request.destination else None
     report_date = request.report_date.strip() if request.report_date else None
     if report_date:
         report_date = _validate_yyyy_mm_dd(report_date, "the report start date")
@@ -84,6 +87,8 @@ def validate_report_request(request: ReportRequest) -> ReportRequest:
 
     if not birth_time and not definition.allow_unknown_time:
         raise WebInputError(f"{definition.label} requires an exact birth time for this beta studio flow.")
+    if definition.needs_destination:
+        destination = _require(destination, f"Please enter a {definition.destination_label.lower()} for {definition.label}.")
     if not request.consent_acknowledged:
         raise WebInputError("Please acknowledge the local/private beta handling note before generating.")
 
@@ -93,6 +98,7 @@ def validate_report_request(request: ReportRequest) -> ReportRequest:
         birth_date=birth_date,
         birth_time=birth_time,
         location=location,
+        destination=destination,
         report_date=report_date,
         palette=palette,
         content_pack=content_pack,
@@ -121,6 +127,7 @@ def create_report(request: ReportRequest) -> ReportResult:
         "simple_mode": validated.birth_time is None,
         "palette": validated.palette,
         "report_date": validated.report_date,
+        "destination": validated.destination,
     }
 
     try:
@@ -136,6 +143,7 @@ def create_report(request: ReportRequest) -> ReportResult:
     except InputValidationError as exc:
         raise WebInputError(str(exc)) from exc
     except Exception as exc:
+        traceback.print_exception(type(exc), exc, exc.__traceback__)
         friendly = _friendly_generation_error(exc)
         raise WebInputError(friendly) from exc
 
@@ -156,4 +164,3 @@ def _friendly_generation_error(exc: Exception) -> str:
     if message and ("location" in message.lower() or "birth" in message.lower()):
         return message
     return "The report could not be generated. Please check the birth details and try again."
-

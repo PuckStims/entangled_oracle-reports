@@ -1,6 +1,6 @@
 # Place Resonance Search Build Edit Plan
 
-Status date: 2026-07-14
+Status date: 2026-07-16
 
 ## Purpose
 
@@ -25,8 +25,10 @@ traceability.
   reusable Place Profile engine.
 - An expanded seeded U.S. candidate catalog now exists in
   `data/us_candidate_fixture.json`.
-- The active bank now contains 90 deduplicated U.S. locations merged from the
-  original seed file plus Astrocartography fixture waves 1 and 2.
+- The active bank now contains 156 deduplicated U.S. locations merged from the
+  original seed file, Astrocartography fixture waves 1 and 2, ontology wave
+  2026-07-15, and thin-state coverage wave 2026-07-16. The provider-backed
+  catalog seam is the intended path beyond fixture scale.
 - Batch evidence generation, deterministic first-pass scoring, curated
   selection, bucket assignment, and Search result context assembly now exist.
 - Scoring now preserves raw symbolic evidence and normalizes displayed scores
@@ -49,6 +51,9 @@ Turn this package from a wrapper identity into a real search/discovery pipeline:
 4. Select a curated set of locations.
 5. Assign interpretive buckets.
 6. Render search-level synthesis plus compact profile guidance.
+
+Full provider/catalog build outline:
+`products/location_services/BUILD_OUTLINE_DRIFT_GUARD.md` Build Area E.
 
 ## Search Dimensions
 
@@ -85,9 +90,9 @@ Search output should include multiple indexes rather than a single score:
 ## Build Sequence
 
 1. Keep this package as a stable parallel product identity.
-2. Preserve output compatibility while it wraps the single-place profile engine.
-3. Continue auditing and expanding the seeded U.S. candidate catalog before
-   attempting true production-scale coverage.
+2. Preserve output compatibility with the reusable single-place profile engine.
+3. Use the provider-backed catalog path for production-scale candidate pools;
+   treat the JSON fixture as a curated EO overlay and regression fixture.
 4. Keep batch profile generation covered by no-mutation tests for natal payloads
    and candidate records.
 5. Refine scoring and bucket-assignment weights as the astrology model matures.
@@ -96,11 +101,12 @@ Search output should include multiple indexes rather than a single score:
    mature.
 8. Continue auditing and expanding the search-specific prose families for
    summary, buckets, recommendations, and pattern synthesis.
-9. Only then replace the wrapper render path with a true search renderer.
+9. Route future interpretation refinements through the normalized evidence
+   grammar before broad prose upgrades.
 
 ## Edit Rules
 
-- Do not pretend this package already performs multi-location search.
+- Do not treat pool-relative score bars as universal measurements.
 - Do not remove the current single-location interpretation path until its
   reusable profile role is stable.
 - Keep naming clear so future agents do not confuse the search product with the
@@ -117,16 +123,42 @@ Search output should include multiple indexes rather than a single score:
   defaults.
 - Review generated Search HTML after the first prose pass.
 - Keep normalizing metadata vocabularies as new catalog waves are added.
+- Use the provider-backed catalog path for 500+ candidate pools rather than
+  continuing to hand-expand `us_candidate_fixture.json`.
+- Preserve evaluated-pool metadata in the result context: provider source,
+  filters, candidate limit, curated overlay status, selected count, and any
+  regional collapse rules.
+- Add any future Search interpretation upgrades through the normalized evidence
+  grammar, resolver, theme clusterer, and report planner rather than adding
+  direct prose-only score explanations.
 
 ## Verification
 
 - `tests/test_location_services_product_registry.py`
 - `tests/test_place_resonance_search_package_layout.py`
 - `tests/test_place_resonance_search_contract.py`
+- `tests/test_place_resonance_search_provider_catalog.py`
 - `products/location_services/tooling/generate_place_resonance_search_ready.py`
-- Future: full candidate catalog validation tests.
+- Provider catalog import/query tests should stay green before relying on
+  500+ candidate pools.
 
 ## Sample Generation
+
+Import a GeoNames-style provider dump into the local SQLite catalog:
+
+```powershell
+.\.venv\Scripts\python.exe products\location_services\tooling\import_location_catalog.py --geonames-path C:\data\geonames\cities500.txt --min-population 5000 --limit 5000
+```
+
+Generate from the provider catalog, with the curated JSON fixture merged as an
+EO overlay:
+
+```powershell
+.\.venv\Scripts\python.exe products\location_services\tooling\generate_place_resonance_search_ready.py --name "Sample" --date 1990-06-15 --time 14:22 --location "Chicago, Illinois, United States" --location-catalog-db products\location_services\place_resonance_search\data\location_catalog.sqlite --min-population 5000 --candidate-limit 500 --purpose-lens "creative visibility" --relationship-to-place "possible_move" --selection-limit 8
+```
+
+Curated JSON-fixture generation still works for regression and small local
+runs:
 
 ```powershell
 .\.venv\Scripts\python.exe products\location_services\tooling\generate_place_resonance_search_ready.py --name "Sample" --date 1990-06-15 --time 14:22 --location "Chicago, Illinois, United States" --purpose-lens "creative visibility" --relationship-to-place "possible_move" --selection-limit 8

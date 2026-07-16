@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import Any
 
 from config import OUTPUT_DIR, TEMPLATES_DIR
+from products.location_services.world_lines_companion.assembler import build_world_lines_context
 
 try:
     from jinja2 import Environment, FileSystemLoader, TemplateNotFound, select_autoescape
@@ -53,3 +54,19 @@ def render_world_lines_html(place_context: dict) -> str:
 
 def _render_fallback(render_context: dict) -> str:
     return f"<html><body><h1>{render_context['report_title']}</h1><p>Jinja2 template failed or missing.</p></body></html>"
+
+def build_world_lines_html(natal_payload: dict, destination: dict) -> str:
+    context = build_world_lines_context(natal_payload, destination)
+    return render_world_lines_html(context)
+
+def write_world_lines_html(html_str: str, filename: str | None = None) -> str:
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    if not filename:
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        filename = f"world_lines_{timestamp}.html"
+    
+    path = os.path.join(OUTPUT_DIR, filename)
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(html_str)
+    
+    return path

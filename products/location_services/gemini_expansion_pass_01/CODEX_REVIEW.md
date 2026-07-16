@@ -6,15 +6,22 @@
 
 ## Current Direction Overlay
 
-This review predates the Place Resonance Search pivot. Its caution about
-building from the working Place Resonance code path still applies, but the
-product role has changed:
+This review predates later Location Services implementation work. Its caution
+about building from the working Place Resonance code path still applies, but
+several implementation facts have changed:
 
 - The existing Place Resonance implementation is now the reusable single-place
   Place Profile engine.
 - Place Resonance Search is the intended flagship discovery product.
-- The next production contract after profile stability is candidate catalog,
-  batch profile generation, scoring, curation, and bucket assignment for Search.
+- Place Resonance Search now has a seed candidate catalog, batch profile
+  generation, deterministic first-pass scoring, curation, bucket assignment,
+  proximity clustering, search-level prose scaffolding, and HTML rendering.
+- `location_services` is registered in `config.py::REPORT_BLOCK_DIRS`.
+- `selectors/location_services_selector.py` exists and returns structured
+  scaffold leaves with focused tests.
+- Between Places, World Lines Companion, Local Compass, and Living Map have
+  draft shells, templates, plugins, and registry smoke coverage. They are not
+  production evidence engines.
 
 ## Review Summary
 
@@ -24,14 +31,19 @@ The near-term path is narrower than Gemini's full roadmap:
 
 1. Keep the existing Place Resonance code path stable as the reusable Place
    Profile engine.
-2. Build Place Resonance Search from candidate catalog, batch profile
-   generation, scoring, curation, and bucket assignment.
-3. Keep the Location Services block-loader/selector adapter and profile render
-   path green as the evidence layer evolves.
+2. Keep Place Resonance Search honest while its seed catalog, scoring,
+   curation, and tile prose mature.
+3. Keep the Location Services selector adapter and profile render path green as
+   the evidence layer evolves.
 4. Only then promote comparison, map, direction, or timing products into real
    production routing.
 
 Between Places can follow after Place Resonance selection/rendering is stable. World Lines Companion, Local Compass, and Living Map remain planning-only until their missing methods and governance policies exist.
+
+Current implementation-outline source: use
+`products/location_services/BUILD_OUTLINE_DRIFT_GUARD.md` for the minimum
+required inputs, outputs, non-goals, sequence, and tests behind any referenced
+future build area.
 
 ## Findings By Severity
 
@@ -82,13 +94,15 @@ visibility_with_exposure_cost
 
 The two-axis version will be easier to personalize and less likely to overcommit the evidence.
 
-### High — "Best Fit By Purpose" Sounds Too Ranking-Like
+### High — Earlier Purpose-Fit Label Sounded Too Ranking-Like
 
-`PRODUCT_SUITE_SECTION_MAP.md` section 2.3 uses "Best Fit By Purpose" and asks "which place has the strongest evidence fit." That is close to a ranking frame.
+The earlier `PRODUCT_SUITE_SECTION_MAP.md` section 2.3 label asked "which
+place has the strongest evidence fit." That was close to a ranking frame.
 
 Decision:
 
-- Rename before implementation to **Purpose Fit By Place** or **Purpose Fit Comparison**.
+- Current docs should use **Purpose Fit By Place** or **Purpose Fit
+  Comparison** before implementation.
 - The prose job should be:
 
 ```text
@@ -159,22 +173,20 @@ offline_geonamescache
 
 Gemini proposes `engine/location_services_selector.py` as a possible selector path.
 
-Source-grounded review:
+Historical source-grounded review:
 
 - Existing block loading lives in `selectors/block_selector.py`.
 - Block roots are registered through `config.py::REPORT_BLOCK_DIRS`.
-- `location_services` is not currently registered in `REPORT_BLOCK_DIRS`.
 - Existing `select_block()` returns string leaves, while Round 4 Location Services scaffold leaves are dicts with `body`, `_note`, `claim_level`, and `requires_evidence`.
 
-Decision:
+Current state:
 
-- Stage 1 should not start by putting selector logic in `engine/`.
-- The smallest repo-native path is likely:
+- The repo-native path has been implemented:
 
 ```text
-config.py: add REPORT_BLOCK_DIRS["location_services"] = products/location_services/blocks/plainspeak
-selectors/location_services_selector.py: load and return structured scaffold leaves
-tests/test_location_services_selector.py: prove traversal and fallback behavior
+config.py: REPORT_BLOCK_DIRS["location_services"] = products/location_services/blocks/plainspeak
+selectors/location_services_selector.py: loads and returns structured scaffold leaves
+tests/test_location_services_selector.py: proves traversal and fallback behavior
 ```
 
 - Engine evidence construction should stay separate from content block selection.
@@ -203,11 +215,11 @@ Decision:
 
 These do not all require immediate edits to Gemini's draft files, but they must be applied before any implementation uses those docs as instructions:
 
-1. Rename "Best Fit By Purpose" to "Purpose Fit By Place" or equivalent.
+1. Keep the purpose-fit comparison label framed as "Purpose Fit By Place" or equivalent.
 2. Downgrade Living Map timing claims from "available with wiring" to governance-blocked/not computable for location overlay.
 3. Treat `coordinate_precision` as coordinate provenance only.
 4. Do not wire any DRAFT taxonomy.
-5. Use repo-native selector routing, not an engine-only selector path.
+5. Keep using repo-native selector routing, not an engine-only selector path.
 6. Require a dedicated batch no-mutation test before Between Places.
 
 ## Accepted Draft Items
@@ -215,12 +227,14 @@ These do not all require immediate edits to Gemini's draft files, but they must 
 The following Gemini ideas are accepted as planning direction:
 
 - Product suite should remain ordered:
-  1. Place Resonance
-  2. Between Places
-  3. World Lines Companion
-  4. Local Compass
-  5. Living Map
-- Place Resonance render skeleton is the next build target.
+  1. Place Resonance Search
+  2. Place Profile / Place Resonance reusable unit
+  3. Between Places
+  4. World Lines Companion
+  5. Local Compass
+  6. Living Map
+- Place Resonance selector/render foundations are implemented and should remain
+  regression-guarded.
 - Between Places should reuse `LocationEvidenceRecord` per destination rather than inventing a separate evidence record at first.
 - Products 3-5 should remain blocked behind new method engines and policy decisions.
 - Technical appendix should use `warning_summary`, not raw `warnings`, for reader-facing disclosure.
@@ -249,31 +263,17 @@ Quarantine until new computation exists:
 
 ## Next Safest Implementation Step
 
-Build only the Stage 1 selector foundation:
+The Stage 1 selector foundation described in the original review has been
+implemented and tested. The active next-step guidance now lives in
+`products/location_services/LOCATION_SERVICES_BUILD_PLAN.md`:
 
-```text
-Goal: prove the four Round 4 Place Resonance scaffold files can be selected safely.
-
-Work:
-1. Add a Location Services block root to config.py.
-2. Create a Location Services selector/adapter that returns structured leaf dicts, not only strings.
-3. Support:
-   - technical_appendix_blocks.json
-   - relocated_angle_contact_blocks.json
-   - planet_relocated_house_blocks.json
-   - location_synthesis_blocks.json
-4. Add focused tests for:
-   - canonical angle key lookup;
-   - tight/moderate/wide lookup;
-   - body fallback for nodes/Lilith/asteroids;
-   - house/movement lookup;
-   - impossible movement fallback;
-   - warning_summary lookup;
-   - no non-location block roots touched;
-   - no engine changes required.
-```
-
-Do not build a rendered report until this selector foundation is tested.
+1. Keep Place Profile and Place Resonance Search focused suites green.
+2. Continue auditing and expanding the Search candidate catalog, scoring,
+   curation, and tile-prose contract.
+3. Promote Between Places next only after a real comparison record/schema and
+   batch no-mutation regression exist.
+4. Keep World Lines, Local Compass, and Living Map out of production routing
+   until their future-method evidence contracts are computed and tested.
 
 ## Stop Conditions
 

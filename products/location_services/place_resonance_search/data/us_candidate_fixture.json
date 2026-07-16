@@ -1,10 +1,11 @@
 {
-  "catalog_version": "place_resonance_search_candidates_v0.3.0",
+  "catalog_version": "place_resonance_search_candidates_v0.4.0",
   "scope": "expanded_us_city_pool_with_seed_ontology",
   "notes": [
     "Expanded U.S. candidate catalog merged from the seed fixture plus Astrocartography fixture waves 1 and 2.",
     "Version 0.3.0 adds optional ontology fields that separate inclusion logic from descriptive texture and geographic hierarchy.",
     "Expansion wave 2026-07-15 adds 57 ontology-tagged U.S. anchors across missing states, capitals, secondary cities, borderlands, coastlines, rivers, college towns, and difficult-but-important places.",
+    "Expansion wave 2026-07-16 adds 9 thin-state coverage anchors resolved through the offline geonamescache path and tagged with seed ontology.",
     "Ontology tags are an editorial seed for selection, clustering, and prose scaffolding; they should be researched and deepened before production-scale claims.",
     "Coordinates remain curated seed values and should still be audited before any production-scale claims or external rollout."
   ],
@@ -5675,6 +5676,429 @@
       "geographic_hierarchy": [],
       "climate_sensory_tags": [],
       "interpretive_use_cases": []
+    },
+    {
+      "location_id": "us-ia-dubuque",
+      "display_name": "Dubuque, Iowa, United States",
+      "city": "Dubuque",
+      "state": "IA",
+      "country": "US",
+      "latitude": 42.5006,
+      "longitude": -90.6646,
+      "timezone": "America/Chicago",
+      "population_tier": "small_metro",
+      "region": "Midwest",
+      "source": "offline_geonamescache",
+      "active": true,
+      "notes": [
+        "Mississippi River",
+        "Driftless Edge"
+      ],
+      "selection_classes": [
+        "state_coverage_anchor",
+        "geographic_test_anchor"
+      ],
+      "place_archetypes": [
+        "river_city",
+        "small_regional_city",
+        "bluff_city"
+      ],
+      "collections": [
+        "river_systems",
+        "driftless_area",
+        "upper_midwest"
+      ],
+      "geographic_hierarchy": [
+        "midwest",
+        "mississippi_river",
+        "driftless_area"
+      ],
+      "climate_sensory_tags": [
+        "four_season_continental",
+        "cold_winter",
+        "river_bluffs"
+      ],
+      "interpretive_use_cases": [
+        "regional_reset",
+        "quiet_grounding",
+        "ancestral_memory_landscape"
+      ]
+    },
+    {
+      "location_id": "us-ky-lexington",
+      "display_name": "Lexington, Kentucky, United States",
+      "city": "Lexington",
+      "state": "KY",
+      "country": "US",
+      "latitude": 37.9887,
+      "longitude": -84.4777,
+      "timezone": "America/New_York",
+      "population_tier": "mid_metro",
+      "region": "Appalachia",
+      "source": "offline_geonamescache",
+      "active": true,
+      "notes": [
+        "Bluegrass",
+        "University"
+      ],
+      "selection_classes": [
+        "state_coverage_anchor",
+        "regional_anchor"
+      ],
+      "place_archetypes": [
+        "college_town",
+        "regional_metro",
+        "bluegrass_city"
+      ],
+      "collections": [
+        "college_university_towns",
+        "appalachian_edges",
+        "secondary_cities"
+      ],
+      "geographic_hierarchy": [
+        "appalachia_edge",
+        "bluegrass_region",
+        "central_kentucky"
+      ],
+      "climate_sensory_tags": [
+        "four_season_southeast",
+        "humid_summer",
+        "rolling_hills"
+      ],
+      "interpretive_use_cases": [
+        "study_or_research",
+        "practical_base_city",
+        "regional_reset"
+      ]
+    },
+    {
+      "location_id": "us-md-frederick",
+      "display_name": "Frederick, Maryland, United States",
+      "city": "Frederick",
+      "state": "MD",
+      "country": "US",
+      "latitude": 39.4143,
+      "longitude": -77.4105,
+      "timezone": "America/New_York",
+      "population_tier": "small_metro",
+      "region": "Mid-Atlantic",
+      "source": "offline_geonamescache",
+      "active": true,
+      "notes": [
+        "Piedmont",
+        "Historic"
+      ],
+      "selection_classes": [
+        "state_coverage_anchor",
+        "geographic_test_anchor"
+      ],
+      "place_archetypes": [
+        "historic_compact_city",
+        "piedmont_city",
+        "commuter_edge_city"
+      ],
+      "collections": [
+        "historic_memory_landscapes",
+        "mid_atlantic_corridor",
+        "secondary_cities"
+      ],
+      "geographic_hierarchy": [
+        "mid_atlantic",
+        "maryland_piedmont",
+        "catoctin_mountain_edge"
+      ],
+      "climate_sensory_tags": [
+        "four_season_mid_atlantic",
+        "humid_summer",
+        "piedmont_hills"
+      ],
+      "interpretive_use_cases": [
+        "regional_reset",
+        "practical_base_city",
+        "ancestral_memory_landscape"
+      ]
+    },
+    {
+      "location_id": "us-mo-joplin",
+      "display_name": "Joplin, Missouri, United States",
+      "city": "Joplin",
+      "state": "MO",
+      "country": "US",
+      "latitude": 37.0842,
+      "longitude": -94.5133,
+      "timezone": "America/Chicago",
+      "population_tier": "small_metro",
+      "region": "Ozarks",
+      "source": "offline_geonamescache",
+      "active": true,
+      "notes": [
+        "Ozarks Edge",
+        "Route 66"
+      ],
+      "selection_classes": [
+        "state_coverage_anchor",
+        "geographic_test_anchor"
+      ],
+      "place_archetypes": [
+        "small_regional_city",
+        "ozarks_city",
+        "crossroads_city"
+      ],
+      "collections": [
+        "ozarks",
+        "migration_reinvention_destinations",
+        "secondary_cities"
+      ],
+      "geographic_hierarchy": [
+        "ozarks",
+        "southwest_missouri",
+        "four_states_region"
+      ],
+      "climate_sensory_tags": [
+        "four_season_midwest",
+        "humid_summer",
+        "storm_exposed"
+      ],
+      "interpretive_use_cases": [
+        "regional_reset",
+        "pressure_test_location",
+        "practical_base_city"
+      ]
+    },
+    {
+      "location_id": "us-ok-norman",
+      "display_name": "Norman, Oklahoma, United States",
+      "city": "Norman",
+      "state": "OK",
+      "country": "US",
+      "latitude": 35.2226,
+      "longitude": -97.4395,
+      "timezone": "America/Chicago",
+      "population_tier": "mid_metro",
+      "region": "Great Plains",
+      "source": "offline_geonamescache",
+      "active": true,
+      "notes": [
+        "University",
+        "Prairie"
+      ],
+      "selection_classes": [
+        "state_coverage_anchor",
+        "regional_anchor"
+      ],
+      "place_archetypes": [
+        "college_town",
+        "plains_city",
+        "regional_metro"
+      ],
+      "collections": [
+        "college_university_towns",
+        "plains_edge_cities",
+        "secondary_cities"
+      ],
+      "geographic_hierarchy": [
+        "great_plains",
+        "central_oklahoma",
+        "cross_timbers"
+      ],
+      "climate_sensory_tags": [
+        "wind_heavy",
+        "hot_summer",
+        "storm_exposed"
+      ],
+      "interpretive_use_cases": [
+        "study_or_research",
+        "practical_base_city",
+        "regional_reset"
+      ]
+    },
+    {
+      "location_id": "us-sc-greenville",
+      "display_name": "Greenville, South Carolina, United States",
+      "city": "Greenville",
+      "state": "SC",
+      "country": "US",
+      "latitude": 34.8526,
+      "longitude": -82.394,
+      "timezone": "America/New_York",
+      "population_tier": "mid_metro",
+      "region": "Southeast",
+      "source": "offline_geonamescache",
+      "active": true,
+      "notes": [
+        "Upstate",
+        "Blue Ridge Edge"
+      ],
+      "selection_classes": [
+        "regional_anchor",
+        "state_coverage_anchor"
+      ],
+      "place_archetypes": [
+        "regional_metro",
+        "piedmont_city",
+        "mountain_edge_city"
+      ],
+      "collections": [
+        "southern_regional_anchors",
+        "appalachian_edges",
+        "secondary_cities"
+      ],
+      "geographic_hierarchy": [
+        "southeast",
+        "south_carolina_upstate",
+        "blue_ridge_foothills"
+      ],
+      "climate_sensory_tags": [
+        "hot_humid",
+        "four_season_southeast",
+        "piedmont_hills"
+      ],
+      "interpretive_use_cases": [
+        "practical_base_city",
+        "regional_reset",
+        "career_visibility"
+      ]
+    },
+    {
+      "location_id": "us-sd-sioux-falls",
+      "display_name": "Sioux Falls, South Dakota, United States",
+      "city": "Sioux Falls",
+      "state": "SD",
+      "country": "US",
+      "latitude": 43.55,
+      "longitude": -96.7003,
+      "timezone": "America/Chicago",
+      "population_tier": "small_metro",
+      "region": "Great Plains",
+      "source": "offline_geonamescache",
+      "active": true,
+      "notes": [
+        "Falls",
+        "Prairie City"
+      ],
+      "selection_classes": [
+        "state_coverage_anchor",
+        "regional_anchor"
+      ],
+      "place_archetypes": [
+        "small_regional_city",
+        "plains_city",
+        "river_city"
+      ],
+      "collections": [
+        "plains_edge_cities",
+        "river_systems",
+        "secondary_cities"
+      ],
+      "geographic_hierarchy": [
+        "great_plains",
+        "big_sioux_river",
+        "eastern_south_dakota"
+      ],
+      "climate_sensory_tags": [
+        "four_season_continental",
+        "cold_winter",
+        "wind_heavy"
+      ],
+      "interpretive_use_cases": [
+        "practical_base_city",
+        "quiet_grounding",
+        "regional_reset"
+      ]
+    },
+    {
+      "location_id": "us-wi-racine",
+      "display_name": "Racine, Wisconsin, United States",
+      "city": "Racine",
+      "state": "WI",
+      "country": "US",
+      "latitude": 42.7261,
+      "longitude": -87.7828,
+      "timezone": "America/Chicago",
+      "population_tier": "small_metro",
+      "region": "Midwest",
+      "source": "offline_geonamescache",
+      "active": true,
+      "notes": [
+        "Lake Michigan",
+        "Industrial Coast"
+      ],
+      "selection_classes": [
+        "state_coverage_anchor",
+        "geographic_test_anchor"
+      ],
+      "place_archetypes": [
+        "great_lakes_port",
+        "industrial_corridor",
+        "small_regional_city"
+      ],
+      "collections": [
+        "great_lakes_upper_midwest",
+        "coastal_sequence",
+        "difficult_important_places"
+      ],
+      "geographic_hierarchy": [
+        "upper_midwest",
+        "lake_michigan",
+        "southeast_wisconsin"
+      ],
+      "climate_sensory_tags": [
+        "lake_influenced",
+        "cold_winter",
+        "four_season_continental"
+      ],
+      "interpretive_use_cases": [
+        "practical_base_city",
+        "pressure_test_location",
+        "regional_reset"
+      ]
+    },
+    {
+      "location_id": "us-wy-laramie",
+      "display_name": "Laramie, Wyoming, United States",
+      "city": "Laramie",
+      "state": "WY",
+      "country": "US",
+      "latitude": 41.3114,
+      "longitude": -105.5911,
+      "timezone": "America/Denver",
+      "population_tier": "small_town",
+      "region": "Mountain West",
+      "source": "offline_geonamescache",
+      "active": true,
+      "notes": [
+        "High Plains",
+        "University"
+      ],
+      "selection_classes": [
+        "state_coverage_anchor",
+        "geographic_test_anchor"
+      ],
+      "place_archetypes": [
+        "college_town",
+        "high_plains",
+        "mountain_edge_city"
+      ],
+      "collections": [
+        "college_university_towns",
+        "plains_edge_cities",
+        "mountain_systems"
+      ],
+      "geographic_hierarchy": [
+        "mountain_west",
+        "laramie_plains",
+        "southeast_wyoming"
+      ],
+      "climate_sensory_tags": [
+        "high_altitude_dry",
+        "wind_heavy",
+        "cold_winter"
+      ],
+      "interpretive_use_cases": [
+        "study_or_research",
+        "quiet_grounding",
+        "edge_of_wilderness"
+      ]
     }
   ],
   "ontology_schema": {

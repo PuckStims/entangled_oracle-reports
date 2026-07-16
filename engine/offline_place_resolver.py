@@ -341,10 +341,18 @@ def resolve_place(location_name: str) -> dict:
         if _country_matches(candidate, country_code)
     ]
     if not country_filtered:
-        raise UnresolvedLocationError(
-            f"Could not resolve location \"{location_name}\" offline. "
-            "Please include a fuller city/state/country format."
-        )
+        if country_text and not region_text:
+            # Two-part inputs such as "Chicago, IL" can collide with ISO
+            # country codes. If treating the second part as a country yields
+            # no city candidates, retry it as a region/state hint instead.
+            region_text = country_text
+            country_code = None
+            country_filtered = candidates
+        else:
+            raise UnresolvedLocationError(
+                f"Could not resolve location \"{location_name}\" offline. "
+                "Please include a fuller city/state/country format."
+            )
 
     if region_text:
         region_filtered = [

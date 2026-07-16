@@ -145,14 +145,24 @@ def _prepare_blocks_section(section: dict, draft_prompt: str) -> dict:
     }
 
 
-def _prepare_evidence_summary_section(section: dict) -> dict:
+def _prepare_evidence_summary_section(section: dict, grammar: dict | None = None) -> dict:
     rows = []
+    items = (grammar or {}).get("normalized_evidence", {}).get("items", [])
     for row in section.get("rows", []) or []:
         evidence_type = row.get("evidence_type") or "unknown"
+        theme_relationship = ""
+        for item in items:
+            if item.get("evidence_id") == row.get("id"):
+                rel = item.get("relationship", "").replace("_", " ")
+                theme = item.get("theme_key", "").replace("_", " ")
+                theme_relationship = f"{rel} {theme}"
+                break
+                
         rows.append({
             "id": row.get("id"),
             "tier": row.get("tier"),
             "evidence_type": evidence_type,
+            "theme_relationship": theme_relationship,
             "source_summary": _summarize_source(row.get("source"), evidence_type),
             "leaf": _prepare_leaf(row.get("selected_leaf"), "Write the evidence note here."),
         })
@@ -172,12 +182,13 @@ def _prepare_technical_appendix_section(section: dict) -> dict:
 
 def _prepared_sections(context: dict) -> list[dict]:
     prepared = []
+    grammar = context.get("_grammar")
     for section in context.get("sections", []) or []:
         section_id = section.get("id")
         if section_id == "place_signature":
             prepared.append(_prepare_synthesis_section(section))
         elif section_id == "evidence_summary":
-            prepared.append(_prepare_evidence_summary_section(section))
+            prepared.append(_prepare_evidence_summary_section(section, grammar))
         elif section_id == "technical_appendix":
             prepared.append(_prepare_technical_appendix_section(section))
         else:
@@ -232,6 +243,7 @@ def _build_render_context(place_context: dict) -> dict:
         "chart_wheel_data": place_context.get("chart_wheel_data"),
         "chart_wheel_note": place_context.get("chart_wheel_note", ""),
         "astrocartography_visual": _deepcopy(place_context.get("astrocartography_visual") or {}),
+        "_grammar": _deepcopy(place_context.get("_grammar") or {}),
     }
     render_context.update(_build_render_defaults(render_context))
     return render_context

@@ -28,7 +28,8 @@ Location Services is not a side feature. It is a product family that turns place
 birth UTC instant + destination coordinates
 -> relocated chart baseline
 -> location evidence records
--> product-specific prose, comparison, maps, timing, and appendices
+-> normalized evidence grammar
+-> product-specific synthesis, prose, comparison, maps, timing, and appendices
 ```
 
 The first fully stable implementation path is the existing one-location Place
@@ -36,6 +37,21 @@ Resonance code, now treated architecturally as the reusable **Place Profile**
 engine. The flagship product direction is **Place Resonance Search**, which
 will reuse profile evidence across a curated candidate pool instead of asking
 the user to begin with one chosen city.
+
+Current implementation overlay:
+
+- `LocationEvidenceRecord` exists and is the current calculation contract.
+- `products/location_services/evidence_grammar/` now adapts that record into
+  normalized evidence items for Phase 1 of the locational grammar upgrade.
+- Place Resonance Search has a provider-backed candidate catalog path for
+  500+ candidate pools; the bundled JSON catalog is now a curated overlay and
+  regression fixture, not the complete location universe.
+- Broad prose upgrades should wait for the evidence resolver, theme clusterer,
+  and report planner phases described in
+  `LOCATIONAL_GRAMMAR_UPGRADE_PLAN.md`.
+- Referenced build areas are expanded in `BUILD_OUTLINE_DRIFT_GUARD.md`; use it
+  before assigning resolver, comparison, line, direction, timing, or prose work
+  to any model.
 
 ## Non-Negotiable Boundaries
 
@@ -51,7 +67,8 @@ the user to begin with one chosen city.
 
 ## Shared Evidence Contract To Design Around
 
-Both leads should align to a future `LocationEvidenceRecord`:
+Both leads should align to the current `LocationEvidenceRecord` and the
+Phase 1 normalized evidence grammar adapter:
 
 ```text
 LocationEvidenceRecord

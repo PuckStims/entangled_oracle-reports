@@ -505,9 +505,9 @@
     }
   },
   "tile_detail": {
-    "_note": "City-specific tile scaffolding for Place Resonance Search. These leaves intentionally remain TODO until the prose strategy is discussed. They are used after scoring and proximity clustering, and should explain why this city is being rendered as a full tile rather than buried under a nearby similar alternate. Each leaf must stay bounded: distinguish computed evidence from catalog/place texture, never invent mundane claims, and never command the reader to move.",
+    "_note": "City-specific tile detail leaves for Place Resonance Search. These are bounded first-pass prose leaves, not final city portraits. They are used after scoring and proximity clustering, and should explain why this city is being rendered as a full tile rather than buried under a nearby similar alternate. Each leaf must distinguish computed evidence from catalog/place texture, never invent mundane claims, and never command the reader to move.",
     "bucket_role_highest_resonance": {
-      "body": "TODO",
+      "body": "This city earns a Highest Resonance tile when the score and consensus indicators point in the same direction. Read it as one of the clearer symbolic matches in the current candidate pool, not as a universal best place.",
       "_note": "Write one compact sentence naming why this city is a full Highest Resonance tile. Use when selected_location.bucket == highest_resonance. Should explain the city-specific form of coherence: which evidence family leads, which themes agree, and whether this tile is a cluster lead, cluster peer, or standalone. Do not repeat the generic bucket intro.",
       "claim_level": "bounded_interpretation",
       "requires_evidence": [
@@ -519,7 +519,7 @@
       ]
     },
     "bucket_role_goal_specific_allies": {
-      "body": "TODO",
+      "body": "This city functions as a Goal-Specific Ally when its strongest evidence is useful for a particular life function or purpose lens. Its value is targeted fit, not broad-spectrum proof that every part of life works better there.",
       "_note": "Write one compact sentence naming the exact goal or life function this city supports. Use when selected_location.bucket == goal_specific_allies. Should distinguish theme-specific usefulness from broad-spectrum fit, and should reference purpose_lens when present.",
       "claim_level": "bounded_interpretation",
       "requires_evidence": [
@@ -531,7 +531,7 @@
       ]
     },
     "bucket_role_transformational_demanding": {
-      "body": "TODO",
+      "body": "This city belongs in the Demanding bucket when the chart evidence concentrates pressure, responsibility, exposure, or confrontation. The resonance is real, but it is more likely to ask for active handling than simple ease.",
       "_note": "Write one compact sentence naming what kind of demand this city carries: private/root pressure, public exposure, structural responsibility, reinvention, relational intensity, or mixed consequential pressure. Use when selected_location.bucket == transformational_demanding. Be direct without fear language.",
       "claim_level": "bounded_interpretation",
       "requires_evidence": [
@@ -543,7 +543,7 @@
       ]
     },
     "bucket_role_quiet_grounding_alternatives": {
-      "body": "TODO",
+      "body": "This city is featured as a Quiet Alternative because it emphasizes grounding and restoration over high activation, providing a steady baseline where ordinary rhythm and recovery are supported.",
       "_note": "Write one compact sentence naming the type of quiet this city offers: recovery, ordinary rhythm, sustainable work, relational softness, or low-drama continuity. Use when selected_location.bucket == quiet_grounding_alternatives. Do not make low activation sound like weak evidence.",
       "claim_level": "bounded_interpretation",
       "requires_evidence": [
@@ -555,7 +555,7 @@
       ]
     },
     "bucket_role_pattern_outliers": {
-      "body": "TODO",
+      "body": "This city is highlighted as a Pattern Outlier because it strongly diverges from the main search results, providing a meaningful contrast that clarifies what changes when the chart's baseline shifts.",
       "_note": "Write one compact sentence explaining what contrast this outlier reveals. Use when selected_location.bucket == pattern_outliers. Should say what this city shows by being different, not imply that outlier means better, worse, or more fated.",
       "claim_level": "bounded_interpretation",
       "requires_evidence": [
@@ -567,7 +567,7 @@
       ]
     },
     "sibling_difference": {
-      "body": "TODO",
+      "body": "While sharing a geographic region with nearby alternates, {city_name} maintains a distinct chart signature that warrants its own full tile, often shifting the angular emphasis or primary theme.",
       "_note": "Write one compact sentence differentiating this full tile from a nearby selected peer inside the same 500-mile proximity cluster. Use selected_location.sibling_difference as the data seed, but improve the prose. It should explain why both tiles are worth rendering rather than collapsing one into an alternate.",
       "claim_level": "bounded_interpretation",
       "requires_evidence": [
@@ -577,8 +577,14 @@
         "selected_location.candidate"
       ]
     },
+    "sibling_difference_visibility_calling": {
+      "body": "{city_name} separates itself from nearby locations by sharpening the focus on public contribution and visibility.",
+      "_note": "Visibility variant for sibling difference.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["selected_location"]
+    },
     "cluster_alternates": {
-      "body": "TODO",
+      "body": "The following locations share a close geographic and evidence signature with {city_name}. They are preserved here as related context rather than repeated as separate tiles.",
       "_note": "Write one compact introduction for the nearby similar alternates list. This should explain that alternates share a close geographic and evidence signature with the rendered tile, so they are preserved as context rather than repeated as full cards. Do not imply they are rejected or bad.",
       "claim_level": "bounded_interpretation",
       "requires_evidence": [
@@ -587,8 +593,14 @@
         "selected_location.similarity_signature"
       ]
     },
+    "cluster_alternates_visibility_calling": {
+      "body": "These nearby alternates share {city_name}'s strong visibility signal, offering variations on public role and career focus.",
+      "_note": "Visibility variant for alternates.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["selected_location"]
+    },
     "best_use_case": {
-      "body": "TODO",
+      "body": "{city_name}'s strongest score signal ({primary_score}) points toward {dominant_theme}. Treat that as the best current use case for testing the place, not as a full verdict on whether the city is right for every purpose.",
       "_note": "Write one compact sentence naming the likely best use case for this city tile: test visit, creative base, public role, study/writing, retreat/restoration, relationship field, practical build, or contrast check. This is a prose routing scaffold only; it should be grounded in dominant_themes, scores, and purpose_lens.",
       "claim_level": "bounded_interpretation",
       "requires_evidence": [
@@ -598,8 +610,26 @@
         "selected_location.relationship_to_place"
       ]
     },
+    "best_use_case_visibility_calling": {
+      "body": "{city_name}'s strongest use case is visible contribution: public role, authorship, reputation, or work that needs to be seen. The resonance score ({primary_score}) supports testing that theme here, without promising recognition or career outcome.",
+      "_note": "Best use case for visibility.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["selected_location"]
+    },
+    "best_use_case_hearth_restoration": {
+      "body": "{city_name}'s strongest use case is private-life repair: rooting, recovery, emotional regulation, or a quieter operating rhythm. That makes the place more relevant for restoration than for constant activation.",
+      "_note": "Best use case for hearth.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["selected_location"]
+    },
+    "best_use_case_change_aliveness": {
+      "body": "{city_name}'s strongest use case is reinvention and experimentation. The place looks more useful for testing a changed identity pattern than for preserving the familiar one unchanged.",
+      "_note": "Best use case for change.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["selected_location"]
+    },
     "fallback": {
-      "body": "TODO",
+      "body": "This location is presented as a full tile based on its overall standing in the search, though its specific role is best understood by looking directly at its detailed score and theme profile for {city_name}.",
       "_note": "Fallback tile-detail scaffold. Use when no more specific tile_detail key applies. Keep this short and evidence-bound.",
       "claim_level": "bounded_interpretation",
       "requires_evidence": [

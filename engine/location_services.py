@@ -136,6 +136,17 @@ def _resolve_destination(destination: dict) -> dict:
     return destination
 
 
+def resolve_destination_context(destination: dict) -> dict:
+    """
+    Public destination-normalization helper for Location Services products.
+
+    Product assemblers and CLI entry points use this so a consumer-facing
+    place name such as "Chicago, Illinois, United States" becomes the
+    coordinate-bearing context required by computational engines.
+    """
+    return _resolve_destination(destination)
+
+
 def _relocated_angle_longitudes(julian_day: float, latitude: float, longitude: float) -> dict[str, float]:
     """
     Recomputes Ascendant/Midheaven/Vertex for a destination at the same

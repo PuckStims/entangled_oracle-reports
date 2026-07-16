@@ -22,6 +22,10 @@ contract. The flagship Search product additionally needs candidate catalog,
 batch profile generation, scoring, curation, bucket assignment, and search-level
 prose contracts.
 
+Use `products/location_services/BUILD_OUTLINE_DRIFT_GUARD.md` for the full
+build outlines behind those referenced areas. This file inventories data gaps;
+it does not define the implementation sequence by itself.
+
 ## Capability Status Labels
 
 | Label | Meaning |
@@ -119,7 +123,7 @@ new selector code, new helper functions, or new integration work:
 | Synthesis category selector (convergent_place_signature, etc.) | Requires selector that reads `evidence_ranking` and applies synthesis logic from `BLOCK_SCHEMA.md` Family 6 keys. |
 | Duration-lens selector | Requires selector that reads `relationship_to_place` and maps to block keys per `BLOCK_SCHEMA.md` Family 7. |
 | Batch evidence record generation (for Between Places) | Loop over destination list, call `build_location_evidence_record()` per destination, collect results. Straightforward wiring; no new computation. |
-| `coordinate_precision` as a provenance-sourced accuracy band | Possible if content lane defines what "user_provided" and "offline_geonamescache" mean in prose terms. No new computation required. |
+| `coordinate_precision` as provenance language | Possible if content lane defines what "user_provided" and "offline_geonamescache" mean in prose terms. This must not become an accuracy band or ±km claim. No new computation required. |
 
 ---
 
@@ -207,7 +211,7 @@ These require entirely new astrological methods not yet started:
 | Static `LocationEvidenceRecord` baseline | `AVAILABLE_NOW` |
 | Date-bounded transits to relocated angles | `NOT_COMPUTABLE` |
 | Transit-to-house computation for relocated houses | `NOT_COMPUTABLE` |
-| Standard timing clocks (existing) | `AVAILABLE_WITH_WIRING` (if promoted into report-safe use; governance decision needed) |
+| Standard timing clocks (existing) | Governance-blocked as a Location Services overlay until timing policy defines what may be reused; not a Living Map implementation path by itself |
 | Baseline-vs-weather field model | `NOT_COMPUTABLE` |
 | Relocated return charts | `FUTURE_METHOD` |
 | Dynamic astrocartography | `FUTURE_METHOD` (depends on static geometry first) |

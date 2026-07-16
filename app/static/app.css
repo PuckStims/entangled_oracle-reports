@@ -171,6 +171,11 @@ input, select, textarea {
   padding: 13px 14px;
 }
 input:focus, select:focus, textarea:focus { outline: 2px solid rgba(201, 109, 91, 0.28); border-color: var(--accent); }
+.field-help {
+  color: var(--subtle);
+  font-size: 13px;
+  font-weight: 500;
+}
 .field-row {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -280,4 +285,3 @@ input:focus, select:focus, textarea:focus { outline: 2px solid rgba(201, 109, 91
   h1 { font-size: 40px; }
   .viewer-frame { min-height: 520px; height: 68vh; }
 }
-

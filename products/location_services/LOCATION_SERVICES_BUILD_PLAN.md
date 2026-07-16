@@ -7,6 +7,22 @@ scaffolding and into a reverse-engineered production pipeline. It is
 intentionally not a lean plan. The goal is to protect the depth of all products
 while keeping the build order grounded in what the repo can actually run.
 
+**Grammar upgrade reference:** Before broad prose expansion, read
+`products/location_services/LOCATIONAL_GRAMMAR_UPGRADE_PLAN.md`. That plan
+defines the full calculation-to-evidence-to-synthesis middle layer and must not
+be reduced to a tiny adapter while being marked complete.
+
+**Build outline drift guard:** When this plan references later systems such as
+the resolver, theme clusterer, goal compatibility profile, report planner,
+provider catalog, comparison layer, line engine, direction engine, timing
+overlay, or prose expansion, use
+`products/location_services/BUILD_OUTLINE_DRIFT_GUARD.md` as the required build
+outline.
+
+**Remaining method boundaries:** For the current post-v0.2 status of World
+Lines, Local Compass, Living Map, and the still-excluded next methods, use
+`products/location_services/REMAINING_METHOD_BOUNDARIES_SPEC.md`.
+
 ## Current Repo Truth
 
 - Place Resonance Search is now the intended flagship discovery product.
@@ -16,15 +32,17 @@ while keeping the build order grounded in what the repo can actually run.
 - `products/location_services/place_resonance_search/` is registry-wired, but
   currently wraps the existing single-place profile output until candidate
   catalog, scoring, curation, and bucket logic are built.
-- Between Places, World Lines Companion, Local Compass, and Living Map have
-  draft product shells, assemblers, renderers, templates, and registry plugins.
+- Between Places has a draft product shell, assembler, renderer, template, and
+  registry plugin.
+- World Lines Companion, Local Compass, and Living Map now have live v0.2
+  computation seams, product assemblers, renderers, templates, and generator
+  routing, with explicit remaining boundaries documented separately.
 - The registry is useful as a product-family entry point, but it is not yet the
   production report-generation path.
-- The four newer product shells currently render premium draft HTML from shaped
-  placeholder contexts. They do not yet consume production
-  `LocationEvidenceRecord` data.
-- The central `generate.py` report-type router has not been expanded for these
-  products, which is correct until evidence contracts are real.
+- Between Places still remains earlier in the scaffold path than the other
+  descendants.
+- `generate.py` now routes World Lines Companion, Local Compass, and Living
+  Map through their live computation-backed report paths.
 
 ## Build Principle
 
@@ -38,6 +56,53 @@ Reverse-engineer the pipeline from the working single-place profile outward:
 4. Build later descendants from that contract, not from visual templates first.
 5. Let each product keep its own depth, section map, and future methods without
    flattening them into one generic location report.
+6. Build the locational evidence grammar before broad prose upgrades, so prose
+   composes structured conclusions instead of compensating for missing
+   synthesis logic.
+
+## Phase 0.5: Locational Grammar Upgrade Planning
+
+The next architecture layer is a modular locational evidence grammar:
+
+```text
+LocationEvidenceRecord
+-> normalized evidence items
+-> evidence resolver
+-> theme clusters
+-> goal compatibility profile
+-> report planner
+-> prose later
+```
+
+Required work:
+
+- Preserve the full upgrade scope in
+  `LOCATIONAL_GRAMMAR_UPGRADE_PLAN.md`.
+- Treat prose expansion as gated behind the evidence planner, not as the next
+  primary build task.
+- Keep provider-backed candidate catalog work separate from interpretation
+  grammar.
+- Start implementation with modules supported by today's data: relocated angle
+  contacts, relocated house expression, natal modifiers, confidence notes,
+  same-root/independent repetition rules, convergence/contradiction, and goal
+  compatibility.
+
+Exit criteria:
+
+- The grammar plan is linked from active reference docs.
+- Future agents can tell the difference between a prototype adapter and the
+  minimum viable non-flattened grammar update.
+- Existing tests remain green after the docs are updated.
+
+Implementation note: the Phase 1 adapter foundation now lives in
+`products/location_services/evidence_grammar/`. It normalizes current
+`LocationEvidenceRecord` data into evidence items, but the resolver, theme
+clusterer, goal compatibility profile, and report planner are still future
+work.
+
+The full implementation outline for those future pieces is captured in
+`BUILD_OUTLINE_DRIFT_GUARD.md`; do not mark Phase 0.5 complete by adding only
+names or placeholder files.
 
 ## Phase 1: Stabilize Place Profile As The Reference Unit
 
@@ -69,6 +134,8 @@ Exit criteria:
 Place Resonance Search should become a real curated discovery product before it
 is treated as production output.
 
+Provider-scale build outline: `BUILD_OUTLINE_DRIFT_GUARD.md` Build Area E.
+
 Current implementation status:
 
 - Fixture-backed candidate catalog exists.
@@ -99,6 +166,8 @@ Required work:
   Pattern Outliers.
 - Add search-level prose routing for summary, bucket explanations, location
   recommendations, and pattern synthesis.
+- Preserve candidate-pool metadata in output so readers can see whether a run
+  used the curated fixture, provider catalog, filters, or an overlay merge.
 
 Exit criteria:
 
@@ -137,6 +206,8 @@ Exit criteria:
 Between Places is the best next comparison product because it can reuse Place
 Profile twice before inventing new engine math.
 
+Comparison build outline: `BUILD_OUTLINE_DRIFT_GUARD.md` Build Area F.
+
 Required work:
 
 - Run the Place Profile evidence builder independently for Destination A and
@@ -160,6 +231,8 @@ Exit criteria:
 World Lines Companion should not be wired as a pretty astrocartography shell
 until the map/line evidence contract exists.
 
+Line-engine build outline: `BUILD_OUTLINE_DRIFT_GUARD.md` Build Area G.
+
 Required work:
 
 - Define the minimum line evidence schema: planet, angle line type, distance
@@ -180,6 +253,8 @@ Exit criteria:
 Local Compass depends on Local Space style directional/azimuth evidence, so it
 should not be built from relocated house movement alone.
 
+Direction-engine build outline: `BUILD_OUTLINE_DRIFT_GUARD.md` Build Area H.
+
 Required work:
 
 - Define directional evidence: planet, azimuth, bearing, distance context if
@@ -199,6 +274,8 @@ Exit criteria:
 
 Living Map is likely the most complex product because it combines location with
 time. It should stay contract-first until static products are stable.
+
+Timing-overlay build outline: `BUILD_OUTLINE_DRIFT_GUARD.md` Build Area I.
 
 Required work:
 
@@ -251,6 +328,12 @@ Run the focused Location Services suite:
 
 ```powershell
 .\.venv\Scripts\python.exe -m pytest tests\test_location_services_relocated_payload.py tests\test_location_services_selector.py tests\test_place_resonance_assembler.py tests\test_place_resonance_renderer.py tests\test_astrocartography_svg.py tests\test_location_services_product_registry.py tests\test_place_resonance_search_package_layout.py -q
+```
+
+Current expanded Location Services verification set:
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest tests\test_location_services_selector.py tests\test_location_services_relocated_payload.py tests\test_location_services_product_registry.py tests\test_location_services_evidence_record.py tests\test_location_services_evidence_grammar.py tests\test_location_services_block_scaffold.py tests\test_place_resonance_search_provider_catalog.py tests\test_place_resonance_search_package_layout.py tests\test_place_resonance_search_contract.py tests\test_place_resonance_renderer.py tests\test_place_resonance_package_layout.py tests\test_place_resonance_assembler.py -q
 ```
 
 Compile the touched renderers and tests:

@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Any
 
 
-CATALOG_VERSION = "place_resonance_search_candidates_v0.3.0"
+CATALOG_VERSION = "place_resonance_search_candidates_v0.4.0"
 PACKAGE_DIR = Path(__file__).resolve().parent
 DATA_DIR = PACKAGE_DIR / "data"
 DEFAULT_US_CATALOG_PATH = DATA_DIR / "us_candidate_fixture.json"

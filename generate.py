@@ -47,6 +47,16 @@ def _env_flag(name: str) -> bool:
 
 _EO_CONTENT_TRACE = _env_flag("EO_CONTENT_TRACE")
 
+
+def _reset_swiss_ephemeris_path() -> None:
+    """Keep long-lived web sessions pinned to the repo ephemeris directory."""
+    try:
+        import swisseph as swe
+    except ImportError:
+        return
+    swe.set_ephe_path(os.path.join(os.path.dirname(os.path.abspath(__file__)), "ephemeris"))
+
+
 YEAR_TEXTURE_CLIENT_TARGETS = {
     "Sun",
     "Moon",
@@ -78,6 +88,34 @@ except ImportError:
 class InputValidationError(ValueError):
     """Raised when CLI-supplied birth data is malformed. Caught in main()
     for a clean one-line error instead of a raw Python traceback."""
+
+
+def _parse_route_waypoints(value: str | None) -> list[dict] | None:
+    if not value:
+        return None
+    waypoints: list[dict] = []
+    for chunk in value.split(";"):
+        text = chunk.strip()
+        if not text:
+            continue
+        parts = [part.strip() for part in text.split(",")]
+        if len(parts) != 2:
+            raise InputValidationError(
+                "--route-waypoints must use 'lat,lon;lat,lon;...' format."
+            )
+        try:
+            latitude = float(parts[0])
+            longitude = float(parts[1])
+        except ValueError:
+            raise InputValidationError(
+                "--route-waypoints must contain numeric latitude/longitude pairs."
+            ) from None
+        waypoints.append({"latitude": latitude, "longitude": longitude})
+    if len(waypoints) < 2:
+        raise InputValidationError(
+            "--route-waypoints requires at least two waypoint pairs."
+        )
+    return waypoints
 
 
 def parse_birth_data(args) -> dict:
@@ -115,6 +153,13 @@ def parse_birth_data(args) -> dict:
         birth_data["simple_mode"] = True
     birth_data["palette"] = getattr(args, "palette", "vibrant")
     birth_data["report_date"] = getattr(args, "report_date", None)
+    route_waypoints = _parse_route_waypoints(getattr(args, "route_waypoints", None))
+    if route_waypoints:
+        birth_data["route"] = {
+            "route_id": getattr(args, "route_id", None) or "cli-route",
+            "corridor_width_km": float(getattr(args, "route_corridor_km", 150.0) or 150.0),
+            "waypoints": route_waypoints,
+        }
     return birth_data
 
 
@@ -209,11 +254,53 @@ def generate_report(
     Master report generator.
     Returns the path to the generated HTML file.
     """
+    _reset_swiss_ephemeris_path()
     from formulas.proprietary_indexes import compute_all_indexes
     from formulas.report_surface import build_layered_report_bundle
     from selectors.variable_resolver import resolve_all
 
     payload = get_payload(birth_data)
+
+    LOCATION_SERVICES_TYPES = {
+        "place_resonance",
+        "place_resonance_search",
+        "world_lines",
+        "local_compass",
+        "living_map",
+    }
+    
+    if report_type in LOCATION_SERVICES_TYPES:
+        dest = {"location": birth_data.get("destination") or birth_data.get("current_location") or birth_data["location"], "display_name": birth_data.get("destination") or birth_data.get("current_location") or birth_data["location"]}
+        if report_type == "local_compass" and birth_data.get("route"):
+            dest["route"] = birth_data["route"]
+        
+        if report_type == "place_resonance":
+            from products.location_services.place_resonance.renderer import build_place_resonance_html
+            html = build_place_resonance_html(payload, dest)
+        elif report_type == "place_resonance_search":
+            from products.location_services.place_resonance_search.renderer import build_place_resonance_search_results_html
+            html = build_place_resonance_search_results_html(payload)
+        elif report_type == "world_lines":
+            from products.location_services.world_lines_companion.renderer import build_world_lines_html
+            html = build_world_lines_html(payload, dest)
+        elif report_type == "local_compass":
+            from products.location_services.local_compass.renderer import build_local_compass_html
+            html = build_local_compass_html(payload, dest)
+        elif report_type == "living_map":
+            from products.location_services.living_map.renderer import build_living_map_html
+            html = build_living_map_html(payload, dest)
+        else:
+            html = "<html><body>Not implemented</body></html>"
+            
+        if output_filename is None:
+            output_filename = _default_output_filename(report_type, birth_data, datetime.now(timezone.utc))
+            
+        effective_dir = output_dir if output_dir else OUTPUT_DIR
+        output_path = os.path.join(effective_dir, output_filename)
+        os.makedirs(effective_dir, exist_ok=True)
+        _atomic_write_text(output_path, html)
+        print(f"[Done] Report saved: {os.path.basename(output_path)}")
+        return output_path
 
     _log_verbose("[Formulas] Computing indexes...")
     index_results = compute_all_indexes(payload)
@@ -10206,7 +10293,7 @@ def main():
         description="Entangled Oracle Report Generator"
     )
     parser.add_argument("report_type",
-        choices=["horoscope", "weekly_horoscope", "year_ahead", "personal_forecast", "soul_ecosystem", "identity_profile"],
+        choices=["horoscope", "weekly_horoscope", "year_ahead", "personal_forecast", "soul_ecosystem", "identity_profile", "place_resonance", "place_resonance_search", "world_lines", "local_compass", "living_map"],
         help="Type of report to generate"
     )
     parser.add_argument("--name",     required=True,  help="Querent name")
@@ -10217,6 +10304,10 @@ def main():
                         help="Current/festival location (defaults to birth location)")
     parser.add_argument("--simple",   action="store_true",
                         help="Simple mode: DOB only, no birth time needed")
+    parser.add_argument("--destination", required=False, help="Destination place name for location services")
+    parser.add_argument("--route-waypoints", required=False, dest="route_waypoints", help="Optional Local Compass route as 'lat,lon;lat,lon;...'.")
+    parser.add_argument("--route-corridor-km", required=False, dest="route_corridor_km", type=float, default=150.0, help="Optional Local Compass route corridor width in kilometers.")
+    parser.add_argument("--route-id", required=False, dest="route_id", help="Optional Local Compass route identifier.")
     parser.add_argument("--no-browser", action="store_true",
                         help="Don't open browser after generation")
     parser.add_argument("--output",          required=False, help="Output filename (optional)")
@@ -10247,6 +10338,7 @@ def main():
     except InputValidationError as exc:
         raise SystemExit(str(exc))
     birth_data["current_location"] = args.current_location or args.location or ""
+    birth_data["destination"] = getattr(args, "destination", None)
 
     output_filename = args.output_filename or args.output
     try:

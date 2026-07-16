@@ -19,6 +19,10 @@ it is no longer the full flagship product shape. The flagship is now
 generation, scoring, curation, bucket assignment, and search-level synthesis.
 
 Do not use this draft to collapse Search back into a single chosen-city report.
+Use `products/location_services/BUILD_OUTLINE_DRIFT_GUARD.md` before turning
+any section reference into implementation work. Section names here are not
+enough to define resolver, comparison, line, direction, timing, or prose
+systems.
 
 ## Reading Guide
 
@@ -325,9 +329,10 @@ _note language. Final body prose is still TODO.
 
 ## Product 2: Between Places
 
-**Status: NOT YET BUILT. Backend evidence record exists for single
-destination. Multi-destination batch generation and comparison logic
-are not implemented.**
+**Status: DRAFT SHELL EXISTS. Backend evidence record exists for a single
+destination. Registry-wired assembler/renderer/template/plugin files exist and
+render HTML from shaped placeholder context. Multi-destination production
+comparison logic is not implemented.**
 
 ### Section 2.1 — Comparison Summary
 
@@ -367,10 +372,10 @@ reports.
 
 ---
 
-### Section 2.3 — Best Fit By Purpose
+### Section 2.3 — Purpose Fit Comparison
 
-**Purpose:** For the user's stated purpose, which place has the strongest
-evidence fit — and what are the tradeoffs?
+**Purpose:** For the user's stated purpose, how each place relates to that
+purpose, what evidence supports that relationship, and what tradeoffs appear.
 
 **Evidence needed:**
 - `purpose_lens` (shared across destinations)
@@ -468,9 +473,10 @@ shared methodology note.
 
 ## Product 3: World Lines Companion
 
-**Status: NOT YET BUILT. Astrocartography line generation, distance-to-line
-geometry, and nearest-point calculation are NOT IMPLEMENTED. This section map
-is planning-only.**
+**Status: DRAFT SHELL EXISTS. Registry-wired assembler/renderer/template/plugin
+files exist and render HTML from future-method placeholder context.
+Astrocartography line generation, distance-to-line geometry, and nearest-point
+calculation are NOT IMPLEMENTED. This section map is planning-only.**
 
 ### Section 3.1 — Map Summary
 
@@ -588,8 +594,10 @@ Standard appendix fields (`AVAILABLE_NOW`) can appear.
 
 ## Product 4: Local Compass
 
-**Status: NOT YET BUILT. Local Space altitude/azimuth engine, direction ray
-generation, and cross-track distance calculation are NOT IMPLEMENTED.**
+**Status: DRAFT SHELL EXISTS. Registry-wired assembler/renderer/template/plugin
+files exist and render HTML from future-method placeholder context. Local Space
+altitude/azimuth engine, direction ray generation, and cross-track distance
+calculation are NOT IMPLEMENTED.**
 
 ### Section 4.1 — Directional Signature
 
@@ -669,10 +677,10 @@ is `AVAILABLE_WITH_WIRING` once directions exist.
 
 ## Product 5: Living Map
 
-**Status: NOT YET BUILT. Requires stable Place Resonance static baseline
-AND date-bounded transit-to-relocated-angle computation, which is not
-implemented. This product must not be started before Place Resonance is
-stable.**
+**Status: DRAFT SHELL EXISTS. Registry-wired assembler/renderer/template/plugin
+files exist and render HTML from static-baseline and future-method placeholder
+context. Production use requires a stable Place Resonance static baseline AND
+date-bounded transit-to-relocated-angle computation, which is not implemented.**
 
 ### Section 5.1 — Static Place Baseline
 

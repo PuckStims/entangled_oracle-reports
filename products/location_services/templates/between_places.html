@@ -98,45 +98,46 @@
         margin-bottom: 8px;
     }
 
-    .future-method {
-        background: rgba(191, 127, 255, 0.05);
-        border: 1px dashed rgba(191, 127, 255, 0.3);
-        text-align: center;
-        padding: 40px;
+    .tags-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
     }
-    .future-method .icon {
-        font-size: 24px;
-        margin-bottom: 16px;
-        color: var(--accent-purple);
-    }
-
-    .block-item {
-        margin-bottom: 24px;
-    }
-    .block-item:last-child { margin-bottom: 0; }
-    .block-title {
-        font-weight: 600;
-        font-size: 1.1rem;
-        margin-bottom: 12px;
-        color: #fff;
-    }
-    
-    .draft-slot {
+    .tag {
         background: rgba(255, 255, 255, 0.03);
-        border-left: 3px solid var(--accent-glow);
-        padding: 16px 20px;
-        border-radius: 0 8px 8px 0;
-        font-style: italic;
-        color: var(--text-muted);
+        border: 1px solid var(--surface-border);
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-size: 0.9rem;
     }
-    .draft-note {
-        font-size: 0.8rem;
-        color: rgba(255, 255, 255, 0.3);
-        margin-top: 8px;
-        font-style: normal;
-        font-family: monospace;
+    .tag.divergent {
+        border-color: rgba(191, 127, 255, 0.3);
+        color: #BF7FFF;
     }
 
+    .difference-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    .difference-item {
+        padding: 16px;
+        margin-bottom: 12px;
+        background: rgba(255,255,255,0.02);
+        border-radius: 8px;
+        border-left: 3px solid var(--accent-glow);
+    }
+    .difference-item strong {
+        color: var(--accent-glow);
+    }
+
+    .tradeoff-item {
+        padding: 16px;
+        margin-bottom: 12px;
+        background: rgba(255,255,255,0.02);
+        border-radius: 8px;
+        border-left: 3px solid var(--accent-purple);
+    }
 </style>
 </head>
 <body>
@@ -151,37 +152,74 @@
         </div>
     </header>
 
-    {% for section in sections %}
-    <section class="section-card {% if section.is_future_method %}future-method{% endif %}">
-        {% if section.is_future_method %}
-            <div class="icon">✨</div>
-            <h2 class="section-title">{{ section.future_title }}</h2>
-            <p style="color: var(--text-muted); max-width: 400px; margin: 16px auto 0;">{{ section.future_description }}</p>
-        {% else %}
-            <div class="section-header">
-                <div class="section-kicker">{{ section.kicker }}</div>
-                <h2 class="section-title">{{ section.title }}</h2>
-            </div>
-            
-            {% for block in section.blocks %}
-            <div class="block-item">
-                {% if block.title %}
-                <div class="block-title">{{ block.title }}</div>
-                {% endif %}
-                
-                {% if block.leaf and block.leaf.is_draft %}
-                <div class="draft-slot">
-                    {{ block.leaf.draft_prompt }}
-                    <div class="draft-note">{{ block.leaf.note }}</div>
-                </div>
-                {% else %}
-                <div class="prose">{{ block.leaf.body }}</div>
-                {% endif %}
-            </div>
+    <section class="section-card">
+        <div class="section-header">
+            <div class="section-kicker">Common Ground</div>
+            <h2 class="section-title">Shared Themes</h2>
+        </div>
+        {% if shared_themes %}
+        <div class="tags-container">
+            {% for theme in shared_themes %}
+            <div class="tag">{{ theme }}</div>
             {% endfor %}
+        </div>
+        {% else %}
+        <p>No major overlapping astrological themes found between these two locations.</p>
         {% endif %}
     </section>
-    {% endfor %}
+
+    <section class="section-card">
+        <div class="section-header">
+            <div class="section-kicker">Contrast</div>
+            <h2 class="section-title">Divergent Themes</h2>
+        </div>
+        {% if divergent_themes %}
+        <div class="tags-container">
+            {% for theme in divergent_themes %}
+            <div class="tag divergent">{{ theme }}</div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p>The core planetary emphases are very similar in both locations.</p>
+        {% endif %}
+    </section>
+
+    <section class="section-card">
+        <div class="section-header">
+            <div class="section-kicker">Key Contrast</div>
+            <h2 class="section-title">Strongest Differences</h2>
+        </div>
+        {% if strongest_differences %}
+        <ul class="difference-list">
+            {% for diff in strongest_differences %}
+            <li class="difference-item">
+                <strong>{{ name_a if diff.location_id == location_a_id else name_b }}:</strong>
+                {{ diff.description }}
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>There are no overwhelming structural differences (angles or major house shifts) between these locations.</p>
+        {% endif %}
+    </section>
+
+    <section class="section-card">
+        <div class="section-header">
+            <div class="section-kicker">What You Gain vs Lose</div>
+            <h2 class="section-title">Tradeoffs</h2>
+        </div>
+        {% if tradeoffs %}
+        <ul class="difference-list">
+            {% for tradeoff in tradeoffs %}
+            <li class="tradeoff-item">
+                {{ tradeoff.description }}
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>Neither location offers a significant goal-specific tradeoff advantage over the other.</p>
+        {% endif %}
+    </section>
 </div>
 </body>
 </html>

@@ -13,6 +13,10 @@ Location Services family.
   or map-first product.
 - **Evidence Before Prose**: Selector leaves, evidence ranking, and
   technical appendix traceability come before cosmetic template expansion.
+- **Grammar Bridge**: The Phase 1 normalized evidence adapter in
+  `products/location_services/evidence_grammar/` gives later products a
+  reusable interpretation substrate without changing this report's current
+  rendering path.
 - **No Outcome Guarantees**: It can speak confidently about pattern and
   emphasis, but it must not promise life results.
 - **Package Normalization In Progress**: The dedicated product folder now

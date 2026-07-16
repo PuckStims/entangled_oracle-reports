@@ -9,6 +9,32 @@ ChatGPT/Codex should validate product and content-section ordering.
 
 ---
 
+## Current Audit Overlay — 2026-07-16
+
+This roadmap is a historical Gemini draft. Several early TODOs have already
+been implemented or superseded:
+
+- `location_services` is registered in `REPORT_BLOCK_DIRS`.
+- `selectors/location_services_selector.py` exists and is tested.
+- Place Resonance has an end-to-end draft render path.
+- Place Resonance Search has seed catalog/scoring/curation/bucket/proximity
+  logic and fixture-backed HTML generation.
+- Between Places, World Lines Companion, Local Compass, and Living Map have
+  draft shells and registry smoke coverage.
+- Product-specific block subfolders now exist for Search, Between Places,
+  World Lines, Local Compass, and Living Map, though many leaves remain
+  scaffold/draft status.
+
+For current sequencing, use
+`products/location_services/LOCATION_SERVICES_BUILD_PLAN.md`. Keep this file as
+historical planning context only.
+
+For full build outlines behind referenced areas, use
+`products/location_services/BUILD_OUTLINE_DRIFT_GUARD.md`. Do not treat the
+stage labels below as sufficient implementation detail.
+
+---
+
 ## Roadmap Principles
 
 1. Each stage builds a stable foundation before the next stage begins.
@@ -37,6 +63,11 @@ scaffold.
 ### Stage 1 Tasks
 
 **1.1 — Block Loader / Selector Scaffold**
+
+Current audit: implemented in `config.py::REPORT_BLOCK_DIRS["location_services"]`
+and `selectors/location_services_selector.py`; covered by
+`tests/test_location_services_selector.py`. The historical TODO below is kept
+only to show the original proposal.
 
 ```
 TODO: Build a block loader that reads JSON files from
@@ -244,7 +275,7 @@ All leaves: TODO with _note guidance. No final prose.
 TODO: Build report template that assembles:
   Section 2.1: Comparison Summary
   Section 2.2: Place Profiles (compact, per destination)
-  Section 2.3: Best Fit By Purpose
+  Section 2.3: Purpose Fit Comparison
   Section 2.4: Strongest Difference
   Section 2.5: Shared Themes
   Section 2.6: Tradeoff Map
@@ -486,22 +517,13 @@ Files:
 - The synthesis selector logic sketch — must be validated against actual
   JSON structure in `location_synthesis_blocks.json`
 - Any product definition for World Lines Companion, Local Compass, or
-  Living Map — these products have no backend and full section definitions
-  are based on `PRODUCT_STACK.md` intent only
+  Living Map — these products have draft shells, but their future-method
+  evidence engines and production contracts are still missing
 
 ### Next Safest Implementation Step
 
-Claude Code should:
-
-1. Read this folder.
-2. Produce a bounded list of: (a) items that are safe to proceed with as
-   written, (b) items that need revision before proceeding, (c) items that
-   should be quarantined.
-3. Begin Stage 1 only after that triage is complete and reviewed.
-4. Do not begin Stage 2 or later stages before Stage 1 is tested and
-   confirmed stable.
-
-The single highest-value unblocked action is: **build the block loader and
-selector for the four Round 4 block families** and confirm that the existing
-JSON structure can be walked with the proposed key paths without any engine
-modification. Everything else in this pass depends on that foundation.
+The old highest-value action, building the block loader and selector for the
+Round 4 block families, is complete. The current safest path is to follow
+`LOCATION_SERVICES_BUILD_PLAN.md`: preserve Place Profile stability, continue
+hardening Place Resonance Search, and only then promote Between Places with a
+real comparison schema and no-mutation regression.

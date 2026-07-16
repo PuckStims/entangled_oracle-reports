@@ -20,6 +20,30 @@ When older notes say "build Place Resonance first," read that as "keep the
 single-place profile engine stable before building search, comparison, map,
 directional, or timing products."
 
+## Locational Grammar Upgrade Gate
+
+Before broad prose creation or high-volume prose expansion, use:
+
+```text
+products/location_services/LOCATIONAL_GRAMMAR_UPGRADE_PLAN.md
+products/location_services/BUILD_OUTLINE_DRIFT_GUARD.md
+```
+
+That plan is the active protection against flattening the Location Services
+upgrade into a small adapter and calling it complete. Prose should follow the
+calculation-to-evidence-to-synthesis grammar:
+
+```text
+Calculation -> Evidence -> Interpretation -> Synthesis -> Advice -> Presentation
+```
+
+The next content-system priority is not more paragraphs. It is preserving the
+full evidence grammar so later prose can compose structured conclusions about
+strength, support, comfort, worthwhileness, tradeoff, duration, and confidence.
+If a prose request depends on the resolver, theme clusterer, goal compatibility
+profile, or report planner, treat the build outline drift guard as the gating
+implementation map.
+
 ## Files Created
 
 ```text

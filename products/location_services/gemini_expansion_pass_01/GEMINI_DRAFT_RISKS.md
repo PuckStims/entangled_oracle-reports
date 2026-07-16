@@ -259,7 +259,12 @@ should not be treated as a sprint plan.
 
 ---
 
-**3.3 — Between Places section 2.3 ("Best Fit By Purpose") implies ranking**
+**3.3 — Between Places purpose-fit comparison naming risk**
+
+**Current status:** Resolved in active product-stack language. The section is
+now named "Purpose Fit Comparison" in `PRODUCT_STACK.md`, with purpose-specific
+suitability and tradeoffs rather than universal ranking. Keep this historical
+risk note as the reason future docs should not restore best-fit phrasing.
 
 Source: `PRODUCT_SUITE_SECTION_MAP.md`, Section 2.3.
 
@@ -300,6 +305,11 @@ loop must clone the payload per destination.
 
 **Risk:** Gemini may have inadvertently proposed items that touch non-location
 product files, engine calculation logic, or shared libraries.
+
+Current drift guard: referenced implementation areas must now be expanded
+through `products/location_services/BUILD_OUTLINE_DRIFT_GUARD.md` before any
+model treats them as a task. This reduces the risk that historical Gemini
+labels become underspecified build tickets.
 
 ### Flagged Items
 

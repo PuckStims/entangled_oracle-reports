@@ -34,7 +34,7 @@ def _is_draft_leaf(leaf: dict | None) -> bool:
     return isinstance(leaf, dict) and str(leaf.get("body") or "").strip() == "TODO"
 
 
-def _render_leaf(leaf: dict | None, fallback_prompt: str) -> str:
+def _render_leaf(leaf: dict | None, fallback_prompt: str, context_vars: dict | None = None) -> str:
     if not isinstance(leaf, dict):
         return ""
     if _is_draft_leaf(leaf):
@@ -47,7 +47,12 @@ def _render_leaf(leaf: dict | None, fallback_prompt: str) -> str:
             f'<small>Requires: {_escape(evidence)}</small>'
             '</div>'
         )
-    body = _escape(leaf.get("body") or "").replace("\n", "<br>")
+    body = str(leaf.get("body") or "")
+    if context_vars:
+        for k, v in context_vars.items():
+            if v is not None:
+                body = body.replace(f"{{{k}}}", str(v))
+    body = _escape(body).replace("\n", "<br>")
     return f'<div class="search-prose">{body}</div>'
 
 
@@ -131,9 +136,15 @@ def _render_bucket_sections(context: dict) -> str:
     for bucket in seen_buckets:
         locations = [item for item in selected if item.get("bucket") == bucket]
         label = locations[0].get("bucket_label") if locations else bucket
+        
+        context_vars = {
+            "bucket": label,
+            "count": len(locations)
+        }
+        
         parts.append('<section class="report-band">')
         parts.append(f'<div class="eyebrow">Bucket</div><h2>{_escape(label)}</h2>')
-        parts.append(_render_leaf(bucket_leaves.get(bucket), "Write this bucket introduction."))
+        parts.append(_render_leaf(bucket_leaves.get(bucket), "Write this bucket introduction.", context_vars))
         parts.append('<div class="location-grid">')
         for location in locations:
             parts.append(_render_location_card(context, location))
@@ -157,6 +168,14 @@ def _render_location_card(context: dict, location: dict) -> str:
     ]
     theme_text = ", ".join(_format_theme(theme) for theme in themes) or "Unclassified"
     evidence_text = ", ".join(str(ref) for ref in evidence_refs[:4]) or "No refs"
+    
+    context_vars = {
+        "city_name": location.get("display_name", ""),
+        "bucket": location.get("bucket_label") or location.get("bucket", ""),
+        "evidence_refs": evidence_text,
+        "primary_score": scores.get("overall_resonance", 0),
+        "dominant_theme": _format_theme(themes[0] if themes else "Unknown"),
+    }
 
     parts = [
         '<article class="location-card">',
@@ -164,9 +183,11 @@ def _render_location_card(context: dict, location: dict) -> str:
         f'<h3>{_escape(location.get("display_name"))}</h3>',
         f'<div class="recommendation">{_escape(location.get("recommendation_label"))}</div>',
         f'<p class="themes">{_escape(theme_text)}</p>',
-        _render_leaf(rec_leaf, "Write this recommendation label explanation."),
-        _render_leaf(tile_leaves.get("bucket_role"), "Write this city-specific bucket role."),
+        _render_leaf(rec_leaf, "Write this recommendation label explanation.", context_vars),
+        _render_leaf(tile_leaves.get("bucket_role"), "Write this city-specific bucket role.", context_vars),
+        _render_leaf(tile_leaves.get("best_use_case"), "Write this city's best use case.", context_vars),
         f'<p class="place-texture">{_escape(_location_texture_sentence(location))}</p>',
+        _render_leaf(tile_leaves.get("sibling_difference"), "Write the sibling difference explanation.", context_vars) if location.get("sibling_difference") else "",
         f'<p class="place-texture">{_escape(location.get("sibling_difference"))}</p>' if location.get("sibling_difference") else "",
         '<div class="score-list">',
     ]
@@ -174,14 +195,18 @@ def _render_location_card(context: dict, location: dict) -> str:
         parts.append(_score_bar(label, int(value or 0)))
     parts.extend([
         '</div>',
-        _render_cluster_alternates(alternates, tile_leaves.get("cluster_alternates")),
+        _render_cluster_alternates(alternates, tile_leaves.get("cluster_alternates"), context_vars),
         f'<details><summary>Evidence refs</summary><p>{_escape(evidence_text)}</p></details>',
         '</article>',
     ])
     return "".join(parts)
 
 
-def _render_cluster_alternates(alternates: list[dict], leaf: dict | None) -> str:
+def _render_cluster_alternates(
+    alternates: list[dict],
+    leaf: dict | None,
+    context_vars: dict | None = None,
+) -> str:
     if not alternates:
         return ""
     items = []
@@ -199,7 +224,7 @@ def _render_cluster_alternates(alternates: list[dict], leaf: dict | None) -> str
     return (
         '<div class="cluster-alternates">'
         '<div class="eyebrow">Nearby Similar Alternates</div>'
-        f'{_render_leaf(leaf, "Write the clustered alternate explanation.")}'
+        f'{_render_leaf(leaf, "Write the clustered alternate explanation.", context_vars)}'
         f'<ul>{"".join(items)}</ul>'
         '</div>'
     )
@@ -212,6 +237,11 @@ def render_place_resonance_search_results_html(search_context: dict) -> str:
     distribution = search_context.get("bucket_distribution") or {}
     generated = datetime.now().strftime("%B %d, %Y")
 
+    context_vars = {
+        "candidate_count": candidate_pool.get("evaluated_count"),
+        "dominant_theme": _format_theme(search_context.get("dominant_search_theme")),
+    }
+    
     html_parts = [
         '<!DOCTYPE html><html><head><meta charset="utf-8">',
         '<meta name="viewport" content="width=device-width, initial-scale=1.0">',
@@ -281,10 +311,10 @@ def render_place_resonance_search_results_html(search_context: dict) -> str:
         '</section>',
         '<section class="report-band">',
         '<div class="eyebrow">Search Summary</div>',
-        _render_leaf(selected_leaves.get("search_summary"), "Write the search summary."),
+        _render_leaf(selected_leaves.get("search_summary"), "Write the search summary.", context_vars),
         '<div class="synthesis-panel">',
         '<div class="eyebrow">Pattern Synthesis</div>',
-        _render_leaf(selected_leaves.get("pattern_synthesis"), "Write the pattern synthesis."),
+        _render_leaf(selected_leaves.get("pattern_synthesis"), "Write the pattern synthesis.", context_vars),
         '</div>',
         '</section>',
         '<section class="report-band"><div class="eyebrow">Bucket Distribution</div><p class="themes">Score bars are calibrated against the evaluated candidate pool for this run.</p><div class="summary-grid">',

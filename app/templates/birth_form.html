@@ -34,6 +34,13 @@
       Birth location
       <input name="location" value="{{ values.location }}" placeholder="City, state or country" required>
     </label>
+    {% if report.needs_destination %}
+    <label>
+      {{ report.destination_label }}
+      <input name="destination" value="{{ values.destination or '' }}" placeholder="City, state or country" required>
+      {% if report.destination_help %}<span class="field-help">{{ report.destination_help }}</span>{% endif %}
+    </label>
+    {% endif %}
     <div class="field-row">
       <label>
         {{ report.report_date_label }}
@@ -59,8 +66,10 @@
       <input type="checkbox" name="consent_acknowledged" value="yes" {% if values.consent_acknowledged %}checked{% endif %}>
       <span>I understand this private beta flow generates and stores report files locally on this machine.</span>
     </label>
-    <button class="button primary" type="submit">Review request</button>
+    <div class="actions">
+      <button class="button primary" type="submit">Review request</button>
+      <a class="button secondary" href="{{ url_for('reports') }}">Choose another report</a>
+    </div>
   </form>
 </section>
 {% endblock %}
-

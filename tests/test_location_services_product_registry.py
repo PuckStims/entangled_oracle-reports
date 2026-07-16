@@ -33,7 +33,12 @@ def test_location_product_registry_lists_new_product_shells():
 def test_registered_location_product_shells_build_context_and_render_html(report_type):
     product = get_location_product(report_type)
     natal_payload = _build_natal_payload()
-    chicago = {"display_name": "Chicago, IL"}
+    chicago = {
+        "display_name": "Chicago, Illinois, United States",
+        "latitude": 41.8781,
+        "longitude": -87.6298,
+        "timezone": "America/Chicago",
+    }
     lisbon = {"display_name": "Lisbon, Portugal"}
 
     if report_type in {"location_services.place_resonance", "location_services.place_resonance_search"}:

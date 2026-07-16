@@ -1,6 +1,6 @@
 # Between Places Build / Edit Plan
 
-Status date: 2026-07-14
+Status date: 2026-07-16
 
 ## Purpose
 
@@ -17,25 +17,32 @@ place" ranking engine.
   prompts or future-method placeholders.
 - No true comparison engine exists yet. Current wrapper logic only passes
   destination metadata into placeholder records.
+- The Phase 1 normalized evidence grammar exists and should be the comparison
+  substrate once real Place Profile records are available for both
+  destinations.
 
 ## Build Goal
 
 Turn this from a two-place visual shell into the first production
 descendant of Place Resonance.
 
+Full comparison build outline:
+`products/location_services/BUILD_OUTLINE_DRIFT_GUARD.md` Build Area F.
+
 ## Build Sequence
 
 1. Reuse the Place Resonance single-place evidence builder for
    Destination A and Destination B independently.
 2. Preserve both evidence records as immutable inputs.
-3. Add a comparison layer that computes:
+3. Normalize both records through `products/location_services/evidence_grammar/`.
+4. Add a comparison layer that computes:
    - shared themes
    - strongest differences
    - angular emphasis deltas
    - house movement deltas
    - purpose-lens tradeoffs
-4. Replace draft prompts with evidence-backed section payloads.
-5. Add a technical appendix that shows how each destination was derived.
+5. Replace draft prompts with evidence-backed section payloads.
+6. Add a technical appendix that shows how each destination was derived.
 
 ## Edit Rules
 
@@ -52,6 +59,11 @@ descendant of Place Resonance.
 - Decide which Place Resonance sections map cleanly into shared-vs-
   divergent comparison summaries.
 - Add tests for same-destination comparisons and asymmetric evidence.
+- Namespace every source evidence ID by destination before comparison so
+  traces can distinguish identical evidence IDs from different places.
+- Define comparison output before prose: shared themes, divergent themes,
+  strongest differences, purpose fit, tradeoff map, and per-destination
+  appendix traces.
 
 ## Verification
 

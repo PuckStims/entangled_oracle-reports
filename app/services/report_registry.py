@@ -19,6 +19,9 @@ class ReportDefinition:
     default_content_pack: str = "plainspeak"
     allow_unknown_time: bool = False
     report_date_label: str = "Report start date"
+    needs_destination: bool = False
+    destination_label: str = "Destination"
+    destination_help: str = ""
 
 
 CONSUMER_REPORTS: dict[str, ReportDefinition] = {
@@ -57,30 +60,107 @@ CONSUMER_REPORTS: dict[str, ReportDefinition] = {
         status="Private beta studio",
         available=True,
     ),
+    "identity_profile": ReportDefinition(
+        key="identity_profile",
+        label="Identity Profile",
+        promise="A natal identity report built from the existing Entangled Oracle identity-profile surface.",
+        best_for="A core portrait when you want the personal architecture rather than timing.",
+        depth="Deep",
+        birth_time_rule="Exact birth time required",
+        status="Local generator",
+        available=True,
+        content_packs=("plainspeak", "entangled_oracle"),
+        default_content_pack="plainspeak",
+    ),
     "horoscope": ReportDefinition(
         key="horoscope",
         label="Daily Horoscope",
         promise="A compact daily orientation tuned to the active sky and chart context.",
-        best_for="A smaller check-in once exact and DOB-only behavior is revalidated.",
+        best_for="A small daily check-in without building a full report.",
         depth="Short",
-        birth_time_rule="Conditional: DOB-only path requires revalidation",
-        status="Deferred validation",
-        available=False,
+        birth_time_rule="Birth time optional; DOB-only uses simple mode",
+        status="Local generator",
+        available=True,
         allow_unknown_time=True,
+        report_date_label="Forecast date",
     ),
     "weekly_horoscope": ReportDefinition(
         key="weekly_horoscope",
         label="Weekly Horoscope",
         promise="A focused seven-day reading for immediate timing and guidance.",
-        best_for="A later/internal surface, not the current public beta promise.",
+        best_for="A lighter timing report when you want the week rather than the year.",
         depth="Short-medium",
-        birth_time_rule="Exact birth time recommended",
-        status="Runtime-supported, commercially deferred",
-        available=False,
+        birth_time_rule="Birth time optional; exact time improves house and angle context",
+        status="Local generator",
+        available=True,
+        allow_unknown_time=True,
+        report_date_label="Week begins",
+    ),
+    "place_resonance": ReportDefinition(
+        key="place_resonance",
+        label="Place Resonance",
+        promise="A single-destination relocated-chart report for how one place emphasizes the natal pattern.",
+        best_for="Testing one city, move, trip, or possible home base.",
+        depth="Medium-deep",
+        birth_time_rule="Exact birth time required",
+        status="Location Services",
+        available=True,
+        needs_destination=True,
+        destination_label="Destination",
+        destination_help="City, state/country to test as the relocated place.",
+    ),
+    "place_resonance_search": ReportDefinition(
+        key="place_resonance_search",
+        label="Place Resonance Search",
+        promise="A curated location search across the packaged candidate catalog.",
+        best_for="Finding a shortlist before choosing individual places to inspect.",
+        depth="Medium-deep",
+        birth_time_rule="Exact birth time required",
+        status="Location Services",
+        available=True,
+    ),
+    "world_lines": ReportDefinition(
+        key="world_lines",
+        label="World Lines Companion",
+        promise="A location-services report for computed angular line proximity around a destination.",
+        best_for="Understanding which planetary lines are closest to a place.",
+        depth="Medium",
+        birth_time_rule="Exact birth time required",
+        status="Location Services",
+        available=True,
+        needs_destination=True,
+        destination_label="Destination",
+        destination_help="City, state/country where line proximity should be checked.",
+    ),
+    "local_compass": ReportDefinition(
+        key="local_compass",
+        label="Local Compass",
+        promise="A directional local-space report for one destination or anchor relationship.",
+        best_for="A practical directional layer without hand-writing route arguments.",
+        depth="Medium",
+        birth_time_rule="Exact birth time required",
+        status="Location Services",
+        available=True,
+        needs_destination=True,
+        destination_label="Destination",
+        destination_help="City, state/country used as the destination bearing.",
+    ),
+    "living_map": ReportDefinition(
+        key="living_map",
+        label="Living Map",
+        promise="A dynamic location-timing overlay for a destination.",
+        best_for="Seeing temporary timing weather over a place baseline.",
+        depth="Medium",
+        birth_time_rule="Exact birth time required",
+        status="Location Services",
+        available=True,
+        needs_destination=True,
+        destination_label="Destination",
+        destination_help="City, state/country for the timing overlay.",
     ),
 }
 
-BLOCKED_REPORTS = {"predictive_sandbox", "identity_profile"}
+BLOCKED_REPORTS = {"predictive_sandbox"}
 
 
 def get_report_definition(report_type: str) -> ReportDefinition | None:
@@ -93,4 +173,3 @@ def available_reports() -> list[ReportDefinition]:
 
 def deferred_reports() -> list[ReportDefinition]:
     return [report for report in CONSUMER_REPORTS.values() if not report.available]
-

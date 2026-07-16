@@ -482,8 +482,19 @@
         <div class="tag-row">
           <span class="tag">{{ render_version }}</span>
           <span class="tag">{{ generation_date }}</span>
-          {% if purpose_lens %}<span class="tag">Purpose: {{ purpose_lens }}</span>{% endif %}
+          {% if purpose_lens %}
+            <span class="tag">Purpose: {{ purpose_lens }}</span>
+            {% set profile = _grammar.get('goal_profile') %}
+            {% if profile and profile.get('goals') %}
+               {% for goal in profile.goals if goal.goal_key == purpose_lens %}
+                 <span class="tag">Compatibility: {{ (goal.opportunity * 100) | round }}%</span>
+               {% endfor %}
+            {% endif %}
+          {% endif %}
           {% if relationship_to_place %}<span class="tag">Relationship: {{ relationship_to_place }}</span>{% endif %}
+          {% if _grammar and _grammar.get('theme_clusters') %}
+            <span class="tag">Confidence: {{ _grammar.theme_clusters.get('confidence_classification', 'Unknown') }}</span>
+          {% endif %}
         </div>
       </div>
 
@@ -616,6 +627,7 @@
                   <tr>
                     <th>Tier</th>
                     <th>Evidence</th>
+                    <th>Theme Relationship</th>
                     <th>Source</th>
                     <th>Block</th>
                   </tr>
@@ -628,6 +640,7 @@
                         <div>{{ row.evidence_type.replace("_", " ") }}</div>
                         <div class="evidence-id">{{ row.id }}</div>
                       </td>
+                      <td>{{ row.theme_relationship }}</td>
                       <td>{{ row.source_summary }}</td>
                       <td>
                         {% if row.leaf %}

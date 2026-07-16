@@ -3,7 +3,7 @@
 {% block content %}
 <section class="page-intro">
   <h1>Choose the report to generate.</h1>
-  <p>The beta studio exposes the strongest controlled surfaces first. Deferred reports remain visible as roadmap truth, not erased scope.</p>
+  <p>Use this local shell instead of assembling PowerShell commands. The form passes your inputs into the existing generator and opens the finished HTML report in the browser.</p>
 </section>
 
 <section class="report-grid" aria-label="Available reports">
@@ -24,6 +24,7 @@
   {% endfor %}
 </section>
 
+{% if deferred_reports %}
 <section class="deferred-scope">
   <h2>Planned, not dropped</h2>
   <p>These surfaces are part of the larger build plan but are not exposed in this first studio slice.</p>
@@ -36,5 +37,5 @@
     {% endfor %}
   </div>
 </section>
+{% endif %}
 {% endblock %}
-

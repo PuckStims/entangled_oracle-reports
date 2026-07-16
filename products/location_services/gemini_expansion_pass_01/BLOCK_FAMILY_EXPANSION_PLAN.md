@@ -10,6 +10,12 @@ validates content architecture.
 TAXONOMY," it must not be scaffolded in JSON until the taxonomy it depends
 on is authored and approved by the content lane.
 
+Before creating any block family that depends on resolver, theme clusterer,
+goal compatibility, report planner, line geometry, direction geometry, or
+timing overlay work, read
+`products/location_services/BUILD_OUTLINE_DRIFT_GUARD.md`. Blocks should follow
+computed evidence contracts, not create them by implication.
+
 ---
 
 ## Already Built (Round 4, Blocks Under `blocks/plainspeak/`)
@@ -240,7 +246,8 @@ as purpose and duration lenses).
 
 ## Proposed Block Families — Between Places (Product 2)
 
-**All of these are proposals only. Product 2 has no backend yet.**
+**All of these are proposals only. Product 2 has a draft shell, but no
+production comparison backend yet.**
 
 ### BF-BP-01: `place_comparison_summary_blocks.json`
 

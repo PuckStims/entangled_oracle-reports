@@ -44,6 +44,9 @@ def test_assemble_place_resonance_context_has_stable_top_level_shape():
     assert context["report_type"] == "location_services.place_resonance"
     assert context["product_name"] == "Place Resonance"
     assert context["evidence_record_formula_version"] == record["formula_version"]
+    assert "_grammar" in context
+    assert "theme_clusters" in context["_grammar"]
+    assert "goal_profile" in context["_grammar"]
     assert context["section_order"] == [
         "place_signature",
         "evidence_summary",

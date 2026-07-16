@@ -1,6 +1,6 @@
 # Place Resonance / Place Profile Build Edit Plan
 
-Status date: 2026-07-14
+Status date: 2026-07-16
 
 ## Purpose
 
@@ -20,6 +20,9 @@ product. That role now belongs to `Place Resonance Search`.
   - `products/location_services/place_resonance_renderer.py`
   - `products/location_services/templates/place_resonance.html`
   - `products/location_services/tooling/generate_place_resonance_ready.py`
+- Phase 1 normalized evidence grammar now exists in
+  `products/location_services/evidence_grammar/` as an opt-in adapter over the
+  current `LocationEvidenceRecord`.
 - Product-folder registration exists through
   `products/location_services/place_resonance/plugin.py`.
 - Focused tests and the ready-generator script import through the normalized
@@ -36,6 +39,10 @@ reframing it as a reusable Place Profile engine. It should remain the evidence
 contract authority for single-place interpretation, but it should not absorb
 search, comparison, map, directional, or timing responsibilities.
 
+Full shared-grammar build outline:
+`products/location_services/BUILD_OUTLINE_DRIFT_GUARD.md` Build Areas A through
+D for resolver, theme clusterer, goal compatibility, and report planner work.
+
 ## Build Sequence
 
 1. Keep the current root-level assembler and renderer canonical until migration
@@ -49,6 +56,8 @@ search, comparison, map, directional, or timing responsibilities.
    or be removed.
 6. Expose compact profile context cleanly enough for Place Resonance Search and
    Between Places to reuse it without copying single-place prose logic.
+7. Route broad interpretation/prose upgrades through the normalized evidence
+   grammar and later resolver/report-planner phases.
 
 ## Edit Rules
 
@@ -70,6 +79,8 @@ search, comparison, map, directional, or timing responsibilities.
 - Wire `place_context_modifier_blocks.json` only after a context-axis classifier
   exists.
 - Preserve the focused test suite before any migration out of root-level modules.
+- Do not broaden Place Profile prose until a report plan can name source
+  clusters, source evidence IDs, claim boundaries, and required disclosures.
 
 ## Verification
 

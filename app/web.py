@@ -29,6 +29,20 @@ _prime_stdlib_socketserver_selector()
 
 from flask import Flask, Response, redirect, render_template, request, send_file, url_for
 
+
+def _install_local_selector_package() -> None:
+    """Restore EO's selector package after Flask/Werkzeug stdlib priming."""
+    project_root = Path(__file__).resolve().parents[1]
+    selectors_module = sys.modules.get("selectors")
+    if selectors_module is not None and not hasattr(selectors_module, "__path__"):
+        sys.modules.pop("selectors", None)
+    if str(project_root) not in sys.path:
+        sys.path.insert(0, str(project_root))
+    importlib.import_module("selectors")
+
+
+_install_local_selector_package()
+
 from .services.ai_companion import copy_to_ai_prompt, prompt_groups
 from .services.report_registry import available_reports, deferred_reports, get_report_definition
 from .services.report_service import ReportRequest, WebInputError, create_report, validate_report_request
@@ -174,6 +188,7 @@ def _blank_values(report_type: str) -> ReportRequest:
         birth_date="",
         birth_time="",
         location="",
+        destination="",
         report_date="",
         palette="vibrant",
         content_pack=definition.default_content_pack if definition else "plainspeak",
@@ -188,6 +203,7 @@ def _request_from_form(report_type: str) -> ReportRequest:
         birth_date=request.form.get("birth_date", ""),
         birth_time=request.form.get("birth_time", "") or None,
         location=request.form.get("location", ""),
+        destination=request.form.get("destination", "") or None,
         report_date=request.form.get("report_date", "") or None,
         palette=request.form.get("palette", "vibrant"),
         content_pack=request.form.get("content_pack", "plainspeak"),

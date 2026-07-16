@@ -25,16 +25,28 @@ more pressured, more available, or more consequential.
 ## Shared Product Rules
 
 - Every claim must be traceable to a structured evidence record.
+- Long-term interpretation should flow through the phased locational grammar in
+  `LOCATIONAL_GRAMMAR_UPGRADE_PLAN.md`, not directly from raw calculations to
+  final prose.
+- For current post-v0.2 method status and remaining exclusions, use
+  `REMAINING_METHOD_BOUNDARIES_SPEC.md`.
+- Any referenced build area that is not implemented yet should follow
+  `BUILD_OUTLINE_DRIFT_GUARD.md` before files are scaffolded or prose is
+  expanded.
 - Relocation preserves the original birth UTC instant and recalculates angles/houses for the destination.
 - Tropical zodiac and Whole Sign houses remain the production baseline.
 - Natal condition modifies relocated expression; relocation does not overwrite natal condition.
-- Static place evidence comes before map lines, Local Space, parans, or dynamic timing.
+- Static place evidence remains the prerequisite layer beneath map lines, Local
+  Space, and dynamic timing, and still comes before parans and the remaining
+  advanced methods.
 - Astrocartography and location products use standard locational evidence only;
   EO custom asteroid influence is reserved for natal/report-specific products
   and must not enter Location Services scoring or map stacks.
 - No product declares a single universal best place.
 - No product claims guaranteed love, wealth, safety, illness, destiny, success, or failure.
 - Technical transparency is part of the premium product, not a backend footnote.
+- Do not treat the locational grammar upgrade as complete until the system can
+  distinguish what is strong, supportive, comfortable, and worthwhile.
 
 ## Product Ladder
 
@@ -137,10 +149,13 @@ The bank separates:
   reinvention, ancestral memory landscape, belonging or community, pressure-test
   location, or liminal threshold place.
 
-The current seed catalog includes 147 U.S. candidate locations across all 50
-states plus Washington, D.C. Ontology waves have enriched 92 of them. Unenriched
-locations remain valid candidates and normalize the ontology fields to empty
-lists until later research passes.
+The current seed catalog includes 156 U.S. candidate locations across all 50
+states plus Washington, D.C. Ontology waves have enriched 101 of them.
+Unenriched locations remain valid candidates and normalize the ontology fields
+to empty lists until later research passes.
+
+For production-scale search, the fixture should act as a curated overlay over a
+provider-backed place catalog rather than as the complete location universe.
 
 ### Proximity And Regional Collapse
 
@@ -321,7 +336,7 @@ creative homes, or life-stage decisions.
 
 1. **Comparison Summary** - the central contrast.
 2. **Place Profiles** - compact one-location signatures.
-3. **Best Fit By Purpose** - purpose-specific suitability, not universal ranking.
+3. **Purpose Fit Comparison** - purpose-specific suitability and tradeoffs, not universal ranking.
 4. **Strongest Difference** - the evidence that most separates the places.
 5. **Shared Themes** - where multiple places activate similar material.
 6. **Tradeoff Map** - what each place supports and pressures.
@@ -454,7 +469,8 @@ Living Map is the dynamic layer. It combines static location evidence with date-
 - Static Place Resonance baseline.
 - Date-bounded transits to relocated angles, if supported.
 - Transits through relocated houses, if supported.
-- Standard timing clocks already promoted into report-safe use.
+- Standard timing clocks only after timing governance explicitly promotes them
+  for relocated/location overlay use.
 - Temporary strength notes.
 - Distinction between baseline resonance and current weather.
 

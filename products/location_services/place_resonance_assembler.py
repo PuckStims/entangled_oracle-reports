@@ -354,6 +354,26 @@ def assemble_place_resonance_context(evidence_record: dict) -> dict:
         _house_change_section(evidence_record),
         _technical_appendix_section(evidence_record),
     ]
+    
+    from products.location_services.evidence_grammar import (
+        normalize_location_evidence_record,
+        resolve_evidence,
+        cluster_themes,
+        build_goal_profile,
+    )
+    
+    normalized = normalize_location_evidence_record(evidence_record)
+    resolved = resolve_evidence(normalized.get("items", []))
+    clusters = cluster_themes(resolved.get("resolved_groups", []), normalized.get("items", []))
+    purpose_lens = evidence_record.get("purpose_lens")
+    goal_profile = build_goal_profile(clusters.get("clusters", []), purpose_lens=purpose_lens)
+    
+    grammar_context = {
+        "normalized_evidence": normalized,
+        "resolved_evidence": resolved,
+        "theme_clusters": clusters,
+        "goal_profile": goal_profile,
+    }
 
     return {
         "context_version": CONTEXT_VERSION,
@@ -364,9 +384,11 @@ def assemble_place_resonance_context(evidence_record: dict) -> dict:
         "destination_context": _deepcopy(evidence_record.get("destination_context")),
         "purpose_lens": evidence_record.get("purpose_lens"),
         "relationship_to_place": evidence_record.get("relationship_to_place"),
+        "_grammar": grammar_context,
         "sections": sections,
         "section_order": [section["id"] for section in sections],
     }
+
 
 
 def build_place_resonance_context(

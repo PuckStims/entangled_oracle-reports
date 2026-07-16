@@ -238,10 +238,11 @@ of the test suite in the repo working tree, which causes `pytest`
 `pytest tests/` (scoped) avoids it. Left untouched — not part of this
 work packet.
 
-### A real bug found while exercising the resolver for destination reuse
+### Resolver collision found and mitigated while exercising destination reuse
 
 While confirming `engine/offline_place_resolver.py` is safe to call
-directly for destinations (§4), a genuine, verified bug surfaced:
+directly for destinations (§4), a genuine, verified resolver edge case
+surfaced:
 **26 of the 51 US state/territory postal codes in `US_STATES`
 (offline_place_resolver.py:38-52) collide with real ISO country codes**
 that `geonamescache` also uses. Verified programmatically against the
@@ -270,25 +271,14 @@ directly:
 UnresolvedLocationError: Could not resolve location "Chicago, IL" offline.
 ```
 
-This resolves offline for `"Peoria, IL"` in the codebase's other passing
-tests only because `engine.natal_engine._resolve_location()`
-(natal_engine.py:306-316) silently falls back to a live Nominatim network
-call when the offline lookup fails — masking the bug whenever network
-access happens to be available, and failing outright when it isn't.
-
-**This is a pre-existing bug in shared resolver infrastructure, not
-something introduced by or in scope for this pass.** It is out of scope to
-fix here (`offline_place_resolver.py` is used by the production birth-location
-path too, and a fix deserves its own dedicated review and regression
-tests), but it directly bears on Location Services: `build_relocated_payload()`
-deliberately calls `resolve_place()` **without** the online fallback (§4),
-so any destination given as `"City, XX"` where `XX` is in the collision
-list above will fail to resolve offline, or — in states/regions that
-coincidentally share a city name with a place in the colliding country —
-could silently resolve to the wrong country's city. Callers should pass
-a full state or country name (`"Chicago, Illinois"`) or pre-resolved
-`latitude`/`longitude` for any of the 26 affected US states until the
-resolver itself is fixed. Flagged separately as a follow-up task.
+This was mitigated in `engine/offline_place_resolver.py` by retrying a
+two-part `"City, XX"` input as a region/state hint when the country-code
+interpretation produces no city candidates. The regression is covered by
+`tests/test_location_services_relocated_payload.py`, including
+`"Chicago, IL"`. Full state/country names and pre-resolved coordinates
+remain the safest and most explicit inputs, but common US abbreviation
+forms no longer require the online birth-location fallback for these
+collision cases.
 
 ---
 

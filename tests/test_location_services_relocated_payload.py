@@ -6,15 +6,13 @@ Covers:
 - No mutation of the natal payload
 - Relocated house changes for a destination far from the birth Ascendant
 - Stable relocated angle output shape
-- Destination resolution from a bare place name (offline resolver reuse)
+- Destination resolution from a bare place name or common state abbreviation
+  (offline resolver reuse)
 - Clear errors/warnings for missing or unsupported inputs
 
-Destinations in this file are always given as "City, Country" (never
-"City, XX" two-letter US state abbreviations) — see
-products/location_services/CAPABILITY_INVENTORY.md §5 for a verified,
-pre-existing offline_place_resolver bug where many US state codes (IL,
-CA, GA, ...) collide with real ISO country codes and fail to resolve
-offline. That bug is unrelated to this module and out of scope here.
+Destinations in this file include both explicit "City, Country" forms and
+ordinary US state abbreviation forms that previously collided with ISO
+country codes.
 """
 import copy
 import os
@@ -307,6 +305,16 @@ def test_destination_resolves_from_place_name_offline():
     assert relocated["destination"]["latitude"] == pytest.approx(35.6895, abs=0.01)
     assert relocated["destination"]["longitude"] == pytest.approx(139.6917, abs=0.01)
     assert relocated["destination"]["timezone"] == "Asia/Tokyo"
+
+
+def test_destination_resolves_state_abbreviation_when_country_code_collides():
+    natal = _build_natal_payload()
+    relocated = build_relocated_payload(natal, {"location": "Chicago, IL"})
+
+    assert relocated["destination"]["display_name"] == "Chicago, Illinois, United States"
+    assert relocated["destination"]["latitude"] == pytest.approx(41.85, abs=0.01)
+    assert relocated["destination"]["longitude"] == pytest.approx(-87.65, abs=0.01)
+    assert relocated["destination"]["timezone"] == "America/Chicago"
 
 
 def test_unresolvable_destination_name_raises_clear_error():

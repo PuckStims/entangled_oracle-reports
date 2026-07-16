@@ -10,6 +10,9 @@ This product is the astrocartography map companion.
   - `distance_to_line`: Distance-to-line bands are not computed yet.
   - `line_clusters`: Groupings of overlapping lines are not computed yet.
 - **Honest Placeholders**: The assembler and template must wire up the current `engine/astrocartography_svg.py` contract, which explicitly states the line geometry is missing. We DO NOT fake line geometry.
+- **Grammar Extension Later**: When line geometry exists, add computed line
+  evidence through the normalized evidence grammar shape rather than bypassing
+  it with prose-only map claims.
 
 ## DRAFT Taxonomy Notes
 - `distance_band`: (DRAFT) Used to categorize proximity to a line (e.g. `tight`, `moderate`, `wide`, `background`).

@@ -10,6 +10,37 @@ scaffolding role, per `CONTENT_LEAD_HANDOFF.md` multi-agent flow definition.
 
 ---
 
+## Current Audit Overlay — 2026-07-16
+
+This folder is still a historical Gemini first-pass draft. Use
+`products/location_services/LOCATION_SERVICES_BUILD_PLAN.md` as the current
+build-order source of truth, and use `CODEX_REVIEW.md` in this folder as the
+triage layer over the raw Gemini files.
+
+For any referenced implementation area, use
+`products/location_services/BUILD_OUTLINE_DRIFT_GUARD.md` before assigning or
+executing work. The Gemini files open possibilities; the drift guard defines
+the minimum build outline for resolver, comparison, provider catalog, line,
+direction, timing, and prose-expansion work.
+
+Current repo state since this pass was written:
+
+- `location_services` is registered in `config.py::REPORT_BLOCK_DIRS`.
+- `selectors/location_services_selector.py` exists and is covered by tests.
+- Place Resonance Search now has an active candidate fixture/catalog, scoring,
+  curation, bucket routing, proximity clustering, and HTML rendering path.
+- Between Places, World Lines Companion, Local Compass, and Living Map have
+  draft product shells with assemblers, renderers, templates, plugins, and
+  registry smoke coverage.
+- Those draft shells are not production evidence engines. World Lines still
+  lacks audited astrocartography line geometry; Local Compass still lacks
+  Local Space azimuth/ray geometry; Living Map still lacks relocated timing.
+
+Do not use this folder as an implementation backlog without checking the
+current build plan, drift guard, and tests first.
+
+---
+
 ## What This Pass Is
 
 This folder contains broad, non-client-facing scaffolding and planning
@@ -52,7 +83,9 @@ for later review and implementation. It is not architectural truth.
 - Any data contract item labeled "not currently computable" or "future method"
 - Any block family proposals that depend on unresolved domain taxonomy
 - Any report section definitions for products 3–5 (World Lines Companion,
-  Local Compass, Living Map) — these products have no implemented backend yet
+  Local Compass, Living Map) — these products now have draft shells, but no
+  production method engines or evidence contracts for their future-method
+  sections
 - The REPORT_ASSEMBLY_ROADMAP staged path — stage sequencing needs Claude
   validation against actual repo routing before it becomes a build plan
 - The handoff note at the end of this README — it describes next steps, not
@@ -118,7 +151,8 @@ sequencing.
 Code has validated schema alignment and ChatGPT/Codex has validated product
 and content truth.
 
-**Next safest implementation step:** Claude Code should read this folder,
-audit it for blockers and path errors, and report back a bounded list of
-quarantine candidates before any scaffold file here is promoted into active
-repo routing.
+**Next safest implementation step:** Follow
+`products/location_services/LOCATION_SERVICES_BUILD_PLAN.md`: keep Place
+Profile and Place Resonance Search green, then promote descendants only when
+their evidence contracts and tests exist. Treat this Gemini folder as
+historical planning context, not the active queue.

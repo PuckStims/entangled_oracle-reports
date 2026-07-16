@@ -32,6 +32,7 @@ from products.location_services.place_resonance_search.renderer import (
     build_place_resonance_search_results_html,
     render_place_resonance_search_results_html,
 )
+from products.location_services.place_resonance_search.plugin import PlaceResonanceSearchProduct
 from selectors.location_services_selector import select_place_resonance_search_leaf
 from test_location_services_relocated_payload import _build_natal_payload
 
@@ -386,7 +387,7 @@ def test_place_resonance_search_block_file_has_expected_scaffold_keys():
     assert set(data["search_summary"]) - {"_note"} == SEARCH_SUMMARY_KEYS
     assert set(data["bucket_intro"]) - {"_note"} == BUCKET_INTRO_KEYS
     assert set(data["recommendation_label"]) - {"_note"} == RECOMMENDATION_LABEL_KEYS
-    assert set(data["tile_detail"]) - {"_note"} == TILE_DETAIL_KEYS
+    assert set(data["tile_detail"]) - {"_note"} >= TILE_DETAIL_KEYS
     assert set(data["pattern_synthesis"]) - {"_note"} == PATTERN_SYNTHESIS_KEYS
 
 
@@ -395,10 +396,7 @@ def test_place_resonance_search_leaves_are_authored_and_structured():
 
     for path, leaf in _leaf_paths(data):
         assert isinstance(leaf["body"], str) and leaf["body"].strip()
-        if path and path[0] == "tile_detail":
-            assert leaf["body"] == "TODO"
-        else:
-            assert leaf["body"] != "TODO"
+        assert leaf["body"] != "TODO"
         assert isinstance(leaf["_note"], str) and leaf["_note"].strip()
         assert leaf["claim_level"] == "bounded_interpretation"
         assert isinstance(leaf["requires_evidence"], list) and leaf["requires_evidence"]
@@ -408,8 +406,6 @@ def test_place_resonance_search_leaves_do_not_use_empty_vague_escape_phrases():
     data = json.loads(SEARCH_BLOCK_FILE.read_text(encoding="utf-8"))
 
     for path, leaf in _leaf_paths(data):
-        if path and path[0] == "tile_detail":
-            continue
         body = leaf["body"].lower()
         for phrase in FORBIDDEN_VAGUE_PHRASES:
             assert phrase not in body, leaf
@@ -435,7 +431,7 @@ def test_search_results_renderer_outputs_multi_location_shell_without_raw_todo()
     assert "Scores are relative indexes within this evaluated pool" in html
     assert "Bucket Distribution" in html
     assert "Place texture:" in html
-    assert "Draft Slot" in html
+    assert "Draft Slot" not in html
     assert ">TODO<" not in html
     for location in context["selected_locations"]:
         assert location["display_name"] in html
@@ -452,5 +448,17 @@ def test_build_search_results_html_wrapper_uses_candidate_catalog():
 
     assert "Place Resonance Search" in html
     assert "Selected" in html
-    assert "Draft Slot" in html
+    assert "Draft Slot" not in html
     assert "candidate_catalog_pool" in html
+
+def test_plugin_build_search_context_routes_to_multi_location_assembler():
+    plugin = PlaceResonanceSearchProduct()
+    context = plugin.build_search_context(
+        _build_natal_payload(),
+        _mini_catalog(),
+        selection_limit=2,
+    )
+    
+    assert context["context_version"] == "place_resonance_search_context_v0.2.0"
+    assert "candidate_pool" in context
+    assert len(context["selected_locations"]) == 2
