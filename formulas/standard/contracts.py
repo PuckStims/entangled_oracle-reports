@@ -72,3 +72,88 @@ class PlanetConditionRecord:
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
+
+
+@dataclass
+class KarmicEvidenceRecord:
+    """Auditable backend evidence record for karmic/past-life computation."""
+
+    id: str
+    family: str
+    label: str
+    method_tags: list[str]
+    claim_level: str = "interpretive"
+    confidence: str = "moderate"
+    birth_time_sensitivity: str = "not_time_sensitive"
+    score: float = 0.0
+    drivers: list[str] = field(default_factory=list)
+    supporting_factors: list[str] = field(default_factory=list)
+    challenging_factors: list[str] = field(default_factory=list)
+    missing_inputs: list[str] = field(default_factory=list)
+    assumptions: list[str] = field(default_factory=list)
+    audit_data: dict[str, Any] = field(default_factory=dict)
+
+    def to_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
+
+@dataclass
+class KarmicComputationPayload:
+    """Versioned backend payload for natal karmic/past-life evidence."""
+
+    schema_version: str
+    methodology: dict[str, Any]
+    input_confidence: dict[str, Any]
+    chart_references: dict[str, Any]
+    evidence_records: list[dict[str, Any]]
+    scores: dict[str, Any]
+    routing_tags: list[str] = field(default_factory=list)
+    missing_inputs: list[str] = field(default_factory=list)
+    assumptions: list[str] = field(default_factory=list)
+    audit: dict[str, Any] = field(default_factory=dict)
+
+    def to_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
+
+@dataclass
+class SynastryContactRecord:
+    """Auditable backend record for future two-chart relationship contacts."""
+
+    id: str
+    contact_type: str
+    source_person: str
+    source_body: str
+    target_person: str
+    target_body: str
+    aspect: str = ""
+    orb: float | None = None
+    angle: float | None = None
+    confidence: str = "moderate"
+    birth_time_sensitivity: str = "not_time_sensitive"
+    method_tags: list[str] = field(default_factory=list)
+    drivers: list[str] = field(default_factory=list)
+    audit_data: dict[str, Any] = field(default_factory=dict)
+
+    def to_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
+
+@dataclass
+class SynastryComputationPayload:
+    """Versioned backend payload shape reserved for future synastry work."""
+
+    schema_version: str
+    methodology: dict[str, Any]
+    person_a: dict[str, Any]
+    person_b: dict[str, Any]
+    inter_chart_contacts: list[dict[str, Any]]
+    overlay_records: list[dict[str, Any]]
+    scores: dict[str, Any]
+    routing_tags: list[str] = field(default_factory=list)
+    missing_inputs: list[str] = field(default_factory=list)
+    assumptions: list[str] = field(default_factory=list)
+    audit: dict[str, Any] = field(default_factory=dict)
+
+    def to_dict(self) -> dict[str, Any]:
+        return asdict(self)
