@@ -359,6 +359,25 @@ def test_recommendation_prose_varies_within_repeated_buckets():
                 assert len(bodies_by_bucket[bucket]) > 1
 
 
+def test_tile_detail_routes_theme_specific_demanding_roles():
+    context = assemble_place_resonance_search_results_context(
+        _build_natal_payload(),
+        _mini_catalog(),
+        purpose_lens="creative visibility",
+        relationship_to_place="possible_move",
+        selection_limit=8,
+    )
+
+    for location in context["selected_locations"]:
+        traits = location.get("prose_variation_traits") or {}
+        if location["bucket"] == "transformational_demanding" and traits.get("primary_family") == "belonging":
+            leaf = context["tile_detail_leaves"][location["location_id"]]["bucket_role"]
+            assert "relationship and belonging" in leaf["body"]
+            return
+
+    raise AssertionError("expected a belonging-led demanding location in the fixture")
+
+
 def test_search_selection_clusters_nearby_similar_locations_as_alternates():
     context = assemble_place_resonance_search_results_context(
         _build_natal_payload(),
@@ -431,6 +450,7 @@ def test_search_results_renderer_outputs_multi_location_shell_without_raw_todo()
     assert "Scores are relative indexes within this evaluated pool" in html
     assert "Bucket Distribution" in html
     assert "Place texture:" in html
+    assert "specific role is best understood" not in html
     assert "Draft Slot" not in html
     assert ">TODO<" not in html
     for location in context["selected_locations"]:

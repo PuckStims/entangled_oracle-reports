@@ -238,15 +238,15 @@ def _sibling_difference(item: dict[str, Any], representative: dict[str, Any], di
     texture = _candidate_texture_summary(candidate)
     if population and rep_population and population != rep_population:
         return (
-            f"{item.get('display_name')} carries a similar evidence signature {distance_text}, "
-            f"but expresses it through a {population} setting rather than {rep_population}."
+            f"{item.get('display_name')} keeps the same broad evidence pattern {distance_text}, "
+            f"but changes its scale: {population} rather than {rep_population}."
         )
     if texture:
         return (
-            f"{item.get('display_name')} carries a similar evidence signature {distance_text}, "
-            f"with catalog texture marked by {texture}."
+            f"{item.get('display_name')} sits in the same symbolic neighborhood {distance_text}; "
+            f"its catalog texture adds {texture}."
         )
-    return f"{item.get('display_name')} carries a similar evidence signature {distance_text}."
+    return f"{item.get('display_name')} stays close to the same evidence pattern {distance_text}."
 
 
 def _candidate_texture_summary(candidate: dict[str, Any], limit: int = 3) -> str:

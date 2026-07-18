@@ -3950,7 +3950,7 @@
             <p class="predictive-research-kicker">{{ card.source_label }}{% if card.kicker %} - {{ card.kicker }}{% endif %}</p>
             <h3>{{ card.title }}</h3>
             <p>{{ card.body }}</p>
-            <p class="predictive-research-note">{% if card.date_labels %}{% for date_label in card.date_labels %}{{ date_label }}{% if not loop.last %}, {% endif %}{% endfor %}{% endif %}{% for method in card.method_families[:3] %}{% if card.date_labels or not loop.first %}; {% endif %}{{ method | replace('_', ' ') | lower }}{% endfor %}{% if card.relative_intensity %}; {{ card.relative_intensity }}{% endif %}.</p>
+            <p class="predictive-research-note">{% if card.date_labels %}{% if card.date_label_prefix %}{{ card.date_label_prefix }}: {% endif %}{% for date_label in card.date_labels %}{{ date_label }}{% if not loop.last %}, {% endif %}{% endfor %}{% endif %}{% for method in card.method_families[:3] %}{% if card.date_labels or not loop.first %}; {% endif %}{{ method | replace('_', ' ') | lower }}{% endfor %}{% if card.relative_intensity %}; {{ card.relative_intensity }}{% endif %}.</p>
           </article>
           {% endfor %}
           {% for card in tier5_predictive_surfaces.forecast_terrain.chapters %}
@@ -3958,7 +3958,7 @@
             <p class="predictive-research-kicker">{{ card.source_label }}{% if card.kicker %} - {{ card.kicker }}{% endif %}</p>
             <h3>{{ card.title }}</h3>
             <p>{{ card.body }}</p>
-            <p class="predictive-research-note">{% if card.date_labels %}{% for date_label in card.date_labels %}{{ date_label }}{% if not loop.last %}, {% endif %}{% endfor %}{% endif %}{% for topic in card.topic_keys[:3] %}{% if card.date_labels or not loop.first %}; {% endif %}{{ topic | replace('_', ' ') }}{% endfor %}.</p>
+            <p class="predictive-research-note">{% if card.date_labels %}{% if card.date_label_prefix %}{{ card.date_label_prefix }}: {% endif %}{% for date_label in card.date_labels %}{{ date_label }}{% if not loop.last %}, {% endif %}{% endfor %}{% endif %}{% for topic in card.topic_keys[:3] %}{% if card.date_labels or not loop.first %}; {% endif %}{{ topic | replace('_', ' ') }}{% endfor %}.</p>
           </article>
           {% endfor %}
           {% for card in tier5_predictive_surfaces.forecast_terrain.contradictions %}

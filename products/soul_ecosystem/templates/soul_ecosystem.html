@@ -731,6 +731,16 @@
     </article>
   </div>
 
+  {% if chart_wheel_svg %}
+  <div class="chart-wheel-container">
+    {{ chart_wheel_svg | safe }}
+    <div class="chart-wheel-label">Natal wheel rendered in {{ zodiac_label | default('Tropical') }} zodiac and {{ house_system_label | default(house_system | default('Whole Sign')) }} houses.</div>
+    {% if wheel_transit_retrograde_planets %}
+    <div class="chart-note">The ringed placement{{ 's' if wheel_transit_retrograde_planets | length > 1 else '' }} ({{ wheel_transit_retrograde_planets | join(', ') }}) {{ 'are' if wheel_transit_retrograde_planets | length > 1 else 'is' }} currently retrograde by transit.</div>
+    {% endif %}
+  </div>
+  {% endif %}
+
   <div class="suite-note">
     <h3>How This Report Fits the Suite</h3>
     <p>Soul Ecosystem is your baseline report within the Entangled Oracle suite, describing the deeper natal and proprietary pattern that gives later forecasts their personal context.</p>
@@ -751,16 +761,6 @@
   <div class="opening">
     {{ ecosystem_overview_block | default(souls_story_block, true) }}
   </div>
-
-  {% if chart_wheel_svg %}
-  <div class="chart-wheel-container">
-    {{ chart_wheel_svg | safe }}
-    <div class="chart-wheel-label">Natal wheel rendered in {{ zodiac_label | default('Tropical') }} zodiac and {{ house_system_label | default(house_system | default('Whole Sign')) }} houses.</div>
-    {% if wheel_transit_retrograde_planets %}
-    <div class="chart-note">The ringed placement{{ 's' if wheel_transit_retrograde_planets | length > 1 else '' }} ({{ wheel_transit_retrograde_planets | join(', ') }}) {{ 'are' if wheel_transit_retrograde_planets | length > 1 else 'is' }} currently retrograde by transit.</div>
-    {% endif %}
-  </div>
-  {% endif %}
 
   {% set eas_depth = soul_ecosystem_eas_depth | default({}, true) %}
   {% set dominant_depth = eas_depth.dominant | default({}, true) %}
@@ -826,14 +826,14 @@
     {% if pluto_generation_block %}<div class="block">{{ pluto_generation_block }}</div>{% endif %}
     {% if proprietary_section_block %}
       <div class="subsection-kicker">EO Pattern Layer</div>
-      <p class="section-bridge">This proprietary layer names the deeper current forecasts may activate later. It adds interpretive depth to the natal baseline rather than replacing it.</p>
+      <p class="section-bridge">This is the Entangled Archetype System layer: the part of the chart that places you in living relationship with a mythic current instead of reducing you to a static type. Read it as an active conversation already shaping how your baseline pattern moves, not as decorative metadata sitting on top of the natal chart.</p>
       <div class="block"><strong>{{ proprietary_section_title }}</strong></div>
       <div class="block">{{ proprietary_section_block }}</div>
     {% endif %}
     {% if eas_depth.available_slots %}
     <div class="proprietary-depth">
-      <div class="proprietary-depth-label">Pattern Depth</div>
-      <p class="section-bridge">Use these as primary, secondary, and tertiary EO currents within the same ecosystem. The dominant layer tends to organize experience most consistently; the others modify how it expresses.</p>
+      <div class="proprietary-depth-label">EAS Constellation</div>
+      <p class="section-bridge">These are the primary, secondary, and tertiary currents in the same entangled field. The dominant current names the mythic conversation most likely to organize experience; the others change its tone, timing, and method of expression.</p>
       <div class="proprietary-depth-grid">
         {% if dominant_depth.available %}
         <article class="proprietary-depth-card primary">
@@ -842,12 +842,12 @@
           {% if dominant_depth.archetype %}<div class="proprietary-depth-archetype">{{ dominant_depth.archetype }}</div>{% endif %}
           {% if dominant_depth.expression %}<div class="proprietary-depth-expression">{{ dominant_depth.expression }}</div>{% endif %}
           <div class="proprietary-depth-meta">
-            {% if dominant_depth.activation %}<div><strong>Activation</strong>{{ dominant_depth.activation }}</div>{% endif %}
+            {% if dominant_depth.activation %}<div><strong>State</strong>{{ dominant_depth.activation }}</div>{% endif %}
             {% if dominant_depth.driver and (dominant_depth.driver.body or dominant_depth.driver.modality) %}
-            <div><strong>Driver</strong>{{ dominant_depth.driver.body }}{% if dominant_depth.driver.modality %} - {{ dominant_depth.driver.modality }}{% endif %}</div>
+            <div><strong>Driving Entity</strong>{{ dominant_depth.driver.body }}{% if dominant_depth.driver.modality %} - {{ dominant_depth.driver.modality }}{% endif %}</div>
             {% endif %}
             {% if dominant_depth.nge and dominant_depth.nge.dominant_facet %}<div><strong>Facet</strong>{{ dominant_depth.nge.dominant_facet }}</div>{% endif %}
-            {% if dominant_depth.nge and dominant_depth.nge.narrative_question %}<div><strong>Question</strong>{{ dominant_depth.nge.narrative_question }}</div>{% endif %}
+            {% if dominant_depth.nge and dominant_depth.nge.narrative_question %}<div><strong>Story Question</strong>{{ dominant_depth.nge.narrative_question }}</div>{% endif %}
           </div>
           {% if dominant_depth.index == "KVQ" and kvq_clear_translator %}
           {% set clear_translator_note = "This pattern can translate complexity into usable language without flattening it. When something important needs to be named clearly, the bridge is already present in the chart." %}
@@ -873,7 +873,7 @@
           {% if secondary_depth.expression %}<div class="proprietary-depth-expression">{{ secondary_depth.expression }}</div>{% endif %}
           <div class="proprietary-depth-meta">
             {% if secondary_depth.driver and (secondary_depth.driver.body or secondary_depth.driver.modality) %}
-            <div><strong>Driver</strong>{{ secondary_depth.driver.body }}{% if secondary_depth.driver.modality %} - {{ secondary_depth.driver.modality }}{% endif %}</div>
+            <div><strong>Driving Entity</strong>{{ secondary_depth.driver.body }}{% if secondary_depth.driver.modality %} - {{ secondary_depth.driver.modality }}{% endif %}</div>
             {% endif %}
           </div>
         </article>
@@ -886,7 +886,7 @@
           {% if tertiary_depth.expression %}<div class="proprietary-depth-expression">{{ tertiary_depth.expression }}</div>{% endif %}
           <div class="proprietary-depth-meta">
             {% if tertiary_depth.driver and (tertiary_depth.driver.body or tertiary_depth.driver.modality) %}
-            <div><strong>Driver</strong>{{ tertiary_depth.driver.body }}{% if tertiary_depth.driver.modality %} - {{ tertiary_depth.driver.modality }}{% endif %}</div>
+            <div><strong>Driving Entity</strong>{{ tertiary_depth.driver.body }}{% if tertiary_depth.driver.modality %} - {{ tertiary_depth.driver.modality }}{% endif %}</div>
             {% endif %}
           </div>
         </article>
@@ -907,8 +907,8 @@
     {% set nge_max = nge_bodies | map(attribute="weight") | max %}
     {% if nge_max and nge_max > 0 %}
     <div class="nge-spectrum">
-      <div class="nge-spectrum-label">Narrative Body Spectrum</div>
-      <p class="section-bridge">This spectrum shows which narrative bodies carry the most weight in the current baseline pattern.</p>
+      <div class="nge-spectrum-label">Narrative Body Constellation</div>
+      <p class="section-bridge">This shows which narrative bodies are doing the most work in the current mythic stack. Read it as a live distribution of story-pressure rather than a static personality inventory.</p>
       {% for body in nge_bodies %}
         {% set is_dom = body.key == nge_dominant_body %}
         {% set is_sec = body.key == nge_secondary_body %}
@@ -1089,7 +1089,7 @@
     {% endif %}
     {% if eas_depth.available_slots %}
     <div class="proprietary-depth">
-      <div class="proprietary-depth-label">Pattern Depth</div>
+      <div class="proprietary-depth-label">EAS Constellation</div>
       <div class="proprietary-depth-grid">
         {% if dominant_depth.available %}
         <article class="proprietary-depth-card primary">
@@ -1098,14 +1098,14 @@
           {% if dominant_depth.archetype %}<div class="proprietary-depth-archetype">{{ dominant_depth.archetype }}</div>{% endif %}
           {% if dominant_depth.expression %}<div class="proprietary-depth-expression">{{ dominant_depth.expression }}</div>{% endif %}
           <div class="proprietary-depth-meta">
-            {% if dominant_depth.activation %}<div><strong>Activation</strong>{{ dominant_depth.activation }}</div>{% endif %}
+            {% if dominant_depth.activation %}<div><strong>State</strong>{{ dominant_depth.activation }}</div>{% endif %}
             {% if dominant_depth.score %}<div><strong>Pattern score</strong>{{ "%.2f"|format(dominant_depth.score) }}</div>{% endif %}
             {% if dominant_depth.activation_score %}<div><strong>Activation score</strong>{{ "%.2f"|format(dominant_depth.activation_score) }}</div>{% endif %}
             {% if dominant_depth.driver and (dominant_depth.driver.body or dominant_depth.driver.modality) %}
-            <div><strong>Driver</strong>{{ dominant_depth.driver.body }}{% if dominant_depth.driver.modality %} · {{ dominant_depth.driver.modality }}{% endif %}</div>
+            <div><strong>Driving Entity</strong>{{ dominant_depth.driver.body }}{% if dominant_depth.driver.modality %} · {{ dominant_depth.driver.modality }}{% endif %}</div>
             {% endif %}
             {% if dominant_depth.nge and dominant_depth.nge.dominant_facet %}<div><strong>Facet</strong>{{ dominant_depth.nge.dominant_facet }}</div>{% endif %}
-            {% if dominant_depth.nge and dominant_depth.nge.narrative_question %}<div><strong>Question</strong>{{ dominant_depth.nge.narrative_question }}</div>{% endif %}
+            {% if dominant_depth.nge and dominant_depth.nge.narrative_question %}<div><strong>Story Question</strong>{{ dominant_depth.nge.narrative_question }}</div>{% endif %}
           </div>
           {% if dominant_depth.index == "KVQ" and kvq_clear_translator %}
           {% set clear_translator_note = "This pattern can translate complexity into usable language without flattening it. When something important needs to be named clearly, the bridge is already present in the chart." %}
@@ -1133,7 +1133,7 @@
             {% if secondary_depth.score %}<div><strong>Pattern score</strong>{{ "%.2f"|format(secondary_depth.score) }}</div>{% endif %}
             {% if secondary_depth.activation_score %}<div><strong>Activation score</strong>{{ "%.2f"|format(secondary_depth.activation_score) }}</div>{% endif %}
             {% if secondary_depth.driver and (secondary_depth.driver.body or secondary_depth.driver.modality) %}
-            <div><strong>Driver</strong>{{ secondary_depth.driver.body }}{% if secondary_depth.driver.modality %} · {{ secondary_depth.driver.modality }}{% endif %}</div>
+            <div><strong>Driving Entity</strong>{{ secondary_depth.driver.body }}{% if secondary_depth.driver.modality %} · {{ secondary_depth.driver.modality }}{% endif %}</div>
             {% endif %}
           </div>
         </article>
@@ -1148,7 +1148,7 @@
             {% if tertiary_depth.score %}<div><strong>Pattern score</strong>{{ "%.2f"|format(tertiary_depth.score) }}</div>{% endif %}
             {% if tertiary_depth.activation_score %}<div><strong>Activation score</strong>{{ "%.2f"|format(tertiary_depth.activation_score) }}</div>{% endif %}
             {% if tertiary_depth.driver and (tertiary_depth.driver.body or tertiary_depth.driver.modality) %}
-            <div><strong>Driver</strong>{{ tertiary_depth.driver.body }}{% if tertiary_depth.driver.modality %} · {{ tertiary_depth.driver.modality }}{% endif %}</div>
+            <div><strong>Driving Entity</strong>{{ tertiary_depth.driver.body }}{% if tertiary_depth.driver.modality %} · {{ tertiary_depth.driver.modality }}{% endif %}</div>
             {% endif %}
           </div>
         </article>
@@ -1169,7 +1169,7 @@
     {% set nge_max = nge_bodies | map(attribute="weight") | max %}
     {% if nge_max and nge_max > 0 %}
     <div class="nge-spectrum">
-      <div class="nge-spectrum-label">Narrative Body Spectrum</div>
+      <div class="nge-spectrum-label">Narrative Body Constellation</div>
       {% for body in nge_bodies %}
         {% set is_dom = body.key == nge_dominant_body %}
         {% set is_sec = body.key == nge_secondary_body %}
@@ -1222,8 +1222,8 @@
   {% set ranked_eas_rows = eas_rows | selectattr("score", "gt", 0) | list %}
   {% if ranked_eas_rows %}
   <div class="eas-ranking">
-    <div class="eas-ranking-label">Activation Field</div>
-    <p class="section-bridge">This ranking shows which EO layers are most active in the baseline pattern, with the dominant current appearing first.</p>
+    <div class="eas-ranking-label">EAS Activation Field</div>
+    <p class="section-bridge">This ranking shows which entangled currents are carrying the most charge right now. The dominant current is not the only truth in the chart; it is the conversation most likely to set the tone for the others.</p>
     {% for row in ranked_eas_rows %}
       {% set is_dom = row.key == dominant_eas_dimension %}
       {% set is_sec = row.key == secondary_eas_dimension %}

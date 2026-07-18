@@ -542,6 +542,72 @@
         "selected_location.evidence_refs"
       ]
     },
+    "bucket_role_transformational_demanding_visibility": {
+      "body": "The demand here is public exposure. This place may make contribution, reputation, or being recognized harder to keep casual, so its usefulness depends on whether visibility is the work you are actually ready to handle.",
+      "_note": "Demanding bucket variant when visibility/public contribution is the leading theme.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": [
+        "selected_location.bucket",
+        "selected_location.dominant_themes",
+        "selected_location.scores.complexity_index",
+        "selected_location.evidence_refs"
+      ]
+    },
+    "bucket_role_transformational_demanding_complexity": {
+      "body": "The pressure here is not decorative; it is the main signal. This place appears to intensify consequence, exposure, or inner confrontation, making it clarifying in ways that may also be demanding to live through.",
+      "_note": "Demanding bucket variant when shadow/complexity pressure is the leading theme.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": [
+        "selected_location.bucket",
+        "selected_location.dominant_themes",
+        "selected_location.scores.shadow_pressure",
+        "selected_location.evidence_refs"
+      ]
+    },
+    "bucket_role_transformational_demanding_restoration": {
+      "body": "The demand gathers around private life rather than public performance. This place may press on rest, home, regulation, or belonging first, which makes the resonance intimate rather than simply easy.",
+      "_note": "Demanding bucket variant when restoration, home, or private-life repair is the leading theme.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": [
+        "selected_location.bucket",
+        "selected_location.dominant_themes",
+        "selected_location.scores.grounding_score",
+        "selected_location.scores.complexity_index"
+      ]
+    },
+    "bucket_role_transformational_demanding_structure": {
+      "body": "The cost here is responsibility. This city looks more useful for commitments, craft, authority, or long-term building than for a low-pressure reset, so its strength comes with accountability.",
+      "_note": "Demanding bucket variant when long-term build or structural responsibility is the leading theme.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": [
+        "selected_location.bucket",
+        "selected_location.dominant_themes",
+        "selected_location.scores.complexity_index",
+        "selected_location.evidence_refs"
+      ]
+    },
+    "bucket_role_transformational_demanding_belonging": {
+      "body": "The intensity here comes through relationship and belonging. This place may make attachment, reciprocity, or social mirroring more consequential, so the demand is relational rather than purely external.",
+      "_note": "Demanding bucket variant when belonging or relationship material is the leading theme.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": [
+        "selected_location.bucket",
+        "selected_location.dominant_themes",
+        "selected_location.scores.complexity_index",
+        "selected_location.evidence_refs"
+      ]
+    },
+    "bucket_role_transformational_demanding_reinvention": {
+      "body": "The challenge here is aliveness with disruption attached. This place can support reinvention, experimentation, or a changed self-pattern, but it is unlikely to do so by letting everything stay familiar.",
+      "_note": "Demanding bucket variant when reinvention/change aliveness is the leading theme.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": [
+        "selected_location.bucket",
+        "selected_location.dominant_themes",
+        "selected_location.scores.baseline_divergence",
+        "selected_location.evidence_refs"
+      ]
+    },
     "bucket_role_quiet_grounding_alternatives": {
       "body": "This city is featured as a Quiet Alternative because it emphasizes grounding and restoration over high activation, providing a steady baseline where ordinary rhythm and recovery are supported.",
       "_note": "Write one compact sentence naming the type of quiet this city offers: recovery, ordinary rhythm, sustainable work, relational softness, or low-drama continuity. Use when selected_location.bucket == quiet_grounding_alternatives. Do not make low activation sound like weak evidence.",
@@ -629,7 +695,7 @@
       "requires_evidence": ["selected_location"]
     },
     "fallback": {
-      "body": "This location is presented as a full tile based on its overall standing in the search, though its specific role is best understood by looking directly at its detailed score and theme profile for {city_name}.",
+      "body": "{city_name} remains in the main set because the score pattern is strong enough to deserve direct comparison. Read the themes and score panel together: they show the role this place plays in the search, not a universal verdict on the city.",
       "_note": "Fallback tile-detail scaffold. Use when no more specific tile_detail key applies. Keep this short and evidence-bound.",
       "claim_level": "bounded_interpretation",
       "requires_evidence": [

@@ -226,18 +226,45 @@ def _build_tile_detail_leaves(selected_locations: list[dict], dominant_theme: st
     leaves = {}
     for item in selected_locations:
         bucket = item.get("bucket") or "fallback"
+        item_themes = item.get("dominant_themes") or []
+        primary_theme = item_themes[0] if item_themes else dominant_theme
+        traits = item.get("prose_variation_traits") or {}
+        primary_family = traits.get("primary_family") or "mixed"
         grammar = item.get("profile_context", {}).get("_grammar", {})
         clusters = grammar.get("theme_clusters", {}).get("clusters", [])
-        
-        dominant_cluster = "fallback"
+
+        bucket_role_key = f"bucket_role_{bucket}"
+        if bucket == "transformational_demanding" and primary_family in {
+            "visibility",
+            "complexity",
+            "restoration",
+            "structure",
+            "belonging",
+            "reinvention",
+        }:
+            bucket_role_key = f"{bucket_role_key}_{primary_family}"
+
+        sibling_key = "sibling_difference"
+        if primary_theme == "visibility_calling":
+            sibling_key = "sibling_difference_visibility_calling"
+
+        dominant_cluster = primary_theme or "fallback"
         if clusters and clusters[0].get("theme_keys"):
             dominant_cluster = clusters[0]["theme_keys"][0]
-            
+
+        best_use_case_key = "best_use_case"
+        if dominant_cluster in {"visibility_calling", "hearth_restoration", "change_aliveness"}:
+            best_use_case_key = f"best_use_case_{dominant_cluster}"
+
+        cluster_alternates_key = "cluster_alternates"
+        if dominant_cluster == "visibility_calling":
+            cluster_alternates_key = "cluster_alternates_visibility_calling"
+
         leaves[item["location_id"]] = {
-            "bucket_role": select_place_resonance_search_leaf("tile_detail", f"bucket_role_{bucket}"),
-            "sibling_difference": select_place_resonance_search_leaf("tile_detail", f"sibling_difference_{dominant_theme}"),
-            "cluster_alternates": select_place_resonance_search_leaf("tile_detail", f"cluster_alternates_{dominant_cluster}"),
-            "best_use_case": select_place_resonance_search_leaf("tile_detail", f"best_use_case_{dominant_cluster}"),
+            "bucket_role": select_place_resonance_search_leaf("tile_detail", bucket_role_key),
+            "sibling_difference": select_place_resonance_search_leaf("tile_detail", sibling_key),
+            "cluster_alternates": select_place_resonance_search_leaf("tile_detail", cluster_alternates_key),
+            "best_use_case": select_place_resonance_search_leaf("tile_detail", best_use_case_key),
             "fallback": select_place_resonance_search_leaf("tile_detail", "fallback"),
         }
     return leaves
