@@ -12,6 +12,11 @@ from pathlib import Path
 from typing import Iterable
 
 from config import BASE_DIR, CONTENT_PACKS, PRODUCTS_DIR
+from products.location_services.routing import (
+    LOCATION_REPORT_TYPE_MAP,
+    is_location_report_type,
+    public_location_report_type,
+)
 
 
 PRODUCTION_BASELINE_VERSION = "2026.06.30"
@@ -37,6 +42,12 @@ REPORT_TYPE_VERSIONS = {
     "year_ahead": "Year Ahead v2.0",
     "personal_forecast": "Personal Forecast v1.0",
     "soul_ecosystem": "Soul Ecosystem v1.0",
+    "place_resonance": "Place Resonance v0.1",
+    "place_resonance_search": "Place Resonance Search v0.2",
+    "between_places": "Between Places v0.3",
+    "world_lines": "World Lines Companion v0.2",
+    "local_compass": "Local Compass v0.3",
+    "living_map": "Living Map v0.2",
 }
 
 TEMPLATE_MAP = {
@@ -45,6 +56,12 @@ TEMPLATE_MAP = {
     "year_ahead": os.path.join(PRODUCTS_DIR, "year_ahead", "templates", "active", "year_ahead.html"),
     "personal_forecast": os.path.join(PRODUCTS_DIR, "personal_forecast", "templates", "personal_forecast.html"),
     "soul_ecosystem": os.path.join(PRODUCTS_DIR, "soul_ecosystem", "templates", "soul_ecosystem.html"),
+    "place_resonance": os.path.join(PRODUCTS_DIR, "location_services", "templates", "place_resonance.html"),
+    "between_places": os.path.join(PRODUCTS_DIR, "location_services", "templates", "between_places.html"),
+    "world_lines": os.path.join(PRODUCTS_DIR, "location_services", "templates", "world_lines.html"),
+    "local_compass": os.path.join(PRODUCTS_DIR, "location_services", "templates", "local_compass.html"),
+    "living_map": os.path.join(PRODUCTS_DIR, "location_services", "templates", "living_map.html"),
+    "place_resonance_search": os.path.join(PRODUCTS_DIR, "location_services", "place_resonance_search", "renderer.py"),
 }
 
 VISUAL_SYSTEM_FILES = [
@@ -107,14 +124,20 @@ def fingerprint_files(paths: Iterable[str], *, package_version: str) -> dict:
 
 
 def report_version(report_type: str) -> str:
+    if is_location_report_type(report_type):
+        report_type = public_location_report_type(report_type)
     return REPORT_TYPE_VERSIONS.get(report_type, "Unknown Report Version")
 
 
 def template_path(report_type: str) -> str:
+    if is_location_report_type(report_type):
+        report_type = public_location_report_type(report_type)
     return TEMPLATE_MAP.get(report_type, TEMPLATE_MAP["horoscope"])
 
 
 def _report_block_paths(report_type: str, content_pack: str) -> list[str]:
+    if is_location_report_type(report_type):
+        report_type = public_location_report_type(report_type)
     if report_type == "year_ahead":
         pack = CONTENT_PACKS.get(content_pack) or CONTENT_PACKS["plainspeak"]
         return [value for value in pack.values() if isinstance(value, str) and os.path.isfile(value)]
@@ -126,6 +149,9 @@ def _report_block_paths(report_type: str, content_pack: str) -> list[str]:
         if isinstance(pack.get("standard_natal_foundation"), str):
             paths.append(pack["standard_natal_foundation"])
         return _existing_files(paths)
+    if report_type in LOCATION_REPORT_TYPE_MAP:
+        block_root = os.path.join(PRODUCTS_DIR, "location_services", "blocks")
+        return _walk_files(block_root, (".json", ".md", ".html"))
     block_dirs = {
         "horoscope": os.path.join(PRODUCTS_DIR, "daily_horoscope", "blocks"),
         "weekly_horoscope": os.path.join(PRODUCTS_DIR, "weekly_horoscope", "blocks"),

@@ -34,18 +34,60 @@
       Birth location
       <input name="location" value="{{ values.location }}" placeholder="City, state or country" required>
     </label>
-    {% if report.needs_destination %}
+    {% if report.needs_anchor %}
+    <label>
+      {{ report.anchor_label }}
+      <input name="anchor_location" value="{{ values.anchor_location or '' }}" placeholder="City, state or country" {% if report.needs_anchor %}required{% endif %}>
+      {% if report.anchor_help %}<span class="field-help">{{ report.anchor_help }}</span>{% endif %}
+    </label>
+    {% endif %}
+    {% if report.show_destination %}
     <label>
       {{ report.destination_label }}
-      <input name="destination" value="{{ values.destination or '' }}" placeholder="City, state or country" required>
+      <input name="destination" value="{{ values.destination or '' }}" placeholder="City, state or country" {% if report.needs_destination %}required{% endif %}>
       {% if report.destination_help %}<span class="field-help">{{ report.destination_help }}</span>{% endif %}
     </label>
     {% endif %}
+    {% if report.show_purpose_lens or report.show_relationship_to_place %}
     <div class="field-row">
+      {% if report.show_purpose_lens %}
+      <label>
+        Purpose lens
+        <select name="purpose_lens">
+          <option value="">None</option>
+          {% for value, label in report.purpose_lens_options %}
+          <option value="{{ value }}" {% if values.purpose_lens == value %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      {% endif %}
+      {% if report.show_relationship_to_place %}
+      <label>
+        Relationship to place
+        <select name="relationship_to_place">
+          <option value="">None</option>
+          {% for value, label in report.relationship_to_place_options %}
+          <option value="{{ value }}" {% if values.relationship_to_place == value %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      {% endif %}
+    </div>
+    {% endif %}
+    <div class="field-row">
+      {% if report.show_report_date %}
       <label>
         {{ report.report_date_label }}
         <input type="date" name="report_date" value="{{ values.report_date or '' }}">
       </label>
+      {% endif %}
+      {% if report.show_report_end_date %}
+      <label>
+        {{ report.report_end_date_label }}
+        <input type="date" name="report_end_date" value="{{ values.report_end_date or '' }}">
+        {% if report.report_end_date_help %}<span class="field-help">{{ report.report_end_date_help }}</span>{% endif %}
+      </label>
+      {% endif %}
       <label>
         Palette
         <select name="palette">
@@ -54,6 +96,23 @@
         </select>
       </label>
     </div>
+    {% if report.show_route_inputs %}
+    <label>
+      Route waypoints
+      <textarea name="route_waypoints" rows="3" placeholder="lat,lon;lat,lon;...">{{ values.route_waypoints or '' }}</textarea>
+      <span class="field-help">Optional route corridor for Local Compass. Use at least two coordinate pairs.</span>
+    </label>
+    <div class="field-row">
+      <label>
+        Route corridor (km)
+        <input type="number" min="1" step="1" name="route_corridor_km" value="{{ values.route_corridor_km or '150' }}">
+      </label>
+      <label>
+        Route ID
+        <input name="route_id" value="{{ values.route_id or '' }}" placeholder="Optional route identifier">
+      </label>
+    </div>
+    {% endif %}
     <label>
       Content pack
       <select name="content_pack">

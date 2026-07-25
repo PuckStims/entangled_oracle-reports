@@ -29,7 +29,10 @@ def _build_render_context(place_context: dict) -> dict:
         "report_title": place_context.get("product_name", "Local Compass"),
         "report_subtitle": "Directional interpretation draft",
         "generation_date": datetime.now().strftime("%B %d, %Y"),
+        "anchor_name": place_context.get("anchor_name", "Anchor"),
         "destination_name": place_context.get("destination_name", "Unknown Location"),
+        "purpose_lens_label": place_context.get("purpose_lens_label", ""),
+        "has_route_context": bool(place_context.get("route_context")),
         "sections": place_context.get("sections", []),
     }
 
@@ -55,8 +58,21 @@ def render_local_compass_html(place_context: dict) -> str:
 def _render_fallback(render_context: dict) -> str:
     return f"<html><body><h1>{render_context['report_title']}</h1><p>Jinja2 template failed or missing.</p></body></html>"
 
-def build_local_compass_html(natal_payload: dict, destination: dict) -> str:
-    context = build_local_compass_context(natal_payload, destination)
+def build_local_compass_html(
+    natal_payload: dict,
+    anchor: dict,
+    *,
+    destination: dict | None = None,
+    route: dict | None = None,
+    purpose_lens: str | None = None,
+) -> str:
+    context = build_local_compass_context(
+        natal_payload,
+        anchor,
+        destination=destination,
+        route=route,
+        purpose_lens=purpose_lens,
+    )
     return render_local_compass_html(context)
 
 def write_local_compass_html(html_str: str, filename: str | None = None) -> str:

@@ -62,10 +62,12 @@ def main() -> int:
     }
     natal_payload = generate_payload(birth_data)
 
-    destination = {"location": args.anchor, "display_name": args.anchor}
+    anchor = {"location": args.anchor, "display_name": args.anchor}
+    destination = {"location": args.destination, "display_name": args.destination} if args.destination else None
     route_waypoints = _parse_route_waypoints(args.route_waypoints)
+    route = None
     if route_waypoints:
-        destination["route"] = {
+        route = {
             "route_id": args.route_id or "cli-route",
             "corridor_width_km": args.route_corridor_km,
             "waypoints": route_waypoints,
@@ -73,7 +75,9 @@ def main() -> int:
 
     html = build_local_compass_html(
         natal_payload,
-        destination,
+        anchor,
+        destination=destination,
+        route=route,
     )
     output_path = write_local_compass_html(html, args.output_filename)
     print(output_path)

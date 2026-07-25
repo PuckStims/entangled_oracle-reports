@@ -24,12 +24,19 @@ TEMPLATE_NAME = "location_services/templates/living_map.html"
 RENDER_VERSION = "living_map_render_v0.2.0"
 
 def _build_render_context(place_context: dict) -> dict:
+    date_range = place_context.get("date_range") or {}
     return {
         "render_version": RENDER_VERSION,
         "report_title": place_context.get("product_name", "Living Map"),
         "report_subtitle": "Dynamic locational timing draft",
         "generation_date": datetime.now().strftime("%B %d, %Y"),
         "destination_name": place_context.get("destination_name", "Unknown Location"),
+        "purpose_lens_label": place_context.get("purpose_lens_label", ""),
+        "date_range_display": (
+            f"{date_range.get('start_date', '')} to {date_range.get('end_date', '')}"
+            if date_range.get("start_date") and date_range.get("end_date")
+            else ""
+        ),
         "sections": place_context.get("sections", []),
     }
 
@@ -55,8 +62,21 @@ def render_living_map_html(place_context: dict) -> str:
 def _render_fallback(render_context: dict) -> str:
     return f"<html><body><h1>{render_context['report_title']}</h1><p>Jinja2 template failed or missing.</p></body></html>"
 
-def build_living_map_html(natal_payload: dict, destination: dict) -> str:
-    context = build_living_map_context(natal_payload, destination)
+def build_living_map_html(
+    natal_payload: dict,
+    destination: dict,
+    *,
+    purpose_lens: str | None = None,
+    start_date: str | None = None,
+    end_date: str | None = None,
+) -> str:
+    context = build_living_map_context(
+        natal_payload,
+        destination,
+        purpose_lens=purpose_lens,
+        start_date=start_date,
+        end_date=end_date,
+    )
     return render_living_map_html(context)
 
 def write_living_map_html(html_str: str, filename: str | None = None) -> str:

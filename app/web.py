@@ -89,6 +89,22 @@ def create_app() -> Flask:
             errors=[],
         )
 
+    @app.post("/create/<report_type>/edit")
+    def edit_form(report_type: str) -> str:
+        definition = get_report_definition(report_type)
+        if definition is None or not definition.available:
+            return render_template(
+                "error.html",
+                title="Report unavailable",
+                message="That report is not exposed in the private beta studio yet.",
+            ), 404
+        return render_template(
+            "birth_form.html",
+            report=definition,
+            values=_request_from_form(report_type),
+            errors=[],
+        )
+
     @app.post("/review/<report_type>")
     def review(report_type: str) -> str:
         values = _request_from_form(report_type)
@@ -189,7 +205,14 @@ def _blank_values(report_type: str) -> ReportRequest:
         birth_time="",
         location="",
         destination="",
+        anchor_location="",
         report_date="",
+        report_end_date="",
+        purpose_lens="",
+        relationship_to_place="",
+        route_waypoints="",
+        route_corridor_km="150",
+        route_id="",
         palette="vibrant",
         content_pack=definition.default_content_pack if definition else "plainspeak",
         consent_acknowledged=False,
@@ -204,7 +227,14 @@ def _request_from_form(report_type: str) -> ReportRequest:
         birth_time=request.form.get("birth_time", "") or None,
         location=request.form.get("location", ""),
         destination=request.form.get("destination", "") or None,
+        anchor_location=request.form.get("anchor_location", "") or None,
         report_date=request.form.get("report_date", "") or None,
+        report_end_date=request.form.get("report_end_date", "") or None,
+        purpose_lens=request.form.get("purpose_lens", "") or None,
+        relationship_to_place=request.form.get("relationship_to_place", "") or None,
+        route_waypoints=request.form.get("route_waypoints", "") or None,
+        route_corridor_km=request.form.get("route_corridor_km", "") or None,
+        route_id=request.form.get("route_id", "") or None,
         palette=request.form.get("palette", "vibrant"),
         content_pack=request.form.get("content_pack", "plainspeak"),
         consent_acknowledged=request.form.get("consent_acknowledged") == "yes",

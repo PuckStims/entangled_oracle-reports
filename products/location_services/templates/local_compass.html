@@ -66,6 +66,20 @@
         color: var(--text-muted);
         font-weight: 400;
     }
+    .meta-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 20px;
+    }
+    .meta-pill {
+        border: 1px solid var(--surface-border);
+        border-radius: 999px;
+        padding: 8px 12px;
+        font-size: 0.84rem;
+        color: var(--text-main);
+        background: rgba(255, 255, 255, 0.03);
+    }
     
     .section-card {
         background: var(--glass-bg);
@@ -151,6 +165,11 @@
         <div class="eyebrow">{{ report_subtitle }}</div>
         <h1>{{ report_title }}</h1>
         <div class="destination">{{ destination_name }}</div>
+        <div class="meta-row">
+            <div class="meta-pill">Anchor: {{ anchor_name }}</div>
+            {% if purpose_lens_label %}<div class="meta-pill">Purpose: {{ purpose_lens_label }}</div>{% endif %}
+            {% if has_route_context %}<div class="meta-pill">Route geometry included</div>{% endif %}
+        </div>
     </header>
 
     {% for section in sections %}

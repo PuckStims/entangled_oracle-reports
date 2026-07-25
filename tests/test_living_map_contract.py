@@ -46,19 +46,33 @@ def test_living_map_assembler_renders_computed_windows():
     natal_payload = get_dummy_payload()
     destination = {"location": "Tokyo, Japan"}
 
-    context = build_living_map_context(natal_payload, destination)
+    context = build_living_map_context(
+        natal_payload,
+        destination,
+        purpose_lens="career",
+        start_date="2026-08-01",
+        end_date="2026-10-01",
+    )
 
     assert context["destination_name"] == "Tokyo, Japan"
     assert context["destination_context"]["latitude"] == 35.6895
     assert context["destination_context"]["longitude"] == 139.6917
+    assert context["purpose_lens_label"] == "Career"
+    assert context["date_range"] == {"start_date": "2026-08-01", "end_date": "2026-10-01"}
 
     sections = {s["id"]: s for s in context["sections"]}
     assert "current_place_weather" in sections
     assert "windows_of_emphasis" in sections
+    assert "timing_frame" in sections
 
     weather_count = len(sections["current_place_weather"]["blocks"])
     emphasis_count = len(sections["windows_of_emphasis"]["blocks"])
     assert weather_count + emphasis_count > 0
+
+    timing_frame = sections["timing_frame"]
+    assert timing_frame["blocks"][0]["title"] == "Purpose frame"
+    assert "The active lens for this reading is Career, over the window from 2026-08-01 through 2026-10-01." in timing_frame["blocks"][0]["leaf"]["body"]
+    assert "window ranking is not yet purpose-weighted" in timing_frame["blocks"][0]["leaf"]["note"]
 
     first_block = (
         sections["current_place_weather"]["blocks"]

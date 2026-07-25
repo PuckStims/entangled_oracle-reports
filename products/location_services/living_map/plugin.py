@@ -19,7 +19,9 @@ class LivingMapProduct(LocationProduct):
         natal_payload: dict,
         destination: dict,
         *,
-        purpose_lens: str | None = None
+        purpose_lens: str | None = None,
+        start_date: str | None = None,
+        end_date: str | None = None,
     ) -> dict:
         """
         Builds the context for Living Map.
@@ -27,7 +29,9 @@ class LivingMapProduct(LocationProduct):
         return build_living_map_context(
             natal_payload=natal_payload,
             destination=destination,
-            purpose_lens=purpose_lens
+            purpose_lens=purpose_lens,
+            start_date=start_date,
+            end_date=end_date,
         )
 
     def render_html(self, context: dict) -> str:

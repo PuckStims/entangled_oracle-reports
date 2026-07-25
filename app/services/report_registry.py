@@ -4,6 +4,30 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+PURPOSE_LENS_OPTIONS: tuple[tuple[str, str], ...] = (
+    ("career", "Career"),
+    ("belonging", "Belonging"),
+    ("rest", "Rest"),
+    ("partnership", "Partnership"),
+    ("creative_visibility", "Creative visibility"),
+    ("study", "Study"),
+    ("retreat", "Retreat"),
+    ("structure", "Structure"),
+    ("experimentation", "Experimentation"),
+)
+
+RELATIONSHIP_TO_PLACE_OPTIONS: tuple[tuple[str, str], ...] = (
+    ("current_home", "Current home"),
+    ("possible_move", "Possible move"),
+    ("trial_visit", "Trial visit"),
+    ("extended_stay", "Extended stay"),
+    ("past_home", "Past home"),
+    ("work_base", "Work base"),
+    ("family_place", "Family place"),
+    ("retreat", "Retreat"),
+    ("remote_connection", "Remote connection"),
+)
+
 
 @dataclass(frozen=True)
 class ReportDefinition:
@@ -19,9 +43,22 @@ class ReportDefinition:
     default_content_pack: str = "plainspeak"
     allow_unknown_time: bool = False
     report_date_label: str = "Report start date"
+    show_report_date: bool = True
+    show_report_end_date: bool = False
+    report_end_date_label: str = "Report end date"
+    report_end_date_help: str = ""
+    show_destination: bool = False
     needs_destination: bool = False
     destination_label: str = "Destination"
     destination_help: str = ""
+    needs_anchor: bool = False
+    anchor_label: str = "Anchor"
+    anchor_help: str = ""
+    show_purpose_lens: bool = False
+    show_relationship_to_place: bool = False
+    show_route_inputs: bool = False
+    purpose_lens_options: tuple[tuple[str, str], ...] = PURPOSE_LENS_OPTIONS
+    relationship_to_place_options: tuple[tuple[str, str], ...] = RELATIONSHIP_TO_PLACE_OPTIONS
 
 
 CONSUMER_REPORTS: dict[str, ReportDefinition] = {
@@ -105,9 +142,12 @@ CONSUMER_REPORTS: dict[str, ReportDefinition] = {
         birth_time_rule="Exact birth time required",
         status="Location Services",
         available=True,
+        show_destination=True,
         needs_destination=True,
         destination_label="Destination",
         destination_help="City, state/country to test as the relocated place.",
+        show_purpose_lens=True,
+        show_relationship_to_place=True,
     ),
     "place_resonance_search": ReportDefinition(
         key="place_resonance_search",
@@ -118,6 +158,9 @@ CONSUMER_REPORTS: dict[str, ReportDefinition] = {
         birth_time_rule="Exact birth time required",
         status="Location Services",
         available=True,
+        show_purpose_lens=True,
+        show_relationship_to_place=True,
+        show_report_date=False,
     ),
     "world_lines": ReportDefinition(
         key="world_lines",
@@ -128,9 +171,11 @@ CONSUMER_REPORTS: dict[str, ReportDefinition] = {
         birth_time_rule="Exact birth time required",
         status="Location Services",
         available=True,
+        show_destination=True,
         needs_destination=True,
         destination_label="Destination",
         destination_help="City, state/country where line proximity should be checked.",
+        show_purpose_lens=True,
     ),
     "local_compass": ReportDefinition(
         key="local_compass",
@@ -141,9 +186,16 @@ CONSUMER_REPORTS: dict[str, ReportDefinition] = {
         birth_time_rule="Exact birth time required",
         status="Location Services",
         available=True,
-        needs_destination=True,
+        show_destination=True,
+        needs_destination=False,
         destination_label="Destination",
-        destination_help="City, state/country used as the destination bearing.",
+        destination_help="Optional city, state/country to compare against the anchor bearing.",
+        needs_anchor=True,
+        anchor_label="Anchor location",
+        anchor_help="City, state/country used as the local-space anchor.",
+        show_purpose_lens=True,
+        show_route_inputs=True,
+        show_report_date=False,
     ),
     "living_map": ReportDefinition(
         key="living_map",
@@ -154,9 +206,14 @@ CONSUMER_REPORTS: dict[str, ReportDefinition] = {
         birth_time_rule="Exact birth time required",
         status="Location Services",
         available=True,
+        show_destination=True,
         needs_destination=True,
         destination_label="Destination",
         destination_help="City, state/country for the timing overlay.",
+        show_purpose_lens=True,
+        show_report_end_date=True,
+        report_end_date_label="Window ends",
+        report_end_date_help="Optional end date for the timing window. Defaults to one year after the start date.",
     ),
 }
 

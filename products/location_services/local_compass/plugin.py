@@ -17,17 +17,21 @@ class LocalCompassProduct(LocationProduct):
     def build_context(
         self,
         natal_payload: dict,
-        destination: dict,
+        anchor: dict,
         *,
-        purpose_lens: str | None = None
+        destination: dict | None = None,
+        route: dict | None = None,
+        purpose_lens: str | None = None,
     ) -> dict:
         """
         Builds the context for Local Compass.
         """
         return build_local_compass_context(
             natal_payload=natal_payload,
+            anchor=anchor,
             destination=destination,
-            purpose_lens=purpose_lens
+            route=route,
+            purpose_lens=purpose_lens,
         )
 
     def render_html(self, context: dict) -> str:

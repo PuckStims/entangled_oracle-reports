@@ -39,6 +39,30 @@ STRENGTH_LANGUAGE = {
     "low": "This is a lighter window; it may color the period without defining the whole experience of the place.",
 }
 
+PURPOSE_LENS_LABELS = {
+    "career": "Career",
+    "belonging": "Belonging",
+    "rest": "Rest",
+    "partnership": "Partnership",
+    "creative_visibility": "Creative visibility",
+    "study": "Study",
+    "retreat": "Retreat",
+    "structure": "Structure",
+    "experimentation": "Experimentation",
+}
+
+PURPOSE_LENS_TIMING_FRAMES = {
+    "career": "Use the timing layer to notice when public role, work pressure, structure, and outward participation become louder at the place, without collapsing those windows into success promises.",
+    "belonging": "Use the timing layer to notice when home, support, or social reciprocity feels easier to test, while keeping the distinction between temporary weather and enduring fit.",
+    "rest": "Use the timing layer to notice when the place feels calmer, more exposed, or more demanding on the nervous system, rather than assuming every active window is useful for restoration.",
+    "partnership": "Use the timing layer to notice when encounters, direct contact, and reciprocity become louder, not as a guarantee that the place will produce a relationship event.",
+    "creative_visibility": "Use the timing layer to notice when authorship, display, confidence, and audience contact are emphasized, while remembering that visibility and recognition are not identical.",
+    "study": "Use the timing layer to notice when focus, writing, conversation, and information flow are easier to work with at the place.",
+    "retreat": "Use the timing layer to notice when the place supports quiet, reflection, and symbolic depth, and when a louder window may work against retreat even if it is astrologically strong.",
+    "structure": "Use the timing layer to notice when discipline, limits, and durable work are easier to organize, not as proof that the window will feel easy.",
+    "experimentation": "Use the timing layer to notice when novelty, motion, and productive disruption come forward at the place, while keeping an eye on volatility.",
+}
+
 
 def _window_body(window: dict) -> str:
     planet = window["active_planet"]
@@ -62,6 +86,15 @@ def _baseline_body(name: str) -> str:
         "do not replace that baseline. They show when transits temporarily press on one relocated "
         "angle, making a specific part of the place louder for a limited period."
     )
+
+
+def _purpose_timing_frame_body(purpose_lens: str, start_date: str, end_date: str) -> str:
+    label = PURPOSE_LENS_LABELS.get(purpose_lens, purpose_lens.replace("_", " ").title())
+    frame = PURPOSE_LENS_TIMING_FRAMES.get(
+        purpose_lens,
+        "Use the stated purpose to decide which temporary windows deserve attention, without treating the timing layer as a fit score."
+    )
+    return f"The active lens for this reading is {label}, over the window from {start_date} through {end_date}. {frame}"
 
 
 def assemble_living_map_context(evidence_record: LivingMapEvidenceRecord) -> dict:
@@ -185,14 +218,58 @@ def build_living_map_context(
     natal_payload: dict,
     destination: dict,
     *,
-    purpose_lens: str | None = None
+    purpose_lens: str | None = None,
+    start_date: str | None = None,
+    end_date: str | None = None,
 ) -> dict:
     """
     Evidence-record wrapper seam for Living Map.
     """
     import datetime
-    start_date = datetime.date.today().isoformat()
-    end_date = (datetime.date.today() + datetime.timedelta(days=365)).isoformat()
+
+    start_date = start_date or datetime.date.today().isoformat()
+    end_date = end_date or (datetime.date.fromisoformat(start_date) + datetime.timedelta(days=365)).isoformat()
     resolved_destination = resolve_destination_context(destination or {"display_name": "Location"})
     record = build_living_map_evidence(natal_payload, resolved_destination, start_date, end_date)
-    return assemble_living_map_context(record)
+    context = assemble_living_map_context(record)
+    context["purpose_lens"] = purpose_lens
+    context["purpose_lens_label"] = PURPOSE_LENS_LABELS.get(
+        purpose_lens or "",
+        purpose_lens.replace("_", " ").title() if purpose_lens else "",
+    )
+    context["date_range"] = {"start_date": start_date, "end_date": end_date}
+    framing_blocks = [
+        {
+            "id": "window_scope",
+            "title": "Window scope",
+            "leaf": {
+                "body": (
+                    f"This scan covers {start_date} through {end_date}. Treat the listed windows as temporary pressure on the place baseline, "
+                    "not as a replacement for the place's longer-lived signature."
+                ),
+                "note": "Date range is part of the report contract for Living Map."
+            },
+        }
+    ]
+    if purpose_lens:
+        framing_blocks.insert(
+            0,
+            {
+                "id": "purpose_timing_frame",
+                "title": "Purpose frame",
+                "leaf": {
+                    "body": _purpose_timing_frame_body(purpose_lens, start_date, end_date),
+                    "note": "Purpose lens is a reading frame; window ranking is not yet purpose-weighted."
+                },
+            },
+        )
+    context["sections"].insert(
+        1,
+        {
+            "id": "timing_frame",
+            "title": "Timing Frame",
+            "kicker": "How To Read The Window",
+            "blocks": framing_blocks,
+        },
+    )
+    return context

@@ -126,20 +126,28 @@ def test_local_compass_assembler_renders_computed_directions():
         },
     }
 
-    context = build_local_compass_context(natal_payload, anchor)
+    context = build_local_compass_context(natal_payload, anchor, purpose_lens="study")
 
     assert context["destination_name"] == "Tokyo, Japan"
     assert context["destination_context"]["latitude"] == 35.6895
     assert context["destination_context"]["longitude"] == 139.6917
+    assert context["anchor_name"] == "Tokyo, Japan"
+    assert context["purpose_lens_label"] == "Study"
 
     sections = {s["id"]: s for s in context["sections"]}
     assert "planetary_directions" in sections
+    assert "reading_frame" in sections
 
     directions = sections["planetary_directions"]
     assert directions["blocks"]
     assert " towards " in directions["blocks"][0]["title"]
     assert "score" in directions["blocks"][0]["leaf"]["note"]
     assert "Rank 1" in directions["blocks"][0]["leaf"]["body"]
+
+    reading_frame = sections["reading_frame"]
+    assert reading_frame["blocks"][0]["title"] == "Purpose frame"
+    assert "The active lens for this reading is Study." in reading_frame["blocks"][0]["leaf"]["body"]
+    assert "Anchor, destination, and route are separate inputs" in reading_frame["blocks"][1]["leaf"]["note"]
 
     relationship = sections["destination_relationship"]
     assert relationship["blocks"]

@@ -46,6 +46,30 @@ DIRECTION_USES = {
     "North-Northwest": "quiet preparation, containment, and a more deliberate next step",
 }
 
+PURPOSE_LENS_LABELS = {
+    "career": "Career",
+    "belonging": "Belonging",
+    "rest": "Rest",
+    "partnership": "Partnership",
+    "creative_visibility": "Creative visibility",
+    "study": "Study",
+    "retreat": "Retreat",
+    "structure": "Structure",
+    "experimentation": "Experimentation",
+}
+
+PURPOSE_LENS_FRAMES = {
+    "career": "Read the strongest directions as places to test visibility, contribution, structure, and working posture rather than as guarantees about success, clients, or status.",
+    "belonging": "Read the strongest directions for whether they support familiarity, emotional settling, and repeatable social contact rather than for a promise that the place will automatically feel like home.",
+    "rest": "Read the strongest directions for pacing, recovery, privacy, and body regulation, and notice when a loud or exposed direction may be useful but too activating for actual rest.",
+    "partnership": "Read the strongest directions for encounter, reciprocity, and the style of exchange they support, not as proof that a relationship outcome will happen there.",
+    "creative_visibility": "Read the strongest directions for authorship, style, attention, and public expression, while keeping the boundary that visibility is not the same thing as recognition.",
+    "study": "Read the strongest directions for attention, writing, errands, learning, and signal clarity rather than expecting every useful direction to feel dramatic.",
+    "retreat": "Read the strongest directions for quiet, permeability, symbolic depth, and boundary management, especially where an otherwise strong direction may still be too exposed for retreat.",
+    "structure": "Read the strongest directions for discipline, responsibility, repetition, and durability, not as a claim that the place removes difficulty.",
+    "experimentation": "Read the strongest directions for change, invention, novelty, and healthy disruption, while keeping one eye on what becomes unstable as well as what becomes alive.",
+}
+
 
 def _direction_body(direction: dict) -> str:
     mode = direction["practical_mode"]
@@ -113,12 +137,41 @@ def _signature_body(name: str, directions: list[dict]) -> str:
     )
 
 
+def _purpose_frame_body(purpose_lens: str) -> str:
+    label = PURPOSE_LENS_LABELS.get(purpose_lens, purpose_lens.replace("_", " ").title())
+    frame = PURPOSE_LENS_FRAMES.get(
+        purpose_lens,
+        "Use the stated purpose to decide which directional themes deserve closer attention, without turning the compass into a promise engine."
+    )
+    return f"The active lens for this reading is {label}. {frame}"
+
+
+def _scope_body(anchor_name: str, destination_name: str | None, route_context: dict) -> str:
+    if destination_name and destination_name != anchor_name:
+        return (
+            f"The anchor for this compass is {anchor_name}, and the destination comparison is {destination_name}. "
+            "Read the ranked directions first as rays extending from the anchor, then use the destination relationship "
+            "section to see whether the compared place actually sits near one of those rays."
+        )
+    if route_context:
+        return (
+            f"The compass is anchored at {anchor_name}. No separate destination comparison was supplied, so the report is "
+            "reading directional strength from the anchor itself and, where route geometry exists, whether the supplied path "
+            "stays close to those rays."
+        )
+    return (
+        f"The compass is anchored at {anchor_name} with no separate destination comparison. "
+        "Read the directions as a spatial orientation layer for movement, ritual, workspace, pacing, or attention from that anchor."
+    )
+
+
 def assemble_local_compass_context(evidence_record: LocalSpaceEvidenceRecord) -> dict:
     """
     Build a structured Local Compass draft context from an evidence record.
     """
     dest = evidence_record.get("destination_context", {})
-    name = dest.get("display_name", "Destination")
+    anchor = evidence_record.get("anchor_context", {})
+    name = dest.get("display_name") or anchor.get("display_name", "Anchor")
     directions = evidence_record.get("directions", [])
     route_context = evidence_record.get("route_context", {})
     has_route_geometry = any(direction.get("route_geometry") for direction in directions)
@@ -241,18 +294,69 @@ def assemble_local_compass_context(evidence_record: LocalSpaceEvidenceRecord) ->
 
 def build_local_compass_context(
     natal_payload: dict,
-    destination: dict,
+    anchor: dict,
     *,
-    purpose_lens: str | None = None
+    destination: dict | None = None,
+    route: dict | None = None,
+    purpose_lens: str | None = None,
 ) -> dict:
     """
     Evidence-record wrapper seam for Local Compass.
     """
-    resolved_destination = resolve_destination_context(destination or {"display_name": "Location"})
+    route = route or (anchor or {}).get("route")
+    resolved_anchor = resolve_destination_context(anchor or {"display_name": "Anchor"})
+    resolved_destination = resolve_destination_context(destination) if destination else None
     record = build_local_space_evidence(
         natal_payload,
+        resolved_anchor,
         resolved_destination,
-        resolved_destination,
-        route=(destination or {}).get("route"),
+        route=route,
     )
-    return assemble_local_compass_context(record)
+    context = assemble_local_compass_context(record)
+    if not destination:
+        context["destination_context"] = dict(resolved_anchor)
+        context["destination_name"] = resolved_anchor.get("display_name", "Anchor")
+    context["anchor_context"] = resolved_anchor
+    context["anchor_name"] = resolved_anchor.get("display_name", "Anchor")
+    context["purpose_lens"] = purpose_lens
+    context["purpose_lens_label"] = PURPOSE_LENS_LABELS.get(
+        purpose_lens or "",
+        purpose_lens.replace("_", " ").title() if purpose_lens else "",
+    )
+    context["route_context"] = dict(route or {})
+    framing_blocks = []
+    if purpose_lens:
+        framing_blocks.append(
+            {
+                "id": "purpose_frame",
+                "title": "Purpose frame",
+                "leaf": {
+                    "body": _purpose_frame_body(purpose_lens),
+                    "note": "A reading frame, not a fit taxonomy."
+                },
+            }
+        )
+    framing_blocks.append(
+        {
+            "id": "scope_frame",
+            "title": "Compass scope",
+            "leaf": {
+                "body": _scope_body(
+                    context["anchor_name"],
+                    context.get("destination_name"),
+                    context["route_context"],
+                ),
+                "note": "Anchor, destination, and route are separate inputs in this product."
+            },
+        }
+    )
+    context["sections"].insert(
+        1,
+        {
+            "id": "reading_frame",
+            "title": "Reading Frame",
+            "kicker": "How To Use This Surface",
+            "blocks": framing_blocks,
+        },
+    )
+    return context
