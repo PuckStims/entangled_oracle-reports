@@ -752,6 +752,44 @@
     </div>
   </header>
 
+  {% if chart_wheel_svg or chart_wheel_data %}
+  <!-- Natal chart snapshot -->
+  <div class="chart-snapshot">
+    <div class="section-label">Natal Reference - Chart Snapshot</div>
+
+    {% if chart_wheel_svg %}
+    <div class="mini-wheel-wrap">{{ chart_wheel_svg | safe }}</div>
+    <p class="chart-note-pf">Natal wheel rendered in {{ zodiac_label | default('Tropical') }} zodiac and {{ house_system_label | default(house_system | default('Whole Sign')) }} houses.</p>
+    {% if wheel_transit_retrograde_planets %}
+    <p class="chart-note-pf">The ringed placement{{ 's' if wheel_transit_retrograde_planets | length > 1 else '' }} ({{ wheel_transit_retrograde_planets | join(', ') }}) {{ 'are' if wheel_transit_retrograde_planets | length > 1 else 'is' }} currently retrograde by transit.</p>
+    {% endif %}
+    {% endif %}
+
+    {% if chart_wheel_data and chart_wheel_data.bodies %}
+    <table class="snapshot-ref-table">
+      <thead>
+        <tr>
+          <th scope="col">Point</th>
+          <th scope="col">Position</th>
+          <th scope="col">House</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for body in chart_wheel_data.bodies %}
+        <tr>
+          <td>{{ body.name | replace("_", " ") }}</td>
+          <td>{{ body.position }}</td>
+          <td>{% if body.house %}{{ body.house }}{% else %}-{% endif %}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% endif %}
+  </div>
+
+  <hr>
+  {% endif %}
+
   <div class="report-record-grid">
     <article class="report-record-card">
       <p class="report-record-label">Client</p>
@@ -799,44 +837,6 @@
       <li><strong>Use Soul Ecosystem for baseline context and Year Ahead for the full annual arc.</strong> This report is the bridge between those two scales.</li>
     </ul>
   </div>
-
-  {% if chart_wheel_svg or chart_wheel_data %}
-  <!-- Natal chart snapshot -->
-  <div class="chart-snapshot">
-    <div class="section-label">Natal Reference - Chart Snapshot</div>
-
-    {% if chart_wheel_svg %}
-    <div class="mini-wheel-wrap">{{ chart_wheel_svg | safe }}</div>
-    <p class="chart-note-pf">Natal wheel rendered in {{ zodiac_label | default('Tropical') }} zodiac and {{ house_system_label | default(house_system | default('Whole Sign')) }} houses.</p>
-    {% if wheel_transit_retrograde_planets %}
-    <p class="chart-note-pf">The ringed placement{{ 's' if wheel_transit_retrograde_planets | length > 1 else '' }} ({{ wheel_transit_retrograde_planets | join(', ') }}) {{ 'are' if wheel_transit_retrograde_planets | length > 1 else 'is' }} currently retrograde by transit.</p>
-    {% endif %}
-    {% endif %}
-
-    {% if chart_wheel_data and chart_wheel_data.bodies %}
-    <table class="snapshot-ref-table">
-      <thead>
-        <tr>
-          <th scope="col">Point</th>
-          <th scope="col">Position</th>
-          <th scope="col">House</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for body in chart_wheel_data.bodies %}
-        <tr>
-          <td>{{ body.name | replace("_", " ") }}</td>
-          <td>{{ body.position }}</td>
-          <td>{% if body.house %}{{ body.house }}{% else %}-{% endif %}</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-    {% endif %}
-  </div>
-
-  <hr>
-  {% endif %}
 
   <!-- Opening snapshot -->
   <div class="season-overview">

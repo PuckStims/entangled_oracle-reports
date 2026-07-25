@@ -709,6 +709,16 @@
     </div>
   </header>
 
+  {% if chart_wheel_svg %}
+  <div class="chart-wheel-container">
+    {{ chart_wheel_svg | safe }}
+    <div class="chart-wheel-label">Natal wheel rendered in {{ zodiac_label | default('Tropical') }} zodiac and {{ house_system_label | default(house_system | default('Whole Sign')) }} houses.</div>
+    {% if wheel_transit_retrograde_planets %}
+    <div class="chart-note">The ringed placement{{ 's' if wheel_transit_retrograde_planets | length > 1 else '' }} ({{ wheel_transit_retrograde_planets | join(', ') }}) {{ 'are' if wheel_transit_retrograde_planets | length > 1 else 'is' }} currently retrograde by transit.</div>
+    {% endif %}
+  </div>
+  {% endif %}
+
   <div class="report-record-grid">
     <article class="report-record-card">
       <p class="report-record-label">Client</p>
@@ -751,16 +761,6 @@
   <div class="opening">
     {{ ecosystem_overview_block | default(souls_story_block, true) }}
   </div>
-
-  {% if chart_wheel_svg %}
-  <div class="chart-wheel-container">
-    {{ chart_wheel_svg | safe }}
-    <div class="chart-wheel-label">Natal wheel rendered in {{ zodiac_label | default('Tropical') }} zodiac and {{ house_system_label | default(house_system | default('Whole Sign')) }} houses.</div>
-    {% if wheel_transit_retrograde_planets %}
-    <div class="chart-note">The ringed placement{{ 's' if wheel_transit_retrograde_planets | length > 1 else '' }} ({{ wheel_transit_retrograde_planets | join(', ') }}) {{ 'are' if wheel_transit_retrograde_planets | length > 1 else 'is' }} currently retrograde by transit.</div>
-    {% endif %}
-  </div>
-  {% endif %}
 
   {% set eas_depth = soul_ecosystem_eas_depth | default({}, true) %}
   {% set dominant_depth = eas_depth.dominant | default({}, true) %}
