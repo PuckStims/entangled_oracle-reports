@@ -1,0 +1,15 @@
+node_modules
+dist
+*.tsbuildinfo
+server/*.js
+server/*.d.ts
+vite.config.js
+vite.config.d.ts
+.env
+.env.local
+.env.*.local
+src/data/astrology/*.local.json
+src/data/tarot/*.local.json
+src/data/runes/*.local.json
+*.zip
+.DS_Store

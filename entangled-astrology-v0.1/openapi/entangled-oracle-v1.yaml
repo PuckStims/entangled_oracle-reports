@@ -1,0 +1,307 @@
+openapi: 3.1.0
+info:
+  title: Entangled Oracle Engine API
+  version: 1.0.0
+  description: Contract between Entangled Astrology and the existing Entangled Oracle calculation/report engine. No endpoint may fabricate astrology data.
+servers:
+  - url: http://localhost:8000
+paths:
+  /v1/health:
+    get:
+      operationId: health
+      responses:
+        '200': { description: Engine health, content: { application/json: { schema: { $ref: '#/components/schemas/EngineHealth' } } } }
+  /v1/engine/identity:
+    get:
+      operationId: engineIdentity
+      responses:
+        '200': { description: Engine identity, content: { application/json: { schema: { $ref: '#/components/schemas/EngineIdentity' } } } }
+  /v1/capabilities:
+    get:
+      operationId: capabilities
+      responses:
+        '200': { description: Supported operations, content: { application/json: { schema: { $ref: '#/components/schemas/EngineCapabilities' } } } }
+  /v1/profiles/validate:
+    post:
+      operationId: validateProfile
+      requestBody: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/ProfileValidationRequest' } } } }
+      responses:
+        '200': { description: Validation result, content: { application/json: { schema: { $ref: '#/components/schemas/ProfileValidationResponse' } } } }
+  /v1/charts/natal:
+    post:
+      operationId: natalChart
+      requestBody: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/NatalChartRequest' } } } }
+      responses:
+        '200': { description: Natal chart, content: { application/json: { schema: { $ref: '#/components/schemas/NatalChart' } } } }
+  /v1/fields/current:
+    post:
+      operationId: currentField
+      requestBody: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/CurrentFieldRequest' } } } }
+      responses:
+        '200': { description: Current field, content: { application/json: { schema: { $ref: '#/components/schemas/CurrentField' } } } }
+  /v1/timelines/calculate:
+    post:
+      operationId: timeline
+      requestBody: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/TimelineRequest' } } } }
+      responses:
+        '200': { description: Timeline, content: { application/json: { schema: { $ref: '#/components/schemas/TimelineResponse' } } } }
+  /v1/places/resonance:
+    post:
+      operationId: placeResonance
+      requestBody: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/PlaceResonanceRequest' } } } }
+      responses:
+        '200': { description: Place Resonance, content: { application/json: { schema: { $ref: '#/components/schemas/PlaceResonance' } } } }
+  /v1/places/compare:
+    post:
+      operationId: betweenPlaces
+      requestBody: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/BetweenPlacesRequest' } } } }
+      responses:
+        '200': { description: Place comparison, content: { application/json: { schema: { $ref: '#/components/schemas/BetweenPlaces' } } } }
+  /v1/relationships/calculate:
+    post:
+      operationId: relationship
+      requestBody: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/RelationshipRequest' } } } }
+      responses:
+        '200': { description: Relationship field, content: { application/json: { schema: { $ref: '#/components/schemas/RelationshipField' } } } }
+  /v1/reports/generate:
+    post:
+      operationId: generateReport
+      requestBody: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/ReportRequest' } } } }
+      responses:
+        '202': { description: Accepted report job, content: { application/json: { schema: { $ref: '#/components/schemas/ReportJob' } } } }
+  /v1/jobs/{jobId}:
+    get:
+      operationId: reportJob
+      parameters: [{ name: jobId, in: path, required: true, schema: { type: string } }]
+      responses:
+        '200': { description: Job status, content: { application/json: { schema: { $ref: '#/components/schemas/ReportJob' } } } }
+  /v1/reports/{reportId}:
+    get:
+      operationId: report
+      parameters: [{ name: reportId, in: path, required: true, schema: { type: string } }]
+      responses:
+        '200': { description: Generated report, content: { application/json: { schema: { $ref: '#/components/schemas/GeneratedReport' } } } }
+components:
+  schemas:
+    BirthTimeConfidence: { type: string, enum: [EXACT_RECORD, EXACT_RECALLED, APPROXIMATE, UNKNOWN] }
+    GeoPoint:
+      type: object
+      required: [latitude, longitude]
+      properties: { latitude: { type: number }, longitude: { type: number } }
+    BirthProfile:
+      type: object
+      required: [id, displayName, localDate, timeZoneId, locationName, birthTimeConfidence]
+      properties:
+        id: { type: string }
+        displayName: { type: string }
+        localDate: { type: string, format: date }
+        localTime: { type: [string, 'null'] }
+        timeZoneId: { type: string }
+        locationName: { type: string }
+        coordinates: { anyOf: [{ $ref: '#/components/schemas/GeoPoint' }, { type: 'null' }] }
+        birthTimeConfidence: { $ref: '#/components/schemas/BirthTimeConfidence' }
+    EngineHealth:
+      type: object
+      required: [status, checkedAt]
+      properties: { status: { type: string }, checkedAt: { type: string, format: date-time }, message: { type: [string, 'null'] } }
+    EngineIdentity:
+      type: object
+      required: [engine, engineVersion, schemaVersion]
+      properties:
+        engine: { type: string }
+        engineVersion: { type: string }
+        schemaVersion: { type: string }
+        ephemeris: { type: [string, 'null'] }
+        buildId: { type: [string, 'null'] }
+    EngineCapabilities:
+      type: object
+      required: [supportedTechniques, supportedReports]
+      properties:
+        supportedTechniques: { type: array, items: { type: string } }
+        supportedReports: { type: array, items: { type: string } }
+        supportedHouseSystems: { type: array, items: { type: string } }
+        supportsRelationships: { type: boolean, default: false }
+        supportsPlaceResonance: { type: boolean, default: false }
+        supportsBetweenPlaces: { type: boolean, default: false }
+    ProfileValidationRequest:
+      type: object
+      required: [profile]
+      properties: { profile: { $ref: '#/components/schemas/BirthProfile' } }
+    ValidationIssue:
+      type: object
+      required: [field, severity, message]
+      properties: { field: { type: string }, severity: { type: string }, message: { type: string } }
+    ProfileValidationResponse:
+      type: object
+      required: [valid]
+      properties:
+        valid: { type: boolean }
+        normalizedProfile: { anyOf: [{ $ref: '#/components/schemas/BirthProfile' }, { type: 'null' }] }
+        issues: { type: array, items: { $ref: '#/components/schemas/ValidationIssue' } }
+    Provenance:
+      type: object
+      required: [engineVersion, schemaVersion, calculationModules, normalizationApplied]
+      properties:
+        engineVersion: { type: string }
+        schemaVersion: { type: string }
+        calculationModules: { type: array, minItems: 1, items: { type: string } }
+        normalizationApplied: { type: boolean }
+        contentPackIds: { type: array, items: { type: string } }
+        fallbackTierUsed: { type: [string, 'null'] }
+        warnings: { type: array, items: { type: string } }
+    CalculatedEvent:
+      type: object
+      required: [id, technique, natalTarget, phase, birthTimeSensitive]
+      properties:
+        id: { type: string }
+        technique: { type: string }
+        movingBody: { type: [string, 'null'] }
+        natalTarget: { type: string }
+        aspect: { type: [string, 'null'] }
+        orbDegrees: { type: [number, 'null'] }
+        phase: { type: string, enum: [applying, exact, separating, background] }
+        startsAt: { type: [string, 'null'], format: date-time }
+        exactAt: { type: [string, 'null'], format: date-time }
+        endsAt: { type: [string, 'null'], format: date-time }
+        lifeAreas: { type: array, items: { type: string } }
+        birthTimeSensitive: { type: boolean }
+        title: { type: [string, 'null'] }
+        interpretation: { type: [string, 'null'] }
+    FieldPattern:
+      type: object
+      required: [id, title, summary, role, stage, eventIds]
+      properties:
+        id: { type: string }
+        title: { type: string }
+        summary: { type: string }
+        role: { type: string, enum: [dominant, supporting, background] }
+        stage: { type: string }
+        eventIds: { type: array, minItems: 1, items: { type: string } }
+        orientation: { type: array, items: { type: string } }
+    CurrentFieldRequest:
+      type: object
+      required: [profile, moment]
+      properties:
+        profile: { $ref: '#/components/schemas/BirthProfile' }
+        moment: { type: string, format: date-time }
+        window: { type: string, enum: [today, week, month], default: today }
+    CurrentField:
+      type: object
+      required: [fieldId, calculatedAt, timeZone, windowStart, windowEnd, patterns, events, provenance]
+      properties:
+        fieldId: { type: string }
+        calculatedAt: { type: string, format: date-time }
+        timeZone: { type: string }
+        windowStart: { type: string, format: date-time }
+        windowEnd: { type: string, format: date-time }
+        patterns: { type: array, items: { $ref: '#/components/schemas/FieldPattern' } }
+        events: { type: array, items: { $ref: '#/components/schemas/CalculatedEvent' } }
+        provenance: { $ref: '#/components/schemas/Provenance' }
+    TimelineRequest:
+      type: object
+      required: [profile, start, end]
+      properties:
+        profile: { $ref: '#/components/schemas/BirthProfile' }
+        start: { type: string, format: date }
+        end: { type: string, format: date }
+        techniques: { type: array, items: { type: string } }
+    TimelineResponse:
+      type: object
+      required: [calculatedAt, timeZone, events, provenance]
+      properties:
+        calculatedAt: { type: string, format: date-time }
+        timeZone: { type: string }
+        events: { type: array, items: { $ref: '#/components/schemas/CalculatedEvent' } }
+        provenance: { $ref: '#/components/schemas/Provenance' }
+    ChartPlacement:
+      type: object
+      required: [body, sign, degree]
+      properties: { body: { type: string }, sign: { type: string }, degree: { type: number }, house: { type: [integer, 'null'] }, retrograde: { type: boolean } }
+    ChartAspect:
+      type: object
+      required: [pointA, aspect, pointB, orbDegrees]
+      properties: { pointA: { type: string }, aspect: { type: string }, pointB: { type: string }, orbDegrees: { type: number } }
+    NatalChartRequest:
+      type: object
+      required: [profile]
+      properties: { profile: { $ref: '#/components/schemas/BirthProfile' }, houseSystem: { type: [string, 'null'] } }
+    NatalChart:
+      type: object
+      required: [calculatedAt, timeZone, zodiac, houseSystem, placements, aspects, provenance]
+      properties:
+        calculatedAt: { type: string, format: date-time }
+        timeZone: { type: string }
+        zodiac: { type: string }
+        houseSystem: { type: string }
+        placements: { type: array, items: { $ref: '#/components/schemas/ChartPlacement' } }
+        aspects: { type: array, items: { $ref: '#/components/schemas/ChartAspect' } }
+        provenance: { $ref: '#/components/schemas/Provenance' }
+    PlaceInput:
+      type: object
+      required: [name, coordinates, timeZoneId]
+      properties: { name: { type: string }, coordinates: { $ref: '#/components/schemas/GeoPoint' }, timeZoneId: { type: string } }
+    PlaceResonanceRequest:
+      type: object
+      required: [profile, place]
+      properties: { profile: { $ref: '#/components/schemas/BirthProfile' }, place: { $ref: '#/components/schemas/PlaceInput' } }
+    PlaceLine:
+      type: object
+      required: [planet, angle, distanceKm, birthTimeSensitive]
+      properties: { planet: { type: string }, angle: { type: string }, distanceKm: { type: number }, direction: { type: [string, 'null'] }, birthTimeSensitive: { type: boolean } }
+    PlaceResonance:
+      type: object
+      required: [calculatedAt, place, headline, summary, nearestLines, themes, provenance]
+      properties:
+        calculatedAt: { type: string, format: date-time }
+        place: { $ref: '#/components/schemas/PlaceInput' }
+        headline: { type: string }
+        summary: { type: string }
+        nearestLines: { type: array, items: { $ref: '#/components/schemas/PlaceLine' } }
+        themes: { type: array, items: { $ref: '#/components/schemas/FieldPattern' } }
+        provenance: { $ref: '#/components/schemas/Provenance' }
+    BetweenPlacesRequest:
+      type: object
+      required: [profile, places]
+      properties: { profile: { $ref: '#/components/schemas/BirthProfile' }, places: { type: array, minItems: 2, items: { $ref: '#/components/schemas/PlaceInput' } } }
+    PlaceComparison:
+      type: object
+      required: [place, summary]
+      properties: { place: { $ref: '#/components/schemas/PlaceInput' }, summary: { type: string }, categoryScores: { type: object, additionalProperties: { type: number } } }
+    BetweenPlaces:
+      type: object
+      required: [calculatedAt, comparisons, provenance]
+      properties: { calculatedAt: { type: string, format: date-time }, comparisons: { type: array, items: { $ref: '#/components/schemas/PlaceComparison' } }, provenance: { $ref: '#/components/schemas/Provenance' } }
+    RelationshipRequest:
+      type: object
+      required: [primaryProfile, secondaryProfile, relationshipType]
+      properties: { primaryProfile: { $ref: '#/components/schemas/BirthProfile' }, secondaryProfile: { $ref: '#/components/schemas/BirthProfile' }, relationshipType: { type: string } }
+    RelationshipField:
+      type: object
+      required: [calculatedAt, headline, summary, patterns, events, provenance]
+      properties:
+        calculatedAt: { type: string, format: date-time }
+        headline: { type: string }
+        summary: { type: string }
+        patterns: { type: array, items: { $ref: '#/components/schemas/FieldPattern' } }
+        events: { type: array, items: { $ref: '#/components/schemas/CalculatedEvent' } }
+        provenance: { $ref: '#/components/schemas/Provenance' }
+    ReportRequest:
+      type: object
+      required: [profile, reportType]
+      properties: { profile: { $ref: '#/components/schemas/BirthProfile' }, reportType: { type: string }, parameters: { type: object, additionalProperties: { type: string } } }
+    ReportJob:
+      type: object
+      required: [jobId, status, submittedAt]
+      properties: { jobId: { type: string }, status: { type: string }, submittedAt: { type: string, format: date-time }, reportId: { type: [string, 'null'] }, error: { type: [string, 'null'] } }
+    GeneratedReport:
+      type: object
+      required: [reportId, reportType, title, generatedAt, mimeType, provenance]
+      properties:
+        reportId: { type: string }
+        reportType: { type: string }
+        title: { type: string }
+        generatedAt: { type: string, format: date-time }
+        mimeType: { type: string }
+        downloadUrl: { type: [string, 'null'] }
+        content: { type: [string, 'null'] }
+        provenance: { $ref: '#/components/schemas/Provenance' }

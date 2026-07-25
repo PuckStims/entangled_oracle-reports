@@ -956,15 +956,18 @@ def scan_proprietary_forecast_windows(
     step_hours: int = 12,
 ) -> dict[str, list[dict]]:
     """
-    Scans the report window for proprietary forecast formula activations.
+    Proprietary asteroid forecast scanner.
+
+    Product boundary: EO custom asteroids are natal/report-specific only and
+    must not enter consumer-facing predictive services unless a future R&D gate
+    explicitly re-enables this scanner.
 
     Returns a dict keyed by formula name (DISRUPTION, SOVEREIGNTY, CATALYST),
     each containing a list of finalized event dicts matching the standard
     transit event contract so the report layer can handle them uniformly.
-
-    Uses _proprietary_targets() so asteroid natal positions are visible
-    alongside standard planets and angles.
     """
+    return {key: [] for key in PROPRIETARY_FORMULA_CONFIG}
+
     report_start = _ensure_utc(start_date)
     report_end = _ensure_utc(end_date) if end_date else _add_year_window(report_start)
 

@@ -53,6 +53,27 @@ def test_validate_report_request_rejects_end_date_before_start():
         validate_report_request(request)
 
 
+def test_validate_report_request_accepts_between_places_destinations():
+    request = ReportRequest(
+        report_type="between_places",
+        name="Aster",
+        birth_date="1990-01-01",
+        birth_time="12:00",
+        location="Chicago, IL",
+        destination_a="Lisbon, Portugal",
+        destination_b="Kyoto, Japan",
+        purpose_lens="belonging",
+        consent_acknowledged=True,
+    )
+
+    validated = validate_report_request(request)
+
+    assert validated.destination == "Lisbon, Portugal"
+    assert validated.destination_a == "Lisbon, Portugal"
+    assert validated.destination_b == "Kyoto, Japan"
+    assert validated.purpose_lens == "belonging"
+
+
 def test_parse_birth_data_accepts_location_service_cli_fields():
     args = SimpleNamespace(
         name="Aster",

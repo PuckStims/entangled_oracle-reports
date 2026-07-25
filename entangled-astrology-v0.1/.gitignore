@@ -1,0 +1,16 @@
+*.iml
+.gradle/
+.kotlin/
+.idea/
+__pycache__/
+.pytest_cache/
+local.properties
+/build/
+**/build/
+hs_err_pid*.log
+replay_pid*.log
+*.jks
+*.keystore
+captures/
+.externalNativeBuild/
+.cxx/

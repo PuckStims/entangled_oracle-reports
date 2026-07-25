@@ -51,6 +51,10 @@ class ReportDefinition:
     needs_destination: bool = False
     destination_label: str = "Destination"
     destination_help: str = ""
+    show_destination_b: bool = False
+    needs_destination_b: bool = False
+    destination_b_label: str = "Destination B"
+    destination_b_help: str = ""
     needs_anchor: bool = False
     anchor_label: str = "Anchor"
     anchor_help: str = ""
@@ -176,6 +180,26 @@ CONSUMER_REPORTS: dict[str, ReportDefinition] = {
         destination_label="Destination",
         destination_help="City, state/country where line proximity should be checked.",
         show_purpose_lens=True,
+    ),
+    "between_places": ReportDefinition(
+        key="between_places",
+        label="Between Places",
+        promise="A two-location comparison that highlights shared themes, strongest differences, and practical tradeoffs.",
+        best_for="Choosing between two concrete destinations without flattening them into one generic ranking.",
+        depth="Medium-deep",
+        birth_time_rule="Exact birth time required",
+        status="Location Services",
+        available=True,
+        show_destination=True,
+        needs_destination=True,
+        destination_label="Location A",
+        destination_help="First city, state/country to compare.",
+        show_destination_b=True,
+        needs_destination_b=True,
+        destination_b_label="Location B",
+        destination_b_help="Second city, state/country to compare against Location A.",
+        show_purpose_lens=True,
+        show_report_date=False,
     ),
     "local_compass": ReportDefinition(
         key="local_compass",

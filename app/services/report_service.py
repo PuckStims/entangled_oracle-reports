@@ -21,6 +21,8 @@ class ReportRequest:
     birth_time: str | None
     location: str
     destination: str | None = None
+    destination_a: str | None = None
+    destination_b: str | None = None
     anchor_location: str | None = None
     report_date: str | None = None
     report_end_date: str | None = None
@@ -126,6 +128,8 @@ def validate_report_request(request: ReportRequest) -> ReportRequest:
     birth_time = _validate_time(request.birth_time)
     location = _require(request.location, "Please enter a birth location.")
     destination = _normalize_optional_text(request.destination)
+    destination_a = _normalize_optional_text(request.destination_a) or destination
+    destination_b = _normalize_optional_text(request.destination_b)
     anchor_location = _normalize_optional_text(request.anchor_location)
     report_date = _normalize_optional_text(request.report_date)
     report_end_date = _normalize_optional_text(request.report_end_date)
@@ -146,7 +150,10 @@ def validate_report_request(request: ReportRequest) -> ReportRequest:
     if not birth_time and not definition.allow_unknown_time:
         raise WebInputError(f"{definition.label} requires an exact birth time for this beta studio flow.")
     if definition.needs_destination:
-        destination = _require(destination, f"Please enter a {definition.destination_label.lower()} for {definition.label}.")
+        destination = _require(destination_a, f"Please enter a {definition.destination_label.lower()} for {definition.label}.")
+        destination_a = destination
+    if definition.needs_destination_b:
+        destination_b = _require(destination_b, f"Please enter a {definition.destination_b_label.lower()} for {definition.label}.")
     if definition.needs_anchor:
         anchor_location = _require(anchor_location, f"Please enter an {definition.anchor_label.lower()} for {definition.label}.")
     if route_waypoints:
@@ -161,6 +168,8 @@ def validate_report_request(request: ReportRequest) -> ReportRequest:
         birth_time=birth_time,
         location=location,
         destination=destination,
+        destination_a=destination_a,
+        destination_b=destination_b,
         anchor_location=anchor_location,
         report_date=report_date,
         report_end_date=report_end_date,
@@ -198,6 +207,8 @@ def create_report(request: ReportRequest) -> ReportResult:
         "report_date": validated.report_date,
         "report_end_date": validated.report_end_date,
         "destination": validated.destination,
+        "destination_a": validated.destination_a,
+        "destination_b": validated.destination_b,
         "anchor_location": validated.anchor_location,
         "purpose_lens": validated.purpose_lens,
         "relationship_to_place": validated.relationship_to_place,

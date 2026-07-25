@@ -11,6 +11,8 @@
     <div><dt>Birth time</dt><dd>{{ values.birth_time or "DOB-only / simple mode" }}</dd></div>
     <div><dt>Birth location</dt><dd>{{ values.location }}</dd></div>
     {% if values.anchor_location %}<div><dt>{{ report.anchor_label }}</dt><dd>{{ values.anchor_location }}</dd></div>{% endif %}
+    {% if values.destination_a %}<div><dt>{{ report.destination_label }}</dt><dd>{{ values.destination_a }}</dd></div>{% endif %}
+    {% if values.destination_b %}<div><dt>{{ report.destination_b_label }}</dt><dd>{{ values.destination_b }}</dd></div>{% endif %}
     {% if values.destination %}<div><dt>{{ report.destination_label }}</dt><dd>{{ values.destination }}</dd></div>{% endif %}
     {% if values.purpose_lens %}<div><dt>Purpose lens</dt><dd>{{ values.purpose_lens.replace("_", " ").title() }}</dd></div>{% endif %}
     {% if values.relationship_to_place %}<div><dt>Relationship to place</dt><dd>{{ values.relationship_to_place.replace("_", " ").title() }}</dd></div>{% endif %}
@@ -29,6 +31,8 @@
     <input type="hidden" name="birth_time" value="{{ values.birth_time or '' }}">
     <input type="hidden" name="location" value="{{ values.location }}">
     <input type="hidden" name="anchor_location" value="{{ values.anchor_location or '' }}">
+    <input type="hidden" name="destination_a" value="{{ values.destination_a or '' }}">
+    <input type="hidden" name="destination_b" value="{{ values.destination_b or '' }}">
     <input type="hidden" name="destination" value="{{ values.destination or '' }}">
     <input type="hidden" name="purpose_lens" value="{{ values.purpose_lens or '' }}">
     <input type="hidden" name="relationship_to_place" value="{{ values.relationship_to_place or '' }}">
@@ -51,6 +55,8 @@
     <input type="hidden" name="birth_time" value="{{ values.birth_time or '' }}">
     <input type="hidden" name="location" value="{{ values.location }}">
     <input type="hidden" name="anchor_location" value="{{ values.anchor_location or '' }}">
+    <input type="hidden" name="destination_a" value="{{ values.destination_a or '' }}">
+    <input type="hidden" name="destination_b" value="{{ values.destination_b or '' }}">
     <input type="hidden" name="destination" value="{{ values.destination or '' }}">
     <input type="hidden" name="purpose_lens" value="{{ values.purpose_lens or '' }}">
     <input type="hidden" name="relationship_to_place" value="{{ values.relationship_to_place or '' }}">

@@ -30,6 +30,10 @@ Core files and purposes:
   philosophy, whatever felt true when you got here. It's a place for the
   personality that doesn't fit anywhere else in a commercial codebase.
 
+- **SYNASTRY_COMPUTATION_FIRST_DRAFT.md** - Tier 6 synastry handoff.
+  Defines the computation-first two-chart math, confidence, sidecar, and
+  fixture priorities before any relationship report claims are promoted.
+
 Additional agent docs may exist for report-suite handoffs, high-throughput
 prompting, computation ledgers, and product-specific conventions. Treat
 this README as the operating root, then follow the more specific file when

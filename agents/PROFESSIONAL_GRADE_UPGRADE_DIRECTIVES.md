@@ -671,15 +671,24 @@ Gemini-safe guardrails:
 
 ## Tier 6 - Synastry As A Separate Mountain
 
-Goal: make synastry climbable by building two-chart computation grammar
-first.
+Goal: make synastry climbable by building a computation-first two-chart
+mathematical substrate before product prose or client-facing claims.
 
 Synastry must not be treated as a minor report variant. It is a second
 architecture because it requires two natal payloads, directional meaning,
 privacy/consent framing, relationship-specific synthesis, and eventually
 relationship timing.
 
-First substrate:
+Primary source for the first build pass:
+
+- `agents/SYNASTRY_COMPUTATION_FIRST_DRAFT.md`
+
+The operating priority is not to keep features small. It is to ensure that
+every feature has enough mathematical depth, confidence handling,
+traceability, and tests that future audits cannot mistake scaffolding for a
+finished engine.
+
+First substrate - pair chart mathematics:
 
 - two-chart input schema
 - Person A natal payload
@@ -695,7 +704,7 @@ First substrate:
 - angle dependency and withheld-angle behavior
 - repeated natal themes between charts
 
-Second substrate:
+Second substrate - relationship chart mathematics:
 
 - composite chart computation
 - optional Davison chart only if explicitly chosen
@@ -704,7 +713,7 @@ Second substrate:
 - relationship topic signatures
 - relationship-specific convergence scoring
 
-Third substrate:
+Third substrate - relationship timing mathematics:
 
 - current transits to each natal chart
 - current transits to composite
@@ -732,10 +741,14 @@ Acceptance threshold:
 - A future relationship report can be built from a reliable two-chart
   grammar without forcing all synastry logic through one-chart forecast
   assumptions.
+- The sidecar can distinguish `not_implemented`, withheld, implemented,
+  and verified computation layers so no audit can honestly describe a
+  scaffold as a finished engine.
 
 Do not:
 
-- Begin by writing the relationship report.
+- Begin by treating prose, templates, or product labels as proof of
+  capability.
 - Treat synastry aspects as symmetric when the house overlay or angle
   dependency is directional.
 - Let relationship prose diagnose, prescribe, or moralize.

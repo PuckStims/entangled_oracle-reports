@@ -12,6 +12,34 @@ needed correction in `agents/PLANNED_UPDATES.md` before moving on.
 
 ---
 
+## 2026-07-25 - Synastry computation-first handoff drafted
+
+**Context:** the operator clarified that synastry should not begin from a
+"do not add features yet" posture, because that can later be misread as a
+finished engine by audits or product surfaces. The priority is depth,
+complexity, and accuracy of the base mathematics, with every later claim
+seconded by computation and traceability.
+
+**What changed:**
+
+- Added `agents/SYNASTRY_COMPUTATION_FIRST_DRAFT.md`, a Tier 6
+  computation-first contract for pair-chart payloads, cross-chart aspect
+  math, directional overlays, mutual normalization, composite/Davison
+  formulas, relationship topic signatures, relationship timing targets,
+  sidecar status, and initial acceptance tests.
+- Updated `agents/PROFESSIONAL_GRADE_UPGRADE_DIRECTIVES.md` so Tier 6
+  points to the new synastry draft and states the priority as mathematical
+  substrate, confidence handling, traceability, and verification before
+  client-facing report claims.
+- Updated `agents/PLANNED_UPDATES.md` and `agents/README.md` so future
+  sessions discover the computation-first synastry handoff before scoping
+  product or prose work.
+
+**Verification:** documentation-only change. No source code, templates,
+generated outputs, or tests were changed.
+
+---
+
 ## 2026-07-14 - Blanket stale-reference update rule added to agent docs
 
 **Context:** the operator clarified that agents should not merely notice

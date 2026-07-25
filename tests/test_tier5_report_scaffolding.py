@@ -257,6 +257,36 @@ class TestTier5ReportScaffolding(unittest.TestCase):
         self.assertIn("The system flags", surface["chapters"][0]["body"])
         self.assertNotEqual(surface["chapters"][0]["body"], "TODO")
 
+    def test_year_ahead_tier5_surface_suppresses_duplicate_predictive_surface(self):
+        legacy_surface = {
+            "enabled": True,
+            "report_type": "year_ahead",
+            "chapters": [{"title": "Duplicate synthesis card"}],
+            "candidates": [],
+            "source_contract": "forecast_synthesis.tier4_remap",
+        }
+        tier5_surface = {
+            "annual_profections": [],
+            "zodiacal_releasing": [],
+            "exact_returns": [],
+            "forecast_terrain": {
+                "annual": {"body": "Existing Tier 5 forecast terrain prose."},
+                "months": [],
+                "chapters": [],
+                "contradictions": [],
+            },
+        }
+
+        surface = generate._year_ahead_predictive_surface_fallback(
+            legacy_surface,
+            tier5_surface,
+        )
+
+        self.assertFalse(surface["enabled"])
+        self.assertEqual(surface["suppressed_by"], "tier5_predictive_surfaces")
+        self.assertEqual(surface["chapters"], [])
+        self.assertEqual(surface["suppressed_counts"]["chapters"], 1)
+
     def test_personal_forecast_candidates_remap_method_families_to_existing_prose(self):
         synthesis = {
             "annual_terrain_map": {

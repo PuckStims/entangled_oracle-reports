@@ -52,6 +52,13 @@ class YearAheadTextureSelectionTests(unittest.TestCase):
             ),
             _texture_event("progression", "Mercury", "DSC", score=0.55),
             _texture_event("progression", "Venus", "Moon", score=0.2),
+            _texture_event(
+                "progression",
+                "Kassandra",
+                "Sun",
+                method_variant="progression_asteroid_aspect",
+                score=0.7,
+            ),
         ]
         solar_arc_events = [
             _texture_event("solar_arc", "Moon", "MC", score=0.5),
@@ -71,6 +78,7 @@ class YearAheadTextureSelectionTests(unittest.TestCase):
 
         self.assertEqual([event["transit_planet"] for event in progressions], ["Sun"])
         self.assertEqual([event["transit_planet"] for event in solar_arcs], ["Moon"])
+        self.assertNotIn("Kassandra", {event["transit_planet"] for event in progressions + solar_arcs})
 
     def test_caps_and_diversifies_client_texture_highlights(self):
         progression_events = [

@@ -1,0 +1,4 @@
+{
+  "status": "not_wired",
+  "note": "Live astrology context is scaffolded here. Wire this adapter to the existing astrology engine or a trusted ephemeris source."
+}

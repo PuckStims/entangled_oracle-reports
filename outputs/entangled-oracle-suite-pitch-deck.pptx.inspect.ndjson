@@ -1,0 +1,224 @@
+{"kind":"deck","id":"pr/ixaltl","name":"Deck"}
+{"kind":"layout","layoutId":"016e44e3-c97f-41cb-be4f-e289a3c3fbc6","name":"Master","type":"master"}
+{"kind":"layout","layoutId":"ef218243-7f8d-4bb1-840f-5f1d3f384e34","name":"Title Slide","type":"title"}
+{"kind":"slide","id":"sl/h28ah1","slide":1,"title":"KSISTI-PUCK LLC  /  PRIVATE BETA","textShapes":5}
+{"kind":"textbox","id":"sh/wfa98bup","slide":1,"text":"KSISTI-PUCK LLC  /  PRIVATE BETA","textPreview":"KSISTI-PUCK LLC  /  PRIVATE BETA","textChars":32,"textLines":1,"bbox":[42,42,500,28]}
+{"kind":"textbox","id":"sh/ve1sf6d4","slide":1,"text":"Entangled Oracle is becoming a suite, not a single report.","textPreview":"Entangled Oracle is becoming a suite, not a single report.","textChars":58,"textLines":1,"bbox":[42,178,840,250]}
+{"kind":"textbox","id":"sh/ud8r61cz","slide":1,"text":"A local-first symbolic intelligence stack for calculated astrology, ritual interfaces, and consent-centered reflection products.","textPreview":"A local-first symbolic intelligence stack for calculated astrology, ritual interfaces, and consent-centered reflection products.","textChars":128,"textLines":1,"bbox":[42,476,760,92]}
+{"kind":"shape","id":"sh/5kja5gvm","slide":1,"bbox":[962,42,276,586]}
+{"kind":"textbox","id":"sh/4jatcbu1","slide":1,"text":"Entangled Oracle suite pitch","textPreview":"Entangled Oracle suite pitch","textChars":28,"textLines":1,"bbox":[42,664,360,22]}
+{"kind":"textbox","id":"sh/ji1sjqdg","slide":1,"text":"01","textPreview":"01","textChars":2,"textLines":1,"bbox":[1188,664,50,22]}
+{"kind":"shape","id":"sh/loza9wv2","slide":1,"bbox":[962,42,276,586]}
+{"kind":"image","id":"im/36h87690","slide":1,"name":"","alt":"profile.png","bbox":[962,197,276,276]}
+{"kind":"notes","id":"nt/h28ah1","slide":1,"text":""}
+{"kind":"slide","id":"sl/pjdee7","slide":2,"title":"MARKET TENSION","textShapes":5}
+{"kind":"textbox","id":"sh/l0ryxcr2","slide":2,"text":"MARKET TENSION","textPreview":"MARKET TENSION","textChars":14,"textLines":1,"bbox":[42,42,500,28]}
+{"kind":"textbox","id":"sh/yx0zmxsb","slide":2,"text":"The opportunity is trustable depth in a market full of shallow mysticism.","textPreview":"The opportunity is trustable depth in a market full of shallow mysticism.","textChars":73,"textLines":1,"bbox":[42,166,1000,190]}
+{"kind":"textbox","id":"sh/zy9gv29w","slide":2,"text":"People already seek symbolic guidance, but most products collapse into generic horoscopes, chatbot improvisation, or novelty mechanics. Entangled Oracle can occupy the deeper lane: inspectable computation, authored interpretation, and respectful boundaries.","textPreview":"People already seek symbolic guidance, but most products collapse into generic horoscopes, chatbot improvisation, or novelty mechanics. E...","textChars":257,"textLines":1,"bbox":[42,456,840,96]}
+{"kind":"shape","id":"sh/cvihkna5","slide":2,"bbox":[42,626,1196,2]}
+{"kind":"textbox","id":"sh/xwrytsrq","slide":2,"text":"Entangled Oracle suite pitch","textPreview":"Entangled Oracle suite pitch","textChars":28,"textLines":1,"bbox":[42,664,360,22]}
+{"kind":"textbox","id":"sh/at0fidsf","slide":2,"text":"02","textPreview":"02","textChars":2,"textLines":1,"bbox":[1188,664,50,22]}
+{"kind":"notes","id":"nt/pjdee7","slide":2,"text":""}
+{"kind":"slide","id":"sl/i83wrm","slide":3,"title":"THE PRODUCT THESIS","textShapes":13}
+{"kind":"textbox","id":"sh/0ju18ji1","slide":3,"text":"THE PRODUCT THESIS","textPreview":"THE PRODUCT THESIS","textChars":18,"textLines":1,"bbox":[42,42,500,28]}
+{"kind":"textbox","id":"sh/zyl0fehg","slide":3,"text":"One engine can support multiple serious consumer surfaces.","textPreview":"One engine can support multiple serious consumer surfaces.","textChars":58,"textLines":1,"bbox":[42,92,980,98]}
+{"kind":"shape","id":"sh/excj6t0v","slide":3,"bbox":[42,205,1196,1]}
+{"kind":"textbox","id":"sh/dw3idoza","slide":3,"text":"ENGINE","textPreview":"ENGINE","textChars":6,"textLines":1,"bbox":[58,252,210,26]}
+{"kind":"textbox","id":"sh/cva14jip","slide":3,"text":"Calculated reports","textPreview":"Calculated reports","textChars":18,"textLines":1,"bbox":[58,280,1010,34]}
+{"kind":"textbox","id":"sh/ru10behk","slide":3,"text":"Swiss Ephemeris, Whole Sign methodology, formula layers, authored blocks, HTML/PDF output, manifest sidecars.","textPreview":"Swiss Ephemeris, Whole Sign methodology, formula layers, authored blocks, HTML/PDF output, manifest sidecars.","textChars":109,"textLines":1,"bbox":[58,316,1010,48]}
+{"kind":"textbox","id":"sh/qtsj290z","slide":3,"text":"RITUAL","textPreview":"RITUAL","textChars":6,"textLines":1,"bbox":[58,356,210,26]}
+{"kind":"textbox","id":"sh/psji94je","slide":3,"text":"Tarot and rune apps","textPreview":"Tarot and rune apps","textChars":19,"textLines":1,"bbox":[58,384,1010,34]}
+{"kind":"textbox","id":"sh/4ra10zit","slide":3,"text":"Deterministic entropy locking, validated content packs, reading journals, and modality-specific user flows.","textPreview":"Deterministic entropy locking, validated content packs, reading journals, and modality-specific user flows.","textChars":107,"textLines":1,"bbox":[58,420,1010,48]}
+{"kind":"textbox","id":"sh/6ls32pcn","slide":3,"text":"PLATFORM","textPreview":"PLATFORM","textChars":8,"textLines":1,"bbox":[58,460,210,26]}
+{"kind":"textbox","id":"sh/rm1kbut8","slide":3,"text":"Reflection and studio layer","textPreview":"Reflection and studio layer","textChars":27,"textLines":1,"bbox":[58,488,1010,34]}
+{"kind":"textbox","id":"sh/snul4zut","slide":3,"text":"Dashboard, optional synthesis, Report Studio beta, and Shadow Compass adjacency for consent-aware inner work.","textPreview":"Dashboard, optional synthesis, Report Studio beta, and Shadow Compass adjacency for consent-aware inner work.","textChars":109,"textLines":1,"bbox":[58,524,1010,48]}
+{"kind":"textbox","id":"sh/to3md4by","slide":3,"text":"Entangled Oracle suite pitch","textPreview":"Entangled Oracle suite pitch","textChars":28,"textLines":1,"bbox":[42,664,360,22]}
+{"kind":"textbox","id":"sh/ixs3ypcb","slide":3,"text":"03","textPreview":"03","textChars":2,"textLines":1,"bbox":[1188,664,50,22]}
+{"kind":"notes","id":"nt/i83wrm","slide":3,"text":""}
+{"kind":"slide","id":"sl/hw6c2u","slide":4,"title":"SUITE MAP","textShapes":13}
+{"kind":"textbox","id":"sh/b6t4fmpw","slide":4,"text":"SUITE MAP","textPreview":"SUITE MAP","textChars":9,"textLines":1,"bbox":[42,42,500,28]}
+{"kind":"textbox","id":"sh/w72l8rqh","slide":4,"text":"The ecosystem already has four product lanes with shared DNA.","textPreview":"The ecosystem already has four product lanes with shared DNA.","textChars":61,"textLines":1,"bbox":[42,88,940,88]}
+{"kind":"shape","id":"sh/x8vmhw72","slide":4,"bbox":[42,242,268,270]}
+{"kind":"shape","id":"sh/mhk32h8f","slide":4,"bbox":[42,242,268,10]}
+{"kind":"textbox","id":"sh/nit4bmp0","slide":4,"text":"Report Engine","textPreview":"Report Engine","textChars":13,"textLines":1,"bbox":[64,284,220,58]}
+{"kind":"textbox","id":"sh/oj2l4rql","slide":4,"text":"Year Ahead, Personal Forecast, Soul Ecosystem, Horoscope, weekly surfaces","textPreview":"Year Ahead, Personal Forecast, Soul Ecosystem, Horoscope, weekly surfaces","textChars":73,"textLines":1,"bbox":[64,374,218,96]}
+{"kind":"shape","id":"sh/94bmdw76","slide":4,"bbox":[347,242,268,270]}
+{"kind":"shape","id":"sh/ed03yh83","slide":4,"bbox":[347,242,268,10]}
+{"kind":"textbox","id":"sh/ze9472po","slide":4,"text":"Report Studio","textPreview":"Report Studio","textChars":13,"textLines":1,"bbox":[369,284,220,58]}
+{"kind":"textbox","id":"sh/zi1gz6hg","slide":4,"text":"Private Flask beta wrapper around the local generator","textPreview":"Private Flask beta wrapper around the local generator","textChars":53,"textLines":1,"bbox":[369,374,218,96]}
+{"kind":"shape","id":"sh/ehsz61gv","slide":4,"bbox":[652,242,268,270]}
+{"kind":"shape","id":"sh/1k3y1gzm","slide":4,"bbox":[652,242,268,10]}
+{"kind":"textbox","id":"sh/0jah8by1","slide":4,"text":"Oracle Apps","textPreview":"Oracle Apps","textChars":11,"textLines":1,"bbox":[674,284,220,58]}
+{"kind":"textbox","id":"sh/nmlg3qhc","slide":4,"text":"Android rune/tarot split plus localhost dashboard","textPreview":"Android rune/tarot split plus localhost dashboard","textChars":49,"textLines":1,"bbox":[674,374,218,96]}
+{"kind":"shape","id":"sh/mlczalgr","slide":4,"bbox":[957,242,268,270]}
+{"kind":"shape","id":"sh/9o3y50zi","slide":4,"bbox":[957,242,268,10]}
+{"kind":"textbox","id":"sh/onuhcvyx","slide":4,"text":"Shadow Compass","textPreview":"Shadow Compass","textChars":14,"textLines":1,"bbox":[979,284,220,58]}
+{"kind":"textbox","id":"sh/3qhgrmh8","slide":4,"text":"Adjacent inner-work platform with privacy and AI boundaries","textPreview":"Adjacent inner-work platform with privacy and AI boundaries","textChars":59,"textLines":1,"bbox":[979,374,218,96]}
+{"kind":"textbox","id":"sh/2p8fyh0n","slide":4,"text":"The pattern: local-first computation, transparent provenance, authored symbolic content, and explicit limits.","textPreview":"The pattern: local-first computation, transparent provenance, authored symbolic content, and explicit limits.","textChars":109,"textLines":1,"bbox":[42,568,940,44]}
+{"kind":"textbox","id":"sh/6x0bmt4n","slide":4,"text":"Entangled Oracle suite pitch","textPreview":"Entangled Oracle suite pitch","textChars":28,"textLines":1,"bbox":[42,664,360,22]}
+{"kind":"textbox","id":"sh/ri9svy5s","slide":4,"text":"04","textPreview":"04","textChars":2,"textLines":1,"bbox":[1188,664,50,22]}
+{"kind":"notes","id":"nt/hw6c2u","slide":4,"text":""}
+{"kind":"slide","id":"sl/2vtgso","slide":5,"title":"CURRENT TRACTION","textShapes":17}
+{"kind":"textbox","id":"sh/bqt4zyd0","slide":5,"text":"CURRENT TRACTION","textPreview":"CURRENT TRACTION","textChars":16,"textLines":1,"bbox":[42,42,500,28]}
+{"kind":"textbox","id":"sh/cb25s3ul","slide":5,"text":"This is not just a concept deck. There is working product surface area.","textPreview":"This is not just a concept deck. There is working product surface area.","textChars":71,"textLines":1,"bbox":[42,90,940,88]}
+{"kind":"textbox","id":"sh/dcbm18v6","slide":5,"text":"72","textPreview":"72","textChars":2,"textLines":1,"bbox":[70,238,160,60]}
+{"kind":"textbox","id":"sh/2l03mtw3","slide":5,"text":"root regression tests","textPreview":"root regression tests","textChars":21,"textLines":1,"bbox":[70,302,260,42]}
+{"kind":"textbox","id":"sh/3m94vydo","slide":5,"text":"122","textPreview":"122","textChars":3,"textLines":1,"bbox":[460,238,160,60]}
+{"kind":"textbox","id":"sh/on2lo3u9","slide":5,"text":"product JSON content files","textPreview":"product JSON content files","textChars":26,"textLines":1,"bbox":[460,302,260,42]}
+{"kind":"textbox","id":"sh/pobmx8vu","slide":5,"text":"15","textPreview":"15","textChars":2,"textLines":1,"bbox":[850,238,160,60]}
+{"kind":"textbox","id":"sh/mh4nyxcn","slide":5,"text":"HTML report templates","textPreview":"HTML report templates","textChars":21,"textLines":1,"bbox":[850,302,260,42]}
+{"kind":"textbox","id":"sh/nid47id8","slide":5,"text":"118","textPreview":"118","textChars":3,"textLines":1,"bbox":[70,388,160,60]}
+{"kind":"textbox","id":"sh/ra187mxk","slide":5,"text":"engine/formula/app Python files","textPreview":"engine/formula/app Python files","textChars":31,"textLines":1,"bbox":[70,452,260,42]}
+{"kind":"textbox","id":"sh/q9srehwf","slide":5,"text":"8","textPreview":"8","textChars":1,"textLines":1,"bbox":[460,388,160,60]}
+{"kind":"textbox","id":"sh/dcjq9cfq","slide":5,"text":"Android unit tests","textPreview":"Android unit tests","textChars":18,"textLines":1,"bbox":[460,452,260,42]}
+{"kind":"textbox","id":"sh/cba9gre5","slide":5,"text":"78","textPreview":"78","textChars":2,"textLines":1,"bbox":[850,388,160,60]}
+{"kind":"textbox","id":"sh/zel8bmxw","slide":5,"text":"Shadow Compass TS/TSX files","textPreview":"Shadow Compass TS/TSX files","textChars":27,"textLines":1,"bbox":[850,452,260,42]}
+{"kind":"textbox","id":"sh/edcrihwb","slide":5,"text":"Counts are from the local repositories and exclude generated build artifacts where relevant.","textPreview":"Counts are from the local repositories and exclude generated build artifacts where relevant.","textChars":92,"textLines":1,"bbox":[42,630,850,24]}
+{"kind":"textbox","id":"sh/103qdwf2","slide":5,"text":"Entangled Oracle suite pitch","textPreview":"Entangled Oracle suite pitch","textChars":28,"textLines":1,"bbox":[42,664,360,22]}
+{"kind":"textbox","id":"sh/0zu9kreh","slide":5,"text":"05","textPreview":"05","textChars":2,"textLines":1,"bbox":[1188,664,50,22]}
+{"kind":"notes","id":"nt/2vtgso","slide":5,"text":""}
+{"kind":"slide","id":"sl/a73ejk","slide":6,"title":"REPORT ENGINE","textShapes":22}
+{"kind":"textbox","id":"sh/765g7q90","slide":6,"text":"REPORT ENGINE","textPreview":"REPORT ENGINE","textChars":13,"textLines":1,"bbox":[42,42,500,28]}
+{"kind":"textbox","id":"sh/srex0vql","slide":6,"text":"The core moat is a report pipeline with traceable calculation and prose routing.","textPreview":"The core moat is a report pipeline with traceable calculation and prose routing.","textChars":80,"textLines":1,"bbox":[42,90,980,88]}
+{"kind":"shape","id":"sh/tsny9gr6","slide":6,"bbox":[58,286,156,108]}
+{"kind":"textbox","id":"sh/utwf2l8r","slide":6,"text":"1","textPreview":"1","textChars":1,"textLines":1,"bbox":[72,304,40,32]}
+{"kind":"textbox","id":"sh/fu5gbq9c","slide":6,"text":"Birth data","textPreview":"Birth data","textChars":10,"textLines":1,"bbox":[72,344,122,42]}
+{"kind":"textbox","id":"sh/gvex4vqx","slide":6,"text":"->","textPreview":"->","textChars":2,"textLines":1,"bbox":[224,328,42,36]}
+{"kind":"shape","id":"sh/hwnyd0ri","slide":6,"bbox":[256,286,156,108]}
+{"kind":"textbox","id":"sh/axsfq1sn","slide":6,"text":"2","textPreview":"2","textChars":1,"textLines":1,"bbox":[270,304,40,32]}
+{"kind":"textbox","id":"sh/bylwz69s","slide":6,"text":"Swiss Ephemeris payload","textPreview":"Swiss Ephemeris payload","textChars":23,"textLines":1,"bbox":[270,344,122,42]}
+{"kind":"textbox","id":"sh/3ypwv690","slide":6,"text":"->","textPreview":"->","textChars":2,"textLines":1,"bbox":[422,328,42,36]}
+{"kind":"shape","id":"sh/2xwvm1sf","slide":6,"bbox":[454,286,156,108]}
+{"kind":"textbox","id":"sh/p07exgr6","slide":6,"text":"3","textPreview":"3","textChars":1,"textLines":1,"bbox":[468,304,40,32]}
+{"kind":"textbox","id":"sh/ozydobal","slide":6,"text":"Formula layers","textPreview":"Formula layers","textChars":14,"textLines":1,"bbox":[468,344,122,42]}
+{"kind":"textbox","id":"sh/fa5cr6t4","slide":6,"text":"->","textPreview":"->","textChars":2,"textLines":1,"bbox":[620,328,42,36]}
+{"kind":"shape","id":"sh/u9wvi1sj","slide":6,"bbox":[652,286,156,108]}
+{"kind":"textbox","id":"sh/1wnetwra","slide":6,"text":"4","textPreview":"4","textChars":1,"textLines":1,"bbox":[666,304,40,32]}
+{"kind":"textbox","id":"sh/gvedkbap","slide":6,"text":"Variable resolver","textPreview":"Variable resolver","textChars":17,"textLines":1,"bbox":[666,344,122,42]}
+{"kind":"textbox","id":"sh/765cnmts","slide":6,"text":"->","textPreview":"->","textChars":2,"textLines":1,"bbox":[818,328,42,36]}
+{"kind":"shape","id":"sh/65cvehsn","slide":6,"bbox":[850,286,156,108]}
+{"kind":"textbox","id":"sh/a1cvqhcf","slide":6,"text":"5","textPreview":"5","textChars":1,"textLines":1,"bbox":[864,304,40,32]}
+{"kind":"textbox","id":"sh/v2lwzmd0","slide":6,"text":"Authored block library","textPreview":"Authored block library","textChars":22,"textLines":1,"bbox":[864,344,122,42]}
+{"kind":"textbox","id":"sh/w3uxsrul","slide":6,"text":"->","textPreview":"->","textChars":2,"textLines":1,"bbox":[1016,328,42,36]}
+{"kind":"shape","id":"sh/x43e1wvq","slide":6,"bbox":[1048,286,156,108]}
+{"kind":"textbox","id":"sh/i5cfu1cb","slide":6,"text":"6","textPreview":"6","textChars":1,"textLines":1,"bbox":[1062,304,40,32]}
+{"kind":"textbox","id":"sh/j65w3mdw","slide":6,"text":"HTML + manifest","textPreview":"HTML + manifest","textChars":15,"textLines":1,"bbox":[1062,344,122,42]}
+{"kind":"textbox","id":"sh/k7exwruh","slide":6,"text":"Active report versions include Horoscope v1.0, Personal Forecast v1.0, Soul Ecosystem v1.0, Weekly Horoscope v0.1, and Year Ahead v2.0.","textPreview":"Active report versions include Horoscope v1.0, Personal Forecast v1.0, Soul Ecosystem v1.0, Weekly Horoscope v0.1, and Year Ahead v2.0.","textChars":135,"textLines":1,"bbox":[58,492,1040,58]}
+{"kind":"textbox","id":"sh/58ne5wv2","slide":6,"text":"Entangled Oracle suite pitch","textPreview":"Entangled Oracle suite pitch","textChars":28,"textLines":1,"bbox":[42,664,360,22]}
+{"kind":"textbox","id":"sh/6twfy1cn","slide":6,"text":"06","textPreview":"06","textChars":2,"textLines":1,"bbox":[1188,664,50,22]}
+{"kind":"notes","id":"nt/a73ejk","slide":6,"text":""}
+{"kind":"slide","id":"sl/pu6crl","slide":7,"title":"WHY IT CAN BE TRUSTED","textShapes":13}
+{"kind":"textbox","id":"sh/0bmd43et","slide":7,"text":"WHY IT CAN BE TRUSTED","textPreview":"WHY IT CAN BE TRUSTED","textChars":21,"textLines":1,"bbox":[42,42,500,28]}
+{"kind":"textbox","id":"sh/zadcbyd8","slide":7,"text":"The brand promise is not certainty. It is method, boundary, and provenance.","textPreview":"The brand promise is not certainty. It is method, boundary, and provenance.","textChars":75,"textLines":1,"bbox":[42,90,980,88]}
+{"kind":"textbox","id":"sh/y94v2twn","slide":7,"text":"METHODOLOGY","textPreview":"METHODOLOGY","textChars":11,"textLines":1,"bbox":[58,246,210,26]}
+{"kind":"textbox","id":"sh/90fuh8va","slide":7,"text":"Declared astrological choices","textPreview":"Declared astrological choices","textChars":29,"textLines":1,"bbox":[58,274,1040,34]}
+{"kind":"textbox","id":"sh/8z6d83ep","slide":7,"text":"Tropical zodiac, Whole Sign houses, Swiss Ephemeris, true node, mean Black Moon Lilith, and birth-time confidence rules.","textPreview":"Tropical zodiac, Whole Sign houses, Swiss Ephemeris, true node, mean Black Moon Lilith, and birth-time confidence rules.","textChars":120,"textLines":1,"bbox":[58,310,1040,48]}
+{"kind":"textbox","id":"sh/nyxcfydk","slide":7,"text":"LIMITS","textPreview":"LIMITS","textChars":6,"textLines":1,"bbox":[58,354,210,26]}
+{"kind":"textbox","id":"sh/mxov6dwz","slide":7,"text":"Non-deterministic language","textPreview":"Non-deterministic language","textChars":26,"textLines":1,"bbox":[58,382,1040,34]}
+{"kind":"textbox","id":"sh/x4zelsvm","slide":7,"text":"Timing windows describe emphasis and activation, not fixed future events, diagnosis, or professional advice.","textPreview":"Timing windows describe emphasis and activation, not fixed future events, diagnosis, or professional advice.","textChars":108,"textLines":1,"bbox":[58,418,1040,48]}
+{"kind":"textbox","id":"sh/w3qdcne1","slide":7,"text":"TRACE","textPreview":"TRACE","textChars":5,"textLines":1,"bbox":[58,462,210,26]}
+{"kind":"textbox","id":"sh/ulsz65wv","slide":7,"text":"Versioned output posture","textPreview":"Versioned output posture","textChars":24,"textLines":1,"bbox":[58,490,1040,34]}
+{"kind":"textbox","id":"sh/fm1gfax0","slide":7,"text":"Report manifests record versions, methodology labels, active modules, warnings, and report-surface traces.","textPreview":"Report manifests record versions, methodology labels, active modules, warnings, and report-surface traces.","textChars":106,"textLines":1,"bbox":[58,526,1040,48]}
+{"kind":"textbox","id":"sh/gnah8fel","slide":7,"text":"Entangled Oracle suite pitch","textPreview":"Entangled Oracle suite pitch","textChars":28,"textLines":1,"bbox":[42,664,360,22]}
+{"kind":"textbox","id":"sh/hojyhkf6","slide":7,"text":"07","textPreview":"07","textChars":2,"textLines":1,"bbox":[1188,664,50,22]}
+{"kind":"notes","id":"nt/pu6crl","slide":7,"text":""}
+{"kind":"slide","id":"sl/s41cdw","slide":8,"title":"MOBILE AND RITUAL SURFACES","textShapes":10}
+{"kind":"textbox","id":"sh/gvid0ne5","slide":8,"text":"MOBILE AND RITUAL SURFACES","textPreview":"MOBILE AND RITUAL SURFACES","textChars":26,"textLines":1,"bbox":[42,42,500,28]}
+{"kind":"textbox","id":"sh/vu9w7ix0","slide":8,"text":"The consumer apps turn the same seriousness into tactile daily practice.","textPreview":"The consumer apps turn the same seriousness into tactile daily practice.","textChars":72,"textLines":1,"bbox":[42,90,960,88]}
+{"kind":"shape","id":"sh/ut0vydwf","slide":8,"bbox":[58,224,360,286]}
+{"kind":"textbox","id":"sh/50redcf2","slide":8,"text":"Rune App","textPreview":"Rune App","textChars":8,"textLines":1,"bbox":[86,258,260,36]}
+{"kind":"textbox","id":"sh/4zix47eh","slide":8,"text":"Live-field casting, entropy lock, Nine Worlds interpretive structure, freehand field cast, local journal.","textPreview":"Live-field casting, entropy lock, Nine Worlds interpretive structure, freehand field cast, local journal.","textChars":105,"textLines":1,"bbox":[86,326,260,112]}
+{"kind":"shape","id":"sh/3y9wb2xw","slide":8,"bbox":[460,224,360,286]}
+{"kind":"textbox","id":"sh/ix0f2xwb","slide":8,"text":"Tarot App","textPreview":"Tarot App","textChars":9,"textLines":1,"bbox":[488,258,260,36]}
+{"kind":"textbox","id":"sh/dobehcfy","slide":8,"text":"Locked spreads, validated 78-card content pack, card study, orientation logic, reading journal.","textPreview":"Locked spreads, validated 78-card content pack, card study, orientation logic, reading journal.","textChars":95,"textLines":1,"bbox":[488,326,260,112]}
+{"kind":"shape","id":"sh/sn2x87ed","slide":8,"bbox":[862,224,326,286]}
+{"kind":"textbox","id":"sh/y58vah4f","slide":8,"text":"Shared Core","textPreview":"Shared Core","textChars":11,"textLines":1,"bbox":[890,258,260,36]}
+{"kind":"textbox","id":"sh/z6hc3m50","slide":8,"text":"Entropy harvesting, deterministic hash routing, reading records, persistence, shared validation boundaries.","textPreview":"Entropy harvesting, deterministic hash routing, reading records, persistence, shared validation boundaries.","textChars":107,"textLines":1,"bbox":[890,326,240,112]}
+{"kind":"textbox","id":"sh/k7qdcrml","slide":8,"text":"Entangled Oracle suite pitch","textPreview":"Entangled Oracle suite pitch","textChars":28,"textLines":1,"bbox":[42,664,360,22]}
+{"kind":"textbox","id":"sh/l8ju5wn6","slide":8,"text":"08","textPreview":"08","textChars":2,"textLines":1,"bbox":[1188,664,50,22]}
+{"kind":"notes","id":"nt/s41cdw","slide":8,"text":""}
+{"kind":"slide","id":"sl/l4i2wh","slide":9,"title":"ENTANGLED ASTROLOGY","textShapes":13}
+{"kind":"textbox","id":"sh/i107yhov","slide":9,"text":"ENTANGLED ASTROLOGY","textPreview":"ENTANGLED ASTROLOGY","textChars":19,"textLines":1,"bbox":[42,42,500,28]}
+{"kind":"textbox","id":"sh/54r6tcnm","slide":9,"text":"The native astrology app is an inspectable mobile client for the engine.","textPreview":"The native astrology app is an inspectable mobile client for the engine.","textChars":72,"textLines":1,"bbox":[42,90,980,88]}
+{"kind":"textbox","id":"sh/43ip0761","slide":9,"text":"NAVIGATION","textPreview":"NAVIGATION","textChars":10,"textLines":1,"bbox":[58,246,210,26]}
+{"kind":"textbox","id":"sh/vepon254","slide":9,"text":"Today, Timeline, Chart, Places, Library","textPreview":"Today, Timeline, Chart, Places, Library","textChars":39,"textLines":1,"bbox":[58,274,1040,34]}
+{"kind":"textbox","id":"sh/udg7uxoz","slide":9,"text":"A mobile-first app shell focused on what is active, when it peaks, and why the interpretation says what it says.","textPreview":"A mobile-first app shell focused on what is active, when it peaks, and why the interpretation says what it says.","textChars":112,"textLines":1,"bbox":[58,310,1040,48]}
+{"kind":"textbox","id":"sh/hgr6pcna","slide":9,"text":"BOUNDARY","textPreview":"BOUNDARY","textChars":8,"textLines":1,"bbox":[58,354,210,26]}
+{"kind":"textbox","id":"sh/gfipw76p","slide":9,"text":"No fabricated astrology content","textPreview":"No fabricated astrology content","textChars":31,"textLines":1,"bbox":[58,382,1040,34]}
+{"kind":"textbox","id":"sh/7apojip8","slide":9,"text":"The app renders validated engine responses; unsupported surfaces remain visibly unavailable.","textPreview":"The app renders validated engine responses; unsupported surfaces remain visibly unavailable.","textChars":92,"textLines":1,"bbox":[58,418,1040,48]}
+{"kind":"textbox","id":"sh/m9gnqxon","slide":9,"text":"BRIDGE","textPreview":"BRIDGE","textChars":6,"textLines":1,"bbox":[58,462,210,26]}
+{"kind":"textbox","id":"sh/ofatw3a5","slide":9,"text":"FastAPI adapter over the existing engine","textPreview":"FastAPI adapter over the existing engine","textChars":40,"textLines":1,"bbox":[58,490,1040,34]}
+{"kind":"textbox","id":"sh/9gja58rq","slide":9,"text":"A typed Ktor client talks to a local development backend that wraps the Python calculation/report engine.","textPreview":"A typed Ktor client talks to a local development backend that wraps the Python calculation/report engine.","textChars":105,"textLines":1,"bbox":[58,526,1040,48]}
+{"kind":"textbox","id":"sh/mtsbutsz","slide":9,"text":"Entangled Oracle suite pitch","textPreview":"Entangled Oracle suite pitch","textChars":28,"textLines":1,"bbox":[42,664,360,22]}
+{"kind":"textbox","id":"sh/nu1s3y9k","slide":9,"text":"09","textPreview":"09","textChars":2,"textLines":1,"bbox":[1188,664,50,22]}
+{"kind":"notes","id":"nt/l4i2wh","slide":9,"text":""}
+{"kind":"slide","id":"sl/11cwx0","slide":10,"title":"SHADOW COMPASS ADJACENCY","textShapes":14}
+{"kind":"textbox","id":"sh/ul0jqdsz","slide":10,"text":"SHADOW COMPASS ADJACENCY","textPreview":"SHADOW COMPASS ADJACENCY","textChars":24,"textLines":1,"bbox":[42,42,560,28]}
+{"kind":"textbox","id":"sh/horilsrq","slide":10,"text":"Shadow Compass expands the suite into consent-centered reflection.","textPreview":"Shadow Compass expands the suite into consent-centered reflection.","textChars":66,"textLines":1,"bbox":[42,90,980,88]}
+{"kind":"shape","id":"sh/gni1sna5","slide":10,"bbox":[58,230,1120,70]}
+{"kind":"textbox","id":"sh/3q90ni9w","slide":10,"text":"Notice the pattern -> shift the state -> reflect with structure -> choose an aligned response -> review change over time.","textPreview":"Notice the pattern -> shift the state -> reflect with structure -> choose an aligned response -> review change over time.","textChars":121,"textLines":1,"bbox":[82,250,1060,32]}
+{"kind":"textbox","id":"sh/ip0juxsb","slide":10,"text":"FOUNDATION","textPreview":"FOUNDATION","textChars":10,"textLines":1,"bbox":[58,354,210,26]}
+{"kind":"textbox","id":"sh/5sbipsrm","slide":10,"text":"Modular monolith with PWA shell","textPreview":"Modular monolith with PWA shell","textChars":31,"textLines":1,"bbox":[58,382,1040,34]}
+{"kind":"textbox","id":"sh/4r21wna1","slide":10,"text":"Consumer routes, Studio/Admin placeholders, Prisma blueprint, domain modules, and demo-first persistence.","textPreview":"Consumer routes, Studio/Admin placeholders, Prisma blueprint, domain modules, and demo-first persistence.","textChars":105,"textLines":1,"bbox":[58,418,1040,48]}
+{"kind":"textbox","id":"sh/rutkr29s","slide":10,"text":"AI POLICY","textPreview":"AI POLICY","textChars":9,"textLines":1,"bbox":[58,440,210,26]}
+{"kind":"textbox","id":"sh/qtkjyxs7","slide":10,"text":"Gateway-bound and hypothesis-led","textPreview":"Gateway-bound and hypothesis-led","textChars":32,"textLines":1,"bbox":[58,468,1040,34]}
+{"kind":"textbox","id":"sh/sbe5sbel","slide":10,"text":"AI is typed, provider-neutral, schema-validated, and explicitly not crisis counseling or diagnosis.","textPreview":"AI is typed, provider-neutral, schema-validated, and explicitly not crisis counseling or diagnosis.","textChars":99,"textLines":1,"bbox":[58,504,1040,48]}
+{"kind":"textbox","id":"sh/tcnmlgv6","slide":10,"text":"PRIVACY","textPreview":"PRIVACY","textChars":7,"textLines":1,"bbox":[58,526,210,26]}
+{"kind":"textbox","id":"sh/69wnq1wf","slide":10,"text":"Sensitive text is purpose-bound","textPreview":"Sensitive text is purpose-bound","textChars":31,"textLines":1,"bbox":[58,554,1040,34]}
+{"kind":"textbox","id":"sh/7a54j6d0","slide":10,"text":"Consent flags govern AI analysis, reports, and practitioner sharing; analytics receives sanitized metadata.","textPreview":"Consent flags govern AI analysis, reports, and practitioner sharing; analytics receives sanitized metadata.","textChars":107,"textLines":1,"bbox":[58,590,1040,48]}
+{"kind":"textbox","id":"sh/gfe5wbeh","slide":10,"text":"Entangled Oracle suite pitch","textPreview":"Entangled Oracle suite pitch","textChars":28,"textLines":1,"bbox":[42,664,360,22]}
+{"kind":"textbox","id":"sh/hg7mpgv2","slide":10,"text":"10","textPreview":"10","textChars":2,"textLines":1,"bbox":[1188,664,50,22]}
+{"kind":"notes","id":"nt/11cwx0","slide":10,"text":""}
+{"kind":"slide","id":"sl/j0xbm0","slide":11,"title":"GO-TO-MARKET","textShapes":10}
+{"kind":"textbox","id":"sh/dk7yt0be","slide":11,"text":"GO-TO-MARKET","textPreview":"GO-TO-MARKET","textChars":12,"textLines":1,"bbox":[42,42,500,28]}
+{"kind":"textbox","id":"sh/qhgfy5s3","slide":11,"text":"Start controlled, earn trust, then widen access.","textPreview":"Start controlled, earn trust, then widen access.","textChars":48,"textLines":1,"bbox":[42,90,980,88]}
+{"kind":"shape","id":"sh/ripgrat8","slide":11,"bbox":[58,254,340,250]}
+{"kind":"textbox","id":"sh/4fyxwvax","slide":11,"text":"1. Controlled beta","textPreview":"1. Controlled beta","textChars":18,"textLines":1,"bbox":[82,292,284,52]}
+{"kind":"textbox","id":"sh/5g7ep0bi","slide":11,"text":"Manual report generation, fixed review pack, feedback intake, no public self-serve birth-data flow yet.","textPreview":"Manual report generation, fixed review pack, feedback intake, no public self-serve birth-data flow yet.","textChars":103,"textLines":1,"bbox":[82,368,278,92]}
+{"kind":"shape","id":"sh/idwfulsr","slide":11,"bbox":[448,254,340,250]}
+{"kind":"textbox","id":"sh/3e5wnqtc","slide":11,"text":"2. Practitioner and partner demos","textPreview":"2. Practitioner and partner demos","textChars":33,"textLines":1,"bbox":[472,292,284,52]}
+{"kind":"textbox","id":"sh/obix8fa1","slide":11,"text":"Side-by-side reports, methodology overview, sample comparisons, local QA and PDF workflow.","textPreview":"Side-by-side reports, methodology overview, sample comparisons, local QA and PDF workflow.","textChars":90,"textLines":1,"bbox":[472,368,278,92]}
+{"kind":"shape","id":"sh/9cry1krm","slide":11,"bbox":[838,254,340,250]}
+{"kind":"textbox","id":"sh/1sz29gnu","slide":11,"text":"3. Consumer surfaces","textPreview":"3. Consumer surfaces","textChars":20,"textLines":1,"bbox":[862,292,284,52]}
+{"kind":"textbox","id":"sh/0rqlgb69","slide":11,"text":"Private Studio, native mobile clients, dashboard, and optional reflection features after privacy and hosting controls mature.","textPreview":"Private Studio, native mobile clients, dashboard, and optional reflection features after privacy and hosting controls mature.","textChars":125,"textLines":1,"bbox":[862,368,278,92]}
+{"kind":"textbox","id":"sh/fqhk765o","slide":11,"text":"Entangled Oracle suite pitch","textPreview":"Entangled Oracle suite pitch","textChars":28,"textLines":1,"bbox":[42,664,360,22]}
+{"kind":"textbox","id":"sh/epo3e1o3","slide":11,"text":"11","textPreview":"11","textChars":2,"textLines":1,"bbox":[1188,664,50,22]}
+{"kind":"notes","id":"nt/j0xbm0","slide":11,"text":""}
+{"kind":"slide","id":"sl/o68vux","slide":12,"title":"ROADMAP","textShapes":10}
+{"kind":"textbox","id":"sh/0b29wr69","slide":12,"text":"ROADMAP","textPreview":"ROADMAP","textChars":7,"textLines":1,"bbox":[42,42,500,28]}
+{"kind":"textbox","id":"sh/fatsnm5o","slide":12,"text":"The next work is less about inventing features than hardening evidence.","textPreview":"The next work is less about inventing features than hardening evidence.","textChars":71,"textLines":1,"bbox":[42,90,1050,88]}
+{"kind":"textbox","id":"sh/e9kruho3","slide":12,"text":"Now","textPreview":"Now","textChars":3,"textLines":1,"bbox":[76,246,120,38]}
+{"kind":"shape","id":"sh/d8balcni","slide":12,"bbox":[205,265,80,3]}
+{"kind":"textbox","id":"sh/sn29s76x","slide":12,"text":"Report Studio beta, review-pack demos, app split boundaries, content validation","textPreview":"Report Studio beta, review-pack demos, app split boundaries, content validation","textChars":79,"textLines":1,"bbox":[320,244,760,48]}
+{"kind":"textbox","id":"sh/rmt8jmpc","slide":12,"text":"Next","textPreview":"Next","textChars":4,"textLines":1,"bbox":[76,364,120,38]}
+{"kind":"shape","id":"sh/qlkrqhor","slide":12,"bbox":[205,383,80,3]}
+{"kind":"textbox","id":"sh/x4faxgnm","slide":12,"text":"Predictive sidecar export, raw event provenance, public-safe manifests, mobile polish","textPreview":"Predictive sidecar export, raw event provenance, public-safe manifests, mobile polish","textChars":85,"textLines":1,"bbox":[320,362,760,48]}
+{"kind":"textbox","id":"sh/cj694b61","slide":12,"text":"Later","textPreview":"Later","textChars":5,"textLines":1,"bbox":[76,482,120,38]}
+{"kind":"shape","id":"sh/a1ozap4n","slide":12,"bbox":[205,501,80,3]}
+{"kind":"textbox","id":"sh/b2hgjul8","slide":12,"text":"Asteroid forecast activation, long-clock chapters, practitioner Studio, paid/self-serve gating","textPreview":"Asteroid forecast activation, long-clock chapters, practitioner Studio, paid/self-serve gating","textChars":94,"textLines":1,"bbox":[320,480,760,48]}
+{"kind":"textbox","id":"sh/c3qhcz2t","slide":12,"text":"Entangled Oracle suite pitch","textPreview":"Entangled Oracle suite pitch","textChars":28,"textLines":1,"bbox":[42,664,360,22]}
+{"kind":"textbox","id":"sh/x4zyl43e","slide":12,"text":"12","textPreview":"12","textChars":2,"textLines":1,"bbox":[1188,664,50,22]}
+{"kind":"notes","id":"nt/o68vux","slide":12,"text":""}
+{"kind":"slide","id":"sl/ftdtfq","slide":13,"title":"RISKS AND DISCIPLINE","textShapes":13}
+{"kind":"textbox","id":"sh/zat8jqlw","slide":13,"text":"RISKS AND DISCIPLINE","textPreview":"RISKS AND DISCIPLINE","textChars":20,"textLines":1,"bbox":[42,42,500,28]}
+{"kind":"textbox","id":"sh/kb2pcv2h","slide":13,"text":"The strongest pitch is honest about what is not ready yet.","textPreview":"The strongest pitch is honest about what is not ready yet.","textChars":58,"textLines":1,"bbox":[42,90,980,88]}
+{"kind":"textbox","id":"sh/lcbql032","slide":13,"text":"PREDICTIVE","textPreview":"PREDICTIVE","textChars":10,"textLines":1,"bbox":[58,246,210,26]}
+{"kind":"textbox","id":"sh/mdk7e5kn","slide":13,"text":"Strong scaffolding, incomplete validation export","textPreview":"Strong scaffolding, incomplete validation export","textChars":48,"textLines":1,"bbox":[58,274,1040,34]}
+{"kind":"textbox","id":"sh/7et8nals","slide":13,"text":"The engine computes signal/window concepts, but raw predictive evidence needs a durable sidecar before bolder claims.","textPreview":"The engine computes signal/window concepts, but raw predictive evidence needs a durable sidecar before bolder claims.","textChars":117,"textLines":1,"bbox":[58,310,1040,48]}
+{"kind":"textbox","id":"sh/8f2pgf2d","slide":13,"text":"DAILY","textPreview":"DAILY","textChars":5,"textLines":1,"bbox":[58,354,210,26]}
+{"kind":"textbox","id":"sh/9gvqpk3y","slide":13,"text":"Daily Horoscope needs reproducibility hardening","textPreview":"Daily Horoscope needs reproducibility hardening","textChars":47,"textLines":1,"bbox":[58,382,1040,34]}
+{"kind":"textbox","id":"sh/u147ipkj","slide":13,"text":"The current audit says daily generation is tied to system date rather than the requested report date.","textPreview":"The current audit says daily generation is tied to system date rather than the requested report date.","textChars":101,"textLines":1,"bbox":[58,418,1040,48]}
+{"kind":"textbox","id":"sh/v2d8ral4","slide":13,"text":"PRIVACY","textPreview":"PRIVACY","textChars":7,"textLines":1,"bbox":[58,462,210,26]}
+{"kind":"textbox","id":"sh/zedojqdo","slide":13,"text":"Public self-serve needs deliberate infrastructure","textPreview":"Public self-serve needs deliberate infrastructure","textChars":49,"textLines":1,"bbox":[58,490,1040,34]}
+{"kind":"textbox","id":"sh/yd47alw3","slide":13,"text":"Accounts, deletion, rate limits, payment, hosted generation, and public-safe manifests remain deferred.","textPreview":"Accounts, deletion, rate limits, payment, hosted generation, and public-safe manifests remain deferred.","textChars":103,"textLines":1,"bbox":[58,526,1040,48]}
+{"kind":"textbox","id":"sh/l0v6lgvu","slide":13,"text":"Entangled Oracle suite pitch","textPreview":"Entangled Oracle suite pitch","textChars":28,"textLines":1,"bbox":[42,664,360,22]}
+{"kind":"textbox","id":"sh/0fmpcbe9","slide":13,"text":"13","textPreview":"13","textChars":2,"textLines":1,"bbox":[1188,664,50,22]}
+{"kind":"notes","id":"nt/ftdtfq","slide":13,"text":""}
+{"kind":"slide","id":"sl/9wj0hc","slide":14,"title":"CLOSING","textShapes":5}
+{"kind":"textbox","id":"sh/j218n29s","slide":14,"text":"CLOSING","textPreview":"CLOSING","textChars":7,"textLines":1,"bbox":[42,42,500,28]}
+{"kind":"textbox","id":"sh/k3u9g7qd","slide":14,"text":"The ask: support the move from powerful local system to controlled beta suite.","textPreview":"The ask: support the move from powerful local system to controlled beta suite.","textChars":78,"textLines":1,"bbox":[42,166,1000,190]}
+{"kind":"textbox","id":"sh/l43qpsry","slide":14,"text":"Near-term support should fund hardening, QA, privacy-safe infrastructure, design polish, and partner-ready demo materials before broad public self-serve launch.","textPreview":"Near-term support should fund hardening, QA, privacy-safe infrastructure, design polish, and partner-ready demo materials before broad pu...","textChars":160,"textLines":1,"bbox":[42,456,840,96]}
+{"kind":"shape","id":"sh/ads7ad8b","slide":14,"bbox":[42,626,1196,2]}
+{"kind":"textbox","id":"sh/be18ji9g","slide":14,"text":"Entangled Oracle suite pitch","textPreview":"Entangled Oracle suite pitch","textChars":28,"textLines":1,"bbox":[42,664,360,22]}
+{"kind":"textbox","id":"sh/wfa9cnq1","slide":14,"text":"14","textPreview":"14","textChars":2,"textLines":1,"bbox":[1188,664,50,22]}
+{"kind":"notes","id":"nt/9wj0hc","slide":14,"text":""}

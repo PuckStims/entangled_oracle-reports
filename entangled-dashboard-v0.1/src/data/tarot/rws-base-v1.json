@@ -1,0 +1,3011 @@
+{
+  "version": 1,
+  "source": "EntangledOracle RWS content pack v1",
+  "cards": [
+    {
+      "id": "major_fool",
+      "index": 0,
+      "name": "The Fool",
+      "shortName": "Fool",
+      "arcana": "major",
+      "kind": "major",
+      "number": "0",
+      "rank": "0",
+      "keywords": [
+        "beginning",
+        "trust",
+        "risk",
+        "openness",
+        "freedom",
+        "threshold",
+        "innocence",
+        "discernment"
+      ],
+      "meanings": [
+        "The Fool marks a beginning that has not yet hardened into a plan. Something is opening, and the next step may require more trust than certainty. This card can point to a fresh start, an invitation, or a risk that asks for honest movement. Its wisdom is not recklessness; it is the willingness to begin before the whole map has arrived."
+      ],
+      "reversedMeanings": [
+        "Reversed, The Fool warns that freedom may be turning into avoidance. A leap may be premature, a risk may be underexamined, or innocence may be protecting itself from facts it needs to face. This card can also point to fear of beginning, where the soul keeps circling the threshold and calling it preparation. The question is not whether to move, but whether the movement is awake."
+      ],
+      "cautions": [
+        "Reversed, The Fool warns that freedom may be turning into avoidance. A leap may be premature, a risk may be underexamined, or innocence may be protecting itself from facts it needs to face. This card can also point to fear of beginning, where the soul keeps circling the threshold and calling it preparation. The question is not whether to move, but whether the movement is awake."
+      ],
+      "prompts": [
+        "What beginning is asking for trust without asking you to abandon discernment?"
+      ],
+      "essence": "The Sacred Beginner",
+      "compositionNote": "A new path opens before there is enough evidence to control the outcome.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "major_magician",
+      "index": 1,
+      "name": "The Magician",
+      "shortName": "Magician",
+      "arcana": "major",
+      "kind": "major",
+      "number": "1",
+      "rank": "1",
+      "keywords": [
+        "agency",
+        "skill",
+        "focus",
+        "intention",
+        "power",
+        "resourcefulness",
+        "manifestation",
+        "integrity"
+      ],
+      "meanings": [
+        "The Magician marks the moment potential becomes available for use. This card says the tools are present, but they still need focus, timing, and a clear act of will. Something may be ready to begin because you are no longer only imagining it. The question is whether you will direct your energy with integrity, or scatter it across every possible version of yourself."
+      ],
+      "reversedMeanings": [
+        "Reversed, The Magician warns that power may be unfocused, misused, or performed rather than embodied. The issue may be scattered attention, unclear motives, or a gap between what is promised and what can actually be delivered. This card can also show self-doubt that keeps real skill hidden. Before acting, return to the difference between wanting impact and being ready to carry it."
+      ],
+      "cautions": [
+        "Reversed, The Magician warns that power may be unfocused, misused, or performed rather than embodied. The issue may be scattered attention, unclear motives, or a gap between what is promised and what can actually be delivered. This card can also show self-doubt that keeps real skill hidden. Before acting, return to the difference between wanting impact and being ready to carry it."
+      ],
+      "prompts": [
+        "Where are your tools already present, and what would it mean to use them cleanly?"
+      ],
+      "essence": "The Embodied Will",
+      "compositionNote": "Intention becomes real when attention and skill move through the same hand.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "major_high_priestess",
+      "index": 2,
+      "name": "The High Priestess",
+      "shortName": "High Priestess",
+      "arcana": "major",
+      "kind": "major",
+      "number": "2",
+      "rank": "2",
+      "keywords": [
+        "intuition",
+        "mystery",
+        "silence",
+        "discernment",
+        "secrecy",
+        "inner knowing",
+        "patience",
+        "receptivity"
+      ],
+      "meanings": [
+        "The High Priestess marks knowledge that has not yet become public, verbal, or easy to prove. Something beneath the surface may be asking for patience rather than pursuit. This card can indicate intuition, secrecy, or a truth that reveals itself through stillness. Do not force the answer too quickly; the quiet may be part of the message."
+      ],
+      "reversedMeanings": [
+        "Reversed, The High Priestess warns that silence may be turning into avoidance, confusion, or secrecy without purpose. A truth may be buried too deeply, or intuition may be getting mixed with fear. This card can also show ignoring a signal because it is inconvenient. The repair is not to force revelation; it is to separate deep knowing from emotional static."
+      ],
+      "cautions": [
+        "Reversed, The High Priestess warns that silence may be turning into avoidance, confusion, or secrecy without purpose. A truth may be buried too deeply, or intuition may be getting mixed with fear. This card can also show ignoring a signal because it is inconvenient. The repair is not to force revelation; it is to separate deep knowing from emotional static."
+      ],
+      "prompts": [
+        "What do you know quietly, before proof or explanation arrives?"
+      ],
+      "essence": "The Keeper of Hidden Knowing",
+      "compositionNote": "Some truth matures in silence before it can be named without distortion.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "major_empress",
+      "index": 3,
+      "name": "The Empress",
+      "shortName": "Empress",
+      "arcana": "major",
+      "kind": "major",
+      "number": "3",
+      "rank": "3",
+      "keywords": [
+        "growth",
+        "care",
+        "creativity",
+        "nourishment",
+        "pleasure",
+        "embodiment",
+        "abundance",
+        "receiving"
+      ],
+      "meanings": [
+        "The Empress marks growth through care, pleasure, and sustained attention. Something may be ready to flourish because it has been given the conditions to live. This card can point to creativity, intimacy, or a season where the body’s wisdom matters. Its abundance is not excess; it is the natural result of tending what is alive."
+      ],
+      "reversedMeanings": [
+        "Reversed, The Empress warns that care may be blocked, depleted, or tangled with the need to be needed. Growth may be stalled because the environment cannot support it, or because giving has replaced receiving. This card can also show creative drought, body disconnection, or abundance without boundaries. The question is what must be restored before life can flourish again."
+      ],
+      "cautions": [
+        "Reversed, The Empress warns that care may be blocked, depleted, or tangled with the need to be needed. Growth may be stalled because the environment cannot support it, or because giving has replaced receiving. This card can also show creative drought, body disconnection, or abundance without boundaries. The question is what must be restored before life can flourish again."
+      ],
+      "prompts": [
+        "What is trying to grow, and what conditions would actually help it live?"
+      ],
+      "essence": "The Living Source",
+      "compositionNote": "What receives steady nourishment becomes fertile enough to take form.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "major_emperor",
+      "index": 4,
+      "name": "The Emperor",
+      "shortName": "Emperor",
+      "arcana": "major",
+      "kind": "major",
+      "number": "4",
+      "rank": "4",
+      "keywords": [
+        "structure",
+        "authority",
+        "discipline",
+        "leadership",
+        "boundaries",
+        "stability",
+        "protection",
+        "responsibility"
+      ],
+      "meanings": [
+        "The Emperor marks the need for structure that can actually hold. A situation may require leadership, boundaries, or a clearer chain of responsibility. This card can point to authority, discipline, or the moment when intention must become architecture. Its strength is not control for its own sake; it is the steadiness that lets life become livable."
+      ],
+      "reversedMeanings": [
+        "Reversed, The Emperor warns that structure may be turning into rigidity, control, or fear of vulnerability. Authority may be misused, avoided, or performed without real responsibility. This card can also show weak boundaries hidden beneath a harsh exterior. The issue is not power itself; it is whether power is mature enough to protect rather than dominate."
+      ],
+      "cautions": [
+        "Reversed, The Emperor warns that structure may be turning into rigidity, control, or fear of vulnerability. Authority may be misused, avoided, or performed without real responsibility. This card can also show weak boundaries hidden beneath a harsh exterior. The issue is not power itself; it is whether power is mature enough to protect rather than dominate."
+      ],
+      "prompts": [
+        "Where would stronger structure create more safety rather than less freedom?"
+      ],
+      "essence": "The Sacred Architect",
+      "compositionNote": "Power becomes protective when it accepts form, limits, and responsibility.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "major_hierophant",
+      "index": 5,
+      "name": "The Hierophant",
+      "shortName": "Hierophant",
+      "arcana": "major",
+      "kind": "major",
+      "number": "5",
+      "rank": "5",
+      "keywords": [
+        "tradition",
+        "teaching",
+        "commitment",
+        "values",
+        "ritual",
+        "mentorship",
+        "belief",
+        "belonging"
+      ],
+      "meanings": [
+        "The Hierophant marks a meeting with tradition, teaching, or a system that gives private experience a larger frame. This card can point to mentorship, initiation, or a formal commitment that asks you to learn the language of belonging. Its wisdom is not blind obedience; it is the recognition that some truths become stronger when they are practiced with others."
+      ],
+      "reversedMeanings": [
+        "Reversed, The Hierophant warns that tradition may be turning into conformity, pressure, or obedience without meaning. A rule may be treated as sacred simply because it is old. This card can also show rejection of all guidance because authority once failed you. The question is whether you are choosing your path freely, or only reacting to the systems around you."
+      ],
+      "cautions": [
+        "Reversed, The Hierophant warns that tradition may be turning into conformity, pressure, or obedience without meaning. A rule may be treated as sacred simply because it is old. This card can also show rejection of all guidance because authority once failed you. The question is whether you are choosing your path freely, or only reacting to the systems around you."
+      ],
+      "prompts": [
+        "Which teaching still carries truth, and which rule has lost its meaning?"
+      ],
+      "essence": "The Living Tradition",
+      "compositionNote": "Meaning becomes durable when private belief enters a shared form.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "major_lovers",
+      "index": 6,
+      "name": "The Lovers",
+      "shortName": "Lovers",
+      "arcana": "major",
+      "kind": "major",
+      "number": "6",
+      "rank": "6",
+      "keywords": [
+        "love",
+        "choice",
+        "alignment",
+        "values",
+        "desire",
+        "partnership",
+        "integrity",
+        "union"
+      ],
+      "meanings": [
+        "The Lovers marks a choice that cannot be made cleanly without consulting the heart and the conscience. This card can point to love, attraction, or a values decision with real consequence. Its center is not romance alone; it is alignment. Something is asking whether your desire and your deeper truth can stand in the same room."
+      ],
+      "reversedMeanings": [
+        "Reversed, The Lovers warns of misalignment, avoidance, or desire split against itself. A choice may be delayed because every option costs something. This card can also show attraction without integrity, or harmony purchased by silence. The issue is not that desire is wrong; it is that desire needs to tell the truth."
+      ],
+      "cautions": [
+        "Reversed, The Lovers warns of misalignment, avoidance, or desire split against itself. A choice may be delayed because every option costs something. This card can also show attraction without integrity, or harmony purchased by silence. The issue is not that desire is wrong; it is that desire needs to tell the truth."
+      ],
+      "prompts": [
+        "Where is desire asking you to choose with more integrity?"
+      ],
+      "essence": "The Chosen Union",
+      "compositionNote": "Desire becomes meaningful when it asks the self to choose with integrity.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "major_chariot",
+      "index": 7,
+      "name": "The Chariot",
+      "shortName": "Chariot",
+      "arcana": "major",
+      "kind": "major",
+      "number": "7",
+      "rank": "7",
+      "keywords": [
+        "movement",
+        "focus",
+        "discipline",
+        "direction",
+        "victory",
+        "momentum",
+        "control",
+        "willpower"
+      ],
+      "meanings": [
+        "The Chariot marks movement that requires discipline, focus, and inner command. A situation may be ready to advance, but only if the will can hold its line under pressure. This card can point to victory, travel, or momentum earned through self-direction. The path forward is not passive; it asks you to steer."
+      ],
+      "reversedMeanings": [
+        "Reversed, The Chariot warns that momentum may be breaking apart because the inner forces are not aligned. There may be conflict, pressure, or movement without a real destination. This card can also show stalled progress because control has become too tight. The repair is not to push harder; it is to regain the center that knows where it is going."
+      ],
+      "cautions": [
+        "Reversed, The Chariot warns that momentum may be breaking apart because the inner forces are not aligned. There may be conflict, pressure, or movement without a real destination. This card can also show stalled progress because control has become too tight. The repair is not to push harder; it is to regain the center that knows where it is going."
+      ],
+      "prompts": [
+        "What direction would your energy choose if it stopped fighting itself?"
+      ],
+      "essence": "The Directed Will",
+      "compositionNote": "Progress begins when competing forces are gathered into one chosen direction.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "major_strength",
+      "index": 8,
+      "name": "Strength",
+      "shortName": "Strength",
+      "arcana": "major",
+      "kind": "major",
+      "number": "8",
+      "rank": "8",
+      "keywords": [
+        "courage",
+        "patience",
+        "instinct",
+        "compassion",
+        "resilience",
+        "desire",
+        "self-trust",
+        "gentleness"
+      ],
+      "meanings": [
+        "Strength marks courage that does not need to become domination. A situation may call for patience, tenderness, or the kind of self-command that can stay present with intensity. This card can point to resilience, desire, or emotional bravery. Its power is quiet but not weak; it knows that what is integrated becomes less dangerous than what is suppressed."
+      ],
+      "reversedMeanings": [
+        "Reversed, Strength warns that power may be turning into suppression, shame, or loss of self-trust. You may be forcing yourself through something that needs care, or letting fear convince you that your desire is dangerous. This card can also show aggression covering vulnerability. The repair is not to become harder; it is to become more honestly connected to your own force."
+      ],
+      "cautions": [
+        "Reversed, Strength warns that power may be turning into suppression, shame, or loss of self-trust. You may be forcing yourself through something that needs care, or letting fear convince you that your desire is dangerous. This card can also show aggression covering vulnerability. The repair is not to become harder; it is to become more honestly connected to your own force."
+      ],
+      "prompts": [
+        "What part of you needs guidance rather than control?"
+      ],
+      "essence": "The Gentle Mastery",
+      "compositionNote": "True power appears when instinct is met with patience instead of force.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "major_hermit",
+      "index": 9,
+      "name": "The Hermit",
+      "shortName": "Hermit",
+      "arcana": "major",
+      "kind": "major",
+      "number": "9",
+      "rank": "9",
+      "keywords": [
+        "solitude",
+        "wisdom",
+        "reflection",
+        "guidance",
+        "study",
+        "discernment",
+        "distance",
+        "clarity"
+      ],
+      "meanings": [
+        "The Hermit marks a necessary turn inward. A situation may need solitude, study, or distance from collective noise before the next truth can be seen clearly. This card can point to guidance, maturity, or a quieter phase of searching. It does not reject the world; it steps back long enough to know what kind of light it can carry back."
+      ],
+      "reversedMeanings": [
+        "Reversed, The Hermit warns that solitude may be turning into isolation, avoidance, or suspicion of every outside voice. A needed retreat may have gone on too long, or the search for certainty may be delaying participation in life. This card can also show fear of being alone. The question is whether withdrawal is helping you see, or helping you disappear."
+      ],
+      "cautions": [
+        "Reversed, The Hermit warns that solitude may be turning into isolation, avoidance, or suspicion of every outside voice. A needed retreat may have gone on too long, or the search for certainty may be delaying participation in life. This card can also show fear of being alone. The question is whether withdrawal is helping you see, or helping you disappear."
+      ],
+      "prompts": [
+        "What becomes clear when you step away from the noise?"
+      ],
+      "essence": "The Inner Lantern",
+      "compositionNote": "Withdrawal becomes wisdom when it clarifies what noise has been hiding.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "major_wheel_of_fortune",
+      "index": 10,
+      "name": "Wheel of Fortune",
+      "shortName": "Wheel",
+      "arcana": "major",
+      "kind": "major",
+      "number": "10",
+      "rank": "10",
+      "keywords": [
+        "change",
+        "timing",
+        "cycle",
+        "luck",
+        "movement",
+        "pattern",
+        "adaptation",
+        "turning"
+      ],
+      "meanings": [
+        "Wheel of Fortune marks a turn in the pattern. A situation may be changing through timing, consequence, or forces larger than personal control. This card can point to a lucky opening or a sudden change in direction, but it does not promise ease. Its wisdom is learning how to meet movement without pretending you command the whole wheel."
+      ],
+      "reversedMeanings": [
+        "Reversed, Wheel of Fortune can show resistance to change, poor timing, or a pattern that keeps circling back because it has not been understood. The situation may feel stuck, but the repetition is information. This card cautions against passivity as much as force. The wheel may be turning, but your relationship to the pattern still matters."
+      ],
+      "cautions": [
+        "Reversed, Wheel of Fortune can show resistance to change, poor timing, or a pattern that keeps circling back because it has not been understood. The situation may feel stuck, but the repetition is information. This card cautions against passivity as much as force. The wheel may be turning, but your relationship to the pattern still matters."
+      ],
+      "prompts": [
+        "What pattern is turning again, and what can you meet differently this time?"
+      ],
+      "essence": "The Turning Pattern",
+      "compositionNote": "A cycle turns, revealing where timing matters more than control.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "major_justice",
+      "index": 11,
+      "name": "Justice",
+      "shortName": "Justice",
+      "arcana": "major",
+      "kind": "major",
+      "number": "11",
+      "rank": "11",
+      "keywords": [
+        "truth",
+        "fairness",
+        "accountability",
+        "choice",
+        "consequence",
+        "ethics",
+        "clarity",
+        "balance"
+      ],
+      "meanings": [
+        "Justice marks the moment when truth has to be measured clearly. A choice, agreement, or consequence may be asking for honest evaluation. This card can point to fairness, accountability, or a decision that needs clean reasoning. Its power is not punishment; it is the restoration of proportion where confusion has blurred responsibility."
+      ],
+      "reversedMeanings": [
+        "Reversed, Justice warns that the measure may be distorted. Bias, avoidance, or unequal terms may be shaping the outcome more than anyone wants to admit. This card can also show self-judgment that has become too harsh to be useful. The repair begins when the situation is weighed by what is true, not by what protects the preferred story."
+      ],
+      "cautions": [
+        "Reversed, Justice warns that the measure may be distorted. Bias, avoidance, or unequal terms may be shaping the outcome more than anyone wants to admit. This card can also show self-judgment that has become too harsh to be useful. The repair begins when the situation is weighed by what is true, not by what protects the preferred story."
+      ],
+      "prompts": [
+        "What would become clearer if you measured the situation honestly?"
+      ],
+      "essence": "The Honest Measure",
+      "compositionNote": "A choice meets its consequence, and the situation asks to be weighed without disguise.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "major_hanged_man",
+      "index": 12,
+      "name": "The Hanged Man",
+      "shortName": "Hanged Man",
+      "arcana": "major",
+      "kind": "major",
+      "number": "12",
+      "rank": "12",
+      "keywords": [
+        "pause",
+        "surrender",
+        "perspective",
+        "waiting",
+        "sacrifice",
+        "limbo",
+        "release",
+        "insight"
+      ],
+      "meanings": [
+        "The Hanged Man marks a pause that changes the meaning of the situation. Progress may slow because the old method of control cannot reach the needed insight. This card can point to waiting, surrender, or a perspective shift that arrives only when force relaxes. Its stillness is not failure; it is a different kind of participation."
+      ],
+      "reversedMeanings": [
+        "Reversed, The Hanged Man can show stagnation, martyrdom, or refusal to receive the insight the pause was meant to bring. A situation may be stuck because waiting has become identity rather than wisdom. This card can also warn against sacrificing yourself to avoid making a choice. The question is whether stillness is opening perception or protecting fear."
+      ],
+      "cautions": [
+        "Reversed, The Hanged Man can show stagnation, martyrdom, or refusal to receive the insight the pause was meant to bring. A situation may be stuck because waiting has become identity rather than wisdom. This card can also warn against sacrificing yourself to avoid making a choice. The question is whether stillness is opening perception or protecting fear."
+      ],
+      "prompts": [
+        "What becomes visible when you stop trying to force the old angle?"
+      ],
+      "essence": "The Holy Pause",
+      "compositionNote": "Movement stops long enough for a different truth to become visible.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "major_death",
+      "index": 13,
+      "name": "Death",
+      "shortName": "Death",
+      "arcana": "major",
+      "kind": "major",
+      "number": "13",
+      "rank": "13",
+      "keywords": [
+        "ending",
+        "transition",
+        "closure",
+        "release",
+        "grief",
+        "change",
+        "completion",
+        "renewal"
+      ],
+      "meanings": [
+        "Death marks an ending that changes the shape of what can happen next. Something may be complete, even if part of you is still bargaining with it. This card can point to closure, transition, or the clearing of a form that cannot keep serving life. It is not here to glorify loss. It is here to tell the truth about what has reached its limit."
+      ],
+      "reversedMeanings": [
+        "Reversed, Death can show resistance to an ending that is already underway. The old form may be fading, but attachment keeps trying to negotiate with it. This card can point to delayed closure, fear of change, or grief that has nowhere honest to go. The invitation is not to rush the ending. It is to stop pretending nothing is ending."
+      ],
+      "cautions": [
+        "Reversed, Death can show resistance to an ending that is already underway. The old form may be fading, but attachment keeps trying to negotiate with it. This card can point to delayed closure, fear of change, or grief that has nowhere honest to go. The invitation is not to rush the ending. It is to stop pretending nothing is ending."
+      ],
+      "prompts": [
+        "What has completed its purpose, even if your attachment has not caught up?"
+      ],
+      "essence": "The Necessary Ending",
+      "compositionNote": "A form completes its usefulness, and attachment cannot keep it alive.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "major_temperance",
+      "index": 14,
+      "name": "Temperance",
+      "shortName": "Temperance",
+      "arcana": "major",
+      "kind": "major",
+      "number": "14",
+      "rank": "14",
+      "keywords": [
+        "balance",
+        "healing",
+        "integration",
+        "patience",
+        "proportion",
+        "repair",
+        "moderation",
+        "rhythm"
+      ],
+      "meanings": [
+        "Temperance marks the work of proportion. A situation may not need a dramatic answer as much as a better blend of pace, truth, and care. This card can point to healing, adjustment, or a gradual reconciliation of parts that once felt opposed. Its medicine is not bland moderation; it is the art of making life livable through right relationship."
+      ],
+      "reversedMeanings": [
+        "Reversed, Temperance warns that something is out of proportion. A situation may be swinging between extremes, forcing harmony too soon, or calling imbalance peace because conflict feels inconvenient. This card can also show impatience with healing. The repair begins by admitting which element has taken over the whole mixture."
+      ],
+      "cautions": [
+        "Reversed, Temperance warns that something is out of proportion. A situation may be swinging between extremes, forcing harmony too soon, or calling imbalance peace because conflict feels inconvenient. This card can also show impatience with healing. The repair begins by admitting which element has taken over the whole mixture."
+      ],
+      "prompts": [
+        "What needs a better proportion rather than a more dramatic answer?"
+      ],
+      "essence": "The Living Blend",
+      "compositionNote": "Separate forces learn proportion until healing becomes possible.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "major_devil",
+      "index": 15,
+      "name": "The Devil",
+      "shortName": "Devil",
+      "arcana": "major",
+      "kind": "major",
+      "number": "15",
+      "rank": "15",
+      "keywords": [
+        "attachment",
+        "temptation",
+        "shadow",
+        "desire",
+        "bondage",
+        "choice",
+        "power",
+        "release"
+      ],
+      "meanings": [
+        "The Devil marks an attachment that has begun to feel like fate. A desire, fear, or habit may be shaping the situation more than anyone wants to admit. This card can point to compulsion, dependency, or a bargain that costs more freedom than it gives. Its medicine is not shame; it is the clear seeing that makes choice possible again."
+      ],
+      "reversedMeanings": [
+        "Reversed, The Devil can mark the first real interruption of a binding pattern. A habit may be losing power, a contract may be questioned, or a temptation may be seen clearly enough to refuse. This card can also warn that denial is trying to rename the chain as freedom. Liberation starts with telling the truth about what still has a grip."
+      ],
+      "cautions": [
+        "Reversed, The Devil can mark the first real interruption of a binding pattern. A habit may be losing power, a contract may be questioned, or a temptation may be seen clearly enough to refuse. This card can also warn that denial is trying to rename the chain as freedom. Liberation starts with telling the truth about what still has a grip."
+      ],
+      "prompts": [
+        "Where have you been calling a chain necessary because freedom feels unfamiliar?"
+      ],
+      "essence": "The Chosen Chain",
+      "compositionNote": "Desire becomes bondage when fear teaches the self to call the chain necessary.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "major_tower",
+      "index": 16,
+      "name": "The Tower",
+      "shortName": "Tower",
+      "arcana": "major",
+      "kind": "major",
+      "number": "16",
+      "rank": "16",
+      "keywords": [
+        "rupture",
+        "truth",
+        "exposure",
+        "instability",
+        "correction",
+        "liberation",
+        "falsehood",
+        "awakening"
+      ],
+      "meanings": [
+        "The Tower marks the moment a system can no longer survive its own distortion. Something may be exposed, interrupted, or forced into sudden honesty, not because life is cruel, but because the old structure was asking reality to keep lying on its behalf. This card can point to upheaval, revelation, or an unexpected correction. Its gift is not comfort; its gift is freedom from what was never stable enough to protect you."
+      ],
+      "reversedMeanings": [
+        "Reversed, The Tower often shows pressure building behind a door that has not yet opened. The disruption may be delayed, denied, or happening internally before it appears in the outer situation. This card can warn against clinging to a known falsehood because the collapse feels inconvenient. The question is whether you will participate in the correction consciously, or wait until the situation makes the choice for you."
+      ],
+      "cautions": [
+        "Reversed, The Tower often shows pressure building behind a door that has not yet opened. The disruption may be delayed, denied, or happening internally before it appears in the outer situation. This card can warn against clinging to a known falsehood because the collapse feels inconvenient. The question is whether you will participate in the correction consciously, or wait until the situation makes the choice for you."
+      ],
+      "prompts": [
+        "What truth would change the structure if you stopped protecting the structure from it?"
+      ],
+      "essence": "The Sacred Interruption",
+      "compositionNote": "A false structure meets a truth strong enough to end the performance.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "major_star",
+      "index": 17,
+      "name": "The Star",
+      "shortName": "Star",
+      "arcana": "major",
+      "kind": "major",
+      "number": "17",
+      "rank": "17",
+      "keywords": [
+        "hope",
+        "renewal",
+        "trust",
+        "guidance",
+        "repair",
+        "openness",
+        "faith",
+        "restoration"
+      ],
+      "meanings": [
+        "The Star marks the first clean breath after pressure has broken. Hope may not arrive as proof; it may arrive as a clearer desire, a softer body, or the ability to imagine tomorrow without flinching. This card can point to renewal, guidance, or a season of quiet repair. Its promise is not that everything is solved, but that the self can begin trusting life again."
+      ],
+      "reversedMeanings": [
+        "Reversed, The Star can show hope blocked by exhaustion, cynicism, or the fear of believing too soon. The light may still be present, but the self may not trust it yet. This card can also warn against chasing inspiration while avoiding the slower work of restoration. The repair begins by making room for one honest sign of renewal."
+      ],
+      "cautions": [
+        "Reversed, The Star can show hope blocked by exhaustion, cynicism, or the fear of believing too soon. The light may still be present, but the self may not trust it yet. This card can also warn against chasing inspiration while avoiding the slower work of restoration. The repair begins by making room for one honest sign of renewal."
+      ],
+      "prompts": [
+        "What kind of hope feels quiet enough to trust right now?"
+      ],
+      "essence": "The Restored Signal",
+      "compositionNote": "After rupture, hope returns as a quiet orientation rather than a demand for certainty.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "major_moon",
+      "index": 18,
+      "name": "The Moon",
+      "shortName": "Moon",
+      "arcana": "major",
+      "kind": "major",
+      "number": "18",
+      "rank": "18",
+      "keywords": [
+        "uncertainty",
+        "intuition",
+        "fear",
+        "dreams",
+        "projection",
+        "mystery",
+        "patience",
+        "clarity"
+      ],
+      "meanings": [
+        "The Moon marks a passage where not everything can be seen plainly. A situation may involve confusion, projection, or information that has not settled into truth. This card can point to dreams, instinct, or a hidden emotional current shaping the path. Do not ignore the feeling, but do not let fear become the only interpreter."
+      ],
+      "reversedMeanings": [
+        "Reversed, The Moon can show the fog beginning to thin, or the refusal to admit how foggy things still are. A hidden fear may be surfacing, a deception may be weakening, or an emotional pattern may be easier to name. This card can also warn against forcing clarity before the psyche is ready. Let truth emerge without turning uncertainty into panic."
+      ],
+      "cautions": [
+        "Reversed, The Moon can show the fog beginning to thin, or the refusal to admit how foggy things still are. A hidden fear may be surfacing, a deception may be weakening, or an emotional pattern may be easier to name. This card can also warn against forcing clarity before the psyche is ready. Let truth emerge without turning uncertainty into panic."
+      ],
+      "prompts": [
+        "Where do you need patience because fear and intuition are speaking at once?"
+      ],
+      "essence": "The Unlit Path",
+      "compositionNote": "The path continues through uncertainty, where fear and intuition can sound dangerously alike.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "major_sun",
+      "index": 19,
+      "name": "The Sun",
+      "shortName": "Sun",
+      "arcana": "major",
+      "kind": "major",
+      "number": "19",
+      "rank": "19",
+      "keywords": [
+        "clarity",
+        "joy",
+        "vitality",
+        "visibility",
+        "confidence",
+        "warmth",
+        "truth",
+        "success"
+      ],
+      "meanings": [
+        "The Sun marks clarity that warms instead of wounds. Something may become simpler, more visible, or easier to trust because the fog has lifted. This card can point to joy, confidence, or a clean yes from life. Its gift is not forced positivity; it is the relief of being able to meet the truth without shrinking from it."
+      ],
+      "reversedMeanings": [
+        "Reversed, The Sun can show dimmed joy, blocked clarity, or happiness made conditional. Something good may still be present, but it may be hard to receive without suspicion or performance. This card can also warn against overexposure, where brightness becomes pressure. The repair is not to fake delight; it is to remove what keeps real warmth from reaching you."
+      ],
+      "cautions": [
+        "Reversed, The Sun can show dimmed joy, blocked clarity, or happiness made conditional. Something good may still be present, but it may be hard to receive without suspicion or performance. This card can also warn against overexposure, where brightness becomes pressure. The repair is not to fake delight; it is to remove what keeps real warmth from reaching you."
+      ],
+      "prompts": [
+        "Where is life asking you to receive clarity without shrinking from joy?"
+      ],
+      "essence": "The Radiant Truth",
+      "compositionNote": "What is real becomes easier to live when it no longer has to hide.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "major_judgement",
+      "index": 20,
+      "name": "Judgement",
+      "shortName": "Judgement",
+      "arcana": "major",
+      "kind": "major",
+      "number": "20",
+      "rank": "20",
+      "keywords": [
+        "awakening",
+        "reckoning",
+        "renewal",
+        "calling",
+        "review",
+        "accountability",
+        "decision",
+        "release"
+      ],
+      "meanings": [
+        "Judgement marks a call that cannot be answered by staying half-asleep. Something may be ready for review, release, or a decisive return to truth. This card can point to awakening, reckoning, or a choice that changes the shape of what comes next. Its power is not punishment; it is the moment you hear what your life has been trying to ask."
+      ],
+      "reversedMeanings": [
+        "Reversed, Judgement can show refusal of the call, harsh self-review, or a delay in making the decision that would free movement. The issue may be fear of consequence, fear of change, or loyalty to an old identity. This card can also show awakening happening slowly, before the outer life catches up. The repair is to stop confusing self-punishment with accountability."
+      ],
+      "cautions": [
+        "Reversed, Judgement can show refusal of the call, harsh self-review, or a delay in making the decision that would free movement. The issue may be fear of consequence, fear of change, or loyalty to an old identity. This card can also show awakening happening slowly, before the outer life catches up. The repair is to stop confusing self-punishment with accountability."
+      ],
+      "prompts": [
+        "What call have you heard clearly enough that pretending not to hear it is costing you?"
+      ],
+      "essence": "The Summoning",
+      "compositionNote": "A former self is called into review so a truer life can answer.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "major_world",
+      "index": 21,
+      "name": "The World",
+      "shortName": "World",
+      "arcana": "major",
+      "kind": "major",
+      "number": "21",
+      "rank": "21",
+      "keywords": [
+        "completion",
+        "integration",
+        "fulfillment",
+        "closure",
+        "arrival",
+        "wholeness",
+        "achievement",
+        "transition"
+      ],
+      "meanings": [
+        "The World marks completion that has been earned through integration. A cycle may be closing, a goal may be reached, or the larger pattern may finally make sense. This card can point to fulfillment, arrival, or the moment when experience becomes wholeness. Its ending is not disappearance; it is the threshold where one life-form completes and another can begin."
+      ],
+      "reversedMeanings": [
+        "Reversed, The World can show an unfinished ending, delayed closure, or a cycle that cannot complete because one piece has not been integrated. Something may be close, but not fully landed. This card can also warn against staying in a completed chapter because the next one feels unknown. The repair is to find the missing piece and let the threshold become real."
+      ],
+      "cautions": [
+        "Reversed, The World can show an unfinished ending, delayed closure, or a cycle that cannot complete because one piece has not been integrated. Something may be close, but not fully landed. This card can also warn against staying in a completed chapter because the next one feels unknown. The repair is to find the missing piece and let the threshold become real."
+      ],
+      "prompts": [
+        "What has completed, and what part of you still needs to believe it?"
+      ],
+      "essence": "The Completed Pattern",
+      "compositionNote": "The journey completes when separate lessons become one embodied life.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "wands_1",
+      "index": 22,
+      "name": "Ace of Wands",
+      "shortName": "Ace of Wands",
+      "arcana": "minor",
+      "kind": "ace",
+      "suit": "wands",
+      "number": 1,
+      "rank": "1",
+      "keywords": [
+        "spark",
+        "desire",
+        "inspiration",
+        "vitality",
+        "beginning",
+        "creativity",
+        "impulse",
+        "ignition"
+      ],
+      "meanings": [
+        "The Ace of Wands marks the arrival of raw life-force. Something may be stirring as desire, inspiration, or the first heat of a new direction. This card does not promise a finished outcome; it points to the ignition point where energy becomes available. The work is to notice what feels alive, then give it a clean place to begin."
+      ],
+      "reversedMeanings": [
+        "Reversed, the Ace of Wands suggests blocked energy, false starts, or a spark that has not found enough oxygen. Desire may be present but tangled with fear, fatigue, or poor timing. This card can also warn against forcing enthusiasm where the body is not truly lit. The repair is not pressure; it is clearing the space where real energy can rise."
+      ],
+      "cautions": [
+        "Reversed, the Ace of Wands suggests blocked energy, false starts, or a spark that has not found enough oxygen. Desire may be present but tangled with fear, fatigue, or poor timing. This card can also warn against forcing enthusiasm where the body is not truly lit. The repair is not pressure; it is clearing the space where real energy can rise."
+      ],
+      "prompts": [
+        "What spark deserves protection before it becomes a plan?"
+      ],
+      "essence": "The Ace of Wands means a new spark, creative energy, desire, or the beginning of action.",
+      "compositionNote": "A first spark arrives before it knows what it wants to become.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "wands_2",
+      "index": 23,
+      "name": "Two of Wands",
+      "shortName": "2 of Wands",
+      "arcana": "minor",
+      "kind": "pip",
+      "suit": "wands",
+      "number": 2,
+      "rank": "2",
+      "keywords": [
+        "planning",
+        "choice",
+        "ambition",
+        "distance",
+        "vision",
+        "strategy",
+        "possibility",
+        "direction"
+      ],
+      "meanings": [
+        "The Two of Wands marks the moment after the spark, when possibility asks to become direction. You may be weighing options, studying the horizon, or deciding whether an ambition is worth leaving comfort for. This card can point to planning, choice, or an invitation to think beyond the current container. The energy is not yet full movement; it is the decision to take your desire seriously."
+      ],
+      "reversedMeanings": [
+        "Reversed, the Two of Wands suggests hesitation, narrowed vision, or a fear of choosing. Desire may be present, but the next step keeps getting delayed by overthinking or loyalty to the familiar. This card can also warn against planning so broadly that no action follows. The question is whether you are preparing for movement or hiding inside the map."
+      ],
+      "cautions": [
+        "Reversed, the Two of Wands suggests hesitation, narrowed vision, or a fear of choosing. Desire may be present, but the next step keeps getting delayed by overthinking or loyalty to the familiar. This card can also warn against planning so broadly that no action follows. The question is whether you are preparing for movement or hiding inside the map."
+      ],
+      "prompts": [
+        "What choice would give your desire a real direction?"
+      ],
+      "essence": "The Two of Wands means planning, choice, and looking beyond the current situation.",
+      "compositionNote": "Desire pauses at the edge of choice and begins to imagine a wider field.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "wands_3",
+      "index": 24,
+      "name": "Three of Wands",
+      "shortName": "3 of Wands",
+      "arcana": "minor",
+      "kind": "pip",
+      "suit": "wands",
+      "number": 3,
+      "rank": "3",
+      "keywords": [
+        "expansion",
+        "progress",
+        "reach",
+        "future",
+        "outreach",
+        "growth",
+        "waiting",
+        "scale"
+      ],
+      "meanings": [
+        "The Three of Wands marks expansion after a choice has been made. Energy is no longer only internal; it is moving outward, meeting distance, response, and scale. This card can point to progress, outreach, or the first signs that a plan is entering a larger field. The work is to stay present while the result begins traveling beyond your immediate control."
+      ],
+      "reversedMeanings": [
+        "Reversed, the Three of Wands suggests delayed expansion, weak follow-through, or frustration with distance. A plan may be waiting for response, or the next stage may require more patience than expected. This card can also warn against expecting growth without outreach. If nothing is returning, check whether anything was truly sent."
+      ],
+      "cautions": [
+        "Reversed, the Three of Wands suggests delayed expansion, weak follow-through, or frustration with distance. A plan may be waiting for response, or the next stage may require more patience than expected. This card can also warn against expecting growth without outreach. If nothing is returning, check whether anything was truly sent."
+      ],
+      "prompts": [
+        "Where is your energy ready to reach beyond the familiar field?"
+      ],
+      "essence": "The Three of Wands means expansion, progress, and watching a choice move into the wider world.",
+      "compositionNote": "A chosen direction begins to extend beyond the self and test its reach.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "wands_4",
+      "index": 25,
+      "name": "Four of Wands",
+      "shortName": "4 of Wands",
+      "arcana": "minor",
+      "kind": "pip",
+      "suit": "wands",
+      "number": 4,
+      "rank": "4",
+      "keywords": [
+        "celebration",
+        "belonging",
+        "milestone",
+        "stability",
+        "homecoming",
+        "joy",
+        "community",
+        "welcome"
+      ],
+      "meanings": [
+        "The Four of Wands marks a point of arrival where energy can settle into joy. Something may be ready to be celebrated, shared, or welcomed into a more stable form. This card can point to homecoming, ceremony, or a milestone that confirms the effort was not meaningless. Its pleasure is not escape; it is the relief of belonging somewhere real, even briefly."
+      ],
+      "reversedMeanings": [
+        "Reversed, the Four of Wands suggests unstable foundations, delayed celebration, or belonging that does not feel fully secure. A milestone may be near but not settled, or the public version of harmony may differ from the private one. This card can also show difficulty receiving joy. The question is what needs to be made safer before the fire can rest."
+      ],
+      "cautions": [
+        "Reversed, the Four of Wands suggests unstable foundations, delayed celebration, or belonging that does not feel fully secure. A milestone may be near but not settled, or the public version of harmony may differ from the private one. This card can also show difficulty receiving joy. The question is what needs to be made safer before the fire can rest."
+      ],
+      "prompts": [
+        "What kind of belonging would let your joy feel safe?"
+      ],
+      "essence": "The Four of Wands means celebration, stability, shared joy, and a meaningful milestone.",
+      "compositionNote": "Fire becomes stable enough to be shared, celebrated, and rooted in place.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "wands_5",
+      "index": 26,
+      "name": "Five of Wands",
+      "shortName": "5 of Wands",
+      "arcana": "minor",
+      "kind": "pip",
+      "suit": "wands",
+      "number": 5,
+      "rank": "5",
+      "keywords": [
+        "conflict",
+        "competition",
+        "friction",
+        "tension",
+        "energy",
+        "disagreement",
+        "clarity",
+        "pressure"
+      ],
+      "meanings": [
+        "The Five of Wands marks conflict that may be noisy, creative, or clarifying. Different drives are pressing against each other, and the situation may need friction before it finds order. This card can point to competition, disagreement, or a clash of methods rather than true opposition. The task is to learn what the heat is revealing, not to treat every spark as a threat."
+      ],
+      "reversedMeanings": [
+        "Reversed, the Five of Wands suggests conflict that is avoided, suppressed, or finally beginning to settle. The situation may look calmer, but the real issue could still be unspoken. This card can also show exhaustion from constant friction. The repair is not forced peace; it is honest sorting of what each side is actually trying to protect."
+      ],
+      "cautions": [
+        "Reversed, the Five of Wands suggests conflict that is avoided, suppressed, or finally beginning to settle. The situation may look calmer, but the real issue could still be unspoken. This card can also show exhaustion from constant friction. The repair is not forced peace; it is honest sorting of what each side is actually trying to protect."
+      ],
+      "prompts": [
+        "What is the conflict trying to reveal about what matters?"
+      ],
+      "essence": "The Five of Wands means conflict, competition, friction, or the messy energy of competing desires.",
+      "compositionNote": "Fire meets friction and reveals which desires are competing for space.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "wands_6",
+      "index": 27,
+      "name": "Six of Wands",
+      "shortName": "6 of Wands",
+      "arcana": "minor",
+      "kind": "pip",
+      "suit": "wands",
+      "number": 6,
+      "rank": "6",
+      "keywords": [
+        "recognition",
+        "success",
+        "visibility",
+        "confidence",
+        "victory",
+        "approval",
+        "progress",
+        "pride"
+      ],
+      "meanings": [
+        "The Six of Wands marks recognition after effort, especially when courage has had to become public. A win, signal of approval, or meaningful validation may be arriving. This card can point to success, visibility, or a moment when the work is seen by others. Its lesson is to receive acknowledgment without letting it become the only proof that the path matters."
+      ],
+      "reversedMeanings": [
+        "Reversed, the Six of Wands suggests delayed recognition, private victory, or overreliance on external approval. A success may not be seen yet, or the need to be praised may be distorting the work. This card can also warn against public confidence with weak inner grounding. The question is whether your fire still matters when no one is clapping."
+      ],
+      "cautions": [
+        "Reversed, the Six of Wands suggests delayed recognition, private victory, or overreliance on external approval. A success may not be seen yet, or the need to be praised may be distorting the work. This card can also warn against public confidence with weak inner grounding. The question is whether your fire still matters when no one is clapping."
+      ],
+      "prompts": [
+        "What success needs to be received without becoming your whole identity?"
+      ],
+      "essence": "The Six of Wands means recognition, success, confidence, or being seen after effort.",
+      "compositionNote": "Fire becomes visible and asks how recognition will be carried.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "wands_7",
+      "index": 28,
+      "name": "Seven of Wands",
+      "shortName": "7 of Wands",
+      "arcana": "minor",
+      "kind": "pip",
+      "suit": "wands",
+      "number": 7,
+      "rank": "7",
+      "keywords": [
+        "defense",
+        "boundaries",
+        "pressure",
+        "conviction",
+        "challenge",
+        "resistance",
+        "courage",
+        "stamina"
+      ],
+      "meanings": [
+        "The Seven of Wands marks the moment when a position must be defended. You may be facing pressure, challenge, or the need to hold your ground after gaining visibility. This card can point to resistance from others, competition for space, or a test of conviction. The work is not to fight everything; it is to know what is worth standing for."
+      ],
+      "reversedMeanings": [
+        "Reversed, the Seven of Wands suggests exhaustion, defensiveness, or a fight that may no longer be worth the cost. You may be giving every challenge equal weight, or backing down where a boundary is needed. This card can also show pressure becoming internalized as constant vigilance. The question is whether you are protecting your ground or living in a permanent state of threat."
+      ],
+      "cautions": [
+        "Reversed, the Seven of Wands suggests exhaustion, defensiveness, or a fight that may no longer be worth the cost. You may be giving every challenge equal weight, or backing down where a boundary is needed. This card can also show pressure becoming internalized as constant vigilance. The question is whether you are protecting your ground or living in a permanent state of threat."
+      ],
+      "prompts": [
+        "What is actually worth defending, and what only keeps you on edge?"
+      ],
+      "essence": "The Seven of Wands means standing your ground, defending a position, or facing pressure after progress.",
+      "compositionNote": "Fire takes a stand when pressure tests the ground it has claimed.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "wands_8",
+      "index": 29,
+      "name": "Eight of Wands",
+      "shortName": "8 of Wands",
+      "arcana": "minor",
+      "kind": "pip",
+      "suit": "wands",
+      "number": 8,
+      "rank": "8",
+      "keywords": [
+        "speed",
+        "momentum",
+        "messages",
+        "movement",
+        "urgency",
+        "direction",
+        "acceleration",
+        "timing"
+      ],
+      "meanings": [
+        "The Eight of Wands marks acceleration. Something may begin moving quickly after a period of waiting, hesitation, or scattered effort. This card can point to messages, momentum, or a situation that gains speed once the path clears. The opportunity is real, but speed still needs aim."
+      ],
+      "reversedMeanings": [
+        "Reversed, the Eight of Wands suggests delay, miscommunication, or momentum moving without coherence. A situation may be rushing before it is ready, or stuck because too many signals are crossing at once. This card can warn against mistaking speed for clarity. Slow the current enough to see where it is actually going."
+      ],
+      "cautions": [
+        "Reversed, the Eight of Wands suggests delay, miscommunication, or momentum moving without coherence. A situation may be rushing before it is ready, or stuck because too many signals are crossing at once. This card can warn against mistaking speed for clarity. Slow the current enough to see where it is actually going."
+      ],
+      "prompts": [
+        "Where is momentum asking for direction instead of more force?"
+      ],
+      "essence": "The Eight of Wands means speed, movement, messages, and sudden momentum.",
+      "compositionNote": "Momentum gathers when desire stops circling and starts moving in one direction.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "wands_9",
+      "index": 30,
+      "name": "Nine of Wands",
+      "shortName": "9 of Wands",
+      "arcana": "minor",
+      "kind": "pip",
+      "suit": "wands",
+      "number": 9,
+      "rank": "9",
+      "keywords": [
+        "endurance",
+        "resilience",
+        "protection",
+        "fatigue",
+        "guardedness",
+        "persistence",
+        "boundaries",
+        "recovery"
+      ],
+      "meanings": [
+        "The Nine of Wands marks endurance after strain. You may be closer to the end than you feel, but the body remembers what it cost to get here. This card can point to guarded strength, earned caution, or the need to protect a final stretch. The wisdom is not suspicion; it is knowing what deserves access to your remaining fire."
+      ],
+      "reversedMeanings": [
+        "Reversed, the Nine of Wands suggests exhaustion, defensiveness, or a loss of faith in your own stamina. You may be bracing against a threat that is not present, or dropping your guard where care is still needed. This card can also show burnout that makes every request feel like an attack. The repair is to distinguish real danger from remembered strain."
+      ],
+      "cautions": [
+        "Reversed, the Nine of Wands suggests exhaustion, defensiveness, or a loss of faith in your own stamina. You may be bracing against a threat that is not present, or dropping your guard where care is still needed. This card can also show burnout that makes every request feel like an attack. The repair is to distinguish real danger from remembered strain."
+      ],
+      "prompts": [
+        "What are you protecting, and what are you only bracing against?"
+      ],
+      "essence": "The Nine of Wands means endurance, protection, and staying with something after difficulty.",
+      "compositionNote": "A tired fire protects what it has survived long enough to understand.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "wands_10",
+      "index": 31,
+      "name": "Ten of Wands",
+      "shortName": "10 of Wands",
+      "arcana": "minor",
+      "kind": "pip",
+      "suit": "wands",
+      "number": 10,
+      "rank": "10",
+      "keywords": [
+        "burden",
+        "overwork",
+        "responsibility",
+        "pressure",
+        "completion",
+        "delegation",
+        "exhaustion",
+        "release"
+      ],
+      "meanings": [
+        "The Ten of Wands marks effort that has become too heavy to carry cleanly. A goal may still matter, but the way it is being held may be draining the life from it. This card can point to overload, responsibility, or the final stretch of a demanding commitment. The question is not whether you care; it is whether the load still belongs in your hands alone."
+      ],
+      "reversedMeanings": [
+        "Reversed, the Ten of Wands can show a burden being released, refused, or mishandled after too much strain. You may be ready to set something down, but guilt may argue that exhaustion is loyalty. This card can also warn of collapse if responsibility keeps being ignored. Relief comes when the load is honestly redistributed."
+      ],
+      "cautions": [
+        "Reversed, the Ten of Wands can show a burden being released, refused, or mishandled after too much strain. You may be ready to set something down, but guilt may argue that exhaustion is loyalty. This card can also warn of collapse if responsibility keeps being ignored. Relief comes when the load is honestly redistributed."
+      ],
+      "prompts": [
+        "What responsibility has become heavier than the purpose it was meant to serve?"
+      ],
+      "essence": "The Ten of Wands means burden, overwork, responsibility, and carrying too much.",
+      "compositionNote": "A chosen fire becomes a burden when every responsibility has to be carried alone.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "wands_page",
+      "index": 32,
+      "name": "Page of Wands",
+      "shortName": "Page of Wands",
+      "arcana": "minor",
+      "kind": "court",
+      "suit": "wands",
+      "number": "page",
+      "rank": "page",
+      "keywords": [
+        "curiosity",
+        "spark",
+        "exploration",
+        "message",
+        "enthusiasm",
+        "creativity",
+        "beginner",
+        "adventure"
+      ],
+      "meanings": [
+        "The Page of Wands marks the first living contact with desire, creativity, or adventure. Something may arrive as an idea, invitation, or restless pull toward what feels possible. This card does not need mastery before it begins; it needs permission to explore. The spark is young, but it may carry more truth than the old routine."
+      ],
+      "reversedMeanings": [
+        "Reversed, the Page of Wands suggests restless energy without a clear outlet. A spark may be present, but it may be tangled with impatience, insecurity, or fear of looking inexperienced. This card can also show enthusiasm fading because it was never given a real place to land. Begin smaller, and let the fire learn through contact."
+      ],
+      "cautions": [
+        "Reversed, the Page of Wands suggests restless energy without a clear outlet. A spark may be present, but it may be tangled with impatience, insecurity, or fear of looking inexperienced. This card can also show enthusiasm fading because it was never given a real place to land. Begin smaller, and let the fire learn through contact."
+      ],
+      "prompts": [
+        "What curiosity deserves a small real experiment?"
+      ],
+      "essence": "The Page of Wands means curiosity, creative beginnings, messages, and youthful fire.",
+      "compositionNote": "A new fire learns itself by following curiosity before it knows its full strength.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "wands_knight",
+      "index": 33,
+      "name": "Knight of Wands",
+      "shortName": "Knight of Wands",
+      "arcana": "minor",
+      "kind": "court",
+      "suit": "wands",
+      "number": "knight",
+      "rank": "knight",
+      "keywords": [
+        "action",
+        "passion",
+        "pursuit",
+        "courage",
+        "movement",
+        "impulse",
+        "adventure",
+        "confidence"
+      ],
+      "meanings": [
+        "The Knight of Wands marks bold movement, pursuit, and the courage to act while the fire is hot. A situation may be gaining heat, speed, or appetite for change. This card can point to travel, passion, or decisive action that breaks inertia. Its gift is courage, but its test is whether the fire can stay awake after the first charge."
+      ],
+      "reversedMeanings": [
+        "Reversed, the Knight of Wands warns that fire may be moving faster than wisdom. Impulse, inconsistency, or impatience can burn through what needed care. This card can also show blocked confidence, where desire is present but action keeps stalling. The repair is not to kill the fire; it is to give it enough discipline to arrive whole."
+      ],
+      "cautions": [
+        "Reversed, the Knight of Wands warns that fire may be moving faster than wisdom. Impulse, inconsistency, or impatience can burn through what needed care. This card can also show blocked confidence, where desire is present but action keeps stalling. The repair is not to kill the fire; it is to give it enough discipline to arrive whole."
+      ],
+      "prompts": [
+        "Where does your fire need aim before it needs speed?"
+      ],
+      "essence": "The Knight of Wands means bold action, passion, movement, and pursuit.",
+      "compositionNote": "Fire becomes motion when desire chooses pursuit over waiting.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "wands_queen",
+      "index": 34,
+      "name": "Queen of Wands",
+      "shortName": "Queen of Wands",
+      "arcana": "minor",
+      "kind": "court",
+      "suit": "wands",
+      "number": "queen",
+      "rank": "queen",
+      "keywords": [
+        "confidence",
+        "magnetism",
+        "warmth",
+        "visibility",
+        "creativity",
+        "presence",
+        "self-possession",
+        "desire"
+      ],
+      "meanings": [
+        "The Queen of Wands marks self-possession, warmth, and magnetic creative force. This card can point to visibility, confidence, or the ability to attract support by being fully present. The power here is not domination; it is the steadiness of someone who knows their own heat. Let your vitality take up space without turning it into a performance."
+      ],
+      "reversedMeanings": [
+        "Reversed, the Queen of Wands suggests dimmed confidence, performative charisma, or a fear of being seen. The fire may turn inward as resentment, comparison, or self-doubt. This card can also warn against using magnetism to control the room. The repair is to return to genuine warmth instead of chasing proof of power."
+      ],
+      "cautions": [
+        "Reversed, the Queen of Wands suggests dimmed confidence, performative charisma, or a fear of being seen. The fire may turn inward as resentment, comparison, or self-doubt. This card can also warn against using magnetism to control the room. The repair is to return to genuine warmth instead of chasing proof of power."
+      ],
+      "prompts": [
+        "Where would your confidence become kinder if it stopped needing proof?"
+      ],
+      "essence": "The Queen of Wands means confidence, warmth, magnetism, and creative self-possession.",
+      "compositionNote": "Fire becomes presence when confidence is allowed to warm the room without asking permission.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "wands_king",
+      "index": 35,
+      "name": "King of Wands",
+      "shortName": "King of Wands",
+      "arcana": "minor",
+      "kind": "court",
+      "suit": "wands",
+      "number": "king",
+      "rank": "king",
+      "keywords": [
+        "leadership",
+        "vision",
+        "authority",
+        "strategy",
+        "confidence",
+        "fire",
+        "stewardship",
+        "ambition"
+      ],
+      "meanings": [
+        "The King of Wands marks vision, authority, and the ability to direct fire without being consumed by it. This card can point to leadership, entrepreneurship, or the moment when desire needs a larger strategy. The power here is not merely having the idea; it is carrying enough responsibility to make the idea livable. Lead from conviction, but leave room for reality to answer back."
+      ],
+      "reversedMeanings": [
+        "Reversed, the King of Wands warns that vision may be slipping into ego, domination, or reckless command. Fire can become dangerous when it refuses feedback. This card can also show fear of leadership, where strong desire is present but authority is avoided. The repair is mature direction: enough confidence to act, and enough humility to adjust."
+      ],
+      "cautions": [
+        "Reversed, the King of Wands warns that vision may be slipping into ego, domination, or reckless command. Fire can become dangerous when it refuses feedback. This card can also show fear of leadership, where strong desire is present but authority is avoided. The repair is mature direction: enough confidence to act, and enough humility to adjust."
+      ],
+      "prompts": [
+        "What vision are you ready to lead without losing humility?"
+      ],
+      "essence": "The King of Wands means leadership, vision, boldness, and responsible creative power.",
+      "compositionNote": "Fire becomes leadership when vision accepts responsibility for what it sets in motion.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "cups_1",
+      "index": 36,
+      "name": "Ace of Cups",
+      "shortName": "Ace of Cups",
+      "arcana": "minor",
+      "kind": "ace",
+      "suit": "cups",
+      "number": 1,
+      "rank": "1",
+      "keywords": [
+        "feeling",
+        "openness",
+        "love",
+        "receptivity",
+        "healing",
+        "creativity",
+        "tenderness",
+        "beginning"
+      ],
+      "meanings": [
+        "The Ace of Cups marks the first arrival of feeling before it becomes a promise, bond, or story. Something tender may be opening in the heart, whether through love, creativity, or spiritual receptivity. This card can point to an offer, an emotional beginning, or a moment when life asks you to receive instead of defend. Let the feeling arrive without forcing it to become permanent too quickly."
+      ],
+      "reversedMeanings": [
+        "Reversed, the Ace of Cups suggests feeling that is blocked, withheld, or spilling into places that cannot hold it. An emotional offer may be delayed, unclear, or difficult to receive. This card can also point to burnout of the heart, where sensitivity has been treated as an endless resource. The repair begins with noticing what has gone dry or overflowed."
+      ],
+      "cautions": [
+        "Reversed, the Ace of Cups suggests feeling that is blocked, withheld, or spilling into places that cannot hold it. An emotional offer may be delayed, unclear, or difficult to receive. This card can also point to burnout of the heart, where sensitivity has been treated as an endless resource. The repair begins with noticing what has gone dry or overflowed."
+      ],
+      "prompts": [
+        "What feeling is trying to arrive before you know what it means?"
+      ],
+      "essence": "The Ace of Cups means a new emotional beginning, an open heart, or the first sign of love and creative feeling.",
+      "compositionNote": "A new emotional current begins before it has chosen its final shape.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "cups_2",
+      "index": 37,
+      "name": "Two of Cups",
+      "shortName": "2 of Cups",
+      "arcana": "minor",
+      "kind": "pip",
+      "suit": "cups",
+      "number": 2,
+      "rank": "2",
+      "keywords": [
+        "connection",
+        "reciprocity",
+        "partnership",
+        "repair",
+        "affection",
+        "agreement",
+        "mutuality",
+        "alignment"
+      ],
+      "meanings": [
+        "The Two of Cups marks emotional exchange that has the chance to become mutual. A bond may be forming through honesty, attraction, or shared willingness. This card can point to reconciliation, agreement, or the moment two people recognize something real between them. Its gift is not fantasy; it is reciprocity that can be felt in both directions."
+      ],
+      "reversedMeanings": [
+        "Reversed, the Two of Cups suggests imbalance in the exchange. A bond may be strained by miscommunication, uneven desire, or a lack of genuine mutuality. This card can point to a missed connection, a difficult repair, or an agreement that looks kind but feels unequal. The question is whether both sides are actually meeting, or only performing harmony."
+      ],
+      "cautions": [
+        "Reversed, the Two of Cups suggests imbalance in the exchange. A bond may be strained by miscommunication, uneven desire, or a lack of genuine mutuality. This card can point to a missed connection, a difficult repair, or an agreement that looks kind but feels unequal. The question is whether both sides are actually meeting, or only performing harmony."
+      ],
+      "prompts": [
+        "Where is mutuality present, and where are you pretending it is?"
+      ],
+      "essence": "The Two of Cups means mutual connection, emotional exchange, and the possibility of a balanced bond.",
+      "compositionNote": "Feeling becomes relational when two presences meet with mutual recognition.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "cups_3",
+      "index": 38,
+      "name": "Three of Cups",
+      "shortName": "3 of Cups",
+      "arcana": "minor",
+      "kind": "pip",
+      "suit": "cups",
+      "number": 3,
+      "rank": "3",
+      "keywords": [
+        "friendship",
+        "celebration",
+        "community",
+        "reunion",
+        "support",
+        "joy",
+        "belonging",
+        "witnessing"
+      ],
+      "meanings": [
+        "The Three of Cups marks emotional growth through celebration, friendship, and shared delight. Something may be easier to feel because it is witnessed by people who want your joy to live. This card can point to reunion, good news, or the support of a chosen circle. Its medicine is communal: happiness becomes stronger when it has somewhere to land."
+      ],
+      "reversedMeanings": [
+        "Reversed, the Three of Cups suggests social sweetness that may be strained, excessive, or no longer nourishing. A group dynamic may involve exclusion, comparison, or celebration used to avoid a harder feeling. This card can also point to loneliness inside a crowd. The issue is not community itself; it is whether the circle actually feeds the heart."
+      ],
+      "cautions": [
+        "Reversed, the Three of Cups suggests social sweetness that may be strained, excessive, or no longer nourishing. A group dynamic may involve exclusion, comparison, or celebration used to avoid a harder feeling. This card can also point to loneliness inside a crowd. The issue is not community itself; it is whether the circle actually feeds the heart."
+      ],
+      "prompts": [
+        "Who can witness your joy without needing to control it?"
+      ],
+      "essence": "The Three of Cups means friendship, celebration, shared joy, and emotional support.",
+      "compositionNote": "Feeling expands when joy is shared rather than privately contained.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "cups_4",
+      "index": 39,
+      "name": "Four of Cups",
+      "shortName": "4 of Cups",
+      "arcana": "minor",
+      "kind": "pip",
+      "suit": "cups",
+      "number": 4,
+      "rank": "4",
+      "keywords": [
+        "withdrawal",
+        "apathy",
+        "discernment",
+        "offer",
+        "stillness",
+        "dissatisfaction",
+        "reentry",
+        "choice"
+      ],
+      "meanings": [
+        "The Four of Cups marks emotional withdrawal, not always as rejection, but as a pause in receptivity. Something may be offered, yet the heart may not be ready or willing to reach for it. This card can point to boredom, contemplation, or a quiet refusal of what no longer satisfies. Its wisdom is the ability to question appetite before accepting more of the same."
+      ],
+      "reversedMeanings": [
+        "Reversed, the Four of Cups suggests the heart may be ready to reengage after a period of withdrawal. A missed offer may return, or an old numbness may begin to loosen. This card can also warn against staying closed after the reason for closure has passed. The question is whether refusal is still protection, or whether it has become habit."
+      ],
+      "cautions": [
+        "Reversed, the Four of Cups suggests the heart may be ready to reengage after a period of withdrawal. A missed offer may return, or an old numbness may begin to loosen. This card can also warn against staying closed after the reason for closure has passed. The question is whether refusal is still protection, or whether it has become habit."
+      ],
+      "prompts": [
+        "What are you refusing because it is wrong, and what are you refusing because you are closed?"
+      ],
+      "essence": "The Four of Cups means emotional withdrawal, dissatisfaction, or taking time to decide what you truly want.",
+      "compositionNote": "The heart withdraws from what is offered so it can understand what it actually wants.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "cups_5",
+      "index": 40,
+      "name": "Five of Cups",
+      "shortName": "5 of Cups",
+      "arcana": "minor",
+      "kind": "pip",
+      "suit": "cups",
+      "number": 5,
+      "rank": "5",
+      "keywords": [
+        "grief",
+        "loss",
+        "regret",
+        "disappointment",
+        "recovery",
+        "forgiveness",
+        "perspective",
+        "remaining"
+      ],
+      "meanings": [
+        "The Five of Cups marks disappointment that has become emotionally central. Something may feel lost, broken, or impossible to recover in its old form. This card can point to grief, regret, or the ache of focusing on what went wrong. It does not deny the loss; it asks whether the whole future is being made to kneel before it."
+      ],
+      "reversedMeanings": [
+        "Reversed, the Five of Cups suggests grief may be beginning to loosen its grip. The loss still matters, but it may no longer be the only thing the heart can see. This card can point to forgiveness, emotional recovery, or the first willingness to turn toward what remains. Healing does not mean the disappointment was small; it means it is no longer the whole room."
+      ],
+      "cautions": [
+        "Reversed, the Five of Cups suggests grief may be beginning to loosen its grip. The loss still matters, but it may no longer be the only thing the heart can see. This card can point to forgiveness, emotional recovery, or the first willingness to turn toward what remains. Healing does not mean the disappointment was small; it means it is no longer the whole room."
+      ],
+      "prompts": [
+        "What remains available, even if something real has been lost?"
+      ],
+      "essence": "The Five of Cups means disappointment, grief, regret, and the need to notice what remains after loss.",
+      "compositionNote": "Grief narrows the field until the heart can learn what remains.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "cups_6",
+      "index": 41,
+      "name": "Six of Cups",
+      "shortName": "6 of Cups",
+      "arcana": "minor",
+      "kind": "pip",
+      "suit": "cups",
+      "number": 6,
+      "rank": "6",
+      "keywords": [
+        "memory",
+        "nostalgia",
+        "kindness",
+        "reconnection",
+        "past",
+        "innocence",
+        "tenderness",
+        "pattern"
+      ],
+      "meanings": [
+        "The Six of Cups marks tenderness that comes through memory, familiarity, and emotional return. Something from the past may be present again, whether as nostalgia, reconnection, or a softer version of an old feeling. This card can point to innocence, kindness, or the comfort of what once felt safe. Its gift is sweetness, but its test is whether memory is being honored or idealized."
+      ],
+      "reversedMeanings": [
+        "Reversed, the Six of Cups suggests the past may be holding too much authority over the present. Nostalgia can become distortion, and old emotional patterns can return under the name of comfort. This card can also show difficulty receiving innocence, softness, or uncomplicated care. The question is whether memory is guiding you or quietly keeping you small."
+      ],
+      "cautions": [
+        "Reversed, the Six of Cups suggests the past may be holding too much authority over the present. Nostalgia can become distortion, and old emotional patterns can return under the name of comfort. This card can also show difficulty receiving innocence, softness, or uncomplicated care. The question is whether memory is guiding you or quietly keeping you small."
+      ],
+      "prompts": [
+        "What from the past deserves tenderness, and what no longer deserves authority?"
+      ],
+      "essence": "The Six of Cups means memory, nostalgia, kindness, and emotional patterns from the past.",
+      "compositionNote": "Memory returns with feeling, asking what can be cherished without being repeated.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "cups_7",
+      "index": 42,
+      "name": "Seven of Cups",
+      "shortName": "7 of Cups",
+      "arcana": "minor",
+      "kind": "pip",
+      "suit": "cups",
+      "number": 7,
+      "rank": "7",
+      "keywords": [
+        "options",
+        "fantasy",
+        "desire",
+        "discernment",
+        "choice",
+        "projection",
+        "clarity",
+        "imagination"
+      ],
+      "meanings": [
+        "The Seven of Cups marks a field of options shaped by longing, imagination, and projection. Many paths may appear possible, but not all of them can hold weight in real life. This card can point to fantasy, indecision, or the seductive stage before a desire has been tested. Its warning is not against dreaming; it is against letting every dream claim equal authority."
+      ],
+      "reversedMeanings": [
+        "Reversed, the Seven of Cups suggests fog may be clearing enough for a choice to emerge. Illusions can fall away, and the heart may begin to recognize what is possible rather than merely enchanting. This card can also show denial of imagination, where a person refuses to dream because dreaming once confused them. The work is to choose clearly without becoming emotionally flat."
+      ],
+      "cautions": [
+        "Reversed, the Seven of Cups suggests fog may be clearing enough for a choice to emerge. Illusions can fall away, and the heart may begin to recognize what is possible rather than merely enchanting. This card can also show denial of imagination, where a person refuses to dream because dreaming once confused them. The work is to choose clearly without becoming emotionally flat."
+      ],
+      "prompts": [
+        "Which possibility becomes stronger when you ask what it would require?"
+      ],
+      "essence": "The Seven of Cups means many options, fantasy, confusion, and the need to choose with discernment.",
+      "compositionNote": "Desire multiplies possibilities until discernment chooses what can become real.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "cups_8",
+      "index": 43,
+      "name": "Eight of Cups",
+      "shortName": "8 of Cups",
+      "arcana": "minor",
+      "kind": "pip",
+      "suit": "cups",
+      "number": 8,
+      "rank": "8",
+      "keywords": [
+        "departure",
+        "search",
+        "meaning",
+        "withdrawal",
+        "transition",
+        "truth",
+        "longing",
+        "release"
+      ],
+      "meanings": [
+        "The Eight of Cups marks the moment satisfaction is no longer the same as fulfillment. Something may look intact, but the heart may be done negotiating with emptiness. This card can point to departure, withdrawal, or a quiet search for meaning. Its movement is not drama; it is the decision to follow a deeper need."
+      ],
+      "reversedMeanings": [
+        "Reversed, the Eight of Cups can show staying too long, leaving too quickly, or circling a goodbye without completing it. The heart may know something has changed, but fear may keep translating discomfort into patience. This card can also point to a return, especially when unfinished feeling asks for one more honest look. The question is whether you are moving from truth or from avoidance."
+      ],
+      "cautions": [
+        "Reversed, the Eight of Cups can show staying too long, leaving too quickly, or circling a goodbye without completing it. The heart may know something has changed, but fear may keep translating discomfort into patience. This card can also point to a return, especially when unfinished feeling asks for one more honest look. The question is whether you are moving from truth or from avoidance."
+      ],
+      "prompts": [
+        "What are you still calling enough when your heart knows it is not?"
+      ],
+      "essence": "The Eight of Cups means walking away from something that no longer fulfills you.",
+      "compositionNote": "The heart leaves what is familiar when fulfillment has gone missing.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "cups_9",
+      "index": 44,
+      "name": "Nine of Cups",
+      "shortName": "9 of Cups",
+      "arcana": "minor",
+      "kind": "pip",
+      "suit": "cups",
+      "number": 9,
+      "rank": "9",
+      "keywords": [
+        "satisfaction",
+        "desire",
+        "pleasure",
+        "gratitude",
+        "wish",
+        "comfort",
+        "reward",
+        "appetite"
+      ],
+      "meanings": [
+        "The Nine of Cups marks emotional satisfaction that belongs to the self before it has to be shared. A wish may be close, a need may be met, or pleasure may be asking to be received without apology. This card can point to comfort, success, or a moment of earned enjoyment. Its wisdom is gratitude without pretending appetite has no shadow."
+      ],
+      "reversedMeanings": [
+        "Reversed, the Nine of Cups warns that satisfaction may be hollow, excessive, or dependent on getting exactly what the ego ordered. A wish may arrive and still not answer the deeper need. This card can point to indulgence, disappointment, or pleasure that has lost its center. The repair is not to shame desire; it is to ask what the desire is really trying to feed."
+      ],
+      "cautions": [
+        "Reversed, the Nine of Cups warns that satisfaction may be hollow, excessive, or dependent on getting exactly what the ego ordered. A wish may arrive and still not answer the deeper need. This card can point to indulgence, disappointment, or pleasure that has lost its center. The repair is not to shame desire; it is to ask what the desire is really trying to feed."
+      ],
+      "prompts": [
+        "Which desire would still matter if no one else applauded it?"
+      ],
+      "essence": "The Nine of Cups means satisfaction, wishes, pleasure, and emotional reward.",
+      "compositionNote": "Desire becomes visible enough to ask whether satisfaction is real.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "cups_10",
+      "index": 45,
+      "name": "Ten of Cups",
+      "shortName": "10 of Cups",
+      "arcana": "minor",
+      "kind": "pip",
+      "suit": "cups",
+      "number": 10,
+      "rank": "10",
+      "keywords": [
+        "belonging",
+        "joy",
+        "family",
+        "harmony",
+        "support",
+        "fulfillment",
+        "community",
+        "home"
+      ],
+      "meanings": [
+        "The Ten of Cups marks emotional fulfillment that extends beyond the private self. It can point to family, community, or a shared happiness that feels safe enough to be inhabited. This card may indicate harmony, celebration, or the possibility of lasting emotional support. Its promise is not perfection; it is the experience of belonging without having to exile the heart."
+      ],
+      "reversedMeanings": [
+        "Reversed, the Ten of Cups can show strained harmony, family pressure, or a dream of happiness that has become too polished to be honest. The outer picture may look whole while private feelings remain unresolved. This card can also point to disappointment when belonging requires too much performance. The work is to restore truth to the place where joy is supposed to live."
+      ],
+      "cautions": [
+        "Reversed, the Ten of Cups can show strained harmony, family pressure, or a dream of happiness that has become too polished to be honest. The outer picture may look whole while private feelings remain unresolved. This card can also point to disappointment when belonging requires too much performance. The work is to restore truth to the place where joy is supposed to live."
+      ],
+      "prompts": [
+        "What would belonging look like if it did not require performance?"
+      ],
+      "essence": "The Ten of Cups means shared happiness, belonging, family, and emotional fulfillment.",
+      "compositionNote": "Personal feeling becomes shared belonging when joy has somewhere to live.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "cups_page",
+      "index": 46,
+      "name": "Page of Cups",
+      "shortName": "Page of Cups",
+      "arcana": "minor",
+      "kind": "court",
+      "suit": "cups",
+      "number": "page",
+      "rank": "page",
+      "keywords": [
+        "message",
+        "tenderness",
+        "apology",
+        "creativity",
+        "sensitivity",
+        "beginning",
+        "imagination",
+        "openness"
+      ],
+      "meanings": [
+        "The Page of Cups marks the first tender arrival of feeling, imagination, or apology. Something emotionally honest may be trying to speak in a small voice. This card can point to a message, invitation, or creative impulse that is still young. Its wisdom is softness without cynicism; it asks you to take the feeling seriously without forcing it to become mature too quickly."
+      ],
+      "reversedMeanings": [
+        "Reversed, the Page of Cups can show emotional immaturity, blocked expression, or a feeling that is being hidden behind awkwardness. A message may be delayed, unclear, or shaped by fear of rejection. This card can also point to fantasy that has not been tested by reality. The repair is to let feeling speak simply before it becomes performance."
+      ],
+      "cautions": [
+        "Reversed, the Page of Cups can show emotional immaturity, blocked expression, or a feeling that is being hidden behind awkwardness. A message may be delayed, unclear, or shaped by fear of rejection. This card can also point to fantasy that has not been tested by reality. The repair is to let feeling speak simply before it becomes performance."
+      ],
+      "prompts": [
+        "What small feeling wants to be taken seriously?"
+      ],
+      "essence": "The Page of Cups means a new feeling, creative message, apology, or tender beginning.",
+      "compositionNote": "Feeling arrives as a small message before it knows how serious it is.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "cups_knight",
+      "index": 47,
+      "name": "Knight of Cups",
+      "shortName": "Knight of Cups",
+      "arcana": "minor",
+      "kind": "court",
+      "suit": "cups",
+      "number": "knight",
+      "rank": "knight",
+      "keywords": [
+        "romance",
+        "pursuit",
+        "invitation",
+        "charm",
+        "vision",
+        "longing",
+        "gesture",
+        "devotion"
+      ],
+      "meanings": [
+        "The Knight of Cups marks emotion in motion. Desire may be reaching outward through invitation, romance, or a creative pursuit that wants a response. This card can point to charm, proposal, or an offer shaped by feeling. Its gift is devotion with movement; its test is whether the beautiful gesture can survive contact with reality."
+      ],
+      "reversedMeanings": [
+        "Reversed, the Knight of Cups can show romantic performance, mood-driven choices, or a promise made from feeling but not backed by capacity. The offer may be real in the moment and still unreliable over time. This card can also point to cynicism after disappointment. The question is whether emotion is guiding the movement or simply staging it."
+      ],
+      "cautions": [
+        "Reversed, the Knight of Cups can show romantic performance, mood-driven choices, or a promise made from feeling but not backed by capacity. The offer may be real in the moment and still unreliable over time. This card can also point to cynicism after disappointment. The question is whether emotion is guiding the movement or simply staging it."
+      ],
+      "prompts": [
+        "What feeling is worth pursuing, and what reality must it answer to?"
+      ],
+      "essence": "The Knight of Cups means romance, invitation, creative pursuit, and emotion in motion.",
+      "compositionNote": "Feeling moves toward what it loves, risking beauty and illusion at once.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "cups_queen",
+      "index": 48,
+      "name": "Queen of Cups",
+      "shortName": "Queen of Cups",
+      "arcana": "minor",
+      "kind": "court",
+      "suit": "cups",
+      "number": "queen",
+      "rank": "queen",
+      "keywords": [
+        "compassion",
+        "intuition",
+        "empathy",
+        "receptivity",
+        "boundaries",
+        "sensitivity",
+        "care",
+        "depth"
+      ],
+      "meanings": [
+        "The Queen of Cups marks emotional depth held with grace. This card can point to compassion, intuitive care, or the ability to receive what is subtle without needing to control it. Someone may be offering real emotional presence, or you may be asked to become that presence for yourself. Her strength is not endless giving; it is feeling deeply without abandoning the center."
+      ],
+      "reversedMeanings": [
+        "Reversed, the Queen of Cups warns that receptivity may be turning into overwhelm, projection, or care without boundaries. Feeling may be real but difficult to sort, especially if someone else’s mood has become too loud inside you. This card can also show emotional withdrawal after giving too much. The repair is not to stop feeling; it is to return feeling to its proper owner."
+      ],
+      "cautions": [
+        "Reversed, the Queen of Cups warns that receptivity may be turning into overwhelm, projection, or care without boundaries. Feeling may be real but difficult to sort, especially if someone else’s mood has become too loud inside you. This card can also show emotional withdrawal after giving too much. The repair is not to stop feeling; it is to return feeling to its proper owner."
+      ],
+      "prompts": [
+        "Which feelings are yours to hold, and which are yours to release?"
+      ],
+      "essence": "The Queen of Cups means compassion, intuition, emotional care, and deep sensitivity.",
+      "compositionNote": "Feeling becomes wisdom when it can receive without losing itself.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "cups_king",
+      "index": 49,
+      "name": "King of Cups",
+      "shortName": "King of Cups",
+      "arcana": "minor",
+      "kind": "court",
+      "suit": "cups",
+      "number": "king",
+      "rank": "king",
+      "keywords": [
+        "maturity",
+        "steadiness",
+        "compassion",
+        "leadership",
+        "diplomacy",
+        "self-command",
+        "truth",
+        "composure"
+      ],
+      "meanings": [
+        "The King of Cups marks emotional maturity that can hold intensity without being ruled by it. This card can point to steadiness, wise counsel, or someone capable of responding rather than reacting. A situation may need calm leadership that does not deny feeling. The King of Cups does not escape the depths; he learns how to govern from within them."
+      ],
+      "reversedMeanings": [
+        "Reversed, the King of Cups can show emotional repression, unstable calm, or feeling managed through control rather than honesty. Someone may appear composed while using silence, charm, or distance to avoid accountability. This card can also point to moods that steer the room without being named. The repair is emotional truth with responsibility attached."
+      ],
+      "cautions": [
+        "Reversed, the King of Cups can show emotional repression, unstable calm, or feeling managed through control rather than honesty. Someone may appear composed while using silence, charm, or distance to avoid accountability. This card can also point to moods that steer the room without being named. The repair is emotional truth with responsibility attached."
+      ],
+      "prompts": [
+        "Where would emotional honesty make you steadier, not less composed?"
+      ],
+      "essence": "The King of Cups means emotional maturity, calm leadership, and steady compassion.",
+      "compositionNote": "Emotional power matures when feeling can remain present without taking over.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "swords_1",
+      "index": 50,
+      "name": "Ace of Swords",
+      "shortName": "Ace of Swords",
+      "arcana": "minor",
+      "kind": "ace",
+      "suit": "swords",
+      "number": 1,
+      "rank": "1",
+      "keywords": [
+        "clarity",
+        "truth",
+        "decision",
+        "speech",
+        "discernment",
+        "insight",
+        "precision",
+        "breakthrough"
+      ],
+      "meanings": [
+        "The Ace of Swords marks the first arrival of clarity. A truth may be sharp enough to change the whole situation, even if it is not comfortable yet. This card can point to a decision, message, or realization that clears the fog. Its gift is precision: the ability to name what is real without dressing it up to keep everyone calm."
+      ],
+      "reversedMeanings": [
+        "Reversed, the Ace of Swords warns that clarity may be blocked, distorted, or used too harshly. A conversation may be missing the real point, or a decision may be made from reaction rather than truth. This card can also show mental static: too many thoughts to find the clean line. Before you speak or choose, separate the fact from the force behind it."
+      ],
+      "cautions": [
+        "Reversed, the Ace of Swords warns that clarity may be blocked, distorted, or used too harshly. A conversation may be missing the real point, or a decision may be made from reaction rather than truth. This card can also show mental static: too many thoughts to find the clean line. Before you speak or choose, separate the fact from the force behind it."
+      ],
+      "prompts": [
+        "What truth becomes simple when you stop softening it for comfort?"
+      ],
+      "essence": "The Ace of Swords means clarity, truth, and a sharp new idea.",
+      "compositionNote": "A clean thought cuts through confusion and makes the next truth impossible to ignore.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "swords_2",
+      "index": 51,
+      "name": "Two of Swords",
+      "shortName": "2 of Swords",
+      "arcana": "minor",
+      "kind": "pip",
+      "suit": "swords",
+      "number": 2,
+      "rank": "2",
+      "keywords": [
+        "choice",
+        "stalemate",
+        "boundaries",
+        "neutrality",
+        "avoidance",
+        "discernment",
+        "tension",
+        "pause"
+      ],
+      "meanings": [
+        "The Two of Swords marks a pause before decision. A situation may be held in balance because neither option is clean, or because more information is needed before the mind can choose. This card can point to stalemate, boundaries, or deliberate neutrality. The stillness may be useful, but it cannot become a permanent way to avoid movement."
+      ],
+      "reversedMeanings": [
+        "Reversed, the Two of Swords suggests that indecision may be breaking open. A choice may be delayed too long, or pressure may be forcing movement before the mind feels ready. This card can also show avoidance, denial, or emotional information leaking into a decision that pretended to be purely logical. The way forward begins by admitting what you already know matters."
+      ],
+      "cautions": [
+        "Reversed, the Two of Swords suggests that indecision may be breaking open. A choice may be delayed too long, or pressure may be forcing movement before the mind feels ready. This card can also show avoidance, denial, or emotional information leaking into a decision that pretended to be purely logical. The way forward begins by admitting what you already know matters."
+      ],
+      "prompts": [
+        "What choice are you delaying because both options reveal something true?"
+      ],
+      "essence": "The Two of Swords means indecision, guardedness, or a choice held in balance.",
+      "compositionNote": "The mind holds two truths apart because choosing too quickly would cost something.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "swords_3",
+      "index": 52,
+      "name": "Three of Swords",
+      "shortName": "3 of Swords",
+      "arcana": "minor",
+      "kind": "pip",
+      "suit": "swords",
+      "number": 3,
+      "rank": "3",
+      "keywords": [
+        "heartbreak",
+        "truth",
+        "grief",
+        "pain",
+        "clarity",
+        "repair",
+        "disappointment",
+        "release"
+      ],
+      "meanings": [
+        "The Three of Swords marks the moment a truth hurts because it cannot be unknown. This card can point to grief, disappointment, or words that cut through an emotional arrangement. It is not only heartbreak; it is the pain of seeing clearly after the heart has invested elsewhere. The wound is real, but so is the honesty that begins after denial breaks."
+      ],
+      "reversedMeanings": [
+        "Reversed, the Three of Swords can show pain that is being processed, denied, or released in uneven stages. A wound may be quieter now, but not necessarily gone. This card can point to old grief returning for language, or to a truth that has been softened so much it no longer heals. Recovery begins when the mind stops arguing with the ache."
+      ],
+      "cautions": [
+        "Reversed, the Three of Swords can show pain that is being processed, denied, or released in uneven stages. A wound may be quieter now, but not necessarily gone. This card can point to old grief returning for language, or to a truth that has been softened so much it no longer heals. Recovery begins when the mind stops arguing with the ache."
+      ],
+      "prompts": [
+        "What truth hurts because it frees you from a story you wanted to keep?"
+      ],
+      "essence": "The Three of Swords means painful truth, heartbreak, or grief that needs honesty.",
+      "compositionNote": "A painful truth enters the mind and divides what feeling hoped could stay whole.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "swords_4",
+      "index": 53,
+      "name": "Four of Swords",
+      "shortName": "4 of Swords",
+      "arcana": "minor",
+      "kind": "pip",
+      "suit": "swords",
+      "number": 4,
+      "rank": "4",
+      "keywords": [
+        "rest",
+        "recovery",
+        "pause",
+        "reflection",
+        "quiet",
+        "burnout",
+        "retreat",
+        "perspective"
+      ],
+      "meanings": [
+        "The Four of Swords marks the need for rest after mental strain. A situation may not require more analysis right now; it may require stillness, recovery, or a protected pause. This card can point to retreat, reflection, or the quiet that returns perspective. The wisdom here is not giving up. It is refusing to keep bleeding energy into a battle that needs silence before strategy."
+      ],
+      "reversedMeanings": [
+        "Reversed, the Four of Swords warns that rest may be resisted, interrupted, or overdue. The mind may be trying to keep functioning after its capacity has dropped. This card can also show emerging from withdrawal, especially after a needed pause. The question is whether you are returning because you are restored, or because you feel guilty for needing stillness."
+      ],
+      "cautions": [
+        "Reversed, the Four of Swords warns that rest may be resisted, interrupted, or overdue. The mind may be trying to keep functioning after its capacity has dropped. This card can also show emerging from withdrawal, especially after a needed pause. The question is whether you are returning because you are restored, or because you feel guilty for needing stillness."
+      ],
+      "prompts": [
+        "What would become clearer if you stopped forcing your mind to stay on duty?"
+      ],
+      "essence": "The Four of Swords means rest, recovery, and stepping back to regain perspective.",
+      "compositionNote": "The mind withdraws from conflict so restoration can become possible.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "swords_5",
+      "index": 54,
+      "name": "Five of Swords",
+      "shortName": "5 of Swords",
+      "arcana": "minor",
+      "kind": "pip",
+      "suit": "swords",
+      "number": 5,
+      "rank": "5",
+      "keywords": [
+        "conflict",
+        "ego",
+        "strategy",
+        "defeat",
+        "repair",
+        "argument",
+        "consequence",
+        "trust"
+      ],
+      "meanings": [
+        "The Five of Swords marks conflict where the cost of victory matters as much as the result. Someone may win the point but lose trust, peace, or future cooperation. This card can indicate tension, defeat, or a situation shaped by ego more than truth. Before continuing the fight, ask whether being right is still serving the outcome you actually want."
+      ],
+      "reversedMeanings": [
+        "Reversed, the Five of Swords can show the aftermath of conflict, the chance to disengage, or the refusal to keep fighting on old terms. A situation may be ready for repair, but only if someone stops needing total victory. This card can also warn of resentment that goes underground instead of resolving. Peace has to be more than silence after damage."
+      ],
+      "cautions": [
+        "Reversed, the Five of Swords can show the aftermath of conflict, the chance to disengage, or the refusal to keep fighting on old terms. A situation may be ready for repair, but only if someone stops needing total victory. This card can also warn of resentment that goes underground instead of resolving. Peace has to be more than silence after damage."
+      ],
+      "prompts": [
+        "Where are you trying to win something that actually needs repair?"
+      ],
+      "essence": "The Five of Swords means conflict, a costly win, or the aftermath of harsh words.",
+      "compositionNote": "The mind learns that winning the argument can still damage the field.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "swords_6",
+      "index": 55,
+      "name": "Six of Swords",
+      "shortName": "6 of Swords",
+      "arcana": "minor",
+      "kind": "pip",
+      "suit": "swords",
+      "number": 6,
+      "rank": "6",
+      "keywords": [
+        "transition",
+        "departure",
+        "healing",
+        "distance",
+        "movement",
+        "recovery",
+        "peace",
+        "closure"
+      ],
+      "meanings": [
+        "The Six of Swords marks movement away from turbulence toward a quieter shore. The transition may not feel triumphant, but it is still progress. This card can point to departure, recovery, or a necessary change in mental environment. You may not be free of everything that hurt, but you may be far enough from the chaos to begin thinking differently."
+      ],
+      "reversedMeanings": [
+        "Reversed, the Six of Swords suggests a difficult transition may be delayed, resisted, or incomplete. Something in the mind may keep returning to the old shore, even when the body is trying to leave. This card can point to stuckness, unfinished closure, or fear of the unknown after conflict. The passage may still be possible, but it needs consent from the part of you that keeps looking back."
+      ],
+      "cautions": [
+        "Reversed, the Six of Swords suggests a difficult transition may be delayed, resisted, or incomplete. Something in the mind may keep returning to the old shore, even when the body is trying to leave. This card can point to stuckness, unfinished closure, or fear of the unknown after conflict. The passage may still be possible, but it needs consent from the part of you that keeps looking back."
+      ],
+      "prompts": [
+        "What old conflict are you ready to leave without pretending it never shaped you?"
+      ],
+      "essence": "The Six of Swords means transition, moving on, and finding calmer ground after difficulty.",
+      "compositionNote": "The mind carries what it has learned across a difficult passage.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "swords_7",
+      "index": 56,
+      "name": "Seven of Swords",
+      "shortName": "7 of Swords",
+      "arcana": "minor",
+      "kind": "pip",
+      "suit": "swords",
+      "number": 7,
+      "rank": "7",
+      "keywords": [
+        "strategy",
+        "secrecy",
+        "privacy",
+        "avoidance",
+        "discretion",
+        "self-protection",
+        "motives",
+        "exposure"
+      ],
+      "meanings": [
+        "The Seven of Swords marks strategy, secrecy, or the need to move carefully. Not everything may be ready for open disclosure, and not every plan belongs in the room before it is formed. This card can point to cleverness, self-protection, or avoidance disguised as intelligence. The ethical question is whether privacy is protecting the truth or helping you escape it."
+      ],
+      "reversedMeanings": [
+        "Reversed, the Seven of Swords can show hidden information coming forward, a strategy failing, or the exhaustion of keeping something private. It may also indicate confession, exposure, or the choice to stop maneuvering around the truth. The card does not demand reckless disclosure. It asks whether the current secrecy is still serving anything clean."
+      ],
+      "cautions": [
+        "Reversed, the Seven of Swords can show hidden information coming forward, a strategy failing, or the exhaustion of keeping something private. It may also indicate confession, exposure, or the choice to stop maneuvering around the truth. The card does not demand reckless disclosure. It asks whether the current secrecy is still serving anything clean."
+      ],
+      "prompts": [
+        "What are you keeping private, and what is that privacy protecting?"
+      ],
+      "essence": "The Seven of Swords means strategy, secrecy, and the need to examine what is being withheld.",
+      "compositionNote": "The mind chooses a private strategy when direct movement feels unsafe or unwise.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "swords_8",
+      "index": 57,
+      "name": "Eight of Swords",
+      "shortName": "8 of Swords",
+      "arcana": "minor",
+      "kind": "pip",
+      "suit": "swords",
+      "number": 8,
+      "rank": "8",
+      "keywords": [
+        "restriction",
+        "fear",
+        "thought",
+        "choice",
+        "assumption",
+        "clarity",
+        "release",
+        "agency"
+      ],
+      "meanings": [
+        "The Eight of Swords marks a situation where the mind may be treating limitation as certainty. Some constraints may be real, but the story around them can make the field feel smaller than it is. This card can point to stuck thinking, restricted options, or a choice that feels impossible from inside the current frame. The first movement is not dramatic escape; it is noticing which rule was never truly agreed to."
+      ],
+      "reversedMeanings": [
+        "Reversed, the Eight of Swords suggests that the mental bind is beginning to loosen. A stuck situation may reveal a path, an assumption may fall apart, or the first honest choice may become visible. This card can also warn against calling yourself free while still obeying the old fear. The opening is real, but it needs participation."
+      ],
+      "cautions": [
+        "Reversed, the Eight of Swords suggests that the mental bind is beginning to loosen. A stuck situation may reveal a path, an assumption may fall apart, or the first honest choice may become visible. This card can also warn against calling yourself free while still obeying the old fear. The opening is real, but it needs participation."
+      ],
+      "prompts": [
+        "Which limit is real, and which one has been rehearsed into authority?"
+      ],
+      "essence": "The Eight of Swords means feeling stuck, limited, or trapped by fear and thought.",
+      "compositionNote": "Thought becomes a room with too few exits when fear is allowed to define the available choices.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "swords_9",
+      "index": 58,
+      "name": "Nine of Swords",
+      "shortName": "9 of Swords",
+      "arcana": "minor",
+      "kind": "pip",
+      "suit": "swords",
+      "number": 9,
+      "rank": "9",
+      "keywords": [
+        "worry",
+        "fear",
+        "regret",
+        "rumination",
+        "pressure",
+        "truth",
+        "relief",
+        "support"
+      ],
+      "meanings": [
+        "The Nine of Swords marks worry that has become difficult to contain. A fear may be repeating itself until it feels like evidence, or a painful thought may be asking for witness rather than endless analysis. This card can point to regret, dread, or mental pressure around something unresolved. Its message is not that the worst is coming; it is that the mind needs relief from carrying the fear alone."
+      ],
+      "reversedMeanings": [
+        "Reversed, the Nine of Swords suggests the spiral may be breaking, though not always gently. A fear may be named, a burden may be shared, or a private worry may lose some of its authority. This card can also show denial, where the mind tries to escape discomfort without addressing the cause. Relief is possible, but it asks for truth with care."
+      ],
+      "cautions": [
+        "Reversed, the Nine of Swords suggests the spiral may be breaking, though not always gently. A fear may be named, a burden may be shared, or a private worry may lose some of its authority. This card can also show denial, where the mind tries to escape discomfort without addressing the cause. Relief is possible, but it asks for truth with care."
+      ],
+      "prompts": [
+        "What fear keeps repeating, and what fact is it asking you to face?"
+      ],
+      "essence": "The Nine of Swords means worry, guilt, mental stress, or fear that feels heavy in private.",
+      "compositionNote": "The mind turns inward at night, where fear can grow larger than the facts beneath it.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "swords_10",
+      "index": 59,
+      "name": "Ten of Swords",
+      "shortName": "10 of Swords",
+      "arcana": "minor",
+      "kind": "pip",
+      "suit": "swords",
+      "number": 10,
+      "rank": "10",
+      "keywords": [
+        "ending",
+        "truth",
+        "exhaustion",
+        "collapse",
+        "betrayal",
+        "closure",
+        "recovery",
+        "release"
+      ],
+      "meanings": [
+        "The Ten of Swords marks an ending that may feel absolute because the mind has reached the limit of what it can keep negotiating. A belief, argument, or painful pattern may be finished, even if the emotions have not caught up yet. This card can point to betrayal, exhaustion, or a final truth that changes the story. It does not glorify suffering; it names the place where continuing costs more than stopping."
+      ],
+      "reversedMeanings": [
+        "Reversed, the Ten of Swords can show aftermath, recovery, or resistance to an ending that has already announced itself. The worst part may be passing, but the mind may still be replaying the final blow. This card can also warn against dragging a finished pattern into a new context. Healing begins when the ending is allowed to stay ended."
+      ],
+      "cautions": [
+        "Reversed, the Ten of Swords can show aftermath, recovery, or resistance to an ending that has already announced itself. The worst part may be passing, but the mind may still be replaying the final blow. This card can also warn against dragging a finished pattern into a new context. Healing begins when the ending is allowed to stay ended."
+      ],
+      "prompts": [
+        "What story has ended, even if part of you is still arguing with it?"
+      ],
+      "essence": "The Ten of Swords means a painful ending, a final break, or the close of a difficult mental cycle.",
+      "compositionNote": "A painful thought-pattern reaches its end because the old story has nothing left to carry.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "swords_page",
+      "index": 60,
+      "name": "Page of Swords",
+      "shortName": "Page of Swords",
+      "arcana": "minor",
+      "kind": "court",
+      "suit": "swords",
+      "number": "page",
+      "rank": "page",
+      "keywords": [
+        "curiosity",
+        "questions",
+        "messages",
+        "learning",
+        "truth",
+        "observation",
+        "communication",
+        "discernment"
+      ],
+      "meanings": [
+        "The Page of Swords marks the first active movement of the mind: asking, watching, learning, and testing language against the world. This card can point to news, study, or a conversation that opens a sharper line of inquiry. Its gift is alertness, but its challenge is patience. Not every insight is ready to become a verdict."
+      ],
+      "reversedMeanings": [
+        "Reversed, the Page of Swords warns that curiosity may be turning into gossip, defensiveness, or premature conclusions. A message may be unclear, a question may carry accusation, or information may be used before it is understood. This card can also show fear of speaking up. Slow the mind enough for language to become accurate."
+      ],
+      "cautions": [
+        "Reversed, the Page of Swords warns that curiosity may be turning into gossip, defensiveness, or premature conclusions. A message may be unclear, a question may carry accusation, or information may be used before it is understood. This card can also show fear of speaking up. Slow the mind enough for language to become accurate."
+      ],
+      "prompts": [
+        "What question needs to be asked without turning into an accusation?"
+      ],
+      "essence": "The Page of Swords means curiosity, questions, messages, and learning how to use your voice.",
+      "compositionNote": "Curiosity sharpens into language before experience has fully taught it how to land.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "swords_knight",
+      "index": 61,
+      "name": "Knight of Swords",
+      "shortName": "Knight of Swords",
+      "arcana": "minor",
+      "kind": "court",
+      "suit": "swords",
+      "number": "knight",
+      "rank": "knight",
+      "keywords": [
+        "speed",
+        "strategy",
+        "speech",
+        "urgency",
+        "decision",
+        "conflict",
+        "clarity",
+        "direction"
+      ],
+      "meanings": [
+        "The Knight of Swords marks fast movement through language, strategy, or decision. Something may accelerate because the mind has found a target and wants to close the distance. This card can point to decisive action, urgent communication, or a sharp turn in events. Its power is speed with purpose; its danger is speed without listening."
+      ],
+      "reversedMeanings": [
+        "Reversed, the Knight of Swords warns that urgency may be overriding accuracy. A situation may involve rash words, mental aggression, or a rush to win before the truth is complete. This card can also show stalled momentum, where fear of conflict turns movement inward. The task is to slow down without losing courage."
+      ],
+      "cautions": [
+        "Reversed, the Knight of Swords warns that urgency may be overriding accuracy. A situation may involve rash words, mental aggression, or a rush to win before the truth is complete. This card can also show stalled momentum, where fear of conflict turns movement inward. The task is to slow down without losing courage."
+      ],
+      "prompts": [
+        "Where does speed help, and where does it make the truth less accurate?"
+      ],
+      "essence": "The Knight of Swords means fast action, direct speech, and rushing toward a decision or truth.",
+      "compositionNote": "Thought becomes momentum, and the mind charges toward a conclusion before the field has fully settled.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "swords_queen",
+      "index": 62,
+      "name": "Queen of Swords",
+      "shortName": "Queen of Swords",
+      "arcana": "minor",
+      "kind": "court",
+      "suit": "swords",
+      "number": "queen",
+      "rank": "queen",
+      "keywords": [
+        "discernment",
+        "truth",
+        "boundaries",
+        "clarity",
+        "standards",
+        "honesty",
+        "perception",
+        "maturity"
+      ],
+      "meanings": [
+        "The Queen of Swords marks clear perception shaped by experience. This card can point to honest language, firm boundaries, or the ability to see through confusion without becoming cruel. She favors truth that is precise enough to be useful and mature enough to remain humane. The gift here is not coldness; it is clarity that no longer begs to be liked."
+      ],
+      "reversedMeanings": [
+        "Reversed, the Queen of Swords warns that clarity may be hardening into bitterness, judgment, or emotional distance. A sharp perception may still be accurate, but its delivery can turn protection into harm. This card can also show fear of speaking plainly after being punished for the truth. The repair is honest language with enough breath inside it."
+      ],
+      "cautions": [
+        "Reversed, the Queen of Swords warns that clarity may be hardening into bitterness, judgment, or emotional distance. A sharp perception may still be accurate, but its delivery can turn protection into harm. This card can also show fear of speaking plainly after being punished for the truth. The repair is honest language with enough breath inside it."
+      ],
+      "prompts": [
+        "What truth can you speak clearly without making it colder than it needs to be?"
+      ],
+      "essence": "The Queen of Swords means clear judgment, honest speech, and strong boundaries.",
+      "compositionNote": "Discernment becomes clean enough to protect truth without needing ornament or apology.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "swords_king",
+      "index": 63,
+      "name": "King of Swords",
+      "shortName": "King of Swords",
+      "arcana": "minor",
+      "kind": "court",
+      "suit": "swords",
+      "number": "king",
+      "rank": "king",
+      "keywords": [
+        "judgment",
+        "authority",
+        "reason",
+        "principle",
+        "strategy",
+        "truth",
+        "accountability",
+        "leadership"
+      ],
+      "meanings": [
+        "The King of Swords marks authority through reason, language, and principled judgment. This card can point to a decision-maker, formal conversation, or the need to think from standards rather than impulse. Its strength is not emotional absence; it is the ability to hold complexity without losing the line of truth. A situation may require clear terms and clean accountability."
+      ],
+      "reversedMeanings": [
+        "Reversed, the King of Swords warns that intellect may be used to dominate, distance, or control the terms of reality. A person or system may sound reasonable while avoiding accountability. This card can also show indecision hidden behind analysis. The question is whether the mind is serving truth or protecting power."
+      ],
+      "cautions": [
+        "Reversed, the King of Swords warns that intellect may be used to dominate, distance, or control the terms of reality. A person or system may sound reasonable while avoiding accountability. This card can also show indecision hidden behind analysis. The question is whether the mind is serving truth or protecting power."
+      ],
+      "prompts": [
+        "What standard should guide your judgment when emotion and ego both want the final word?"
+      ],
+      "essence": "The King of Swords means clear authority, sound judgment, and decisions based on truth.",
+      "compositionNote": "The mind becomes law when judgment is disciplined enough to serve truth rather than ego.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "pentacles_1",
+      "index": 64,
+      "name": "Ace of Pentacles",
+      "shortName": "Ace of Pentacles",
+      "arcana": "minor",
+      "kind": "ace",
+      "suit": "pentacles",
+      "number": 1,
+      "rank": "1",
+      "keywords": [
+        "opportunity",
+        "resources",
+        "stability",
+        "beginning",
+        "money",
+        "routine",
+        "growth",
+        "grounding"
+      ],
+      "meanings": [
+        "The Ace of Pentacles marks the first tangible opening. Something may be available as a resource, offer, or practical beginning, but it still needs care before it becomes secure. This card can point to work, money, healthful routine, or a chance to build something real. Its gift is possibility that can be touched, tested, and slowly developed."
+      ],
+      "reversedMeanings": [
+        "Reversed, the Ace of Pentacles warns that an opportunity may be delayed, underused, or not as stable as it first appears. A beginning may lack resources, timing, or follow-through. This card can also show difficulty receiving what is offered. Before investing, check whether the ground can actually hold the seed."
+      ],
+      "cautions": [
+        "Reversed, the Ace of Pentacles warns that an opportunity may be delayed, underused, or not as stable as it first appears. A beginning may lack resources, timing, or follow-through. This card can also show difficulty receiving what is offered. Before investing, check whether the ground can actually hold the seed."
+      ],
+      "prompts": [
+        "What practical beginning needs better conditions before it can grow?"
+      ],
+      "essence": "The Ace of Pentacles means a practical beginning, new resource, or chance to build something real.",
+      "compositionNote": "A material seed appears and asks whether it can be given real conditions to grow.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "pentacles_2",
+      "index": 65,
+      "name": "Two of Pentacles",
+      "shortName": "2 of Pentacles",
+      "arcana": "minor",
+      "kind": "pip",
+      "suit": "pentacles",
+      "number": 2,
+      "rank": "2",
+      "keywords": [
+        "balance",
+        "juggling",
+        "priorities",
+        "adaptation",
+        "resources",
+        "schedule",
+        "capacity",
+        "flexibility"
+      ],
+      "meanings": [
+        "The Two of Pentacles marks the art of managing more than one material demand at once. This card can point to schedule pressure, financial juggling, or the need to stay flexible while conditions shift. It does not always signal crisis; sometimes it shows capable adaptation. The question is whether balance is helping you move, or simply keeping exhaustion entertaining."
+      ],
+      "reversedMeanings": [
+        "Reversed, the Two of Pentacles warns that the juggling act may be slipping. Too many demands may be competing for the same time, money, or attention. This card can show disorganization, overwhelm, or a choice that can no longer be postponed. Balance may return when one thing is allowed to matter more than the rest."
+      ],
+      "cautions": [
+        "Reversed, the Two of Pentacles warns that the juggling act may be slipping. Too many demands may be competing for the same time, money, or attention. This card can show disorganization, overwhelm, or a choice that can no longer be postponed. Balance may return when one thing is allowed to matter more than the rest."
+      ],
+      "prompts": [
+        "What are you juggling that no longer belongs in the same rhythm?"
+      ],
+      "essence": "The Two of Pentacles means balance, juggling responsibilities, and adapting to changing conditions.",
+      "compositionNote": "A life in motion asks for balance without pretending every demand has equal weight.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "pentacles_3",
+      "index": 66,
+      "name": "Three of Pentacles",
+      "shortName": "3 of Pentacles",
+      "arcana": "minor",
+      "kind": "pip",
+      "suit": "pentacles",
+      "number": 3,
+      "rank": "3",
+      "keywords": [
+        "teamwork",
+        "craft",
+        "learning",
+        "collaboration",
+        "feedback",
+        "skill",
+        "building",
+        "standards"
+      ],
+      "meanings": [
+        "The Three of Pentacles marks the building stage where talent becomes more useful through collaboration. A plan may need feedback, craft, or the right people in the room. This card can point to teamwork, apprenticeship, or visible progress through shared effort. Its wisdom is practical humility: the work improves when no one has to pretend they can do everything alone."
+      ],
+      "reversedMeanings": [
+        "Reversed, the Three of Pentacles warns that the work may be suffering from poor collaboration, unclear standards, or uneven effort. People may be building from different blueprints. This card can also show refusal to learn, difficulty accepting feedback, or a group project losing its center. Before pushing forward, make sure everyone understands what is being made."
+      ],
+      "cautions": [
+        "Reversed, the Three of Pentacles warns that the work may be suffering from poor collaboration, unclear standards, or uneven effort. People may be building from different blueprints. This card can also show refusal to learn, difficulty accepting feedback, or a group project losing its center. Before pushing forward, make sure everyone understands what is being made."
+      ],
+      "prompts": [
+        "Where would the work improve if you let the right people help shape it?"
+      ],
+      "essence": "The Three of Pentacles means teamwork, skill, learning, and building something through shared effort.",
+      "compositionNote": "Real progress forms when skill, effort, and shared standards meet in the same work.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "pentacles_4",
+      "index": 67,
+      "name": "Four of Pentacles",
+      "shortName": "4 of Pentacles",
+      "arcana": "minor",
+      "kind": "pip",
+      "suit": "pentacles",
+      "number": 4,
+      "rank": "4",
+      "keywords": [
+        "security",
+        "control",
+        "resources",
+        "boundaries",
+        "scarcity",
+        "protection",
+        "possession",
+        "release"
+      ],
+      "meanings": [
+        "The Four of Pentacles marks the desire to protect what has been earned, saved, or stabilized. This card can point to security, caution, or a need to guard resources after a period of effort. It is not wrong to hold on. The question is whether preservation is serving life, or whether fear has started calling itself wisdom."
+      ],
+      "reversedMeanings": [
+        "Reversed, the Four of Pentacles can show either release or loss of control, depending on the context. Resources may be slipping, or an old grip may finally be loosening. This card can point to overspending, scarcity fear, or the first breath after a long period of contraction. Notice whether you are opening by choice or dropping things from exhaustion."
+      ],
+      "cautions": [
+        "Reversed, the Four of Pentacles can show either release or loss of control, depending on the context. Resources may be slipping, or an old grip may finally be loosening. This card can point to overspending, scarcity fear, or the first breath after a long period of contraction. Notice whether you are opening by choice or dropping things from exhaustion."
+      ],
+      "prompts": [
+        "What are you protecting, and what has your protection started to cost?"
+      ],
+      "essence": "The Four of Pentacles means holding on, protecting resources, and asking whether security has become too tight.",
+      "compositionNote": "Security becomes complicated when holding what matters starts to harden the hand.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "pentacles_5",
+      "index": 68,
+      "name": "Five of Pentacles",
+      "shortName": "5 of Pentacles",
+      "arcana": "minor",
+      "kind": "pip",
+      "suit": "pentacles",
+      "number": 5,
+      "rank": "5",
+      "keywords": [
+        "hardship",
+        "scarcity",
+        "support",
+        "exclusion",
+        "recovery",
+        "need",
+        "belonging",
+        "resources"
+      ],
+      "meanings": [
+        "The Five of Pentacles marks hardship that touches the body, resources, or sense of belonging. This card can point to financial stress, exclusion, or feeling left out in the cold while help seems hard to reach. It does not make suffering noble, and it does not make scarcity permanent. Its message is practical: name the need, find the door, and do not let shame decide what support you are allowed to seek."
+      ],
+      "reversedMeanings": [
+        "Reversed, the Five of Pentacles can show recovery beginning, support becoming visible, or a slow exit from scarcity. It may also reveal how hard it is to accept help after learning to survive without it. This card can point to improved conditions, but it still asks for practical repair. Relief grows stronger when pride stops blocking the doorway."
+      ],
+      "cautions": [
+        "Reversed, the Five of Pentacles can show recovery beginning, support becoming visible, or a slow exit from scarcity. It may also reveal how hard it is to accept help after learning to survive without it. This card can point to improved conditions, but it still asks for practical repair. Relief grows stronger when pride stops blocking the doorway."
+      ],
+      "prompts": [
+        "Where is support closer than your shame allows you to admit?"
+      ],
+      "essence": "The Five of Pentacles means hardship, scarcity, exclusion, and the need to seek real support.",
+      "compositionNote": "Material strain reveals where support exists, and where shame keeps someone outside it.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "pentacles_6",
+      "index": 69,
+      "name": "Six of Pentacles",
+      "shortName": "6 of Pentacles",
+      "arcana": "minor",
+      "kind": "pip",
+      "suit": "pentacles",
+      "number": 6,
+      "rank": "6",
+      "keywords": [
+        "generosity",
+        "exchange",
+        "support",
+        "fairness",
+        "resources",
+        "reciprocity",
+        "power",
+        "dignity"
+      ],
+      "meanings": [
+        "The Six of Pentacles marks the movement of resources between people. This card can point to generosity, assistance, payment, or a situation where power is shaped by who has enough to give. It may indicate help arriving, or the chance to offer help wisely. Its deeper question is not only who gives, but whether the exchange preserves dignity on both sides."
+      ],
+      "reversedMeanings": [
+        "Reversed, the Six of Pentacles warns that generosity may be uneven, conditional, or tangled with control. Help may come with hidden expectations, or a resource imbalance may be shaping the relationship more than anyone admits. This card can also show refusal to receive. The repair is not to reject exchange, but to make its terms honest."
+      ],
+      "cautions": [
+        "Reversed, the Six of Pentacles warns that generosity may be uneven, conditional, or tangled with control. Help may come with hidden expectations, or a resource imbalance may be shaping the relationship more than anyone admits. This card can also show refusal to receive. The repair is not to reject exchange, but to make its terms honest."
+      ],
+      "prompts": [
+        "Where does giving or receiving need cleaner terms?"
+      ],
+      "essence": "The Six of Pentacles means generosity, help, fair exchange, and the balance between giving and receiving.",
+      "compositionNote": "Exchange becomes ethical when giving and receiving are both honest about power.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "pentacles_7",
+      "index": 70,
+      "name": "Seven of Pentacles",
+      "shortName": "7 of Pentacles",
+      "arcana": "minor",
+      "kind": "pip",
+      "suit": "pentacles",
+      "number": 7,
+      "rank": "7",
+      "keywords": [
+        "patience",
+        "investment",
+        "assessment",
+        "growth",
+        "harvest",
+        "effort",
+        "return",
+        "cultivation"
+      ],
+      "meanings": [
+        "The Seven of Pentacles marks the assessment point inside a longer process. You may have invested time, money, or labor, and now the results need to be evaluated honestly. This card can point to patience, cultivation, or waiting for growth that cannot be rushed. Its wisdom is not passive delay; it is the discipline to ask whether the work is still worth tending."
+      ],
+      "reversedMeanings": [
+        "Reversed, the Seven of Pentacles warns that effort may not be returning enough value. A project may be stalled, a pattern may be draining, or impatience may be distorting the assessment. This card can also show abandoning something too early because the harvest is not immediate. The question is whether the investment needs more time, better care, or a clean ending."
+      ],
+      "cautions": [
+        "Reversed, the Seven of Pentacles warns that effort may not be returning enough value. A project may be stalled, a pattern may be draining, or impatience may be distorting the assessment. This card can also show abandoning something too early because the harvest is not immediate. The question is whether the investment needs more time, better care, or a clean ending."
+      ],
+      "prompts": [
+        "What have you invested in, and what is it actually producing?"
+      ],
+      "essence": "The Seven of Pentacles means patience, assessment, investment, and waiting to see what your effort produces.",
+      "compositionNote": "Patient effort pauses to ask whether the harvest still justifies the investment.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "pentacles_8",
+      "index": 71,
+      "name": "Eight of Pentacles",
+      "shortName": "8 of Pentacles",
+      "arcana": "minor",
+      "kind": "pip",
+      "suit": "pentacles",
+      "number": 8,
+      "rank": "8",
+      "keywords": [
+        "practice",
+        "skill",
+        "craft",
+        "discipline",
+        "apprenticeship",
+        "improvement",
+        "focus",
+        "devotion"
+      ],
+      "meanings": [
+        "The Eight of Pentacles marks effort that becomes skill through repetition. This card can point to study, apprenticeship, or steady work that improves because you keep showing up. The progress may not be dramatic, but it is real. What matters now is the quality of attention you bring to the task, not whether anyone applauds it yet."
+      ],
+      "reversedMeanings": [
+        "Reversed, the Eight of Pentacles warns that effort may be scattered, resentful, or disconnected from growth. You may be repeating a task without learning from it, or chasing perfection until the work loses its pulse. This card can also show underdeveloped skill being rushed into public view. Return to the craft before demanding the result."
+      ],
+      "cautions": [
+        "Reversed, the Eight of Pentacles warns that effort may be scattered, resentful, or disconnected from growth. You may be repeating a task without learning from it, or chasing perfection until the work loses its pulse. This card can also show underdeveloped skill being rushed into public view. Return to the craft before demanding the result."
+      ],
+      "prompts": [
+        "What skill is asking for patient practice instead of immediate proof?"
+      ],
+      "essence": "The Eight of Pentacles means practice, skill-building, and steady improvement through repeated effort.",
+      "compositionNote": "Skill becomes reliable when attention returns to the work again and again.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "pentacles_9",
+      "index": 72,
+      "name": "Nine of Pentacles",
+      "shortName": "9 of Pentacles",
+      "arcana": "minor",
+      "kind": "pip",
+      "suit": "pentacles",
+      "number": 9,
+      "rank": "9",
+      "keywords": [
+        "independence",
+        "stability",
+        "sufficiency",
+        "self-respect",
+        "reward",
+        "refinement",
+        "pleasure",
+        "security"
+      ],
+      "meanings": [
+        "The Nine of Pentacles marks earned stability and the quiet pleasure of having something to stand on. This card can point to independence, refinement, or a result that came through patience. It does not always mean wealth; it often means enough space to belong to yourself. The reward is not only what you have gained, but who you became while tending it."
+      ],
+      "reversedMeanings": [
+        "Reversed, the Nine of Pentacles warns that independence may feel unstable, performative, or harder to enjoy than it looks. You may have the appearance of success without the inner permission to rest inside it. This card can also show dependence, comparison, or pleasure delayed until some impossible standard is met. The repair begins by asking what enough would feel like in the body."
+      ],
+      "cautions": [
+        "Reversed, the Nine of Pentacles warns that independence may feel unstable, performative, or harder to enjoy than it looks. You may have the appearance of success without the inner permission to rest inside it. This card can also show dependence, comparison, or pleasure delayed until some impossible standard is met. The repair begins by asking what enough would feel like in the body."
+      ],
+      "prompts": [
+        "Where have you earned more ease than you are allowing yourself to receive?"
+      ],
+      "essence": "The Nine of Pentacles means independence, earned comfort, and enjoying what steady effort has created.",
+      "compositionNote": "Material ease becomes meaningful when it is rooted in self-respect.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "pentacles_10",
+      "index": 73,
+      "name": "Ten of Pentacles",
+      "shortName": "10 of Pentacles",
+      "arcana": "minor",
+      "kind": "pip",
+      "suit": "pentacles",
+      "number": 10,
+      "rank": "10",
+      "keywords": [
+        "legacy",
+        "family",
+        "structure",
+        "resources",
+        "stability",
+        "inheritance",
+        "commitment",
+        "continuity"
+      ],
+      "meanings": [
+        "The Ten of Pentacles marks continuity, legacy, and the material structures that outlive a single moment. This card can point to family systems, shared resources, or long-range stability. It often asks what is being built for more than immediate satisfaction. The gift is permanence with purpose; the caution is not letting inheritance become a cage."
+      ],
+      "reversedMeanings": [
+        "Reversed, the Ten of Pentacles warns that a structure may look stable while carrying strain beneath the surface. Family, money, or tradition may be shaping the situation in ways that need honest review. This card can also show instability around resources or a legacy that no longer fits the life being lived. The issue is not whether something has history, but whether it still has integrity."
+      ],
+      "cautions": [
+        "Reversed, the Ten of Pentacles warns that a structure may look stable while carrying strain beneath the surface. Family, money, or tradition may be shaping the situation in ways that need honest review. This card can also show instability around resources or a legacy that no longer fits the life being lived. The issue is not whether something has history, but whether it still has integrity."
+      ],
+      "prompts": [
+        "What are you building that should outlast the mood you are in today?"
+      ],
+      "essence": "The Ten of Pentacles means legacy, family, long-term stability, and what gets built to last.",
+      "compositionNote": "What is built well enough to last begins to shape the lives around it.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "pentacles_page",
+      "index": 74,
+      "name": "Page of Pentacles",
+      "shortName": "Page of Pentacles",
+      "arcana": "minor",
+      "kind": "court",
+      "suit": "pentacles",
+      "number": "page",
+      "rank": "page",
+      "keywords": [
+        "learning",
+        "practice",
+        "opportunity",
+        "study",
+        "grounding",
+        "patience",
+        "beginning",
+        "commitment"
+      ],
+      "meanings": [
+        "The Page of Pentacles marks the first serious contact with a practical path. This card can point to study, a new job, a financial beginning, or a skill that needs patient attention. Its energy is humble but not small. Something may be possible because you are willing to learn it from the ground up."
+      ],
+      "reversedMeanings": [
+        "Reversed, the Page of Pentacles warns that a practical beginning may be delayed, unfocused, or treated too casually. You may want the outcome without committing to the learning curve. This card can also show discouragement when progress feels slow. Return to the simplest next action and let seriousness rebuild from there."
+      ],
+      "cautions": [
+        "Reversed, the Page of Pentacles warns that a practical beginning may be delayed, unfocused, or treated too casually. You may want the outcome without committing to the learning curve. This card can also show discouragement when progress feels slow. Return to the simplest next action and let seriousness rebuild from there."
+      ],
+      "prompts": [
+        "What practical lesson is asking you to begin without pretending mastery?"
+      ],
+      "essence": "The Page of Pentacles means learning, practice, and the beginning of a real-world opportunity.",
+      "compositionNote": "The body learns trust by placing one real step inside the material world.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "pentacles_knight",
+      "index": 75,
+      "name": "Knight of Pentacles",
+      "shortName": "Knight of Pentacles",
+      "arcana": "minor",
+      "kind": "court",
+      "suit": "pentacles",
+      "number": "knight",
+      "rank": "knight",
+      "keywords": [
+        "consistency",
+        "patience",
+        "responsibility",
+        "routine",
+        "devotion",
+        "labor",
+        "reliability",
+        "endurance"
+      ],
+      "meanings": [
+        "The Knight of Pentacles marks steady movement, careful labor, and the discipline to keep going when novelty fades. This card can point to responsibility, routine, or a path that rewards patience more than speed. The progress may be slow, but it is not empty. What matters now is whether the action can be repeated without losing integrity."
+      ],
+      "reversedMeanings": [
+        "Reversed, the Knight of Pentacles warns that steadiness may be turning into stagnation, stubbornness, or exhausted repetition. A routine may have outlived its usefulness, or responsibility may be carried without renewal. This card can also show avoidance disguised as caution. The repair is not necessarily to move faster; it is to ask whether the path is still alive."
+      ],
+      "cautions": [
+        "Reversed, the Knight of Pentacles warns that steadiness may be turning into stagnation, stubbornness, or exhausted repetition. A routine may have outlived its usefulness, or responsibility may be carried without renewal. This card can also show avoidance disguised as caution. The repair is not necessarily to move faster; it is to ask whether the path is still alive."
+      ],
+      "prompts": [
+        "Where would consistency help, and where has consistency become a hiding place?"
+      ],
+      "essence": "The Knight of Pentacles means patience, responsibility, and steady progress through consistent effort.",
+      "compositionNote": "Devotion becomes power when progress is measured by reliability instead of speed.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "pentacles_queen",
+      "index": 76,
+      "name": "Queen of Pentacles",
+      "shortName": "Queen of Pentacles",
+      "arcana": "minor",
+      "kind": "court",
+      "suit": "pentacles",
+      "number": "queen",
+      "rank": "queen",
+      "keywords": [
+        "care",
+        "nourishment",
+        "resources",
+        "body",
+        "home",
+        "capacity",
+        "support",
+        "stewardship"
+      ],
+      "meanings": [
+        "The Queen of Pentacles marks grounded care, embodied wisdom, and the ability to make life feel materially supported. This card can point to home, resources, body care, or the kind of generosity that knows how to sustain itself. Her power is not only in giving; it is in knowing what conditions allow life to keep growing."
+      ],
+      "reversedMeanings": [
+        "Reversed, the Queen of Pentacles warns that care may be depleted, controlling, or tied to self-worth. You may be holding too much of the practical world for others while losing contact with your own body. This card can also show scarcity thinking or comfort used to avoid change. The repair begins by making support reciprocal."
+      ],
+      "cautions": [
+        "Reversed, the Queen of Pentacles warns that care may be depleted, controlling, or tied to self-worth. You may be holding too much of the practical world for others while losing contact with your own body. This card can also show scarcity thinking or comfort used to avoid change. The repair begins by making support reciprocal."
+      ],
+      "prompts": [
+        "What would care look like if your needs were included in the design?"
+      ],
+      "essence": "The Queen of Pentacles means grounded care, practical support, and nourishment that can last.",
+      "compositionNote": "Care becomes sovereign when it can nourish life without abandoning itself.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    },
+    {
+      "id": "pentacles_king",
+      "index": 77,
+      "name": "King of Pentacles",
+      "shortName": "King of Pentacles",
+      "arcana": "minor",
+      "kind": "court",
+      "suit": "pentacles",
+      "number": "king",
+      "rank": "king",
+      "keywords": [
+        "stewardship",
+        "stability",
+        "leadership",
+        "resources",
+        "maturity",
+        "security",
+        "responsibility",
+        "endurance"
+      ],
+      "meanings": [
+        "The King of Pentacles marks mature stewardship of the material world. This card can point to stability, leadership, or the ability to turn effort into something dependable. It often appears when resources need wise management rather than anxious control. The true measure of this King is not what he owns, but what becomes safer because he governs it well."
+      ],
+      "reversedMeanings": [
+        "Reversed, the King of Pentacles warns that material power may be rigid, greedy, or insecure beneath the surface. Stability may be used to control rather than support, or success may be measured in ways that flatten the soul. This card can also show poor stewardship, debt of energy, or fear of losing status. The question is whether the structure serves life or only protects authority."
+      ],
+      "cautions": [
+        "Reversed, the King of Pentacles warns that material power may be rigid, greedy, or insecure beneath the surface. Stability may be used to control rather than support, or success may be measured in ways that flatten the soul. This card can also show poor stewardship, debt of energy, or fear of losing status. The question is whether the structure serves life or only protects authority."
+      ],
+      "prompts": [
+        "What are you responsible for stewarding, not merely possessing?"
+      ],
+      "essence": "The King of Pentacles means stability, leadership, resources, and mature responsibility in the material world.",
+      "compositionNote": "Mastery becomes trustworthy when resources are governed with patience and responsibility.",
+      "source": "EntangledOracle/app/src/main/assets/content/tarot/rws_base_v1"
+    }
+  ],
+  "spreads": [
+    {
+      "id": "daily_card",
+      "title": "Daily Card",
+      "subtitle": "A single card for today's locked field.",
+      "positions": [
+        {
+          "index": 0,
+          "label": "Today",
+          "prompt": "The tone, question, or practice asking for attention today.",
+          "x": 50,
+          "y": 50
+        }
+      ]
+    },
+    {
+      "id": "three_card",
+      "title": "Three Card",
+      "subtitle": "A clean temporal line.",
+      "positions": [
+        {
+          "index": 0,
+          "label": "Past",
+          "prompt": "The influence, choice, or residue behind the matter.",
+          "x": 20,
+          "y": 50
+        },
+        {
+          "index": 1,
+          "label": "Present",
+          "prompt": "The living condition or pressure currently active.",
+          "x": 50,
+          "y": 50
+        },
+        {
+          "index": 2,
+          "label": "Future",
+          "prompt": "The direction beginning to form if the pattern continues.",
+          "x": 80,
+          "y": 50
+        }
+      ]
+    },
+    {
+      "id": "five_card",
+      "title": "Five Card",
+      "subtitle": "Situation, pressure, root, guidance, result.",
+      "positions": [
+        {
+          "index": 0,
+          "label": "Situation",
+          "prompt": "The matter as it currently stands.",
+          "x": 50,
+          "y": 50
+        },
+        {
+          "index": 1,
+          "label": "Challenge",
+          "prompt": "The force pressing against or complicating the matter.",
+          "x": 50,
+          "y": 22
+        },
+        {
+          "index": 2,
+          "label": "Root",
+          "prompt": "The hidden base, cause, or older pattern beneath it.",
+          "x": 50,
+          "y": 78
+        },
+        {
+          "index": 3,
+          "label": "Guidance",
+          "prompt": "The action, attitude, or restraint that helps.",
+          "x": 22,
+          "y": 50
+        },
+        {
+          "index": 4,
+          "label": "Outcome",
+          "prompt": "The likely shape if the current pattern continues.",
+          "x": 78,
+          "y": 50
+        }
+      ]
+    },
+    {
+      "id": "seven_card",
+      "title": "Seven Card",
+      "subtitle": "A deeper line with inner and outer forces.",
+      "positions": [
+        {
+          "index": 0,
+          "label": "Self",
+          "prompt": "Your current stance, capacity, or inner weather.",
+          "x": 16,
+          "y": 52
+        },
+        {
+          "index": 1,
+          "label": "Crossing Force",
+          "prompt": "What complicates, charges, or intensifies the matter.",
+          "x": 30,
+          "y": 36
+        },
+        {
+          "index": 2,
+          "label": "Hidden Root",
+          "prompt": "The less visible cause or emotional root below the surface.",
+          "x": 44,
+          "y": 68
+        },
+        {
+          "index": 3,
+          "label": "Recent Past",
+          "prompt": "The influence just behind you that still shapes the field.",
+          "x": 58,
+          "y": 36
+        },
+        {
+          "index": 4,
+          "label": "Near Future",
+          "prompt": "The next visible movement approaching the matter.",
+          "x": 72,
+          "y": 52
+        },
+        {
+          "index": 5,
+          "label": "Guidance",
+          "prompt": "How to meet the pattern with more clarity and agency.",
+          "x": 42,
+          "y": 20
+        },
+        {
+          "index": 6,
+          "label": "Likely Shape",
+          "prompt": "The larger form the reading is bending toward.",
+          "x": 86,
+          "y": 28
+        }
+      ]
+    },
+    {
+      "id": "celtic_cross_10",
+      "title": "Celtic Cross",
+      "subtitle": "Ten cards for a full situational reading.",
+      "positions": [
+        {
+          "index": 0,
+          "label": "Present Matter",
+          "prompt": "The central issue, living question, or visible concern.",
+          "x": 38,
+          "y": 50
+        },
+        {
+          "index": 1,
+          "label": "Crossing Force",
+          "prompt": "What crosses, charges, resists, or complicates the matter.",
+          "x": 38,
+          "y": 50
+        },
+        {
+          "index": 2,
+          "label": "Foundation",
+          "prompt": "The root condition beneath the visible situation.",
+          "x": 38,
+          "y": 78
+        },
+        {
+          "index": 3,
+          "label": "Recent Past",
+          "prompt": "The influence receding from the field but not yet absent.",
+          "x": 16,
+          "y": 50
+        },
+        {
+          "index": 4,
+          "label": "Crown",
+          "prompt": "The visible aim, ideal, concern, or conscious frame.",
+          "x": 38,
+          "y": 22
+        },
+        {
+          "index": 5,
+          "label": "Near Future",
+          "prompt": "The next approaching development or likely movement.",
+          "x": 60,
+          "y": 50
+        },
+        {
+          "index": 6,
+          "label": "Self",
+          "prompt": "Your stance, role, or internal condition within the matter.",
+          "x": 82,
+          "y": 82
+        },
+        {
+          "index": 7,
+          "label": "Environment",
+          "prompt": "The outer field, surrounding influence, or other people involved.",
+          "x": 82,
+          "y": 62
+        },
+        {
+          "index": 8,
+          "label": "Hopes and Fears",
+          "prompt": "The charged expectation, worry, wish, or projection around the matter.",
+          "x": 82,
+          "y": 42
+        },
+        {
+          "index": 9,
+          "label": "Outcome",
+          "prompt": "The likely resolution or landing point if the pattern continues.",
+          "x": 82,
+          "y": 22
+        }
+      ]
+    }
+  ]
+}

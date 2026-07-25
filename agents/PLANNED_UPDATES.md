@@ -61,8 +61,14 @@ The remapped `predictive_chapters.json`/`predictive_candidates.json`
 content is wired to the current vocabulary. What's left is the operator
 dropping finished prose in over the TODO placeholders - not a build task.
 
-**Sequencing decision (2026-07-10):** Tier 6 (Synastry) is next, as
-originally scoped - its own architecture, two-chart grammar, not started.
+**Sequencing decision (2026-07-10, clarified 2026-07-25):** Tier 6
+(Synastry) is next, as originally scoped - its own architecture,
+two-chart grammar, not started. The first pass is now explicitly
+computation-first rather than prose-first: see
+`agents/SYNASTRY_COMPUTATION_FIRST_DRAFT.md`. The goal is to solidify the
+mathematical/formulaic substrate, confidence gates, sidecar status, and
+fixtures so future audits cannot mistake scaffolding for a finished
+client-ready engine.
 After that, Tier 7 is now specialist branches + deep-cut research only
 (electional, horary, rectification, primary directions, firdaria,
 decennials, fixed stars, midpoints, harmonics). Tier 8 is the locational

@@ -10,6 +10,18 @@ import copy
 from typing import Any
 
 from engine.synastry import ANGLE_POINTS, ASPECT_POLARITY, BODY_WEIGHTS
+from products.synastry.prose_units import (
+    appendix_card,
+    cluster_synthesis,
+    constructive_use,
+    directional_overlay_interpretation,
+    evidence_bridge,
+    friction_modifier,
+    mutual_contact_interpretation,
+    sentence_join,
+    serial_join,
+    topic_intro,
+)
 from selectors.synastry_selector import (
     select_repeated_theme_confidence_leaf,
     select_repeated_theme_type_leaf,
@@ -91,19 +103,11 @@ def _deepcopy(value: Any) -> Any:
 
 
 def _sentence_join(parts: list[str]) -> str:
-    clean = [str(part).strip() for part in parts if isinstance(part, str) and part.strip()]
-    return " ".join(clean)
+    return sentence_join(parts)
 
 
 def _serial_join(parts: list[str]) -> str:
-    clean = [part.strip() for part in parts if isinstance(part, str) and part.strip()]
-    if not clean:
-        return ""
-    if len(clean) == 1:
-        return clean[0]
-    if len(clean) == 2:
-        return f"{clean[0]} and {clean[1]}"
-    return f"{', '.join(clean[:-1])}, and {clean[-1]}"
+    return serial_join(parts)
 
 
 def _title_case_signal(value: str) -> str:
@@ -150,6 +154,7 @@ class SynastryNarrativeCompiler:
             self._shared_natal_baseline_section,
             self._composite_relationship_field_section,
             self._friction_growth_edges_section,
+            self._technical_evidence_summary_section,
             self._integrated_relationship_portrait_section,
         ):
             section = builder()
@@ -217,12 +222,12 @@ class SynastryNarrativeCompiler:
         topic_leaf = select_topic_signature_leaf(topic_key)
         polarity_leaf = select_topic_polarity_leaf(convergence.get("polarity") or signature.get("polarity"))
         confidence_leaf = select_topic_confidence_leaf(signature.get("confidence_state") or convergence.get("confidence_state"))
-        topic_intro = self._topic_intro(topic_key, signature)
+        intro = self._topic_intro(topic_key, signature)
         bridge = ""
         if families:
-            bridge = f"The evidence repeats through {_serial_join(families[:4])}, so the theme does not stay abstract for long."
+            bridge = evidence_bridge(families)
         modifier = self._topic_modifier(topic_key)
-        body = _sentence_join([topic_intro, bridge, topic_leaf.get("body"), polarity_leaf.get("body"), modifier, confidence_leaf.get("body")])
+        body = _sentence_join([intro, bridge, topic_leaf.get("body"), polarity_leaf.get("body"), modifier, confidence_leaf.get("body")])
         return {
             "id": section_id,
             "title": title,
@@ -242,16 +247,9 @@ class SynastryNarrativeCompiler:
         }
 
     def _topic_intro(self, topic_key: str, signature: dict) -> str:
-        if topic_key == "attachment_emotional_rhythm":
-            return "Emotional rhythm is the clearest organizing theme in this relationship."
-        if topic_key == "communication":
-            return "Communication is not peripheral here; it is one of the main ways the relationship becomes real."
-        if topic_key == "growth_meaning":
-            return "Growth and meaning are active enough here that the relationship keeps widening the frame around itself."
-        if topic_key == "commitment_constraint_time":
-            return "Care, routine, and responsibility matter because this bond does not stay purely atmospheric."
-        if topic_key == "intensity_merging_shared_resources":
-            return "Depth and shared stakes are part of the structure, not just occasional mood."
+        leaf = topic_intro(topic_key)
+        if leaf:
+            return leaf
         label = self._top_topic_label(topic_key).capitalize()
         return f"{label} is one of the stronger recurring themes in this relationship."
 
@@ -323,14 +321,27 @@ class SynastryNarrativeCompiler:
         if self._find_overlay("Venus", 7):
             overlay = self._find_overlay("Venus", 7)
             sentences.append(
-                f"{self.names[overlay['source_person']]}'s Venus lands in {self.names[overlay['target_person']]}'s seventh house, so {self.names[overlay['source_person']]} registers strongly in {self.names[overlay['target_person']]}'s partnership field."
+                directional_overlay_interpretation(
+                    self.names[overlay["source_person"]],
+                    "Venus",
+                    self.names[overlay["target_person"]],
+                    "partnership field",
+                    implication=f"{self.names[overlay['source_person']]} registers strongly in {self.names[overlay['target_person']]}'s partnership field.",
+                )
             )
         if self._find_mutual({"Venus", "Ascendant"}, aspect="Opposition"):
             mutual = self._find_mutual({"Venus", "Ascendant"}, aspect="Opposition")
             source, target = _mutual_people_by_body(mutual, "Venus", "Ascendant")
             if source and target:
                 sentences.append(
-                    f"{self.names[source]}'s Venus opposes {self.names[target]}'s Ascendant, which makes relational visibility hard to miss on first encounter."
+                    mutual_contact_interpretation(
+                        self.names[source],
+                        "Venus",
+                        "Opposition",
+                        self.names[target],
+                        "Ascendant",
+                        implication="That makes relational visibility hard to miss on first encounter.",
+                    )
                 )
         catalytic = self._catalytic_heat_summary()
         if catalytic:
@@ -359,7 +370,13 @@ class SynastryNarrativeCompiler:
         mars_fourth = self._find_overlay("Mars", 4)
         if mars_fourth:
             pieces.append(
-                f"{self.names[mars_fourth['source_person']]}'s Mars enters {self.names[mars_fourth['target_person']]}'s fourth house, so drive and directness land in private ground rather than staying only on the visible surface."
+                directional_overlay_interpretation(
+                    self.names[mars_fourth["source_person"]],
+                    "Mars",
+                    self.names[mars_fourth["target_person"]],
+                    "private ground",
+                    implication="Drive and directness land there rather than staying only on the visible surface.",
+                )
             )
         asc_mars = self._find_mutual({"Ascendant", "Mars"}, aspect="Square")
         if asc_mars:
@@ -371,7 +388,13 @@ class SynastryNarrativeCompiler:
         moon_third = self._find_overlay("Moon", 3)
         if moon_third:
             pieces.append(
-                f"{self.names[moon_third['source_person']]}'s Moon in {self.names[moon_third['target_person']]}'s third house adds emotional tone to everyday exchange, so the private field is not sealed off from conversation."
+                directional_overlay_interpretation(
+                    self.names[moon_third["source_person"]],
+                    "Moon",
+                    self.names[moon_third["target_person"]],
+                    "daily communication",
+                    implication="That adds emotional tone to everyday exchange, so the private field is not sealed off from conversation.",
+                )
             )
         if not pieces:
             return None
@@ -471,7 +494,7 @@ class SynastryNarrativeCompiler:
             confidence_leaf = select_repeated_theme_confidence_leaf(theme.get("confidence_state"))
             phrase = theme_leaf.get("body")
             theme_phrases.append(_sentence_join([phrase, confidence_leaf.get("body")]))
-        body = _sentence_join(
+        body = cluster_synthesis(_sentence_join(
             [
                 "The shared natal baseline matters because this relationship is not being built from completely unfamiliar symbolic material.",
                 "At minimum, both people are arriving with some similar natal architecture already in place.",
@@ -479,7 +502,7 @@ class SynastryNarrativeCompiler:
                 theme_phrases[2] if len(theme_phrases) > 2 else "",
                 "These repeated structures do not decide the relationship, but they do help explain why some dynamics feel immediately recognizable from the inside.",
             ]
-        )
+        ))
         return {
             "id": "shared_natal_baseline",
             "title": "Shared Natal Baseline",
@@ -560,7 +583,7 @@ class SynastryNarrativeCompiler:
         ]
         if not tensions and not mixed_topics:
             return None
-        pieces = ["The relationship has real growth edges, but they are specific rather than abstractly ominous."]
+        pieces = [friction_modifier("The relationship has real growth edges, but they are specific rather than abstractly ominous.")]
         catalytic = self._catalytic_heat_summary()
         if catalytic:
             pieces.append(catalytic)
@@ -580,13 +603,39 @@ class SynastryNarrativeCompiler:
             ],
         }
 
+    def _technical_evidence_summary_section(self) -> dict | None:
+        cards = []
+        mutual_card = self._appendix_mutual_card_body()
+        if mutual_card:
+            cards.append(mutual_card)
+        overlay_card = self._appendix_overlay_card_body()
+        if overlay_card:
+            cards.append(overlay_card)
+        theme_card = self._appendix_repeated_theme_card_body()
+        if theme_card:
+            cards.append(theme_card)
+        if not cards:
+            return None
+        return {
+            "id": "technical_evidence_summary",
+            "title": "Technical Evidence Summary",
+            "blocks": [
+                {
+                    "id": "technical_evidence_summary:summary",
+                    "title": "Evidence Summary",
+                    "body": "The chart evidence clusters in a few places strongly enough to deserve a compact summary before the raw appendix.",
+                    "items": cards,
+                }
+            ],
+        }
+
     def _integrated_relationship_portrait_section(self) -> dict:
         pieces = [
             "Taken together, this relationship does not read as casual, purely conceptual, or easy to keep at arm's length.",
             self._attraction_summary(),
             self._depth_summary(),
             "The strongest through-line is that emotional rhythm, communication, attraction, and consequence keep crossing into each other rather than staying compartmentalized.",
-            "The healthiest use of the chart is not to treat intensity as proof, but to notice where recognition is real, where pacing is required, and where each person is landing in the other's lived terrain.",
+            constructive_use("The healthiest use of the chart is not to treat intensity as proof, but to notice where recognition is real, where pacing is required, and where each person is landing in the other's lived terrain."),
         ]
         return {
             "id": "integrated_relationship_portrait",
@@ -731,6 +780,67 @@ class SynastryNarrativeCompiler:
         return (
             f"The composite field itself leans {SIGN_TONE.get(sun.get('zodiac_position', {}).get('sign'), 'symbolic')} at the center, "
             f"with a {moon.get('zodiac_position', {}).get('sign')} Moon shaping how the relationship tries to feel balanced or emotionally legible."
+        )
+
+    def _appendix_mutual_card_body(self) -> dict | None:
+        top_mutuals = self._top_mutuals(3)
+        if not top_mutuals:
+            return None
+        phrases = []
+        for mutual in top_mutuals:
+            entries = [entry for entry in mutual.get("mutual_key", []) or [] if isinstance(entry, dict)]
+            if len(entries) < 2:
+                continue
+            left = entries[0]
+            right = entries[1]
+            aspect = str(mutual.get("aspect") or "Contact")
+            orb = mutual.get("orb")
+            salience = mutual.get("salience")
+            phrases.append(
+                f"{self.names.get(left.get('person'), left.get('person'))}'s {left.get('body')} with "
+                f"{self.names.get(right.get('person'), right.get('person'))}'s {right.get('body')} "
+                f"({aspect.lower()}, orb {float(orb or 0.0):.2f}, salience {float(salience or 0.0):.2f})"
+            )
+        if not phrases:
+            return None
+        return appendix_card(
+            "Highest-salience mutual contacts",
+            "Top cross-chart contacts: " + _serial_join(phrases) + ".",
+            metadata={"count": len(phrases), "kind": "mutual_contacts"},
+        )
+
+    def _appendix_overlay_card_body(self) -> dict | None:
+        top_overlays = self._top_overlays(4)
+        if not top_overlays:
+            return None
+        phrases = []
+        for overlay in top_overlays:
+            house_label = HOUSE_LABELS.get(int(overlay.get("target_house") or 0), "lived field")
+            phrases.append(
+                f"{self.names.get(overlay.get('source_person'))}'s {overlay.get('source_body')} into "
+                f"{self.names.get(overlay.get('target_person'))}'s {house_label}"
+            )
+        return appendix_card(
+            "Directional house emphasis",
+            "The strongest overlay pattern concentrates through " + _serial_join(phrases[:4]) + ".",
+            metadata={"count": len(top_overlays), "kind": "house_overlays"},
+        )
+
+    def _appendix_repeated_theme_card_body(self) -> dict | None:
+        if not self.repeated_themes:
+            return None
+        top_themes = sorted(
+            self.repeated_themes,
+            key=lambda item: (-float(item.get("salience", 0.0) or 0.0), str(item.get("theme_key") or "")),
+        )[:3]
+        labels = []
+        for theme in top_themes:
+            theme_type = str(theme.get("theme_type") or "")
+            labels.append(_title_case_signal(theme_type).lower())
+        return appendix_card(
+            "Repeated natal echoes",
+            "Repeated natal material appears through " + _serial_join(labels) + ", which helps explain why some patterns feel familiar before the live synastry has fully unfolded.",
+            metadata={"count": len(top_themes), "kind": "repeated_themes"},
         )
 
 

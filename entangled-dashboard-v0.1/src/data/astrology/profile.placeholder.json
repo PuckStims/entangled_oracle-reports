@@ -1,0 +1,4 @@
+{
+  "status": "not_wired",
+  "note": "Personal natal/profile routing is scaffolded here. Keep real birth data in a gitignored .local.json file."
+}

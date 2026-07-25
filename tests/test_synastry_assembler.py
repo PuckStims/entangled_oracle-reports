@@ -95,6 +95,7 @@ def test_assemble_synastry_context_has_stable_top_level_shape():
     assert "directional_landing" in context["section_order"]
     assert "shared_natal_baseline" in context["section_order"]
     assert "composite_relationship_field" in context["section_order"]
+    assert "technical_evidence_summary" in context["section_order"]
     assert "integrated_relationship_portrait" in context["section_order"]
     assert context["source_pair_payload"]["schema_version"] == pair["schema_version"]
 
@@ -271,6 +272,18 @@ def test_composite_relationship_field_section_synthesizes_bodies_and_aspects():
     assert "emotional climate" in body
 
 
+def test_technical_evidence_summary_adds_authored_cards_before_appendix():
+    context = assemble_synastry_context(_pair_payload_exact_exact())
+    section = _section(context, "technical_evidence_summary")
+
+    assert section["blocks"]
+    block = section["blocks"][0]
+    assert "compact summary" in block["body"].lower()
+    assert block["items"]
+    first_item = _item_with_body(block["items"])
+    assert first_item["metadata"]["kind"] in {"mutual_contacts", "house_overlays", "repeated_themes"}
+
+
 def test_technical_appendix_includes_withheld_and_unsupported_routes():
     from engine.synastry import build_pair_payload
 
@@ -306,6 +319,7 @@ def test_render_synastry_html_emits_section_titles_and_no_todo():
     html = render_synastry_html(assemble_synastry_context(_pair_payload_exact_exact()))
     assert "Synastry Narrative Preview" in html
     assert "Relationship at a Glance" in html
+    assert "Technical Evidence Summary" in html
     assert "Integrated Relationship Portrait" in html
     assert "Technical Appendix" in html
     assert "TODO" not in html
