@@ -33,3 +33,5 @@ for _name in getattr(_stdlib_selectors, "__all__", ()):
 EVENT_READ = _stdlib_selectors.EVENT_READ
 EVENT_WRITE = _stdlib_selectors.EVENT_WRITE
 DefaultSelector = _stdlib_selectors.DefaultSelector
+if hasattr(_stdlib_selectors, "SelectSelector"):
+    SelectSelector = _stdlib_selectors.SelectSelector

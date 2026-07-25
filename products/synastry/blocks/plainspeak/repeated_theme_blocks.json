@@ -1,0 +1,76 @@
+{
+  "_note": "Synastry repeated natal theme library, round 1. Selector paths: theme_type -> confidence_state; theme_key -> fallback. This pass interprets parallel natal structures as shared background patterning while keeping them distinct from live cross-chart contacts.",
+  "_version": "0.1.0-round1",
+  "fallback": {
+    "body": "This repeated theme shows that both charts carry a similar piece of natal architecture, even if the exact family has not been narrowed further yet. The useful claim is simple and specific: each person was already patterned in this direction before the relationship ever started amplifying it between them.",
+    "_note": "Fallback repeated theme leaf. Name the evidence type and both people's evidence; do not inflate repetition into destiny.",
+    "claim_level": "bounded_interpretation",
+    "requires_evidence": ["computations.repeated_natal_themes"]
+  },
+  "theme_type": {
+    "_note": "Theme-type leaves emitted by engine.synastry.compute_repeated_natal_themes.",
+    "same_sign_emphasis": {
+      "body": "A same-sign emphasis suggests that both charts keep returning to a similar symbolic style when something matters. That does not make the two people interchangeable, but it can mean they recognize a familiar tone in how the other person approaches pressure, preference, instinct, or self-expression.",
+      "_note": "Use when both charts have multiple included bodies in the same sign. Future prose should name shared style or emphasis without saying the people are the same.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.repeated_natal_themes"]
+    },
+    "same_element_concentration": {
+      "body": "Shared element concentration points to a common energetic medium in both natal charts. In practice, it often means both people tend to animate life through a similar kind of fuel, so momentum, attention, and what feels meaningful may start from a related baseline even when their personalities diverge.",
+      "_note": "Use when both charts show concentration in the same element. Future prose should keep element language broad and grounded in listed bodies.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.repeated_natal_themes"]
+    },
+    "same_modality_concentration": {
+      "body": "Shared modality concentration suggests that both people bring a similar pacing logic to change, maintenance, or initiation. Recognition here often comes less from identical preferences than from related tempo: how quickly they push, hold, revisit, adapt, or insist when life stops being simple.",
+      "_note": "Use when both charts show concentration in the same modality. Future prose should discuss shared rhythm/approach rather than compatibility.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.repeated_natal_themes"]
+    },
+    "repeated_aspect_family": {
+      "body": "A repeated aspect family means both natal charts already contain a structurally similar tension, ease pattern, or integration task. That can make certain relationship dynamics feel instantly legible, because the contact is not introducing an entirely foreign problem or gift so much as waking up material each person already knows from the inside.",
+      "_note": "Use when both natal charts contain the same aspect family. Future prose should clarify that each person carries a similar natal structure independently.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.repeated_natal_themes"]
+    },
+    "shared_house_emphasis": {
+      "body": "Shared house emphasis suggests that both natal charts load attention into the same life domain. When birth-time confidence supports it, the result can feel like parallel gravity: both people tend to treat the same area of life as consequential, loaded, or developmentally expensive, even before synastry contacts enter the picture.",
+      "_note": "Use only when both charts are angle-eligible and both show emphasis in the same house. Keep birth-time confidence visible.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.repeated_natal_themes", "person_a.angle_eligible", "person_b.angle_eligible"]
+    },
+    "fallback": {
+      "body": "This repeated-theme family is real in the evidence layer, even though it has not yet been given a narrower authored route. Keep the prose focused on the duplicated natal pattern itself and avoid turning resonance into a sweeping claim about the relationship.",
+      "_note": "Fallback theme type for future repeated-theme families. Keep both natal evidence records visible.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.repeated_natal_themes"]
+    }
+  },
+  "confidence_state": {
+    "_note": "Confidence leaves for repeated themes.",
+    "exact_birth_time": {
+      "body": "Where exact birth times support the theme, the repeated structure can be described directly, including house-based emphasis when the engine marks it live. The limit here is interpretive scope, not whether the duplicated pattern itself is present in the data.",
+      "_note": "Use for repeated themes with exact birth times. House-based repeated themes may be interpreted directly.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.repeated_natal_themes"]
+    },
+    "approximate_birth_time": {
+      "body": "This repeated theme remains usable, but any house-based emphasis should be phrased with a little softness because the birth-time precision is narrower. The shared pattern still has weight; what softens is the sharpness of placement, not the existence of the repetition itself.",
+      "_note": "Use for repeated themes involving approximate birth time. Soften house-based emphasis.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.repeated_natal_themes"]
+    },
+    "unknown_birth_time": {
+      "body": "At least one chart lacks full birth-time certainty, so repeated-theme prose should stay with body, sign, element, modality, or natal aspect evidence unless the engine has explicitly marked a house theme live. The pattern can still be genuinely shared without pretending the missing house geometry is merely a softer version of something known.",
+      "_note": "Use when at least one chart has unknown birth time. Restrict repeated-theme prose to body/sign/aspect evidence unless the engine marks the house theme live.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.repeated_natal_themes"]
+    },
+    "fallback": {
+      "body": "This repeated theme carries a controlled confidence state that is not yet one of the standard authored routes. Keep the statement close to the emitted evidence and avoid adding location-specific certainty that the confidence layer has not earned.",
+      "_note": "Fallback repeated-theme confidence leaf.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.repeated_natal_themes"]
+    }
+  }
+}

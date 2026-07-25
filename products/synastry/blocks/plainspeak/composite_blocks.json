@@ -1,0 +1,172 @@
+{
+  "_note": "Synastry composite library, round 1. Selector paths: body_midpoint -> body; composite_aspect -> aspect; ambiguity_note -> opposite_midpoint; unsupported_layer -> composite_houses | davison. This pass keeps midpoint-composite language distinct from cross-chart contacts and from unimplemented adjacent methods.",
+  "_version": "0.1.0-round1",
+  "fallback": {
+    "body": "This composite record belongs to the midpoint relationship chart, even if the exact route is not one of the narrower authored leaves yet. It should be read as symbolism of the shared field created by the pairing method, not as a direct statement about either natal chart in isolation.",
+    "_note": "Fallback composite leaf. Keep midpoint-composite method explicit and do not imply composite houses or Davison are live.",
+    "claim_level": "bounded_interpretation",
+    "requires_evidence": ["computations.composite"]
+  },
+  "body_midpoint": {
+    "_note": "Midpoint body leaves. These should interpret the relationship-chart midpoint position as a composite symbolic construct, not as either person's natal planet.",
+    "Sun": {
+      "body": "Composite Sun describes the relationship's center of gravity: how the pairing tends to become visible, organized, and recognizably itself over time. It is less about either person's ego than about what the connection keeps orienting around when choices have to be made about identity, direction, or what the bond is actually for.",
+      "_note": "Composite Sun midpoint. Future prose should address relationship vitality, central purpose, and visibility without saying the relationship has a literal ego.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.composite.bodies"]
+    },
+    "Moon": {
+      "body": "Composite Moon speaks to the relationship's emotional climate and shared rhythm. It often describes how the connection metabolizes feeling, comfort, reactivity, and the need for familiarity or attunement, especially once the performance layer drops and the relationship is left to regulate itself.",
+      "_note": "Composite Moon midpoint. Future prose should address emotional climate and shared rhythm without diagnosing attachment.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.composite.bodies"]
+    },
+    "Mercury": {
+      "body": "Composite Mercury shows how the relationship thinks out loud. It often appears in the style of conversation, interpretation, planning, editing, and the loops through which meaning gets made between the two people.",
+      "_note": "Composite Mercury midpoint. Future prose should address shared language, planning, interpretation, and communication loops.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.composite.bodies"]
+    },
+    "Venus": {
+      "body": "Composite Venus describes how the relationship handles liking, value, pleasure, grace, and mutual softening. It often marks what the pairing finds attractive, easy to cherish, or worth preserving together.",
+      "_note": "Composite Venus midpoint. Future prose should address affection, shared values, aesthetics, and attraction without promising love.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.composite.bodies"]
+    },
+    "Mars": {
+      "body": "Composite Mars shows the relationship's action style: how momentum builds, where friction appears, and how desire or initiative becomes shared motion. It can feel energizing, sharp, impatient, or decisive depending on context.",
+      "_note": "Composite Mars midpoint. Future prose should address shared action, desire, conflict style, and momentum without blaming either person.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.composite.bodies"]
+    },
+    "Jupiter": {
+      "body": "Composite Jupiter points to how the relationship expands itself through meaning, faith, generosity, scale, or appetite. It can show the parts of the pairing that naturally widen the frame, sometimes constructively and sometimes beyond measure.",
+      "_note": "Composite Jupiter midpoint. Future prose should address growth, meaning, faith, scale, and excess without outcome guarantees.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.composite.bodies"]
+    },
+    "Saturn": {
+      "body": "Composite Saturn describes the relationship's architecture of time, responsibility, and consequence. It often reveals where the connection becomes serious, durable, slowed, or tasked with meeting reality on reality's terms rather than on chemistry's preferred timeline.",
+      "_note": "Composite Saturn midpoint. Future prose should address structure, responsibility, time, constraint, and commitment without fatalism.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.composite.bodies"]
+    },
+    "Uranus": {
+      "body": "Composite Uranus marks the relationship's appetite for change, freedom, interruption, and unconventional patterning. It often shows where the pairing refuses stale scripts, though not always in comfortable ways.",
+      "_note": "Composite Uranus midpoint. Future prose should address change, autonomy, experimentation, and disruption without promising instability.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.composite.bodies"]
+    },
+    "Neptune": {
+      "body": "Composite Neptune describes the relationship's atmosphere of imagination, idealization, devotion, diffusion, and symbolic permeability. It can make the connection feel inspired or hard to pin down, sometimes at the same time.",
+      "_note": "Composite Neptune midpoint. Future prose should address imagination, permeability, idealization, and spiritual/creative atmosphere without claiming deception or transcendence.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.composite.bodies"]
+    },
+    "Pluto": {
+      "body": "Composite Pluto points to the relationship's depth charge: where intensity, exposure, power, concentration, and irreversible-feeling change gather. It marks consequentiality more than spectacle, which is why the prose should name what feels loaded without turning every deep contact into an apocalypse.",
+      "_note": "Composite Pluto midpoint. Future prose should address depth, power, intensity, merging, and transformation without deterministic or coercive framing.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.composite.bodies"]
+    },
+    "Chiron": {
+      "body": "Composite Chiron tends to show the relationship's tender learning edge: the places where awkwardness, repair, sensitivity, and useful honesty become part of the shared field. It is best read gently and specifically.",
+      "_note": "Composite Chiron midpoint. Use only when present in both payloads. Handle sensitivity/repair without therapeutic claims.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.composite.bodies"]
+    },
+    "North_Node": {
+      "body": "Composite North Node can make the relationship feel future-facing, developmental, or oriented toward unfamiliar growth. It often points to what the pairing keeps reaching toward rather than what it has already mastered.",
+      "_note": "Composite North Node midpoint. Use only when present in both payloads. Avoid fate language.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.composite.bodies"]
+    },
+    "South_Node": {
+      "body": "Composite South Node often describes the part of the relationship that feels already known, inherited, or easy to inhabit by habit. That familiarity can be stabilizing or limiting, and usually needs the rest of the composite to tell the difference.",
+      "_note": "Composite South Node midpoint. Use only when present in both payloads. Avoid past-life certainty.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.composite.bodies"]
+    },
+    "fallback": {
+      "body": "This midpoint body is live in the composite layer, even though it does not yet have a narrower authored route. Keep the interpretation anchored to the relationship-chart method itself rather than translating it into natal-language shortcuts.",
+      "_note": "Fallback composite body midpoint leaf for future eligible points. Keep the midpoint method explicit.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.composite.bodies"]
+    }
+  },
+  "composite_aspect": {
+    "_note": "Composite aspect leaves. These should interpret the relationship-chart midpoint aspect pattern, not cross-chart synastry contacts.",
+    "Conjunction": {
+      "body": "A composite conjunction fuses two relationship-chart functions into one concentrated channel. The pairing tends to experience those themes together, as if one process keeps activating the other before the relationship has much room to separate, sort, or sequence them cleanly.",
+      "_note": "Composite conjunction. Future prose should name fused relationship-chart functions without collapsing the two people into one identity.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.composite.aspects"]
+    },
+    "Opposition": {
+      "body": "A composite opposition sets up a polarity inside the relationship's own structure. The pairing may need to balance or alternate between two equally real demands, especially when the bond keeps discovering itself through contrast rather than through immediate agreement.",
+      "_note": "Composite opposition. Future prose should name relational polarity and balancing tasks without predicting conflict.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.composite.aspects"]
+    },
+    "Square": {
+      "body": "A composite square concentrates internal pressure in the relationship field. It often signals recurring friction, growth demand, or the need for deliberate adjustment, because the connection keeps generating more energy than the current way of handling it can comfortably contain.",
+      "_note": "Composite square. Future prose should name internal relationship friction or growth pressure without treating the relationship as broken.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.composite.aspects"]
+    },
+    "Trine": {
+      "body": "A composite trine suggests a region of easy flow in the relationship's internal design. Those themes often cooperate without much resistance, which can become a real strength if the pairing uses that ease consciously instead of letting it stay only an unexamined comfort zone.",
+      "_note": "Composite trine. Future prose should name shared fluency or ease without promising harmony.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.composite.aspects"]
+    },
+    "Sextile": {
+      "body": "A composite sextile offers a workable opening between two relationship-chart functions. It tends to show opportunity, responsiveness, or a developable line of support: not the loudest part of the chart, but often one of the more usable ones when the relationship chooses to meet it halfway.",
+      "_note": "Composite sextile. Future prose should name workable relationship opportunity without overstating intensity.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.composite.aspects"]
+    },
+    "fallback": {
+      "body": "This composite aspect is active, even though its exact vocabulary is not one of the standard authored routes yet. The interpretation should stay close to the emitted geometry and bodies rather than borrowing assumptions from a different aspect family.",
+      "_note": "Fallback composite aspect leaf for future aspect vocabulary. Do not infer unsupported aspect types.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.composite.aspects"]
+    }
+  },
+  "ambiguity_note": {
+    "_note": "Composite midpoint ambiguity leaves. Use for exact opposite natal points where midpoint side cannot be chosen silently.",
+    "opposite_midpoint": {
+      "body": "These two natal positions are exact opposites, which creates two equally valid midpoint sides. The engine names that ambiguity instead of pretending one longitude was silently chosen, so the absence of a single midpoint here should be read as a method limit, not as missing symbolic importance.",
+      "_note": "Explain that exact opposite points create two possible midpoints. Do not choose a side or interpret a missing longitude as absence.",
+      "claim_level": "technical_disclosure",
+      "requires_evidence": ["computations.composite.bodies"]
+    },
+    "fallback": {
+      "body": "A composite ambiguity is present in this record and should be stated before interpretation. When the midpoint method cannot resolve a single clean answer, the prose should preserve that uncertainty rather than smoothing it away.",
+      "_note": "Fallback ambiguity note for future composite ambiguity types. Explain method limits before interpretation.",
+      "claim_level": "technical_disclosure",
+      "requires_evidence": ["computations.composite.bodies"]
+    }
+  },
+  "unsupported_layer": {
+    "_note": "Composite-adjacent non-live layers.",
+    "composite_houses": {
+      "body": "Composite houses are not live in this build. The midpoint relationship chart currently supports bodies and aspects, but it does not claim house placements by quietly borrowing either person's natal house system.",
+      "_note": "State that composite houses are not implemented and cannot be inferred from either person's natal houses.",
+      "claim_level": "technical_disclosure",
+      "requires_evidence": ["computations.composite.status.composite_houses"]
+    },
+    "davison": {
+      "body": "Davison is a separate space-time midpoint chart method and is not active in this layer. It should not be treated as interchangeable with the midpoint composite simply because both describe a relationship chart.",
+      "_note": "State that Davison is a distinct space-time midpoint method and is not implemented in this scaffold.",
+      "claim_level": "technical_disclosure",
+      "requires_evidence": ["computations.composite.status.davison"]
+    },
+    "fallback": {
+      "body": "This adjacent composite layer is not yet live in the current build. The right reading is literal: the method boundary exists, and nearby active records should not be stretched to fill it in.",
+      "_note": "Fallback composite unsupported-layer leaf.",
+      "claim_level": "technical_disclosure",
+      "requires_evidence": ["computations.composite.status"]
+    }
+  }
+}

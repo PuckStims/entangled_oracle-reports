@@ -1,0 +1,151 @@
+{
+  "_note": "Synastry technical appendix, round 1. Selector paths: calculation_note -> pair_payload; confidence_note -> confidence_state; withheld_reason -> reason_key; unsupported_layer -> layer_key; claim_safety -> flag_key. This file is documentation-first prose: clear, calm, inspectable, and explicit about method boundaries.",
+  "_version": "0.1.0-round1",
+  "fallback": {
+    "body": "This note names a method boundary inside the synastry engine. It should be read as technical context for the evidence layer, not as an additional relationship claim.",
+    "_note": "Fallback technical appendix leaf for any synastry method/status key not yet represented. Use direct, inspectable language. Do not add interpretation here.",
+    "claim_level": "technical_disclosure",
+    "requires_evidence": ["sidecar"]
+  },
+  "calculation_note": {
+    "_note": "Method notes for the pair payload and computation families. These should read like clear documentation, not report interpretation.",
+    "pair_payload": {
+      "body": "This synastry record is built from two separate natal payloads kept side by side. The pair object compares them, but it does not replace either chart or turn the relationship into a third natal chart by default.",
+      "_note": "Explain that synastry uses two separate natal payloads and creates a pair evidence object. Do not imply the pair payload is a new natal chart.",
+      "claim_level": "technical_disclosure",
+      "requires_evidence": ["schema_version", "person_a.natal_payload", "person_b.natal_payload"]
+    },
+    "directional_aspects": {
+      "body": "Directional aspect records show whose body or point is contacting whose field. Direction is used here as a routing and localization tool, not as a statement about blame, control, or one-way causality.",
+      "_note": "Explain that directional records route whose body contacts whose body/point. Direction is localization, not blame, causality, or moral assignment.",
+      "claim_level": "technical_disclosure",
+      "requires_evidence": ["computations.directional_aspects"]
+    },
+    "mutual_aspects": {
+      "body": "Mutual aspect records gather the two directional routes into one traceable contact. They preserve the raw directions underneath the summary so later report language can stay accountable to the original evidence.",
+      "_note": "Explain that mutual records normalize two directional routes into one traceable contact while retaining raw directional evidence.",
+      "claim_level": "technical_disclosure",
+      "requires_evidence": ["computations.mutual_aspects"]
+    },
+    "house_overlays": {
+      "body": "House overlays are directional and belong to the chart that owns the houses. The engine localizes one person's body inside the other person's Whole Sign house structure only when the house owner has usable birth-time confidence.",
+      "_note": "Explain that house overlays are directional and use the house owner's Whole Sign house structure. Mention birth-time dependency only when needed.",
+      "claim_level": "technical_disclosure",
+      "requires_evidence": ["computations.house_overlays", "confidence.angle_house_policy"]
+    },
+    "midpoint_composite": {
+      "body": "The midpoint composite is a separate relationship-chart method built from paired body midpoints. It is not the same thing as cross-chart synastry contacts, and it does not borrow houses from either natal chart.",
+      "_note": "Explain midpoint composite as a separate method from synastry contacts and Davison. State that composite houses are not borrowed from either person.",
+      "claim_level": "technical_disclosure",
+      "requires_evidence": ["computations.composite"]
+    }
+  },
+  "confidence_note": {
+    "_note": "Chart and evidence confidence states. These leaves should clarify what can be used directly, softened, or withheld.",
+    "exact_birth_time": {
+      "body": "The relevant birth time is treated as exact, so angle- and house-based synastry evidence can be used at the engine's normal confidence level.",
+      "_note": "Use when the relevant person's birth time is exact. Angle and house evidence may be used at normal confidence.",
+      "claim_level": "technical_disclosure",
+      "requires_evidence": ["person_a.birth_time_state", "person_b.birth_time_state"]
+    },
+    "approximate_birth_time": {
+      "body": "The relevant birth time is approximate, so angle- and house-based material remains usable but should be read with some softness. The engine keeps the record live while acknowledging a narrower confidence band around exact localization.",
+      "_note": "Use when a person has approximate time. Angle/house material is eligible but should be phrased with some softness.",
+      "claim_level": "technical_disclosure",
+      "requires_evidence": ["person_a.birth_time_state", "person_b.birth_time_state"]
+    },
+    "unknown_birth_time": {
+      "body": "One chart lacks a reliable birth time. Body-to-body contacts can still be evaluated from longitudes, but angle-owned and house-owned evidence for that chart is withheld rather than presented as if it were exact.",
+      "_note": "Use when a person has unknown birth time. Body-to-body contacts can remain, but angle and house claims for that chart are withheld.",
+      "claim_level": "technical_disclosure",
+      "requires_evidence": ["person_a.birth_time_state", "person_b.birth_time_state", "confidence.withheld_records"]
+    },
+    "angle_dependent_unavailable": {
+      "body": "This record depends on an angle that could not be used at live confidence. The engine treats it as unavailable evidence, not as a weak approximation that can simply be softened in prose.",
+      "_note": "Use for records withheld because an angle-owning chart was not eligible. Do not soften this into a weak interpretation; the record is not live.",
+      "claim_level": "technical_disclosure",
+      "requires_evidence": ["confidence.withheld_records"]
+    },
+    "fallback": {
+      "body": "The confidence state here is not one of the standard authored routes yet. Read the evidence conservatively and stay close to the emitted state itself.",
+      "_note": "Fallback confidence note for future controlled states such as provisional_near_horizon.",
+      "claim_level": "technical_disclosure",
+      "requires_evidence": ["confidence.angle_house_policy"]
+    }
+  },
+  "withheld_reason": {
+    "_note": "Reasons emitted by confidence.withheld_records and sidecar.withheld_summary.by_reason.",
+    "withheld_angle_dependency": {
+      "body": "This contact was withheld because the chart that owns the angle does not have the birth-time confidence required to localize it responsibly. The missing piece is not symbolic meaning; it is the chart geometry needed to place the contact where it belongs.",
+      "_note": "Explain that a body-to-angle or angle-to-angle record was withheld because the chart owning the angle lacked usable birth-time confidence.",
+      "claim_level": "technical_disclosure",
+      "requires_evidence": ["confidence.withheld_records", "sidecar.withheld_summary"]
+    },
+    "withheld_missing_birth_time": {
+      "body": "This house overlay was withheld because the house owner's birth time is missing. Without a usable Ascendant and house structure, the engine keeps the body contact and omits the house localization.",
+      "_note": "Explain that a house overlay into the time-unknown person's houses is not used because houses/angles depend on birth time.",
+      "claim_level": "technical_disclosure",
+      "requires_evidence": ["confidence.withheld_records", "sidecar.withheld_summary"]
+    },
+    "withheld_missing_payload_field": {
+      "body": "A payload field required for this localization was missing, most often the target Ascendant needed to place a house overlay. This should be read as a data gap in the record, not as a symbolic absence in the relationship.",
+      "_note": "Explain that a required payload field, usually a target Ascendant for overlay localization, was absent. Treat as data gap, not symbolic absence.",
+      "claim_level": "technical_disclosure",
+      "requires_evidence": ["confidence.withheld_records", "sidecar.withheld_summary"]
+    },
+    "fallback": {
+      "body": "This record was withheld for a reason not yet given its own appendix leaf. The safest reading is the literal one: the computation did not meet live conditions for use.",
+      "_note": "Fallback withheld-reason leaf. Render only what the record explicitly says.",
+      "claim_level": "technical_disclosure",
+      "requires_evidence": ["confidence.withheld_records"]
+    }
+  },
+  "unsupported_layer": {
+    "_note": "Non-live computation layers. These should be named as future or out-of-scope, not implied from adjacent evidence.",
+    "composite_houses": {
+      "body": "Composite houses are not implemented in this version. The engine does not borrow one person's natal houses and relabel them as relationship houses, because that would overstate what the midpoint method actually computes.",
+      "_note": "State that midpoint composite houses are not implemented and are not borrowed from either natal chart.",
+      "claim_level": "technical_disclosure",
+      "requires_evidence": ["sidecar.computation_status.composite_houses"]
+    },
+    "davison": {
+      "body": "Davison is not implemented here. It is a separate space-time midpoint chart method with its own input requirements, not a synonym for the midpoint composite already present in this pair payload.",
+      "_note": "State that Davison requires its own space-time midpoint chart and is not synonymous with midpoint composite.",
+      "claim_level": "technical_disclosure",
+      "requires_evidence": ["sidecar.computation_status.davison"]
+    },
+    "relationship_timing": {
+      "body": "Relationship timing is not implemented in this layer. Static synastry evidence can describe structure and emphasis, but it should not be turned into timing claims or outcome windows on its own.",
+      "_note": "State that relationship timing is not implemented. Do not infer outcomes or windows from static synastry evidence.",
+      "claim_level": "technical_disclosure",
+      "requires_evidence": ["sidecar.computation_status.relationship_timing"]
+    },
+    "fallback": {
+      "body": "This computation layer is not live in the current synastry build. It should be treated as future scope rather than inferred from nearby evidence that happens to sound related.",
+      "_note": "Fallback unsupported-layer leaf for future sidecar keys.",
+      "claim_level": "technical_disclosure",
+      "requires_evidence": ["sidecar.computation_status"]
+    }
+  },
+  "claim_safety": {
+    "_note": "Reader-facing claim safety flags from the sidecar. These should remain clear and calm.",
+    "client_report_available_false": {
+      "body": "The synastry engine is live as an evidence layer, but the client-facing report surface is not yet being represented as available. Any testing here should be understood as method review, not as a finished relationship product.",
+      "_note": "Use in dev/report-status contexts to say the synastry evidence layer exists but the client report is not yet exposed.",
+      "claim_level": "technical_disclosure",
+      "requires_evidence": ["sidecar.claim_safety.client_report_available"]
+    },
+    "relationship_verdicts_supported_false": {
+      "body": "These records can rank themes, trace evidence, and localize relationship material, but they do not support one-word verdicts about the relationship itself. The system is built to surface patterns, not to declare a person or partnership solved.",
+      "_note": "Use whenever a report surface might be tempted to summarize convergence as compatibility. Explicitly block verdict framing.",
+      "claim_level": "technical_disclosure",
+      "requires_evidence": ["sidecar.claim_safety.relationship_verdicts_supported"]
+    },
+    "fallback": {
+      "body": "A claim-safety flag is present here, even though it is not yet one of the explicitly authored routes. Read it as a real product boundary, not as background metadata.",
+      "_note": "Fallback claim-safety leaf for future sidecar flags. Keep the statement narrow and tied to the emitted flag.",
+      "claim_level": "technical_disclosure",
+      "requires_evidence": ["sidecar.claim_safety"]
+    }
+  }
+}

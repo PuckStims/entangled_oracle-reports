@@ -181,4 +181,4 @@ def select_tier_block(report_type: str, block_file: str,
 
     # Last resort: subtle tier placeholder
     return select_block(report_type, block_file, "subtle",
-                        fallback="[TODO: Write this block]")
+                        fallback="This route is not fully authored yet. Stay close to the computed pattern and avoid adding claims the current block library does not explicitly support.")

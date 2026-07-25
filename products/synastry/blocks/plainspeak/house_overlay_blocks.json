@@ -1,0 +1,205 @@
+{
+  "_note": "Synastry house overlay library, round 1. Selector paths: source_body -> target_house -> confidence_band; house_domain -> source_body. This pass treats overlays as directional placement inside the house owner's lived field and keeps birth-time confidence visible.",
+  "_version": "0.1.0-round1",
+  "fallback": {
+    "body": "This overlay places one person's body inside the other person's house field, even if the exact body or house route is not one of the fully authored leaves yet. Read it as localized emphasis in the house owner's life area, not as a standalone promise about the relationship.",
+    "_note": "Fallback for any source body or house overlay not represented below. Keep direction explicit: whose body falls in whose house.",
+    "claim_level": "bounded_interpretation",
+    "requires_evidence": ["computations.house_overlays"]
+  },
+  "source_body": {
+    "_note": "Body-first routing. Each body points to house number leaves. Use fallback leaves until fully authored body/house prose exists.",
+    "Sun": {
+      "body": "A Sun overlay tends to make the source person highly noticeable in the target person's house domain. The contact often brings warmth, visibility, and identity emphasis into that area, for better or for more pressure, depending on the rest of the synastry.",
+      "_note": "Sun overlay. Future prose should track vitality, visibility, identity, and central attention in the target person's house domain.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.house_overlays"]
+    },
+    "Moon": {
+      "body": "A Moon overlay enters the target house through feeling, habit, responsiveness, and emotional timing. The source person may be experienced less as a concept there and more as a living mood, rhythm, or caretaking presence.",
+      "_note": "Moon overlay. Future prose should track emotional rhythm, body memory, caretaking, and reactivity in the target person's house domain.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.house_overlays"]
+    },
+    "Mercury": {
+      "body": "A Mercury overlay activates the target house through language, attention, noticing, planning, and interpretation. The source person often becomes a mental or conversational presence inside that life area.",
+      "_note": "Mercury overlay. Future prose should track language, perception, planning, learning, and nervous-system exchange.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.house_overlays"]
+    },
+    "Venus": {
+      "body": "A Venus overlay tends to soften or sweeten the target house field through affection, preference, receptivity, aesthetics, or ease. It often marks a place where liking, enjoyment, or value exchange becomes more noticeable.",
+      "_note": "Venus overlay. Future prose should track attraction, aesthetic ease, affection, value, and relational sweetness without promising love.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.house_overlays"]
+    },
+    "Mars": {
+      "body": "A Mars overlay energizes the target house through drive, heat, initiative, and directness. The source person can feel catalytic there, sometimes productive and sometimes abrasive, depending on whether the rest of the evidence supports smoother coordination.",
+      "_note": "Mars overlay. Future prose should track action, desire, friction, directness, and heat without assigning aggression or blame.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.house_overlays"]
+    },
+    "Jupiter": {
+      "body": "A Jupiter overlay expands the target house field through perspective, permission, scale, encouragement, or appetite. It can make that area feel more spacious or aspirational, though sometimes also less measured.",
+      "_note": "Jupiter overlay. Future prose should track growth, perspective, encouragement, excess, and meaning without promising luck or success.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.house_overlays"]
+    },
+    "Saturn": {
+      "body": "A Saturn overlay brings structure, consequence, time, and seriousness into the target house domain. The source person may register there as stabilizing, demanding, containing, or slow-moving, often all in one picture.",
+      "_note": "Saturn overlay. Future prose should track structure, pressure, commitment, caution, and time without framing one person as a burden.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.house_overlays"]
+    },
+    "Uranus": {
+      "body": "A Uranus overlay disrupts routine in the target house through surprise, autonomy, experimentation, or abrupt perspective shifts. The contact can feel enlivening or destabilizing, but its core signal is change in pattern rather than chaos for its own sake.",
+      "_note": "Uranus overlay. Future prose should track change, disruption, originality, and autonomy without guaranteeing instability.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.house_overlays"]
+    },
+    "Neptune": {
+      "body": "A Neptune overlay diffuses the target house boundaries through imagination, receptivity, idealization, atmosphere, or uncertainty. It often makes that area feel more porous and evocative, which can be beautiful, confusing, or both.",
+      "_note": "Neptune overlay. Future prose should track idealization, imagination, permeability, and spiritual/creative tone without claiming delusion or truth.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.house_overlays"]
+    },
+    "Pluto": {
+      "body": "A Pluto overlay intensifies the target house through depth, compulsion, exposure, concentration, and hard-to-ignore change pressure. The source person can register there as deeply consequential without that automatically making the contact healing, destructive, or permanent.",
+      "_note": "Pluto overlay. Future prose should track intensity, depth, power, attachment pressure, and transformation without deterministic or coercive language.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.house_overlays"]
+    },
+    "Chiron": {
+      "body": "A Chiron overlay tends to sensitize the target house around repair, tenderness, awkwardness, and learning through exposed places. It often feels instructive in a delicate way, especially when other records support care rather than raw pressure.",
+      "_note": "Chiron overlay. Use only when present in both payloads. Future prose should handle sensitivity and repair carefully without therapeutic diagnosis.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.house_overlays"]
+    },
+    "North_Node": {
+      "body": "A North Node overlay can make the target house feel future-leaning or developmentally charged. The source person may seem to draw attention toward new patterns, growing edges, or territory that asks for more conscious engagement.",
+      "_note": "North Node overlay. Use only when present in both payloads. Avoid fate language; frame as developmental pull or future-facing emphasis.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.house_overlays"]
+    },
+    "South_Node": {
+      "body": "A South Node overlay often gives the target house a feeling of familiarity, established pattern, or quick recognition. The contact can feel easy to fall into, which is not the same thing as saying it is simple, complete, or inherently helpful.",
+      "_note": "South Node overlay. Use only when present in both payloads. Avoid past-life certainty; frame as familiar pattern or inherited gravity.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.house_overlays"]
+    },
+    "fallback": {
+      "body": "This source body is active in the house overlay layer, even though it does not yet have a narrower authored route. The key fact is still directional placement: one person's symbolism is being received inside the other person's specific life domain.",
+      "_note": "Fallback source body leaf for future eligible bodies. Do not include asteroids without a separate policy pass.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.house_overlays"]
+    }
+  },
+  "target_house": {
+    "_note": "House-first routing. These leaves should describe the target person's life field receiving the other person's body.",
+    "1": {
+      "body": "A first-house overlay makes the source person feel immediate to the target person's sense of presence and embodiment. The contact often registers through impression, style, responsiveness, and the simple fact of how the person shows up in front of them.",
+      "_note": "First house overlay. Future prose: identity, embodiment, arrival, immediate presence. Avoid saying one person defines the other's identity.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.house_overlays"]
+    },
+    "2": {
+      "body": "A second-house overlay lands in the target person's field of value, steadiness, resource management, and practical trust. The source person may influence how safe, valued, resourced, or materially oriented that area feels.",
+      "_note": "Second house overlay. Future prose: resources, values, steadiness, material trust. Avoid money guarantees.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.house_overlays"]
+    },
+    "3": {
+      "body": "A third-house overlay becomes active through talk, messaging, errands, interpretation, and the local rhythm of daily exchange. The source person often enters the target person's mental and conversational field in frequent, practical, or fast-moving ways.",
+      "_note": "Third house overlay. Future prose: communication, learning, local rhythm, siblings/peers if relevant. Keep communication topic signatures trace-linked.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.house_overlays"]
+    },
+    "4": {
+      "body": "A fourth-house overlay reaches the target person's private ground: home, roots, emotional shelter, and what feels inward or foundational. The contact often carries more personal weight because it lands below the public surface.",
+      "_note": "Fourth house overlay. Future prose: home, private life, roots, emotional foundation. Use carefully with attachment topic signatures.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.house_overlays"]
+    },
+    "5": {
+      "body": "A fifth-house overlay activates pleasure, play, display, creativity, and the parts of relating that want to feel alive and chosen. The source person may bring sparkle, appetite, or expressive charge into that zone without single-handedly defining the relationship.",
+      "_note": "Fifth house overlay. Future prose: play, romance, creativity, pleasure, visible joy. Avoid making romance guarantees.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.house_overlays"]
+    },
+    "6": {
+      "body": "A sixth-house overlay works through routine, maintenance, labor, care, and the small systems that make life run. The source person often becomes part of the target person's practical patterning, for support, irritation, or mutual usefulness.",
+      "_note": "Sixth house overlay. Future prose: daily work, care, logistics, service, habit. Avoid health diagnosis.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.house_overlays"]
+    },
+    "7": {
+      "body": "A seventh-house overlay lands directly in the target person's partnership field. The source person can feel especially encounter-heavy there: someone the target measures against, reaches toward, negotiates with, or recognizes in explicitly relational terms.",
+      "_note": "Seventh house overlay. Future prose: partnership, encounter, mirroring, direct relationship field. Avoid saying this alone makes a relationship.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.house_overlays"]
+    },
+    "8": {
+      "body": "An eighth-house overlay deepens the target person's field of trust, entanglement, intimacy, exchange, and what cannot stay purely surface-level. The source person may stir vulnerability or intensity there, which needs context rather than instant escalation in prose.",
+      "_note": "Eighth house overlay. Future prose: shared resources, intimacy, trust, depth, vulnerability. Avoid coercive or fear language.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.house_overlays"]
+    },
+    "9": {
+      "body": "A ninth-house overlay opens the target person's field of worldview, study, distance, meaning, and horizon. The source person can arrive there as a widening influence, a philosophical counterpoint, or a prompt toward bigger framing.",
+      "_note": "Ninth house overlay. Future prose: meaning, study, worldview, travel, spiritual/philosophical horizon. Avoid converting belief into truth claims.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.house_overlays"]
+    },
+    "10": {
+      "body": "A tenth-house overlay reaches the target person's public surface: role, direction, visibility, and vocational seriousness. The source person may become consequential in how that public path is experienced, witnessed, or pressured.",
+      "_note": "Tenth house overlay. Future prose: public role, visibility, vocation, reputation. Avoid success/fame guarantees.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.house_overlays"]
+    },
+    "11": {
+      "body": "An eleventh-house overlay enters the target person's field of friendship, networks, collective belonging, and future plans. The source person may matter there through shared aims, social atmosphere, or the kind of future-thinking the connection invites.",
+      "_note": "Eleventh house overlay. Future prose: friendship, community, future plans, networks. Avoid promising social belonging.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.house_overlays"]
+    },
+    "12": {
+      "body": "A twelfth-house overlay moves through privacy, retreat, sensitivity, and material that is not always immediately legible. The source person can feel subtle, backgrounded, or strangely intimate there, which calls for careful language rather than suspicion or pathology.",
+      "_note": "Twelfth house overlay. Future prose: privacy, retreat, unconscious material, hidden support/strain. Avoid pathology and secret-enemy framing.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.house_overlays"]
+    },
+    "fallback": {
+      "body": "This overlay is clearly localized in the target person's house field, even if the exact house route is not yet one of the explicitly authored leaves. Keep the emphasis on whose domain is being activated and by which incoming body.",
+      "_note": "Fallback house leaf for unanticipated house routing. Keep the target house owner's field explicit.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.house_overlays"]
+    }
+  },
+  "confidence_band": {
+    "_note": "Confidence route for overlay prose.",
+    "exact_birth_time": {
+      "body": "This overlay belongs to a house structure with exact-time support, so the localization can be used directly. The prose still needs proportion, but it does not need to apologize for whether the house itself is real in the data.",
+      "_note": "Overlay may be interpreted directly when the house owner has exact birth time.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.house_overlays"]
+    },
+    "approximate_birth_time": {
+      "body": "This overlay is live, but the house owner's birth time is approximate, so the localization should be read with a little softness. The house emphasis is still meaningful; the caution is about precision, not about whether the connection exists at all.",
+      "_note": "Overlay may be interpreted with softened language when the house owner has approximate birth time.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.house_overlays"]
+    },
+    "withheld": {
+      "body": "This house overlay is not being interpreted because the localization is unavailable at live confidence. The right move is to omit the house claim and stay with body-to-body evidence that the engine can actually support.",
+      "_note": "Use for withheld overlays. State that house localization is unavailable rather than interpreting it weakly.",
+      "claim_level": "technical_disclosure",
+      "requires_evidence": ["confidence.withheld_records"]
+    },
+    "fallback": {
+      "body": "This overlay carries a controlled confidence state that is not yet one of the standard authored routes. Read the placement conservatively and keep the language closer to the emitted evidence than to house-theory embellishment.",
+      "_note": "Fallback overlay confidence leaf for future controlled states. Do not interpret withheld overlays.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.house_overlays"]
+    }
+  }
+}

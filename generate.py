@@ -9,6 +9,7 @@ Usage:
     python generate.py year_ahead --name "Puck" --date 1992-03-21 --time 08:11 --location "Peoria, IL"
     python generate.py personal_forecast --name "Puck" --date 1992-03-21 --time 08:11 --location "Peoria, IL"
     python generate.py soul_ecosystem --name "Puck" --date 1992-03-21 --time 08:11 --location "Peoria, IL"
+    python generate.py synastry --name1 "Puck" --date1 1992-03-21 --time1 08:11 --location1 "Peoria, IL" --name2 "Cher" --date2 1995-02-15 --time2 18:42 --location2 "Seattle, WA"
 
 DOB-only mode (simple horoscope, no birth time needed):
     python generate.py horoscope --name "Visitor" --date 1990-06-15 --simple
@@ -37,6 +38,11 @@ from product_versions import (
     report_version,
     template_path,
     write_json,
+)
+from products.location_services.routing import (
+    build_location_report_artifacts,
+    is_location_report_type,
+    location_report_window,
 )
 
 # Dev-only content trace. Set EO_CONTENT_TRACE=1 to print station source/subtitle
@@ -90,6 +96,24 @@ class InputValidationError(ValueError):
     for a clean one-line error instead of a raw Python traceback."""
 
 
+def _normalize_optional_text(value: str | None) -> str | None:
+    cleaned = str(value or "").strip()
+    return cleaned or None
+
+
+def _validate_iso_date(value: str | None, flag_name: str) -> str | None:
+    cleaned = _normalize_optional_text(value)
+    if cleaned is None:
+        return None
+    try:
+        datetime.strptime(cleaned, "%Y-%m-%d")
+    except ValueError:
+        raise InputValidationError(
+            f"{flag_name} '{cleaned}' is not a valid date in YYYY-MM-DD format."
+        ) from None
+    return cleaned
+
+
 def _parse_route_waypoints(value: str | None) -> list[dict] | None:
     if not value:
         return None
@@ -138,6 +162,8 @@ def parse_birth_data(args) -> dict:
         "location": args.location or "",
         "simple_mode": getattr(args, "simple", False)
     }
+    if not birth_data["location"].strip():
+        raise InputValidationError("--location is required and cannot be empty.")
     if hasattr(args, "time") and args.time and not birth_data["simple_mode"]:
         time_string = args.time
         time_format = "%H:%M:%S" if time_string.count(":") == 2 else "%H:%M"
@@ -152,7 +178,20 @@ def parse_birth_data(args) -> dict:
         birth_data["time"] = None
         birth_data["simple_mode"] = True
     birth_data["palette"] = getattr(args, "palette", "vibrant")
-    birth_data["report_date"] = getattr(args, "report_date", None)
+    birth_data["report_date"] = _validate_iso_date(getattr(args, "report_date", None), "--report-date")
+    birth_data["report_end_date"] = _validate_iso_date(getattr(args, "report_end_date", None), "--report-end-date")
+    report_start = datetime.strptime(
+        birth_data["report_date"] or datetime.now(timezone.utc).strftime("%Y-%m-%d"),
+        "%Y-%m-%d",
+    )
+    if birth_data["report_end_date"]:
+        report_end = datetime.strptime(birth_data["report_end_date"], "%Y-%m-%d")
+        if report_end < report_start:
+            raise InputValidationError("--report-end-date must be the same day or later than --report-date.")
+    birth_data["destination"] = _normalize_optional_text(getattr(args, "destination", None))
+    birth_data["anchor_location"] = _normalize_optional_text(getattr(args, "anchor_location", None))
+    birth_data["purpose_lens"] = _normalize_optional_text(getattr(args, "purpose_lens", None))
+    birth_data["relationship_to_place"] = _normalize_optional_text(getattr(args, "relationship_to_place", None))
     route_waypoints = _parse_route_waypoints(getattr(args, "route_waypoints", None))
     if route_waypoints:
         birth_data["route"] = {
@@ -160,6 +199,51 @@ def parse_birth_data(args) -> dict:
             "corridor_width_km": float(getattr(args, "route_corridor_km", 150.0) or 150.0),
             "waypoints": route_waypoints,
         }
+    return birth_data
+
+
+def _parse_synastry_party_data(args, suffix: str) -> dict:
+    name = getattr(args, f"name{suffix}", None)
+    if not name or not str(name).strip():
+        raise InputValidationError(f"--name{suffix} cannot be empty or whitespace-only.")
+
+    date_string = getattr(args, f"date{suffix}", None)
+    if not date_string:
+        raise InputValidationError(f"--date{suffix} is required for synastry.")
+    try:
+        datetime.strptime(date_string, "%Y-%m-%d")
+    except ValueError:
+        raise InputValidationError(
+            f"--date{suffix} '{date_string}' is not a valid date in YYYY-MM-DD format."
+        ) from None
+
+    location = getattr(args, f"location{suffix}", None)
+    if not location or not str(location).strip():
+        raise InputValidationError(f"--location{suffix} is required for synastry.")
+
+    simple_mode = bool(getattr(args, f"simple{suffix}", False))
+    birth_data = {
+        "name": name,
+        "date": date_string,
+        "location": location,
+        "simple_mode": simple_mode,
+        "palette": getattr(args, "palette", "vibrant"),
+    }
+
+    time_string = getattr(args, f"time{suffix}", None)
+    if time_string and not simple_mode:
+        time_format = "%H:%M:%S" if str(time_string).count(":") == 2 else "%H:%M"
+        try:
+            datetime.strptime(time_string, time_format)
+        except ValueError:
+            raise InputValidationError(
+                f"--time{suffix} '{time_string}' is not a valid 24-hour time in HH:MM or HH:MM:SS format."
+            ) from None
+        birth_data["time"] = time_string
+    else:
+        birth_data["time"] = None
+        birth_data["simple_mode"] = True
+
     return birth_data
 
 
@@ -255,52 +339,42 @@ def generate_report(
     Returns the path to the generated HTML file.
     """
     _reset_swiss_ephemeris_path()
-    from formulas.proprietary_indexes import compute_all_indexes
-    from formulas.report_surface import build_layered_report_bundle
-    from selectors.variable_resolver import resolve_all
 
     payload = get_payload(birth_data)
 
-    LOCATION_SERVICES_TYPES = {
-        "place_resonance",
-        "place_resonance_search",
-        "world_lines",
-        "local_compass",
-        "living_map",
-    }
-    
-    if report_type in LOCATION_SERVICES_TYPES:
-        dest = {"location": birth_data.get("destination") or birth_data.get("current_location") or birth_data["location"], "display_name": birth_data.get("destination") or birth_data.get("current_location") or birth_data["location"]}
-        if report_type == "local_compass" and birth_data.get("route"):
-            dest["route"] = birth_data["route"]
-        
-        if report_type == "place_resonance":
-            from products.location_services.place_resonance.renderer import build_place_resonance_html
-            html = build_place_resonance_html(payload, dest)
-        elif report_type == "place_resonance_search":
-            from products.location_services.place_resonance_search.renderer import build_place_resonance_search_results_html
-            html = build_place_resonance_search_results_html(payload)
-        elif report_type == "world_lines":
-            from products.location_services.world_lines_companion.renderer import build_world_lines_html
-            html = build_world_lines_html(payload, dest)
-        elif report_type == "local_compass":
-            from products.location_services.local_compass.renderer import build_local_compass_html
-            html = build_local_compass_html(payload, dest)
-        elif report_type == "living_map":
-            from products.location_services.living_map.renderer import build_living_map_html
-            html = build_living_map_html(payload, dest)
-        else:
-            html = "<html><body>Not implemented</body></html>"
-            
+    if is_location_report_type(report_type):
+        artifacts = build_location_report_artifacts(report_type, payload, birth_data)
+        html = artifacts["html"]
+        manifest_report_type = artifacts["public_report_type"]
         if output_filename is None:
             output_filename = _default_output_filename(report_type, birth_data, datetime.now(timezone.utc))
-            
         effective_dir = output_dir if output_dir else OUTPUT_DIR
         output_path = os.path.join(effective_dir, output_filename)
         os.makedirs(effective_dir, exist_ok=True)
         _atomic_write_text(output_path, html)
+        report_start, report_end = location_report_window(manifest_report_type, birth_data)
+        manifest_path = _write_report_manifest(
+            report_type=manifest_report_type,
+            birth_data=birth_data,
+            payload=payload,
+            index_results={},
+            standard_report_bundle={},
+            context=artifacts["context"],
+            content_pack=content_pack,
+            output_path=output_path,
+            report_start=report_start,
+            report_end=report_end,
+        )
         print(f"[Done] Report saved: {os.path.basename(output_path)}")
+        print(f"[Done] Manifest saved: {os.path.basename(manifest_path)}")
+        if _stdout_report_paths_enabled():
+            print(f"[Done] Report path: {output_path}")
+            print(f"[Done] Manifest path: {manifest_path}")
         return output_path
+
+    from formulas.proprietary_indexes import compute_all_indexes
+    from formulas.report_surface import build_layered_report_bundle
+    from selectors.variable_resolver import resolve_all
 
     _log_verbose("[Formulas] Computing indexes...")
     index_results = compute_all_indexes(payload)
@@ -378,6 +452,53 @@ def generate_report(
     if _stdout_report_paths_enabled():
         print(f"[Done] Report path: {output_path}")
         print(f"[Done] Manifest path: {manifest_path}")
+    return output_path
+
+
+def _default_synastry_output_filename(person_a: dict, person_b: dict) -> str:
+    safe_a = str(person_a.get("name", "person_a")).replace(" ", "_").lower()
+    safe_b = str(person_b.get("name", "person_b")).replace(" ", "_").lower()
+    timestamp = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
+    request_id = uuid.uuid4().hex[:8]
+    return f"{safe_a}_{safe_b}_synastry_{timestamp}_{request_id}.html"
+
+
+def generate_synastry_report(
+    person_a_birth_data: dict,
+    person_b_birth_data: dict,
+    output_filename: str | None = None,
+    output_dir: str | None = None,
+) -> str:
+    _reset_swiss_ephemeris_path()
+
+    from engine.natal_engine import generate_payload
+    from products.synastry.assembler import build_synastry_context
+    from products.synastry.renderer import render_synastry_html
+
+    person_a_payload = generate_payload(person_a_birth_data)
+    person_b_payload = generate_payload(person_b_birth_data)
+    context = build_synastry_context(
+        person_a_payload,
+        person_b_payload,
+        relationship_meta={
+            "relationship_type": "cli_preview",
+            "consent_state": "cli_self_test",
+            "person_a_label": person_a_birth_data["name"],
+            "person_b_label": person_b_birth_data["name"],
+        },
+    )
+    html = render_synastry_html(context)
+
+    if output_filename is None:
+        output_filename = _default_synastry_output_filename(person_a_birth_data, person_b_birth_data)
+
+    effective_dir = output_dir if output_dir else os.path.join(OUTPUT_DIR, "synastry")
+    output_path = os.path.join(effective_dir, output_filename)
+    os.makedirs(effective_dir, exist_ok=True)
+    _atomic_write_text(output_path, html)
+    print(f"[Done] Synastry preview saved: {os.path.basename(output_path)}")
+    if _stdout_report_paths_enabled():
+        print(f"[Done] Synastry preview path: {output_path}")
     return output_path
 
 
@@ -655,6 +776,45 @@ def _build_predictive_report_surface(
         "chapters": cards,
         "candidates": candidates,
         "source_contract": "forecast_synthesis.tier4_remap",
+    }
+
+
+def _tier5_year_ahead_surface_has_client_cards(surface: dict | None) -> bool:
+    if not isinstance(surface, dict):
+        return False
+
+    for key in ("annual_profections", "zodiacal_releasing", "exact_returns"):
+        if surface.get(key):
+            return True
+
+    terrain = surface.get("forecast_terrain") if isinstance(surface.get("forecast_terrain"), dict) else {}
+    annual = terrain.get("annual") if isinstance(terrain.get("annual"), dict) else {}
+    if str(annual.get("body") or "").strip():
+        return True
+
+    for key in ("months", "chapters", "contradictions"):
+        if terrain.get(key):
+            return True
+
+    return False
+
+
+def _year_ahead_predictive_surface_fallback(surface: dict, tier5_surface: dict | None) -> dict:
+    """Suppresses the older Year Ahead evidence cards when Tier 5 owns that prose lane."""
+    if not _tier5_year_ahead_surface_has_client_cards(tier5_surface):
+        return surface
+
+    return {
+        "enabled": False,
+        "report_type": "year_ahead",
+        "chapters": [],
+        "candidates": [],
+        "source_contract": surface.get("source_contract", "forecast_synthesis.tier4_remap"),
+        "suppressed_by": "tier5_predictive_surfaces",
+        "suppressed_counts": {
+            "chapters": len(surface.get("chapters") or []),
+            "candidates": len(surface.get("candidates") or []),
+        },
     }
 
 
@@ -10025,6 +10185,15 @@ def _build_year_ahead_context(
         forecast_synthesis,
         pack,
     )
+    predictive_report_surface = _year_ahead_predictive_surface_fallback(
+        _build_predictive_report_surface(
+            variables.get("predictive_sidecar", {}),
+            "year_ahead",
+            forecast_synthesis,
+            pack,
+        ),
+        tier5_predictive_surfaces,
+    )
     ledger_months = _build_ledger_months(months)
 
     from config import PALETTES as _PALETTES
@@ -10100,12 +10269,7 @@ def _build_year_ahead_context(
         "palette_name":       __ya_palette_name,
         "palette":            __ya_palette,
         "predictive_results": variables.get("predictive_results", {}),
-        "predictive_report_surface": _build_predictive_report_surface(
-            variables.get("predictive_sidecar", {}),
-            "year_ahead",
-            forecast_synthesis,
-            pack,
-        ),
+        "predictive_report_surface": predictive_report_surface,
         "report_version":     "Year Ahead v2.0",
         "show_landmark_visuals": SHOW_LANDMARK_VISUALS,
         "show_forecast_shape_visuals": SHOW_FORECAST_SHAPE_VISUALS,
@@ -10293,18 +10457,31 @@ def main():
         description="Entangled Oracle Report Generator"
     )
     parser.add_argument("report_type",
-        choices=["horoscope", "weekly_horoscope", "year_ahead", "personal_forecast", "soul_ecosystem", "identity_profile", "place_resonance", "place_resonance_search", "world_lines", "local_compass", "living_map"],
+        choices=["horoscope", "weekly_horoscope", "year_ahead", "personal_forecast", "soul_ecosystem", "identity_profile", "place_resonance", "place_resonance_search", "world_lines", "local_compass", "living_map", "synastry"],
         help="Type of report to generate"
     )
-    parser.add_argument("--name",     required=True,  help="Querent name")
-    parser.add_argument("--date",     required=True,  help="Birth date (YYYY-MM-DD)")
+    parser.add_argument("--name",     required=False, help="Querent name")
+    parser.add_argument("--date",     required=False, help="Birth date (YYYY-MM-DD)")
     parser.add_argument("--time",     required=False, help="Birth time (HH:MM), 24h format")
-    parser.add_argument("--location", required=True,  help="Birth location (city, state) — required; every report type resolves real coordinates from it, even in --simple mode")
+    parser.add_argument("--location", required=False, help="Birth location (city, state) — required; every report type resolves real coordinates from it, even in --simple mode")
+    parser.add_argument("--name1", required=False, help="First person's name for synastry")
+    parser.add_argument("--date1", required=False, help="First person's birth date (YYYY-MM-DD) for synastry")
+    parser.add_argument("--time1", required=False, help="First person's birth time (HH:MM or HH:MM:SS) for synastry")
+    parser.add_argument("--location1", required=False, help="First person's birth location for synastry")
+    parser.add_argument("--simple1", action="store_true", help="First synastry person is DOB-only, no birth time")
+    parser.add_argument("--name2", required=False, help="Second person's name for synastry")
+    parser.add_argument("--date2", required=False, help="Second person's birth date (YYYY-MM-DD) for synastry")
+    parser.add_argument("--time2", required=False, help="Second person's birth time (HH:MM or HH:MM:SS) for synastry")
+    parser.add_argument("--location2", required=False, help="Second person's birth location for synastry")
+    parser.add_argument("--simple2", action="store_true", help="Second synastry person is DOB-only, no birth time")
     parser.add_argument("--current-location", required=False,
                         help="Current/festival location (defaults to birth location)")
     parser.add_argument("--simple",   action="store_true",
                         help="Simple mode: DOB only, no birth time needed")
     parser.add_argument("--destination", required=False, help="Destination place name for location services")
+    parser.add_argument("--anchor-location", required=False, dest="anchor_location", help="Anchor place name for Local Compass")
+    parser.add_argument("--purpose-lens", required=False, dest="purpose_lens", help="Optional locational purpose lens")
+    parser.add_argument("--relationship-to-place", required=False, dest="relationship_to_place", help="Optional relationship-to-place label")
     parser.add_argument("--route-waypoints", required=False, dest="route_waypoints", help="Optional Local Compass route as 'lat,lon;lat,lon;...'.")
     parser.add_argument("--route-corridor-km", required=False, dest="route_corridor_km", type=float, default=150.0, help="Optional Local Compass route corridor width in kilometers.")
     parser.add_argument("--route-id", required=False, dest="route_id", help="Optional Local Compass route identifier.")
@@ -10331,18 +10508,31 @@ def main():
         default=None,
         help="Report start date (YYYY-MM-DD). Defaults to today if not provided.",
     )
+    parser.add_argument(
+        "--report-end-date",
+        default=None,
+        dest="report_end_date",
+        help="Optional report end date (YYYY-MM-DD). Used by Living Map date windows.",
+    )
 
     args = parser.parse_args()
-    try:
-        birth_data = parse_birth_data(args)
-    except InputValidationError as exc:
-        raise SystemExit(str(exc))
-    birth_data["current_location"] = args.current_location or args.location or ""
-    birth_data["destination"] = getattr(args, "destination", None)
-
     output_filename = args.output_filename or args.output
     try:
-        output_path = generate_report(args.report_type, birth_data, output_filename, args.content_pack, args.output_dir)
+        if args.report_type == "synastry":
+            person_a_birth_data = _parse_synastry_party_data(args, "1")
+            person_b_birth_data = _parse_synastry_party_data(args, "2")
+            output_path = generate_synastry_report(
+                person_a_birth_data,
+                person_b_birth_data,
+                output_filename=output_filename,
+                output_dir=args.output_dir,
+            )
+        else:
+            birth_data = parse_birth_data(args)
+            birth_data["current_location"] = args.current_location or args.location or ""
+            output_path = generate_report(args.report_type, birth_data, output_filename, args.content_pack, args.output_dir)
+    except InputValidationError as exc:
+        raise SystemExit(str(exc))
     except Exception as exc:
         try:
             from engine.offline_place_resolver import LocationResolutionError

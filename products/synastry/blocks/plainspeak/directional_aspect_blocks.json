@@ -1,0 +1,184 @@
+{
+  "_note": "Synastry aspect library, round 1. Selector paths: aspect -> dependency -> polarity; body_pair_family -> aspect. This pass gives live interpretive prose for mutual and directional cross-chart contacts while keeping routing, proportion, and method boundaries explicit.",
+  "_version": "0.1.0-round1",
+  "fallback": {
+    "body": "This contact is active in the synastry evidence, even though its exact aspect route is not one of the fully authored paths yet. The safest reading is simple: one person's symbolism is measurably meeting the other's field, and the record should be interpreted from the emitted aspect and bodies rather than from stock relationship language.",
+    "_note": "Fallback for an aspect/body/dependency pattern not yet covered. Stay close to the mutual_aspect and directional_aspect records.",
+    "claim_level": "bounded_interpretation",
+    "requires_evidence": ["computations.mutual_aspects", "computations.directional_aspects"]
+  },
+  "aspect": {
+    "_note": "Major aspect leaves. Polarity is a prose-routing aid, not an ontology. Conjunction is mixed by default; it may be supportive or pressurized depending on bodies and topic context.",
+    "Conjunction": {
+      "body_to_body": {
+        "mixed": {
+          "body": "A conjunction makes the contact immediate. Two functions are arriving in the same place at once, so the relationship tends to experience them together before it has much distance or sorting room.",
+          "_note": "Body-to-body conjunction. Name immediacy and fusion of functions without implying permanent sameness or inevitability.",
+          "claim_level": "bounded_interpretation",
+          "requires_evidence": ["computations.mutual_aspects"]
+        }
+      },
+      "angle_dependent": {
+        "mixed": {
+          "body": "When a conjunction lands on an angle or sensitive point, the contact becomes easier to notice because it enters a clearly owned field of life. The meaning still comes from the bodies involved, but the angle shows where the contact becomes visible, personal, or situationally loud for the angle owner.",
+          "_note": "Conjunction involving an angle or point. Emphasize localization and visibility through the angle owner; require angle eligibility.",
+          "claim_level": "bounded_interpretation",
+          "requires_evidence": ["computations.directional_aspects", "confidence.angle_house_policy"]
+        }
+      },
+      "fallback": {
+        "body": "This conjunction acts like concentrated overlap. Even without a more specific authored route, the record suggests a contact that is hard to keep separate and therefore tends to become a defining part of how the two people register each other.",
+        "_note": "Conjunction fallback for unanticipated dependency or polarity routes. Keep the contact immediate but bounded.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.mutual_aspects"]
+      }
+    },
+    "Opposition": {
+      "body_to_body": {
+        "tensional": {
+          "body": "An opposition creates a live axis between two functions. The contact often increases awareness through contrast, mirroring, or pull from opposite sides, which can feel clarifying, compelling, or hard to relax around depending on the rest of the chart story.",
+          "_note": "Body-to-body opposition. Describe mirroring, polarity, and awareness without turning difference into incompatibility.",
+          "claim_level": "bounded_interpretation",
+          "requires_evidence": ["computations.mutual_aspects"]
+        }
+      },
+      "angle_dependent": {
+        "tensional": {
+          "body": "When an opposition is routed through an angle, the polarity shows up across one person's lived axis rather than in abstract theory. The contact can sharpen encounter, awareness, and response, but the geometry describes where the contrast lands, not which person is causing the whole pattern.",
+          "_note": "Opposition involving an angle or point. Describe encounter across an axis; avoid claiming one person causes the other's reaction.",
+          "claim_level": "bounded_interpretation",
+          "requires_evidence": ["computations.directional_aspects", "confidence.angle_house_policy"]
+        }
+      },
+      "fallback": {
+        "body": "This opposition should be read as a relationship axis, not as a verdict. The evidence suggests a meaningful difference that keeps both sides in view and asks for some form of balancing, perspective, or conscious handling.",
+        "_note": "Opposition fallback for unanticipated dependency or polarity routes. Keep the axis language non-verdictive.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.mutual_aspects"]
+      }
+    },
+    "Square": {
+      "body_to_body": {
+        "tensional": {
+          "body": "A square puts two functions into active friction. It tends to generate movement, urgency, or repeated adjustment because the contact does not let each function proceed on its preferred rhythm without noticing the other.",
+          "_note": "Body-to-body square. Name friction, activation, and differing rhythms without moralizing the contact.",
+          "claim_level": "bounded_interpretation",
+          "requires_evidence": ["computations.mutual_aspects"]
+        }
+      },
+      "angle_dependent": {
+        "tensional": {
+          "body": "A square to an angle places that friction inside a specific life field owned by one chart. The result is often a sharp sense of activation or pressure in that domain, with the angle showing where the mismatch becomes concrete enough to require response.",
+          "_note": "Square involving an angle or point. Keep the angle owner's field explicit and birth-time confidence visible.",
+          "claim_level": "bounded_interpretation",
+          "requires_evidence": ["computations.directional_aspects", "confidence.angle_house_policy"]
+        }
+      },
+      "fallback": {
+        "body": "This square indicates real pressure between the functions named in the record. It is less a sign of failure than of a contact that keeps demanding effort, pacing, or better coordination.",
+        "_note": "Square fallback for unanticipated dependency or polarity routes. Name friction without moralizing.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.mutual_aspects"]
+      }
+    },
+    "Trine": {
+      "body_to_body": {
+        "supportive": {
+          "body": "A trine gives the contact room to move fluently. The two functions tend to recognize each other quickly, so exchange can feel natural, reinforcing, or easy to sustain without constant negotiation.",
+          "_note": "Body-to-body trine. Name ease and fluent recognition without promising harmony or effortless relationship.",
+          "claim_level": "bounded_interpretation",
+          "requires_evidence": ["computations.mutual_aspects"]
+        }
+      },
+      "angle_dependent": {
+        "supportive": {
+          "body": "When a trine reaches an angle, the smoother exchange enters a clearly defined personal field. This can make the contact feel especially usable or affirming in that part of life, though it still describes one layer of interaction rather than the whole relationship.",
+          "_note": "Trine involving an angle or point. Describe a smoother route into the angle owner's field, with confidence gating intact.",
+          "claim_level": "bounded_interpretation",
+          "requires_evidence": ["computations.directional_aspects", "confidence.angle_house_policy"]
+        }
+      },
+      "fallback": {
+        "body": "This trine suggests a contact that flows more readily than it resists. The relationship may have an easier time accessing the functions involved, even if other parts of the chart introduce complexity elsewhere.",
+        "_note": "Trine fallback for unanticipated dependency or polarity routes. Name ease without overpromising.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.mutual_aspects"]
+      }
+    },
+    "Sextile": {
+      "body_to_body": {
+        "supportive": {
+          "body": "A sextile opens a workable line between two functions. The contact is often responsive and constructive, but it usually reads as opportunity or cooperation rather than as overwhelming intensity.",
+          "_note": "Body-to-body sextile. Name workable opportunity and responsive exchange without overstating intensity.",
+          "claim_level": "bounded_interpretation",
+          "requires_evidence": ["computations.mutual_aspects"]
+        }
+      },
+      "angle_dependent": {
+        "supportive": {
+          "body": "A sextile to an angle gives one person's field a usable assist from the other person's symbolism. The effect is often modest but helpful: easier access, better timing, or smoother response within the life area named by the angle.",
+          "_note": "Sextile involving an angle or point. Treat as lower-amplitude support, not a headline unless other evidence repeats it.",
+          "claim_level": "bounded_interpretation",
+          "requires_evidence": ["computations.directional_aspects", "confidence.angle_house_policy"]
+        }
+      },
+      "fallback": {
+        "body": "This sextile points to a line of cooperation that can be engaged and developed. It matters most when the bodies involved are already prominent or when other records keep returning to the same topic.",
+        "_note": "Sextile fallback for unanticipated dependency or polarity routes. Keep opportunity language modest.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.mutual_aspects"]
+      }
+    },
+    "fallback": {
+      "body": "This aspect is active in the evidence layer, but it is not yet one of the fully authored major routes. The interpretation should stay close to the contact shape, involved bodies, and confidence state rather than borrowing language from a different aspect family.",
+      "_note": "Fallback for future aspect vocabulary. Do not author new aspect meaning until the engine emits that aspect.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.mutual_aspects"]
+    }
+  },
+  "body_pair_family": {
+    "_note": "High-level body families for future selector routing. Do not require every individual body pair to be authored before the scaffold is useful.",
+    "luminary_contact": {
+      "body": "When Sun or Moon is central in a mutual contact, the exchange usually feels harder to ignore. Luminary material tends to pull the relationship closer to core rhythm, visibility, emotional timing, or basic responsiveness.",
+      "_note": "Use when Sun or Moon is central in the mutual contact. Keep emotional/vital language proportionate to orb, salience, and confidence.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.mutual_aspects"]
+    },
+    "personal_planet_contact": {
+      "body": "Contacts among Mercury, Venus, and Mars tend to shape the day-to-day texture of relating: how the two people speak, respond, reach, attract, disagree, or get something moving. These records often describe style and immediacy more than long-range structure.",
+      "_note": "Use for Mercury/Venus/Mars contacts. Distinguish communication, affection, and assertion rather than collapsing into generic chemistry.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.mutual_aspects"]
+    },
+    "social_planet_contact": {
+      "body": "Jupiter and Saturn contacts often describe scale, pacing, responsibility, permission, or containment inside the connection. They can widen or regulate the relationship field, and sometimes do both at once.",
+      "_note": "Use for Jupiter/Saturn contacts. Keep growth and constraint together when both appear; avoid promise/punishment framing.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.mutual_aspects"]
+    },
+    "outer_planet_contact": {
+      "body": "Outer-planet contacts usually add atmosphere, intensity, discontinuity, permeability, or depth beyond ordinary preference. They are often felt as larger-field influences in the relationship, but they should still be read through the exact record rather than as proof of fate or total transformation.",
+      "_note": "Use for Uranus/Neptune/Pluto contacts. Name intensity or porousness without claiming fate, obsession, spiritual truth, or transformation guaranteed by the relationship.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.mutual_aspects"]
+    },
+    "angle_contact": {
+      "body": "Angle contacts localize the relationship in a vivid way because one person's body or point is meeting the other person's chart architecture directly. They often show where the connection becomes especially immediate, visible, or situationally anchored for the angle owner.",
+      "_note": "Use when the target is Ascendant, Descendant, Midheaven, Imum_Coeli, or Vertex. Direction and angle owner must remain explicit.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.directional_aspects", "confidence.angle_house_policy"]
+    },
+    "node_or_chiron_contact": {
+      "body": "Node and Chiron material tends to read as specialist symbolism inside the synastry field. It can sharpen themes of learning curve, sensitivity, repair, habit, or developmental pull, but it should stay secondary to the concrete contact record and the rest of the chart evidence.",
+      "_note": "Use only when Chiron or lunar nodes are present in both payloads. Keep this specialist material separate from standard planet claims.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.mutual_aspects"]
+    },
+    "fallback": {
+      "body": "This body-pair family is active even though it is not yet assigned a narrower authored route. The interpretation should stay body-specific, proportionate, and traceable to the actual mutual or directional record that triggered it.",
+      "_note": "Fallback body-pair family. Use only when the selector cannot classify the bodies into a named family.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.mutual_aspects"]
+    }
+  }
+}

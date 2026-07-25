@@ -1,0 +1,148 @@
+{
+  "_note": "Synastry topic signature and convergence library, round 1. Selector paths: topic_signature -> signature_key -> polarity; convergence -> polarity -> localization; confidence_note -> confidence_state. This pass treats ranked relationship themes as evidence clustering and keeps them far away from verdict language.",
+  "_version": "0.1.0-round1",
+  "fallback": {
+    "body": "This topic or convergence record is live, even if its exact authored route is still broad. The safe reading is that multiple pieces of evidence are clustering around a relationship theme, and the prose should stay traceable to those records rather than turning the cluster into a final judgment.",
+    "_note": "Fallback topic/convergence leaf. Stay trace-linked to contributing records and avoid summary verdicts.",
+    "claim_level": "bounded_interpretation",
+    "requires_evidence": ["computations.relationship_topic_signatures", "computations.relationship_convergence"]
+  },
+  "topic_signature": {
+    "_note": "Signature keys emitted by engine.synastry.TOPIC_SPECS.",
+    "attachment_emotional_rhythm": {
+      "body": "This signature gathers evidence around emotional timing, comfort pattern, and the ways the relationship handles feeling close to the skin. It is best read as rhythm and responsiveness material: how quickly the bond warms, recoils, settles, or asks to be met when life gets personal.",
+      "_note": "Future prose should use Moon/IC/4th-house evidence. Avoid diagnosing attachment style or emotional health.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.relationship_topic_signatures"]
+    },
+    "affection_value_attraction": {
+      "body": "This signature highlights how liking, pleasure, value, receptivity, and visible attraction cluster in the relationship evidence. It often shows what feels inviting, enjoyable, easy to appreciate, or worth moving toward, without pretending attraction alone answers the harder relational questions.",
+      "_note": "Future prose should use Venus contacts/overlays. Avoid promising love, desire, or mutual availability.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.relationship_topic_signatures"]
+    },
+    "desire_friction_action": {
+      "body": "This signature gathers the records that show heat, motion, assertiveness, irritation threshold, and what happens when the relationship wants something now. It often names activation more than agreement, so the useful question is not whether the energy exists, but how it gets directed, answered, or escalated.",
+      "_note": "Future prose should use Mars contacts/overlays. Name heat and action without blame or aggression claims.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.relationship_topic_signatures"]
+    },
+    "communication": {
+      "body": "This signature describes how the relationship exchanges information: conversation, interpretation, phrasing, timing, and the pace at which meaning travels. It can show ease, static, sharpness, or productive complexity depending on the evidence mix, which is why this topic is usually felt in the daily texture long before anyone theorizes about it.",
+      "_note": "Future prose should use Mercury and 3rd-house evidence. Distinguish ease, pressure, and growth in communication.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.relationship_topic_signatures"]
+    },
+    "commitment_constraint_time": {
+      "body": "This signature gathers records about durability, seriousness, pacing, obligation, delay, and what the relationship has to carry in real time. It is where the connection meets calendars, consequence, and endurance, which can feel stabilizing, demanding, clarifying, or all three in the same season.",
+      "_note": "Future prose should use Saturn evidence. Avoid framing Saturn as punishment, doom, or one-sided burden.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.relationship_topic_signatures"]
+    },
+    "visibility_public_path": {
+      "body": "This signature concentrates evidence around visibility, recognition, public role, and the way the relationship touches outer-life direction. It is about how the connection enters the visible world and changes the terms of being seen there, not about guaranteeing status, applause, or success.",
+      "_note": "Future prose should use Sun/MC/10th-house evidence. Avoid claiming career success or public destiny.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.relationship_topic_signatures"]
+    },
+    "growth_meaning": {
+      "body": "This signature collects evidence about expansion, worldview, encouragement, hope, and the larger frame through which the relationship makes meaning. It often shows where the bond widens possibility, appetite, or perspective, though not always in a measured or tidy way.",
+      "_note": "Future prose should use Jupiter/9th-house evidence. Avoid promising shared beliefs, travel, luck, or moral alignment.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.relationship_topic_signatures"]
+    },
+    "intensity_merging_shared_resources": {
+      "body": "This signature gathers evidence around depth, merging pressure, trust, exposure, and the shared-resource field of the connection. It points to consequential intensity: the places where the bond stops feeling casual and starts asking what can be shared, risked, revealed, or survived together.",
+      "_note": "Future prose should use Pluto/8th-house evidence. Avoid obsession, trauma-bond, or fate claims.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.relationship_topic_signatures"]
+    },
+    "fallback": {
+      "body": "This topic signature is active, even though it does not yet have a narrower authored route. The prose should stay grounded in the contributing records and say what kind of relationship material is clustering, without pretending the cluster explains everything.",
+      "_note": "Fallback topic signature leaf for future signature keys. Stay anchored to contributing evidence records.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.relationship_topic_signatures"]
+    }
+  },
+  "polarity": {
+    "_note": "Polarity leaves. These should describe evidence distribution, not relationship quality.",
+    "supportive": {
+      "body": "Supportive polarity means the topic is being reinforced more often than it is obstructed in the available evidence. That usually makes the theme easier to access or trust, though it still needs participation if the relationship is going to use the opening well.",
+      "_note": "Use when supportive evidence is dominant. Avoid saying the topic is easy or guaranteed.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.relationship_topic_signatures"]
+    },
+    "tensional": {
+      "body": "Tensional polarity means the topic is charged through friction, contrast, pressure, or repeated adjustment. The theme may feel vivid precisely because it does not stay backgrounded; it keeps asking for interpretation, negotiation, or behavioral change.",
+      "_note": "Use when tensional evidence is dominant. Avoid negative verdict language or fixed relationship judgments.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.relationship_topic_signatures"]
+    },
+    "mixed": {
+      "body": "Mixed polarity means the topic is being shaped by more than one kind of evidence at once. The relationship may find both support and complication in the same area, which calls for specificity rather than blurry hedging.",
+      "_note": "Use when evidence is mixed or conjunction/overlay-heavy. Name complexity without hedging into vagueness.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.relationship_topic_signatures"]
+    },
+    "fallback": {
+      "body": "This topic uses a polarity route that is not yet one of the explicitly authored patterns. Read it as an evidence-shape label and keep the interpretation tied to how the contributing records are distributed.",
+      "_note": "Fallback polarity leaf for future distribution labels. Describe the evidence shape rather than quality.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.relationship_topic_signatures"]
+    }
+  },
+  "convergence": {
+    "_note": "Convergence leaves. Scores rank report material and should never be shown as compatibility percentages.",
+    "body_only": {
+      "body": "This convergence score is being carried by body-to-body evidence without house or angle localization. That still makes the topic real, but it means the ranking is describing thematic concentration first and situational placement second.",
+      "_note": "Use when convergence comes from body-to-body evidence without house or angle localization. Keep localization limitation visible.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.relationship_convergence"]
+    },
+    "angle_localized": {
+      "body": "This convergence score includes angle-localized evidence, so the topic is not only recurring but specifically placed in an angle owner's field. When that confidence is live, the prose can say more about where the relationship becomes especially immediate, visible, or activating for the person whose chart owns that angle.",
+      "_note": "Use when convergence includes angle-localized evidence. Require exact/eligible birth-time confidence.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.relationship_convergence", "confidence.angle_house_policy"]
+    },
+    "house_localized": {
+      "body": "This convergence score includes house overlay evidence, which means the topic has both recurrence and domain placement. That is usually where the section stops being only thematic and starts becoming legibly lived somewhere in one person's daily terrain.",
+      "_note": "Use when convergence includes house overlay evidence. Keep direction and house owner explicit.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.relationship_convergence", "computations.house_overlays"]
+    },
+    "fallback": {
+      "body": "This convergence route is live, but its localization state is not yet one of the standard authored branches. The safe move is to describe the score as ranked thematic concentration and avoid over-claiming the kind of placement it implies.",
+      "_note": "Fallback convergence localization leaf for future localization states. Keep score meaning bounded.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.relationship_convergence"]
+    }
+  },
+  "confidence_note": {
+    "_note": "Confidence notes for topic/convergence sections.",
+    "exact_birth_time": {
+      "body": "The topic and its ranking are supported by exact-time evidence where localization matters, so the section can use house or angle placement directly. Even then, the claim stays with patterned emphasis and lived location, not with guaranteed relationship outcome.",
+      "_note": "Use when the convergence/signature is exact-time supported.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.relationship_topic_signatures", "computations.relationship_convergence"]
+    },
+    "approximate_birth_time": {
+      "body": "This topic is live, but some of its localization depends on approximate birth-time support, so the section should keep a lighter grip on exact placement. The theme itself remains solid; what softens is the confidence of pinpointing exactly where it lands.",
+      "_note": "Use when evidence includes approximate-time chart material. Soften house/angle localization.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.relationship_topic_signatures", "computations.relationship_convergence"]
+    },
+    "unknown_birth_time": {
+      "body": "At least part of this topic has to be read without full house or angle certainty because a birth time is unknown. The section should lean on body-based evidence and name any withheld localization plainly rather than smudging a missing route into something that sounds almost exact.",
+      "_note": "Use when the topic is body-only or partly withheld because one birth time is unknown.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.relationship_topic_signatures", "confidence.withheld_records"]
+    },
+    "fallback": {
+      "body": "This topic carries a controlled confidence state that is not yet one of the standard authored notes. Keep the language close to the emitted evidence and let the confidence layer set the ceiling on how specific the section becomes.",
+      "_note": "Fallback topic confidence leaf for future controlled confidence states. Preserve evidence limits.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.relationship_topic_signatures"]
+    }
+  }
+}
