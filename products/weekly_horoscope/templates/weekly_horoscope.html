@@ -362,28 +362,29 @@
     {% else %}
       <div class="empty-state">No standout moments detected for this week.</div>
     {% endif %}
-    <div class="suite-note">
-      <h3>How This Report Fits the Suite</h3>
-      <p>Weekly Horoscope is the short-range timing layer of the Entangled Oracle suite, built to orient you to the week's rhythm and selected exact contacts.</p>
-    </div>
-    {% if weekly_simplified_output_contract %}
-    <div class="trust-note">
-      <h3>Calculation Basis</h3>
-      <p><strong>Calculation basis.</strong> {{ weekly_simplified_output_contract }}</p>
-      <p><strong>Method note.</strong> Selected exact contacts are drawn from the report span, capped at {{ weekly_day_contact_cap | default(2) }} per day, and shown in chronological order using {{ methodology_label | default('Tropical zodiac + Whole Sign houses') }} with Swiss Ephemeris positions where available.</p>
-      <p><strong>Birth-time confidence.</strong> {{ birth_time_confidence | default('Birth-time confidence unavailable') }}. Birth-time-sensitive points are used only when an exact birth time is available.</p>
-      <p><strong>Proprietary EO layer.</strong> Weekly guidance translates selected timing evidence into reflective next steps. It is meant to support discernment, not override practical judgment.</p>
-      {% if weekly_narrative_basis %}
-      <p>{{ weekly_narrative_basis }}</p>
+    <div class="report-endcap">
+      <div class="suite-note">
+        <h3>How This Report Fits the Suite</h3>
+        <p>Weekly Horoscope is the short-range timing layer of the Entangled Oracle suite, built to orient you to the week's rhythm and selected exact contacts.</p>
+      </div>
+      {% if weekly_simplified_output_contract %}
+      <div class="trust-note">
+        <h3>Calculation Basis</h3>
+        <p><strong>Calculation basis.</strong> {{ weekly_simplified_output_contract }}</p>
+        <p><strong>Method note.</strong> Selected exact contacts are drawn from the report span, capped at {{ weekly_day_contact_cap | default(2) }} per day, and shown in chronological order using {{ methodology_label | default('Tropical zodiac + Whole Sign houses') }} with Swiss Ephemeris positions where available.</p>
+        <p><strong>Birth-time confidence.</strong> {{ birth_time_confidence | default('Birth-time confidence unavailable') }}. Birth-time-sensitive points are used only when an exact birth time is available.</p>
+        <p><strong>Proprietary EO layer.</strong> Weekly guidance translates selected timing evidence into reflective next steps. It is meant to support discernment, not override practical judgment.</p>
+        {% if weekly_narrative_basis %}
+        <p>{{ weekly_narrative_basis }}</p>
+        {% endif %}
+        {% if weekly_complexity_capacity %}
+        <p>{{ weekly_complexity_capacity | join(' ') }}</p>
+        {% endif %}
+      </div>
       {% endif %}
-      {% if weekly_complexity_capacity %}
-      <p>{{ weekly_complexity_capacity | join(' ') }}</p>
-      {% endif %}
-    </div>
-    {% endif %}
-  </div>
 
-  <footer>{{ report_footer_text | default('Entangled Oracle - Ksisti-Puck LLC - Generated ' ~ generation_date) }}</footer>
+      <footer>{{ report_footer_text | default('Entangled Oracle - Ksisti-Puck LLC - Generated ' ~ generation_date) }}</footer>
+    </div>
 
 </body>
 </html>

@@ -1060,26 +1060,28 @@
 
   <hr>
 
-  <!-- Closing integration -->
-  <div class="section-label">Closing Integration</div>
-  <div class="closing">
-    {{ closing_integration | default('Closing synthesis unavailable.') }}
-  </div>
+  <div class="report-endcap">
+    <!-- Closing integration -->
+    <div class="section-label">Closing Integration</div>
+    <div class="closing">
+      {{ closing_integration | default('Closing synthesis unavailable.') }}
+    </div>
 
-  <!-- Grounding note -->
-  <div class="grounding">
-    Astrology describes timing, themes, and symbolic patterns. Use what is useful, and let lived context, consent, and real-world information carry the decisions that need them.
-  </div>
+    <!-- Grounding note -->
+    <div class="grounding">
+      Astrology describes timing, themes, and symbolic patterns. Use what is useful, and let lived context, consent, and real-world information carry the decisions that need them.
+    </div>
 
-  <div class="trust-note">
-    <h3>Calculation Basis</h3>
-    <p><strong>Calculation basis.</strong> This forecast uses the report window, natal chart, selected transit events, timing windows, and current climate notes to describe near-term symbolic conditions.</p>
-    <p><strong>Method note.</strong> Calculated with Swiss Ephemeris using {{ methodology_label | default('Tropical zodiac + Whole Sign houses') }}. Transit, station, ingress, lunation, eclipse, and climate signals remain interpretive timing evidence, not fixed outcomes.</p>
-    <p><strong>Birth-time confidence.</strong> {{ birth_time_confidence | default('Birth-time confidence unavailable') }}. House, angle, and timing-sensitive claims should stay inside that confidence state.</p>
-    <p><strong>Proprietary EO layer.</strong> The EO synthesis layer translates selected timing evidence into personal reflection and practical next-step language. It adds context to real-life judgment rather than replacing it.</p>
-  </div>
+    <div class="trust-note">
+      <h3>Calculation Basis</h3>
+      <p><strong>Calculation basis.</strong> This forecast uses the report window, natal chart, selected transit events, timing windows, and current climate notes to describe near-term symbolic conditions.</p>
+      <p><strong>Method note.</strong> Calculated with Swiss Ephemeris using {{ methodology_label | default('Tropical zodiac + Whole Sign houses') }}. Transit, station, ingress, lunation, eclipse, and climate signals remain interpretive timing evidence, not fixed outcomes.</p>
+      <p><strong>Birth-time confidence.</strong> {{ birth_time_confidence | default('Birth-time confidence unavailable') }}. House, angle, and timing-sensitive claims should stay inside that confidence state.</p>
+      <p><strong>Proprietary EO layer.</strong> The EO synthesis layer translates selected timing evidence into personal reflection and practical next-step language. It adds context to real-life judgment rather than replacing it.</p>
+    </div>
 
-  <footer>{{ report_footer_text | default('Entangled Oracle - Ksisti-Puck LLC - Generated ' ~ generation_date) }} <span class="report-page-number"></span></footer>
+    <footer>{{ report_footer_text | default('Entangled Oracle - Ksisti-Puck LLC - Generated ' ~ generation_date) }} <span class="report-page-number"></span></footer>
+  </div>
 
 </body>
 </html>

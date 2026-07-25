@@ -556,18 +556,20 @@
     </section>
     {% endif %}
 
-    <!-- FINAL SYNTHESIS -->
-    {% if has_portrait_synthesis %}
-    <section class="synthesis" aria-labelledby="synthesis-title">
-      <div class="section-kicker">Portrait synthesis</div>
-      <h2 id="synthesis-title" class="section-title">The story these forces make together</h2>
-      <div class="synthesis-body">{{ portrait_synthesis_block }}</div>
-    </section>
-    {% endif %}
+    <div class="report-endcap">
+      <!-- FINAL SYNTHESIS -->
+      {% if has_portrait_synthesis %}
+      <section class="synthesis" aria-labelledby="synthesis-title">
+        <div class="section-kicker">Portrait synthesis</div>
+        <h2 id="synthesis-title" class="section-title">The story these forces make together</h2>
+        <div class="synthesis-body">{{ portrait_synthesis_block }}</div>
+      </section>
+      {% endif %}
 
-    <footer>
-      Entangled Oracle · Ksisti-Puck LLC · Generated {{ generation_date }}
-    </footer>
+      <footer>
+        Entangled Oracle · Ksisti-Puck LLC · Generated {{ generation_date }}
+      </footer>
+    </div>
   </main>
 </body>
 </html>

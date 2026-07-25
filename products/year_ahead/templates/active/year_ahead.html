@@ -4403,21 +4403,23 @@
         <div class="method-note"><h3>Method note</h3><p>This forecast is calculated with the Swiss Ephemeris using the {{ methodology_label | default('Tropical zodiac + Whole Sign houses') }} methodology. The report draws on natal transits, Whole Sign house ingresses, planetary stations, and eclipses that contact selected natal targets. It does not claim to predict one fixed future; it maps changing symbolic conditions, timing concentrations, and recurring developmental patterns. The proprietary EO material functions here as an additional interpretive lens layered onto that astrological base, not a replacement for it.</p>{% if raw_cycle_ledger and raw_cycle_ledger.status_method_note %}<p>{{ raw_cycle_ledger.status_method_note }}</p>{% endif %}</div>
       </section>
 
-      <!-- XI. YEAR INTEGRATION -->
-      <section class="section" id="year-integration">
-        <div class="section-header"><div><p class="eyebrow">XI. Year integration</p><h2>What You Carry Forward</h2></div></div>
-        {% if year_integration_block %}<div class="integration">{{ year_integration_block }}</div>{% else %}<div class="empty-landmarks">No end-of-year integration synthesis is available for this forecast.</div>{% endif %}
-        <div class="integration-intro">Use these closing pages to register what the year clarified, what changed shape over time, and what still feels alive as the next cycle begins.</div>
-        <div class="reflection-grid">
-          <article><p class="reflection-label">Looking back</p><div class="reflection-lines"></div></article>
-          <article><p class="reflection-label">What became clearer?</p><div class="reflection-lines"></div></article>
-          <article><p class="reflection-label">What changed form?</p><div class="reflection-lines"></div></article>
-          <article><p class="reflection-label">Looking forward</p><div class="reflection-lines"></div></article>
-        </div>
-        <div class="notes-space"><h3>Notes</h3><div class="reflection-lines"></div></div>
-      </section>
+      <div class="report-endcap">
+        <!-- XI. YEAR INTEGRATION -->
+        <section class="section" id="year-integration">
+          <div class="section-header"><div><p class="eyebrow">XI. Year integration</p><h2>What You Carry Forward</h2></div></div>
+          {% if year_integration_block %}<div class="integration">{{ year_integration_block }}</div>{% else %}<div class="empty-landmarks">No end-of-year integration synthesis is available for this forecast.</div>{% endif %}
+          <div class="integration-intro">Use these closing pages to register what the year clarified, what changed shape over time, and what still feels alive as the next cycle begins.</div>
+          <div class="reflection-grid">
+            <article><p class="reflection-label">Looking back</p><div class="reflection-lines"></div></article>
+            <article><p class="reflection-label">What became clearer?</p><div class="reflection-lines"></div></article>
+            <article><p class="reflection-label">What changed form?</p><div class="reflection-lines"></div></article>
+            <article><p class="reflection-label">Looking forward</p><div class="reflection-lines"></div></article>
+          </div>
+          <div class="notes-space"><h3>Notes</h3><div class="reflection-lines"></div></div>
+        </section>
 
-      <footer>{{ report_footer_text | default('Entangled Oracle - Ksisti-Puck LLC - Generated ' ~ generation_date) }} <span class="report-page-number"></span></footer>
+        <footer>{{ report_footer_text | default('Entangled Oracle - Ksisti-Puck LLC - Generated ' ~ generation_date) }} <span class="report-page-number"></span></footer>
+      </div>
     </main>
   </div>
 </body>

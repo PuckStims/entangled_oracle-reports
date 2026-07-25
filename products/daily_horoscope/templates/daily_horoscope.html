@@ -346,25 +346,27 @@
   <br>
   {% endif %}
 
-  <!-- Closing Line -->
-  <div class="closing">{{ closing_block }}</div>
+  <div class="report-endcap">
+    <!-- Closing Line -->
+    <div class="closing">{{ closing_block }}</div>
 
-  {% if horoscope_simplified_output_contract %}
-  <div class="trust-note">
-    <h3>Calculation Basis</h3>
-    <p><strong>Calculation basis.</strong> {{ horoscope_simplified_output_contract }}</p>
-    <p><strong>Method note.</strong> Daily sky positions are calculated from the report date using {{ methodology_label | default('Tropical zodiac + Whole Sign houses') }} and Swiss Ephemeris positions where available.</p>
+    {% if horoscope_simplified_output_contract %}
+    <div class="trust-note">
+      <h3>Calculation Basis</h3>
+      <p><strong>Calculation basis.</strong> {{ horoscope_simplified_output_contract }}</p>
+      <p><strong>Method note.</strong> Daily sky positions are calculated from the report date using {{ methodology_label | default('Tropical zodiac + Whole Sign houses') }} and Swiss Ephemeris positions where available.</p>
+      {% if not simple_mode %}
+      <p><strong>Activation priority.</strong> The activation lane selects a planetary station, same-day natal contact, or Moon-house fallback in that order.</p>
+      <p><strong>Birth-time confidence.</strong> {{ birth_time_confidence | default('Birth-time confidence unavailable') }}. House and angle references are interpreted in proportion to that confidence state.</p>
+      <p><strong>Proprietary EO layer.</strong> The activation and index reference translate the natal formula layer into a lightweight daily prompt. Use them as reflective timing cues alongside your own practical judgment and context.</p>
+      {% endif %}
+    </div>
+    {% endif %}
+
     {% if not simple_mode %}
-    <p><strong>Activation priority.</strong> The activation lane selects a planetary station, same-day natal contact, or Moon-house fallback in that order.</p>
-    <p><strong>Birth-time confidence.</strong> {{ birth_time_confidence | default('Birth-time confidence unavailable') }}. House and angle references are interpreted in proportion to that confidence state.</p>
-    <p><strong>Proprietary EO layer.</strong> The activation and index reference translate the natal formula layer into a lightweight daily prompt. Use them as reflective timing cues alongside your own practical judgment and context.</p>
+    <footer>{{ report_footer_text | default('Entangled Oracle - Ksisti-Puck LLC - Generated ' ~ generation_date) }}</footer>
     {% endif %}
   </div>
-  {% endif %}
-
-  {% if not simple_mode %}
-  <footer>{{ report_footer_text | default('Entangled Oracle - Ksisti-Puck LLC - Generated ' ~ generation_date) }}</footer>
-  {% endif %}
 
 </body>
 </html>

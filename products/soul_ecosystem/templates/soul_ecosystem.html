@@ -1271,19 +1271,21 @@ NATAL POSITIONS
 {{ natal_index_data | default('Natal position data coming soon.') }}</pre>
   </div>
 
-  <div class="grounding">
-    Astrology describes symbolic patterns, timing, and meaning-making frameworks. Keep what is useful, and let lived context, consent, and real-world information carry the decisions that need them.
-  </div>
+  <div class="report-endcap">
+    <div class="grounding">
+      Astrology describes symbolic patterns, timing, and meaning-making frameworks. Keep what is useful, and let lived context, consent, and real-world information carry the decisions that need them.
+    </div>
 
-  <div class="trust-note">
-    <h3>Calculation Basis</h3>
-    <p><strong>Calculation basis.</strong> Soul Ecosystem is built from the natal chart, standard astrological reference points, and proprietary EO index layers. It is a baseline report, not a prediction engine.</p>
-    <p><strong>Method note.</strong> Calculated with Swiss Ephemeris using {{ methodology_label | default('Tropical zodiac + Whole Sign houses') }}. Natal placements, houses, and angles are interpreted in proportion to the available birth data.</p>
-    <p><strong>Birth-time confidence.</strong> {{ birth_time_confidence | default('Birth-time confidence unavailable') }}. House and angle-dependent material should remain conditional when birth time is approximate or unknown.</p>
-    <p><strong>Proprietary EO layer.</strong> EAS and related pattern language are interpretive frameworks for reflection and meaning-making. They are meant to deepen discernment, not settle practical decisions for you.</p>
-  </div>
+    <div class="trust-note">
+      <h3>Calculation Basis</h3>
+      <p><strong>Calculation basis.</strong> Soul Ecosystem is built from the natal chart, standard astrological reference points, and proprietary EO index layers. It is a baseline report, not a prediction engine.</p>
+      <p><strong>Method note.</strong> Calculated with Swiss Ephemeris using {{ methodology_label | default('Tropical zodiac + Whole Sign houses') }}. Natal placements, houses, and angles are interpreted in proportion to the available birth data.</p>
+      <p><strong>Birth-time confidence.</strong> {{ birth_time_confidence | default('Birth-time confidence unavailable') }}. House and angle-dependent material should remain conditional when birth time is approximate or unknown.</p>
+      <p><strong>Proprietary EO layer.</strong> EAS and related pattern language are interpretive frameworks for reflection and meaning-making. They are meant to deepen discernment, not settle practical decisions for you.</p>
+    </div>
 
-  <footer>{{ report_footer_text | default('Entangled Oracle - Ksisti-Puck LLC - Generated ' ~ generation_date) }} <span class="report-page-number"></span></footer>
+    <footer>{{ report_footer_text | default('Entangled Oracle - Ksisti-Puck LLC - Generated ' ~ generation_date) }} <span class="report-page-number"></span></footer>
+  </div>
 
 </body>
 </html>

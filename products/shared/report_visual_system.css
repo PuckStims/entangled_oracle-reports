@@ -82,6 +82,16 @@ body.report-shell {
   padding-top: var(--space-4);
 }
 
+.report-endcap {
+  margin-top: var(--space-5);
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.report-endcap footer {
+  margin-top: var(--space-4);
+}
+
 .report-record-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -249,6 +259,11 @@ body.report-shell {
     content: "";
   }
 
+  .report-endcap {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
   .report-record-grid {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
@@ -293,6 +308,11 @@ body.report-shell {
   body.report-shell.report-magazine .section-label,
   body.report-shell.report-magazine footer {
     color: var(--print-ink-muted);
+  }
+
+  body.report-shell.report-magazine .report-endcap {
+    break-inside: avoid;
+    page-break-inside: avoid;
   }
 
   body.report-shell.report-magazine .report-record-grid {
