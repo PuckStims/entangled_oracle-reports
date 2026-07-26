@@ -27,6 +27,10 @@ RENDER_VERSION = "between_places_render_v0.3.0"
 def _format_theme(theme: str) -> str:
     return theme.replace("_", " ").title()
 
+
+def _format_fit_label(label: str) -> str:
+    return label.replace("_", " ").title()
+
 def _build_render_context(place_context: dict) -> dict:
     comparison = place_context.get("comparison_record", {})
     return {
@@ -36,12 +40,35 @@ def _build_render_context(place_context: dict) -> dict:
         "generation_date": datetime.now().strftime("%B %d, %Y"),
         "name_a": place_context.get("name_a", "Location A"),
         "name_b": place_context.get("name_b", "Location B"),
+        "purpose_lens_label": place_context.get("purpose_lens_label", ""),
         "location_a_id": place_context.get("location_a", {}).get("location_id"),
         "location_b_id": place_context.get("location_b", {}).get("location_id"),
+        "comparison_summary": comparison.get("comparison_summary", ""),
         "shared_themes": [_format_theme(t) for t in comparison.get("shared_themes", [])],
         "divergent_themes": [_format_theme(t) for t in comparison.get("divergent_themes", [])],
         "strongest_differences": comparison.get("strongest_differences", []),
         "tradeoffs": comparison.get("tradeoffs", []),
+        "compact_profile_a": {
+            **place_context.get("compact_profile_a", {}),
+            "goal_highlights": [
+                {
+                    **goal,
+                    "fit_label": _format_fit_label(goal.get("fit_label", "")),
+                }
+                for goal in place_context.get("compact_profile_a", {}).get("goal_highlights", [])
+            ],
+        },
+        "compact_profile_b": {
+            **place_context.get("compact_profile_b", {}),
+            "goal_highlights": [
+                {
+                    **goal,
+                    "fit_label": _format_fit_label(goal.get("fit_label", "")),
+                }
+                for goal in place_context.get("compact_profile_b", {}).get("goal_highlights", [])
+            ],
+        },
+        "decision_notes": place_context.get("decision_notes", []),
         "record_a": place_context.get("record_a", {}),
         "record_b": place_context.get("record_b", {}),
     }
@@ -82,4 +109,3 @@ def write_between_places_html(html_content: str, output_filename: str | None = N
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(html_content, encoding="utf-8")
     return str(out_path)
-

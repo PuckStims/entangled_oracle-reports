@@ -47,6 +47,22 @@ def test_parse_synastry_party_data_defaults_to_simple_mode_without_time():
     assert birth_data["simple_mode"] is True
 
 
+def test_parse_synastry_party_data_uses_time_even_when_simple_flag_is_set():
+    args = Namespace(
+        name1="Cher",
+        date1="1946-05-20",
+        time1="08:11",
+        location1="El Centro, CA",
+        simple1=True,
+        palette="muted",
+    )
+
+    birth_data = _parse_synastry_party_data(args, "1")
+
+    assert birth_data["time"] == "08:11"
+    assert birth_data["simple_mode"] is False
+
+
 def test_parse_synastry_party_data_rejects_missing_location():
     args = Namespace(
         name1="Rowan",

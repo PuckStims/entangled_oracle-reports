@@ -48,6 +48,14 @@ TOPIC_ORDER = [
     "commitment_constraint_time",
     "intensity_merging_shared_resources",
 ]
+TOPIC_RECORD_PREFERENCES = {
+    "attachment_emotional_rhythm": ["moon_overlay", "fourth_house_overlay", "moon_contacts", "imum_coeli_angle_contact", "ic_angle_contact"],
+    "communication": ["mercury_overlay", "third_house_overlay", "mercury_contacts"],
+    "growth_meaning": ["jupiter_overlay", "ninth_house_overlay", "jupiter_contacts"],
+    "commitment_constraint_time": ["saturn_overlay", "saturn_contacts"],
+    "intensity_merging_shared_resources": ["eighth_house_overlay", "pluto_overlay", "pluto_contacts"],
+    "affection_value_attraction": ["venus_contacts", "venus_overlay", "mars_contacts", "mars_overlay"],
+}
 FAMILY_LABELS = {
     "moon_contacts": "Moon contacts",
     "moon_overlay": "Moon overlays",
@@ -84,6 +92,14 @@ SIGN_TONE = {
     "Aquarius": "future-facing, unconventional, and in need of space",
     "Pisces": "porous, symbolic, intuitive, and sometimes hard to define cleanly",
 }
+POINT_LABELS = {
+    "Ascendant": "Ascendant",
+    "Descendant": "Descendant",
+    "Midheaven": "Midheaven",
+    "Imum_Coeli": "Imum Coeli",
+    "North_Node": "North Node",
+    "South_Node": "South Node",
+}
 
 
 def _deepcopy(value: Any) -> Any:
@@ -110,8 +126,118 @@ def _title_case_signal(value: str) -> str:
     return str(value or "").replace("_", " ").title()
 
 
-def _body_name(body: str | None) -> str:
-    return str(body or "").replace("_", " ")
+def _body_name(body: Any) -> str:
+    if isinstance(body, dict):
+        body = body.get("body")
+    key = str(body or "")
+    return POINT_LABELS.get(key, key.replace("_", " "))
+
+
+def _fallback_person_name(person: str | None) -> str:
+    return "Person A" if person == "A" else "Person B" if person == "B" else str(person or "Person")
+
+
+def _is_internal_fixture_name(value: str) -> bool:
+    return str(value or "").strip().lower().startswith("synastry fixture")
+
+
+def _clean_person_name(value: Any, person: str) -> str:
+    if isinstance(value, str):
+        stripped = value.strip()
+        if stripped and not _is_internal_fixture_name(stripped):
+            return stripped
+    return _fallback_person_name(person)
+
+
+def _overlay_mechanism_sentence(source_name: str, source_body: str, target_name: str, target_house_label: str) -> str:
+    mechanisms = {
+        "Sun": "brings visibility, identity, and direction into",
+        "Moon": "brings emotional tone and responsiveness into",
+        "Mercury": "brings language, interpretation, and exchange into",
+        "Venus": "brings affection, preference, and relational ease into",
+        "Mars": "brings activation, directness, and heat into",
+        "Jupiter": "brings encouragement, scale, and possibility into",
+        "Saturn": "brings pacing, responsibility, and follow-through into",
+        "Uranus": "brings disruption, awakening, and changed expectations into",
+        "Neptune": "softens and idealizes",
+        "Pluto": "intensifies",
+        "North Node": "pulls attention toward",
+        "South Node": "stirs familiar patterning inside",
+        "Chiron": "sensitizes",
+    }
+    mechanism = mechanisms.get(source_body, "places its symbolism inside")
+    if source_body in {"Neptune", "Pluto", "North Node", "South Node", "Chiron"}:
+        return f"{source_name}'s {source_body} {mechanism} {target_name}'s {target_house_label}."
+    return f"{source_name}'s {source_body} {mechanism} {target_name}'s {target_house_label}."
+
+
+def _aspect_verb(aspect: str) -> str:
+    mapping = {
+        "conjunction": "conjoins",
+        "opposition": "opposes",
+        "square": "squares",
+        "trine": "trines",
+        "sextile": "sextiles",
+    }
+    return mapping.get(str(aspect or "").lower(), str(aspect or "").lower())
+
+
+def _aspect_adjective(aspect: str) -> str:
+    mapping = {
+        "conjunction": "conjunct",
+        "opposition": "opposite",
+        "square": "square",
+        "trine": "trine",
+        "sextile": "sextile",
+    }
+    return mapping.get(str(aspect or "").lower(), str(aspect or "").lower())
+
+
+def _mutual_topic_mechanism(left: str, aspect: str, right: str, bodies: set[str]) -> str:
+    verb = _aspect_verb(aspect)
+    if "Venus" in bodies and "Ascendant" in bodies:
+        return f"{left} {verb} {right}, making attraction and visible presentation hard to keep separate."
+    if "Venus" in bodies and "Descendant" in bodies:
+        return f"{left} {verb} {right}, bringing affection directly into the partnership-recognition field."
+    if "Venus" in bodies and {"North_Node", "South_Node"} & bodies:
+        return f"{left} {verb} {right}, tying attraction to developmental pull without turning it into fate."
+    if "Moon" in bodies and "Venus" in bodies:
+        return f"{left} {verb} {right}, giving emotional response and affection a shared route."
+    if "Sun" in bodies and "Mars" in bodies:
+        return f"{left} {verb} {right}, adding heat, pursuit, and activation to the contact."
+    return f"{left} {verb} {right}, anchoring the theme in a named cross-chart contact."
+
+
+def directional_overlay_interpretation(
+    source_name: str,
+    source_body: str,
+    target_name: str,
+    target_house_label: str,
+    *,
+    implication: str | None = None,
+) -> str:
+    sentence = _overlay_mechanism_sentence(source_name, source_body, target_name, target_house_label)
+    if implication:
+        sentence += f" {implication.strip()}"
+    return sentence
+
+
+def mutual_contact_interpretation(
+    left_name: str,
+    left_body: str,
+    aspect: str,
+    right_name: str,
+    right_body: str,
+    *,
+    implication: str | None = None,
+) -> str:
+    body = (
+        f"{left_name}'s {left_body} {_aspect_verb(aspect)} {right_name}'s {right_body}"
+    )
+    sentence = f"{body}, creating a contact the relationship is unlikely to experience as neutral."
+    if implication:
+        sentence += f" {implication.strip()}"
+    return sentence
 
 
 class SynastryNarrativeCompiler:
@@ -160,8 +286,8 @@ class SynastryNarrativeCompiler:
 
     def _person_names(self) -> dict[str, str]:
         return {
-            "A": self.relationship_meta.get("person_a_label") or "Person A",
-            "B": self.relationship_meta.get("person_b_label") or "Person B",
+            "A": _clean_person_name(self.relationship_meta.get("person_a_label"), "A"),
+            "B": _clean_person_name(self.relationship_meta.get("person_b_label"), "B"),
         }
 
     def _topic_map(self) -> dict[str, dict]:
@@ -213,16 +339,12 @@ class SynastryNarrativeCompiler:
             return None
         convergence = self.convergence.get(topic_key) or {}
         section_id, title = TOPIC_TITLE_MAP[topic_key]
-        families = self._evidence_family_labels(signature)
-        topic_leaf = select_topic_signature_leaf(topic_key)
-        polarity_leaf = select_topic_polarity_leaf(convergence.get("polarity") or signature.get("polarity"))
-        confidence_leaf = select_topic_confidence_leaf(signature.get("confidence_state") or convergence.get("confidence_state"))
         topic_intro = self._topic_intro(topic_key, signature)
-        bridge = ""
-        if families:
-            bridge = f"The evidence repeats through {_serial_join(families[:4])}, so the theme does not stay abstract for long."
+        evidence = self._topic_evidence_sentences(topic_key, signature)
         modifier = self._topic_modifier(topic_key)
-        body = _sentence_join([topic_intro, bridge, topic_leaf.get("body"), polarity_leaf.get("body"), modifier, confidence_leaf.get("body")])
+        close = self._topic_close(topic_key)
+        body = _sentence_join([topic_intro, *evidence, modifier, close])
+        families = self._evidence_family_labels(signature)
         return {
             "id": section_id,
             "title": title,
@@ -271,13 +393,13 @@ class SynastryNarrativeCompiler:
         return ""
 
     def _relationship_at_a_glance_section(self) -> dict:
-        sorted_topics = self._sorted_topics()
-        top_labels = [self._top_topic_label(item[0]) for item in sorted_topics[:3]]
-        main_sentence = "The relationship at a glance is organized most clearly around " + _serial_join(top_labels) + "."
-        attraction = self._attraction_summary()
-        depth = self._depth_summary()
-        composite = self._composite_brief()
-        body = _sentence_join([main_sentence, attraction, depth, composite])
+        body = _sentence_join(
+            [
+                self._core_signature_thesis(preview=True),
+                self._glance_evidence_sentence(),
+                self._composite_brief(),
+            ]
+        )
         return {
             "id": "relationship_at_a_glance",
             "title": "Relationship at a Glance",
@@ -291,18 +413,16 @@ class SynastryNarrativeCompiler:
         }
 
     def _core_relationship_signature_section(self) -> dict:
-        top_topic = self._sorted_topics()[0][0] if self._sorted_topics() else None
-        top_mutuals = self._top_mutuals(3)
+        top_mutuals = self._top_mutuals(3, include_angle_only=False)
         top_overlays = self._top_overlays(3)
         sentences = []
-        if top_topic:
-            sentences.append(f"The core signature here is {self._top_topic_label(top_topic)}, not as a vague atmosphere but as a repeated pattern that keeps being confirmed by live evidence.")
+        sentences.append(self._core_signature_thesis())
         if top_mutuals:
             phrases = [_self_or_other_phrase(mutual, self.names) for mutual in top_mutuals]
             sentences.append(f"The highest-salience cross-chart contacts include {_serial_join(phrases)}, which gives the relationship its most immediate points of recognition and activation.")
         if top_overlays:
             overlay_phrase = _serial_join([self._overlay_phrase(item) for item in top_overlays])
-            sentences.append(f"The lived terrain is not symmetrical either: {overlay_phrase}.")
+            sentences.append(f"Directionally, that recognition keeps landing through {overlay_phrase}.")
         return {
             "id": "core_relationship_signature",
             "title": "Core Relationship Signature",
@@ -316,25 +436,15 @@ class SynastryNarrativeCompiler:
         }
 
     def _attraction_section(self) -> dict | None:
-        cluster = self._attraction_cluster_records()
-        if not cluster:
+        signature = self.topics.get("affection_value_attraction") or {}
+        evidence = self._topic_evidence_sentences("affection_value_attraction", signature, limit=3) if signature else []
+        if not evidence:
             return None
-        sentences = [self._attraction_summary()]
-        if self._find_overlay("Venus", 7):
-            overlay = self._find_overlay("Venus", 7)
-            sentences.append(
-                f"{self.names[overlay['source_person']]}'s Venus lands in {self.names[overlay['target_person']]}'s seventh house, so {self.names[overlay['source_person']]} registers strongly in {self.names[overlay['target_person']]}'s partnership field."
-            )
-        if self._find_mutual({"Venus", "Ascendant"}, aspect="Opposition"):
-            mutual = self._find_mutual({"Venus", "Ascendant"}, aspect="Opposition")
-            source, target = _mutual_people_by_body(mutual, "Venus", "Ascendant")
-            if source and target:
-                sentences.append(
-                    f"{self.names[source]}'s Venus opposes {self.names[target]}'s Ascendant, which makes relational visibility hard to miss on first encounter."
-                )
-        catalytic = self._catalytic_heat_summary()
-        if catalytic:
-            sentences.append(catalytic)
+        sentences = [
+            "Attraction is present here as something visible and consequential rather than purely atmospheric.",
+            *evidence,
+            self._attraction_close(),
+        ]
         return {
             "id": "attraction_visibility_encounter",
             "title": "Attraction, Visibility, and Encounter",
@@ -388,25 +498,14 @@ class SynastryNarrativeCompiler:
         }
 
     def _play_romance_section(self) -> dict | None:
-        records = [
-            item for item in self.overlays
-            if item.get("target_house") == 5 or item.get("source_body") in {"Venus", "Neptune"}
-        ]
-        if not records:
+        evidence = self._play_evidence_sentences(limit=3)
+        if not evidence:
             return None
         pieces = [
-            "Play, romance, and idealization are present as a secondary but real layer in the connection."
+            "Play, romance, and idealization appear when the bond becomes expressive rather than only practical."
         ]
-        neptune_fifth = self._find_overlay("Neptune", 5)
-        if neptune_fifth:
-            pieces.append(
-                f"{self.names[neptune_fifth['source_person']]}'s Neptune in {self.names[neptune_fifth['target_person']]}'s fifth house can make pleasure, creativity, and desire feel more porous, atmospheric, or idealized than they first appear."
-            )
-        venus_seventh = self._find_overlay("Venus", 7)
-        if venus_seventh:
-            pieces.append(
-                f"Venus overlay material keeps the sweeter side of attraction visible, which helps this section read as more than pure heat."
-            )
+        pieces.extend(evidence)
+        pieces.append(self._play_close())
         return {
             "id": "play_romance_idealization",
             "title": "Play, Romance, and Idealization",
@@ -424,14 +523,14 @@ class SynastryNarrativeCompiler:
             return None
         blocks = []
         for source_person, target_person in (("A", "B"), ("B", "A")):
-            fields = self._directional_fields(source_person, target_person)
-            if not fields:
+            body = self._directional_landing_body(source_person, target_person)
+            if not body:
                 continue
             blocks.append(
                 {
                     "id": f"directional_landing:{source_person}:{target_person}",
                     "title": f"How {self.names[source_person]} Lands for {self.names[target_person]}",
-                    "body": "Strongest activations: " + "\n".join(f"- {field}" for field in fields),
+                    "body": body,
                 }
             )
         if not blocks:
@@ -468,15 +567,15 @@ class SynastryNarrativeCompiler:
         for theme in chosen_themes:
             theme_type = str(theme.get("theme_type") or "")
             theme_leaf = select_repeated_theme_type_leaf(theme_type)
-            confidence_leaf = select_repeated_theme_confidence_leaf(theme.get("confidence_state"))
             phrase = theme_leaf.get("body")
-            theme_phrases.append(_sentence_join([phrase, confidence_leaf.get("body")]))
+            theme_phrases.append(_sentence_join([phrase, self._repeated_theme_specifics(theme)]))
         body = _sentence_join(
             [
                 "The shared natal baseline matters because this relationship is not being built from completely unfamiliar symbolic material.",
                 "At minimum, both people are arriving with some similar natal architecture already in place.",
                 *theme_phrases[:2],
                 theme_phrases[2] if len(theme_phrases) > 2 else "",
+                self._repeated_theme_bridge(chosen_themes),
                 "These repeated structures do not decide the relationship, but they do help explain why some dynamics feel immediately recognizable from the inside.",
             ]
         )
@@ -582,10 +681,9 @@ class SynastryNarrativeCompiler:
 
     def _integrated_relationship_portrait_section(self) -> dict:
         pieces = [
-            "Taken together, this relationship does not read as casual, purely conceptual, or easy to keep at arm's length.",
-            self._attraction_summary(),
-            self._depth_summary(),
-            "The strongest through-line is that emotional rhythm, communication, attraction, and consequence keep crossing into each other rather than staying compartmentalized.",
+            "Taken together, the chart reads less like a one-note compatibility story and more like a relationship with several active axes of recognition.",
+            self._portrait_synthesis(),
+            "The strongest through-line is that private grounding, communication, attraction, visibility, and deeper stakes keep crossing into each other rather than staying compartmentalized.",
             "The healthiest use of the chart is not to treat intensity as proof, but to notice where recognition is real, where pacing is required, and where each person is landing in the other's lived terrain.",
         ]
         return {
@@ -600,14 +698,20 @@ class SynastryNarrativeCompiler:
             ],
         }
 
-    def _top_mutuals(self, limit: int) -> list[dict]:
+    def _top_mutuals(self, limit: int, *, include_angle_only: bool = True) -> list[dict]:
         ordered = sorted(
             self.mutuals,
             key=lambda item: (
+                self._pure_angle_penalty(item, include_angle_only=include_angle_only),
+                self._dependency_penalty(item),
                 -float(item.get("salience", 0.0) or 0.0),
                 float(item.get("orb", 99.0) or 99.0),
             ),
         )
+        if not include_angle_only:
+            filtered = [item for item in ordered if not self._is_pure_angle_mutual(item)]
+            if filtered:
+                ordered = filtered + [item for item in ordered if self._is_pure_angle_mutual(item)]
         return ordered[:limit]
 
     def _top_overlays(self, limit: int) -> list[dict]:
@@ -733,6 +837,261 @@ class SynastryNarrativeCompiler:
             f"with a {moon.get('zodiac_position', {}).get('sign')} Moon shaping how the relationship tries to feel balanced or emotionally legible."
         )
 
+    def _topic_evidence_sentences(self, topic_key: str, signature: dict, limit: int = 2) -> list[str]:
+        return [self._topic_record_sentence(record) for record in self._topic_evidence_records(topic_key, signature, limit=limit)]
+
+    def _topic_evidence_records(self, topic_key: str, signature: dict, limit: int = 2) -> list[dict]:
+        preferences = TOPIC_RECORD_PREFERENCES.get(topic_key, [])
+        records = [record for record in signature.get("contributing_records", []) or [] if isinstance(record, dict)]
+        ordered = sorted(records, key=lambda record: self._topic_record_sort_key(record, preferences))
+        return ordered[:limit]
+
+    def _topic_record_sort_key(self, record: dict, preferences: list[str]) -> tuple[Any, ...]:
+        family = str(record.get("evidence_family") or "")
+        family_index = preferences.index(family) if family in preferences else len(preferences) + 1
+        salience = -float(record.get("salience", 0.0) or 0.0)
+        pure_angle = 0
+        if record.get("record_type") == "mutual_aspect_reference":
+            entries = [entry for entry in record.get("mutual_key", []) or [] if isinstance(entry, dict)]
+            pure_angle = 1 if entries and all(entry.get("body") in ANGLE_SET for entry in entries) else 0
+        return (family_index, pure_angle, salience)
+
+    def _topic_record_sentence(self, record: dict) -> str:
+        if record.get("record_type") == "mutual_aspect_reference":
+            entries = [entry for entry in record.get("mutual_key", []) or [] if isinstance(entry, dict)]
+            if len(entries) >= 2:
+                left = f"{self.names.get(entries[0].get('person'))}'s {_body_name(entries[0].get('body'))}"
+                right = f"{self.names.get(entries[1].get('person'))}'s {_body_name(entries[1].get('body'))}"
+                bodies = {str(entry.get("body") or "") for entry in entries}
+                return _mutual_topic_mechanism(left, str(record.get("aspect") or ""), right, bodies)
+        if record.get("record_type") == "house_overlay_reference":
+            house_label = HOUSE_LABELS.get(int(record.get("target_house") or 0), "lived field")
+            return directional_overlay_interpretation(
+                self.names.get(record.get("source_person")),
+                _body_name(record.get("source_body")),
+                self.names.get(record.get("target_person")),
+                house_label,
+            )
+        return ""
+
+    def _topic_close(self, topic_key: str) -> str:
+        mapping = {
+            "attachment_emotional_rhythm": "This is why the emotional field reads lived-in quickly rather than staying polite or distant.",
+            "communication": "The result is a relationship where exchange itself becomes part of the bond's substance.",
+            "growth_meaning": "So the relationship keeps widening its frame, even when it has to negotiate how much possibility can actually be carried.",
+            "commitment_constraint_time": "That is why this theme tends to show up in calendars, follow-through, and what the connection can actually hold.",
+            "intensity_merging_shared_resources": "That is what makes the depth here feel consequential instead of decorative.",
+        }
+        return mapping.get(topic_key, "")
+
+    def _core_signature_thesis(self, preview: bool = False) -> str:
+        axes = self._core_signature_axes()
+        if axes:
+            if preview:
+                return "At first read, the relationship announces itself through " + _serial_join(axes[:4]) + "."
+            return "The core signature here is a recognition pattern running through " + _serial_join(axes[:6]) + " rather than one isolated topic."
+        top_topic = self._sorted_topics()[0][0] if self._sorted_topics() else None
+        if top_topic:
+            return f"The core signature here is {self._top_topic_label(top_topic)}, not as a vague atmosphere but as a repeated pattern that keeps being confirmed by live evidence."
+        return "The core signature here is being carried by repeated live evidence rather than a single stock label."
+
+    def _core_signature_axes(self) -> list[str]:
+        axes: list[str] = []
+        def add(value: str) -> None:
+            if value and value not in axes:
+                axes.append(value)
+        if self._find_overlay("Moon", 4) or self._find_mutual({"Imum_Coeli", "Moon"}) or self._find_mutual({"Moon", "Moon"}):
+            add("private grounding")
+        if self.topics.get("communication") or self._find_mutual({"Mercury", "Mercury"}) or self._find_overlay("Mercury", 3):
+            add("communication")
+        if self.topics.get("affection_value_attraction") or self._find_mutual({"Venus", "Mars"}) or self._find_mutual({"Moon", "Venus"}):
+            add("affection")
+        if any(int(item.get("target_house") or 0) == 7 for item in self.overlays):
+            add("partnership")
+        if any(int(item.get("target_house") or 0) == 10 for item in self.overlays):
+            add("public direction")
+        if any(int(item.get("target_house") or 0) == 8 for item in self.overlays) or self.topics.get("intensity_merging_shared_resources"):
+            add("intimacy and shared stakes")
+        if not axes:
+            axes = [self._top_topic_label(item[0]) for item in self._sorted_topics()[:3]]
+        return axes
+
+    def _glance_evidence_sentence(self) -> str:
+        mutuals = self._top_mutuals(2, include_angle_only=False)
+        overlays = self._top_overlays(2)
+        parts = []
+        if mutuals:
+            parts.append("Immediate evidence includes " + _serial_join([_self_or_other_phrase(item, self.names) for item in mutuals]) + ".")
+        if overlays:
+            parts.append("The overlay pattern keeps that recognition landing through " + _serial_join([self._overlay_phrase(item) for item in overlays]) + ".")
+        return _sentence_join(parts)
+
+    def _attraction_close(self) -> str:
+        if self._find_mutual({"Venus", "Saturn"}):
+            return "So attraction here can feel both immediate and weight-bearing, as if desire and consequence arrive in the same breath."
+        if self._find_mutual({"Venus", "Mars"}):
+            return "That keeps the chemistry from staying hypothetical; it wants to register in the body."
+        return "If this layer is not dominant, it still marks where the connection becomes unmistakably personal."
+
+    def _play_evidence_sentences(self, limit: int = 3) -> list[str]:
+        sentences: list[str] = []
+        neptune_fifth = self._find_overlay("Neptune", 5)
+        if neptune_fifth:
+            sentences.append(
+                directional_overlay_interpretation(
+                    self.names[neptune_fifth["source_person"]],
+                    "Neptune",
+                    self.names[neptune_fifth["target_person"]],
+                    "play and romance",
+                    implication="That can make pleasure, fantasy, and desire feel more porous or idealized than they first appear.",
+                )
+            )
+        moon_venus = self._find_mutual({"Moon", "Venus"}, aspect="Conjunction") or self._find_mutual({"Moon", "Venus"})
+        if moon_venus and len(sentences) < limit:
+            sentences.append(self._mutual_sentence(moon_venus, implication="That adds sweetness and responsiveness to the more expressive side of the bond."))
+        venus_mars = self._find_mutual({"Venus", "Mars"}, aspect="Conjunction") or self._find_mutual({"Venus", "Mars"})
+        if venus_mars and len(sentences) < limit:
+            sentences.append(self._mutual_sentence(venus_mars, implication="That keeps flirtation, chemistry, and pursuit in active circulation."))
+        fifth_overlay = next(
+            (
+                item for item in self.overlays
+                if int(item.get("target_house") or 0) == 5 and item is not neptune_fifth
+            ),
+            None,
+        )
+        if fifth_overlay and len(sentences) < limit:
+            sentences.append(
+                directional_overlay_interpretation(
+                    self.names[fifth_overlay["source_person"]],
+                    _body_name(fifth_overlay.get("source_body")),
+                    self.names[fifth_overlay["target_person"]],
+                    "play and romance",
+                )
+            )
+        return sentences[:limit]
+
+    def _play_close(self) -> str:
+        return "If this section stays secondary, it still shows where the connection becomes playful, idealized, or briefly less defended."
+
+    def _portrait_synthesis(self) -> str:
+        axes = self._core_signature_axes()
+        if axes:
+            return "The chart keeps tying together " + _serial_join(axes[:6]) + ", which is why the relationship resists being reduced to one simple story about chemistry, ease, or pressure."
+        return "The chart keeps linking multiple layers of contact at once, which is why the relationship resists a thin reading."
+
+    def _repeated_theme_specifics(self, theme: dict) -> str:
+        theme_type = str(theme.get("theme_type") or "")
+        person_a = theme.get("person_a_evidence") or {}
+        person_b = theme.get("person_b_evidence") or {}
+        if theme_type == "same_sign_emphasis":
+            sign = person_a.get("sign") or person_b.get("sign")
+            a_bodies = [_body_name(body) for body in (person_a.get("bodies") or [])[:2]]
+            b_bodies = [_body_name(body) for body in (person_b.get("bodies") or [])[:2]]
+            details = []
+            if sign:
+                details.append(f"Here the shared register is {sign}.")
+            if a_bodies and b_bodies:
+                details.append(f"{self.names['A']} carries it through {_serial_join(a_bodies)}, while {self.names['B']} carries it through {_serial_join(b_bodies)}.")
+            return _sentence_join(details)
+        if theme_type == "same_element_concentration":
+            element = str(person_a.get("element") or person_b.get("element") or "")
+            if element:
+                return f"That gives both charts a similar {element} vocabulary for instinct, emphasis, and response."
+        if theme_type == "same_modality_concentration":
+            modality = str(person_a.get("modality") or person_b.get("modality") or "")
+            if modality:
+                return f"In practice that means both people tend to meet change through a similarly {modality} pacing style."
+        if theme_type == "repeated_aspect_family":
+            body_1 = _body_name(person_a.get("body_1") or person_b.get("body_1"))
+            body_2 = _body_name(person_a.get("body_2") or person_b.get("body_2"))
+            aspect = str(person_a.get("aspect") or person_b.get("aspect") or "")
+            if body_1 and body_2 and aspect:
+                return f"Both natal charts already know the {body_1}-{body_2} {aspect.lower()} pattern from the inside."
+        return ""
+
+    def _repeated_theme_bridge(self, themes: list[dict]) -> str:
+        structural = [theme for theme in themes if str(theme.get("theme_type") or "") != "repeated_aspect_family"]
+        aspectual = [theme for theme in themes if str(theme.get("theme_type") or "") == "repeated_aspect_family"]
+        if structural and aspectual:
+            return "Taken together, that means the recognition is happening at two levels at once: similar overall wiring and at least one echoed internal aspect problem or gift."
+        if structural:
+            return "The recognition here comes less from one exact repeated problem and more from a shared style of emphasis, pacing, or symbolic taste."
+        if aspectual:
+            return "What repeats most clearly is not broad temperament but a familiar internal aspect pattern, which can make certain reactions feel strangely pre-known."
+        return ""
+
+    def _pure_angle_penalty(self, mutual: dict, *, include_angle_only: bool) -> int:
+        return 0 if include_angle_only else int(self._is_pure_angle_mutual(mutual))
+
+    def _dependency_penalty(self, mutual: dict) -> int:
+        return 0 if str(mutual.get("dependency") or "") == "body_to_body" else 1
+
+    def _is_pure_angle_mutual(self, mutual: dict) -> bool:
+        entries = [entry for entry in mutual.get("mutual_key", []) or [] if isinstance(entry, dict)]
+        bodies = [entry.get("body") for entry in entries]
+        return bool(bodies) and all(body in ANGLE_SET for body in bodies)
+
+    def _directional_landing_body(self, source_person: str, target_person: str) -> str:
+        overlays = [
+            item for item in self.overlays
+            if item.get("source_person") == source_person and item.get("target_person") == target_person
+        ]
+        if not overlays:
+            return ""
+        overlays.sort(key=lambda item: (-BODY_WEIGHTS.get(str(item.get("source_body") or ""), 0.0), item.get("target_house") or 99))
+        fields = self._directional_fields(source_person, target_person)
+        field_sentence = (
+            f"{self.names[source_person]} lands for {self.names[target_person]} through {_serial_join(fields[:3])}, with the strongest emphasis arriving in lived rather than abstract ways."
+            if fields
+            else ""
+        )
+        bullet_lines = ["- " + self._directional_overlay_bullet(overlay) for overlay in overlays[:3]]
+        return _sentence_join([field_sentence, "\n".join(bullet_lines)])
+
+    def _directional_overlay_bullet(self, overlay: dict) -> str:
+        house_label = HOUSE_LABELS.get(int(overlay.get("target_house") or 0), "lived field")
+        implication = self._directional_implication(overlay)
+        return directional_overlay_interpretation(
+            self.names[overlay.get("source_person")],
+            _body_name(overlay.get("source_body")),
+            self.names[overlay.get("target_person")],
+            house_label,
+            implication=implication,
+        )
+
+    def _directional_implication(self, overlay: dict) -> str:
+        source_body = str(overlay.get("source_body") or "")
+        house = int(overlay.get("target_house") or 0)
+        if source_body == "Moon" and house == 3:
+            return "That gives everyday exchange an emotional undertone rather than keeping feeling separate from conversation."
+        if source_body == "Sun" and house == 8:
+            return "The contact often feels consequential quickly, because visibility is entering a field of trust, exposure, and deeper stakes."
+        if source_body == "Venus" and house == 7:
+            return "That tends to make recognition, liking, and relational receptivity easier to register on contact."
+        if source_body == "Mars" and house == 4:
+            return "Directness and activation reach private ground, not only the outer surface of the relationship."
+        if house == 10:
+            return "It tends to shape how the relationship is felt in public direction, ambition, or visible trajectory."
+        if house == 11:
+            return "It often affects the friendship layer, shared networks, and the future-facing side of the bond."
+        if house == 5:
+            return "That keeps play, chemistry, and expressive spontaneity in motion."
+        return ""
+
+    def _mutual_sentence(self, mutual: dict, *, implication: str | None = None) -> str:
+        entries = [entry for entry in mutual.get("mutual_key", []) or [] if isinstance(entry, dict)]
+        if len(entries) < 2:
+            return ""
+        aspect = str(mutual.get("aspect") or "")
+        return mutual_contact_interpretation(
+            self.names.get(entries[0].get("person")),
+            _body_name(entries[0].get("body")),
+            aspect,
+            self.names.get(entries[1].get("person")),
+            _body_name(entries[1].get("body")),
+            implication=implication,
+        )
+
 
 def _self_or_other_phrase(mutual: dict, names: dict[str, str]) -> str:
     entries = [entry for entry in mutual.get("mutual_key", []) or [] if isinstance(entry, dict)]
@@ -740,8 +1099,7 @@ def _self_or_other_phrase(mutual: dict, names: dict[str, str]) -> str:
         return "a major mutual contact"
     left = f"{names.get(entries[0].get('person'), entries[0].get('person'))}'s {_body_name(entries[0].get('body'))}"
     right = f"{names.get(entries[1].get('person'), entries[1].get('person'))}'s {_body_name(entries[1].get('body'))}"
-    aspect = str(mutual.get("aspect") or "").lower()
-    return f"{left} {aspect}s {right}" if aspect == "opposition" else f"{left} {aspect} {right}"
+    return f"{left} {_aspect_adjective(str(mutual.get('aspect') or ''))} {right}"
 
 
 def _mutual_people_by_body(mutual: dict, first_body: str, second_body: str) -> tuple[str | None, str | None]:

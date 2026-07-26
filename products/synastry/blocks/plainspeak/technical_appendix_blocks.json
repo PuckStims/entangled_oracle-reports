@@ -10,8 +10,8 @@
   "calculation_note": {
     "_note": "Method notes for the pair payload and computation families. These should read like clear documentation, not report interpretation.",
     "pair_payload": {
-      "body": "This synastry record is built from two separate natal payloads kept side by side. The pair object compares them, but it does not replace either chart or turn the relationship into a third natal chart by default.",
-      "_note": "Explain that synastry uses two separate natal payloads and creates a pair evidence object. Do not imply the pair payload is a new natal chart.",
+      "body": "This synastry record is built from two separate natal charts kept side by side. The comparison does not replace either chart or turn the relationship into a third natal chart by default.",
+      "_note": "Explain that synastry compares two separate natal charts. Do not imply the comparison is a new natal chart.",
       "claim_level": "technical_disclosure",
       "requires_evidence": ["schema_version", "person_a.natal_payload", "person_b.natal_payload"]
     },
@@ -88,8 +88,8 @@
       "requires_evidence": ["confidence.withheld_records", "sidecar.withheld_summary"]
     },
     "withheld_missing_payload_field": {
-      "body": "A payload field required for this localization was missing, most often the target Ascendant needed to place a house overlay. This should be read as a data gap in the record, not as a symbolic absence in the relationship.",
-      "_note": "Explain that a required payload field, usually a target Ascendant for overlay localization, was absent. Treat as data gap, not symbolic absence.",
+      "body": "A chart detail required for this localization was missing, most often the target Ascendant needed to place a house overlay. This should be read as a data gap in the record, not as a symbolic absence in the relationship.",
+      "_note": "Explain that a required chart detail, usually a target Ascendant for overlay localization, was absent. Treat as data gap, not symbolic absence.",
       "claim_level": "technical_disclosure",
       "requires_evidence": ["confidence.withheld_records", "sidecar.withheld_summary"]
     },
@@ -109,7 +109,7 @@
       "requires_evidence": ["sidecar.computation_status.composite_houses"]
     },
     "davison": {
-      "body": "Davison is not implemented here. It is a separate space-time midpoint chart method with its own input requirements, not a synonym for the midpoint composite already present in this pair payload.",
+      "body": "Davison is not implemented here. It is a separate space-time midpoint chart method with its own input requirements, not a synonym for the midpoint composite already present in this comparison.",
       "_note": "State that Davison requires its own space-time midpoint chart and is not synonymous with midpoint composite.",
       "claim_level": "technical_disclosure",
       "requires_evidence": ["sidecar.computation_status.davison"]
@@ -130,8 +130,8 @@
   "claim_safety": {
     "_note": "Reader-facing claim safety flags from the sidecar. These should remain clear and calm.",
     "client_report_available_false": {
-      "body": "The synastry engine is live as an evidence layer, but the client-facing report surface is not yet being represented as available. Any testing here should be understood as method review, not as a finished relationship product.",
-      "_note": "Use in dev/report-status contexts to say the synastry evidence layer exists but the client report is not yet exposed.",
+      "body": "This sample demonstrates the synastry evidence layer and narrative structure. It is shared as a preview, not as a relationship verdict or timing report.",
+      "_note": "Use in public preview contexts to state the sample status without implying a verdict, timing report, or broader product availability.",
       "claim_level": "technical_disclosure",
       "requires_evidence": ["sidecar.claim_safety.client_report_available"]
     },

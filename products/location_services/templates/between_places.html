@@ -69,6 +69,21 @@
         color: var(--text-muted);
     }
     .vs { font-style: italic; opacity: 0.5; font-size: 1rem; }
+    .meta-row {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 20px;
+    }
+    .meta-pill {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid var(--surface-border);
+        padding: 8px 14px;
+        border-radius: 999px;
+        font-size: 0.85rem;
+        color: var(--text-main);
+    }
     
     .section-card {
         background: var(--glass-bg);
@@ -138,6 +153,61 @@
         border-radius: 8px;
         border-left: 3px solid var(--accent-purple);
     }
+    .summary-lead {
+        font-size: 1.05rem;
+        color: var(--text-main);
+        margin: 0;
+    }
+    .profile-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+    }
+    .profile-card {
+        padding: 20px;
+        border: 1px solid var(--surface-border);
+        border-radius: 12px;
+        background: rgba(255,255,255,0.02);
+    }
+    .profile-card h3 {
+        margin: 0 0 12px 0;
+        font-size: 1.1rem;
+        font-weight: 600;
+    }
+    .meta-stack {
+        display: grid;
+        gap: 10px;
+    }
+    .goal-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: grid;
+        gap: 10px;
+    }
+    .goal-list li {
+        padding: 12px;
+        border-radius: 8px;
+        background: rgba(255,255,255,0.02);
+    }
+    .decision-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: grid;
+        gap: 12px;
+    }
+    .decision-list li {
+        padding: 14px 16px;
+        border-radius: 10px;
+        background: rgba(255,255,255,0.02);
+        border-left: 3px solid rgba(255,255,255,0.16);
+    }
+    @media (max-width: 720px) {
+        .profile-grid {
+            grid-template-columns: 1fr;
+        }
+    }
 </style>
 </head>
 <body>
@@ -150,7 +220,51 @@
             <span class="vs">vs</span>
             <span>{{ name_b }}</span>
         </div>
+        <div class="meta-row">
+            {% if purpose_lens_label %}<div class="meta-pill">Purpose: {{ purpose_lens_label }}</div>{% endif %}
+        </div>
     </header>
+
+    <section class="section-card">
+        <div class="section-header">
+            <div class="section-kicker">Reading Frame</div>
+            <h2 class="section-title">Comparison Summary</h2>
+        </div>
+        <p class="summary-lead">{{ comparison_summary }}</p>
+    </section>
+
+    <section class="section-card">
+        <div class="section-header">
+            <div class="section-kicker">Compact Read</div>
+            <h2 class="section-title">Place Profiles</h2>
+        </div>
+        <div class="profile-grid">
+            {% for profile in [compact_profile_a, compact_profile_b] %}
+            <article class="profile-card">
+                <h3>{{ profile.name }}</h3>
+                <div class="meta-stack">
+                    <div><strong>Primary evidence count:</strong> {{ profile.primary_evidence_count }}</div>
+                    <div>
+                        <strong>Top themes:</strong>
+                        {{ profile.theme_labels|join(", ") if profile.theme_labels else "No dominant themes isolated." }}
+                    </div>
+                    <div>
+                        <strong>Goal highlights:</strong>
+                        {% if profile.goal_highlights %}
+                        <ul class="goal-list">
+                            {% for goal in profile.goal_highlights %}
+                            <li>{{ goal.goal_label }}: {{ goal.fit_label }} ({{ "%.2f"|format(goal.opportunity) }})</li>
+                            {% endfor %}
+                        </ul>
+                        {% else %}
+                        <div>No goal highlights available.</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+    </section>
 
     <section class="section-card">
         <div class="section-header">
@@ -219,6 +333,18 @@
         {% else %}
         <p>Neither location offers a significant goal-specific tradeoff advantage over the other.</p>
         {% endif %}
+    </section>
+
+    <section class="section-card">
+        <div class="section-header">
+            <div class="section-kicker">How To Use It</div>
+            <h2 class="section-title">Decision Notes</h2>
+        </div>
+        <ul class="decision-list">
+            {% for note in decision_notes %}
+            <li>{{ note }}</li>
+            {% endfor %}
+        </ul>
     </section>
 </div>
 </body>
