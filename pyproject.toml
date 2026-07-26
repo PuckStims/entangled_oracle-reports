@@ -13,6 +13,7 @@ dependencies = [
     "geonamescache",
     "geopy",
     "jinja2",
+    "numpy>=2,<2.5",
     "pyswisseph",
     "timezonefinder",
 ]
@@ -34,7 +35,10 @@ py-modules = [
 [tool.setuptools.packages.find]
 include = [
     "app*",
+    "eia_engine*",
+    "engine*",
     "formulas*",
     "products*",
     "selectors*",
+    "visuals*",
 ]

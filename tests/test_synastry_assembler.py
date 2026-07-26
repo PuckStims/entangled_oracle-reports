@@ -99,6 +99,15 @@ def test_assemble_synastry_context_has_stable_top_level_shape():
     assert context["source_pair_payload"]["schema_version"] == pair["schema_version"]
 
 
+def test_overview_omits_report_status_card_from_opening_row():
+    context = assemble_synastry_context(_pair_payload_exact_exact())
+    overview = _section(context, "overview")
+
+    titles = [block["title"] for block in overview["blocks"]]
+    assert "Report Status" not in titles
+    assert titles == ["Evidence Basis", "Claim Boundary", "Exact Birth Time"]
+
+
 def test_assemble_synastry_context_does_not_mutate_pair_payload():
     pair = _pair_payload_exact_exact()
     before = copy.deepcopy(pair)
@@ -116,9 +125,9 @@ def test_relationship_topics_section_compiles_reader_native_narrative():
     assert section["blocks"]
     body = section["blocks"][0]["body"]
     assert "organizing theme" in body.lower()
-    assert "Moon contacts" in body
-    assert "IC contact" in body
-    assert "guaranteed relationship outcome" in body
+    assert "Person A's Moon brings emotional tone and responsiveness into Person B's body and presence" in body
+    assert "Person B's Moon brings emotional tone and responsiveness into Person A's private ground" in body
+    assert "guaranteed relationship outcome" not in body
 
 
 def test_core_relationship_signature_uses_ranked_contacts_and_directionality():
@@ -127,8 +136,9 @@ def test_core_relationship_signature_uses_ranked_contacts_and_directionality():
 
     assert section["blocks"]
     body = section["blocks"][0]["body"]
+    assert "recognition pattern running through" in body
     assert "highest-salience cross-chart contacts" in body
-    assert "lived terrain is not symmetrical" in body
+    assert "Directionally, that recognition keeps landing through" in body
 
 
 def test_friction_and_growth_edges_keep_heat_specific_and_non_fatalistic():
@@ -309,7 +319,7 @@ def test_render_synastry_html_emits_section_titles_and_no_todo():
     assert "Integrated Relationship Portrait" in html
     assert "Technical Appendix" in html
     assert "TODO" not in html
-    assert "Client report available: No" in html
+    assert "Report status: Preview sample" in html
     assert "Relationship verdicts supported: No" in html
 
 

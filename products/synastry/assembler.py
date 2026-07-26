@@ -50,18 +50,35 @@ def _deepcopy(value: Any) -> Any:
     return copy.deepcopy(value)
 
 
+def _fallback_person_name(fallback_label: str) -> str:
+    return "Person A" if fallback_label == "A" else "Person B"
+
+
+def _is_internal_fixture_name(value: str) -> bool:
+    return str(value or "").strip().lower().startswith("synastry fixture")
+
+
+def _clean_display_name(value: Any, fallback_label: str) -> str | None:
+    if not isinstance(value, str):
+        return None
+    stripped = value.strip()
+    if not stripped or _is_internal_fixture_name(stripped):
+        return None
+    return stripped
+
+
 def _display_name(person_record: dict, fallback_label: str, relationship_meta: dict | None = None) -> str:
     relationship_meta = relationship_meta or {}
     meta_key = "person_a_label" if fallback_label == "A" else "person_b_label"
-    meta_name = relationship_meta.get(meta_key)
-    if isinstance(meta_name, str) and meta_name.strip():
-        return meta_name.strip()
+    meta_name = _clean_display_name(relationship_meta.get(meta_key), fallback_label)
+    if meta_name:
+        return meta_name
     profile = (person_record.get("natal_payload") or {}).get("user_profile", {})
     for key in ("name", "report_name", "display_name"):
-        value = profile.get(key)
-        if isinstance(value, str) and value.strip():
-            return value.strip()
-    return "Person A" if fallback_label == "A" else "Person B"
+        value = _clean_display_name(profile.get(key), fallback_label)
+        if value:
+            return value
+    return _fallback_person_name(fallback_label)
 
 
 def _person_names(pair_payload: dict) -> dict[str, str]:
@@ -777,7 +794,7 @@ def _overview_section(pair_payload: dict) -> dict:
     blocks = [
         {
             "id": "pair_payload",
-            "title": "Pair Payload",
+            "title": "Evidence Basis",
             "body": select_technical_appendix_leaf("calculation_note", "pair_payload").get("body"),
             "selected_leaf": select_technical_appendix_leaf("calculation_note", "pair_payload"),
         },
@@ -786,12 +803,6 @@ def _overview_section(pair_payload: dict) -> dict:
             "title": "Claim Boundary",
             "body": select_technical_appendix_leaf("claim_safety", "relationship_verdicts_supported_false").get("body"),
             "selected_leaf": select_technical_appendix_leaf("claim_safety", "relationship_verdicts_supported_false"),
-        },
-        {
-            "id": "client_report_available_false",
-            "title": "Report Status",
-            "body": select_technical_appendix_leaf("claim_safety", "client_report_available_false").get("body"),
-            "selected_leaf": select_technical_appendix_leaf("claim_safety", "client_report_available_false"),
         },
     ]
     for state in _unique_confidence_states(pair_payload):
