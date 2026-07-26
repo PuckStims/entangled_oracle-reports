@@ -47,6 +47,13 @@ python generate.py soul_ecosystem \
   --time 08:11 \
   --location "Peoria, IL"
 
+# Internal Architecture (EIA)
+python generate.py internal_architecture \
+  --name "Puck" \
+  --date 1992-03-21 \
+  --time 08:11 \
+  --location "Peoria, IL"
+
 # Daily Horoscope (Full mode)
 python generate.py horoscope \
   --name "Visitor" \
@@ -64,6 +71,12 @@ python generate.py horoscope \
 
 Reports open automatically in your browser.
 Files saved to `output/`.
+
+Internal Architecture / EIA is a symbolic operating-map engine. It reuses
+the existing natal payload and optional EO/EAS indexes, then generates seven
+registers: ignition, reception, decision, current, boundary, contact, and
+restoration. It is not a Human Design implementation and intentionally avoids
+Human Design public terminology, object models, and report structure.
 
 Malformed `--date`/`--time`, an empty `--name`, or a missing `--location`
 fail immediately with a clear one-line message rather than a raw
@@ -94,6 +107,8 @@ entangled_oracle/
 |   |-- natal_engine.py          Swiss Ephemeris natal payload generation
 |   |-- transit_engine.py        Year Ahead / predictive transit timeline engine
 |   `-- chart_wheel.py           SVG natal chart wheel rendering
+|-- eia_engine/                  Internal Architecture scoring and JSON report engine
+|-- content/eia/                 EIA mode catalog, register copy, and distortion patterns
 |-- formulas/
 |   |-- standard_indexes.py      Standard astrological computations
 |   |-- proprietary_indexes.py   EO proprietary index calculations

@@ -9,6 +9,7 @@ Usage:
     python generate.py year_ahead --name "Puck" --date 1992-03-21 --time 08:11 --location "Peoria, IL"
     python generate.py personal_forecast --name "Puck" --date 1992-03-21 --time 08:11 --location "Peoria, IL"
     python generate.py soul_ecosystem --name "Puck" --date 1992-03-21 --time 08:11 --location "Peoria, IL"
+    python generate.py internal_architecture --name "Puck" --date 1992-03-21 --time 08:11 --location "Peoria, IL"
     python generate.py synastry --name1 "Puck" --date1 1992-03-21 --time1 08:11 --location1 "Peoria, IL" --name2 "Cher" --date2 1995-02-15 --time2 18:42 --location2 "Seattle, WA"
 
 DOB-only mode (simple horoscope, no birth time needed):
@@ -39,11 +40,6 @@ from product_versions import (
     template_path,
     write_json,
 )
-from products.location_services.routing import (
-    build_location_report_artifacts,
-    is_location_report_type,
-    location_report_window,
-)
 
 # Dev-only content trace. Set EO_CONTENT_TRACE=1 to print station source/subtitle
 # resolution to the terminal. Never written to HTML or PDF output.
@@ -52,6 +48,21 @@ def _env_flag(name: str) -> bool:
 
 
 _EO_CONTENT_TRACE = _env_flag("EO_CONTENT_TRACE")
+
+
+@lru_cache(maxsize=1)
+def _location_services_routing():
+    from products.location_services.routing import (
+        build_location_report_artifacts,
+        is_location_report_type,
+        location_report_window,
+    )
+
+    return {
+        "build_location_report_artifacts": build_location_report_artifacts,
+        "is_location_report_type": is_location_report_type,
+        "location_report_window": location_report_window,
+    }
 
 
 def _reset_swiss_ephemeris_path() -> None:
@@ -147,6 +158,11 @@ def parse_birth_data(args) -> dict:
     name = args.name
     if not name or not name.strip():
         raise InputValidationError("--name cannot be empty or whitespace-only.")
+    name = name.strip()
+
+    sample_identity_mode = getattr(args, "sample_identity_mode", None)
+    sample_display_name = (getattr(args, "sample_display_name", None) or "Sample Client").strip() or "Sample Client"
+    report_display_name = sample_display_name if sample_identity_mode == "anonymized" else name
 
     date_string = args.date
     try:
@@ -157,10 +173,12 @@ def parse_birth_data(args) -> dict:
         ) from None
 
     birth_data = {
-        "name": name,
+        "name": report_display_name,
         "date": date_string,
         "location": args.location or "",
-        "simple_mode": getattr(args, "simple", False)
+        "simple_mode": getattr(args, "simple", False),
+        "sample_identity_mode": sample_identity_mode,
+        "sample_display_name": sample_display_name,
     }
     if not birth_data["location"].strip():
         raise InputValidationError("--location is required and cannot be empty.")
@@ -178,6 +196,8 @@ def parse_birth_data(args) -> dict:
         birth_data["time"] = None
         birth_data["simple_mode"] = True
     birth_data["palette"] = getattr(args, "palette", "vibrant")
+    birth_data["include_debug_json"] = bool(getattr(args, "include_debug_json", False))
+    birth_data["include_practitioner_appendix"] = bool(getattr(args, "include_practitioner_appendix", False))
     birth_data["report_date"] = _validate_iso_date(getattr(args, "report_date", None), "--report-date")
     birth_data["report_end_date"] = _validate_iso_date(getattr(args, "report_end_date", None), "--report-end-date")
     report_start = datetime.strptime(
@@ -231,7 +251,7 @@ def _parse_synastry_party_data(args, suffix: str) -> dict:
     }
 
     time_string = getattr(args, f"time{suffix}", None)
-    if time_string and not simple_mode:
+    if time_string:
         time_format = "%H:%M:%S" if str(time_string).count(":") == 2 else "%H:%M"
         try:
             datetime.strptime(time_string, time_format)
@@ -240,6 +260,7 @@ def _parse_synastry_party_data(args, suffix: str) -> dict:
                 f"--time{suffix} '{time_string}' is not a valid 24-hour time in HH:MM or HH:MM:SS format."
             ) from None
         birth_data["time"] = time_string
+        birth_data["simple_mode"] = False
     else:
         birth_data["time"] = None
         birth_data["simple_mode"] = True
@@ -341,9 +362,10 @@ def generate_report(
     _reset_swiss_ephemeris_path()
 
     payload = get_payload(birth_data)
+    location_routing = _location_services_routing()
 
-    if is_location_report_type(report_type):
-        artifacts = build_location_report_artifacts(report_type, payload, birth_data)
+    if location_routing["is_location_report_type"](report_type):
+        artifacts = location_routing["build_location_report_artifacts"](report_type, payload, birth_data)
         html = artifacts["html"]
         manifest_report_type = artifacts["public_report_type"]
         if output_filename is None:
@@ -352,7 +374,7 @@ def generate_report(
         output_path = os.path.join(effective_dir, output_filename)
         os.makedirs(effective_dir, exist_ok=True)
         _atomic_write_text(output_path, html)
-        report_start, report_end = location_report_window(manifest_report_type, birth_data)
+        report_start, report_end = location_routing["location_report_window"](manifest_report_type, birth_data)
         manifest_path = _write_report_manifest(
             report_type=manifest_report_type,
             birth_data=birth_data,
@@ -401,6 +423,10 @@ def generate_report(
         report_end_date=report_end,
     )
     variables["palette"] = birth_data.get("palette", "vibrant")
+    variables["include_debug_json"] = birth_data.get("include_debug_json", False)
+    variables["include_practitioner_appendix"] = birth_data.get("include_practitioner_appendix", False)
+    variables["sample_identity_mode"] = birth_data.get("sample_identity_mode")
+    variables["sample_display_name"] = birth_data.get("sample_display_name", "Sample Client")
 
     # Predictive engine (Testable Predictive Formulas Experimental v0.1) is
     # quarantined — see quarantine/predictive_testable_v0_1/README.md.
@@ -445,6 +471,9 @@ def generate_report(
         report_start=report_start,
         report_end=report_end,
     )
+    if report_type == "internal_architecture" and birth_data.get("include_debug_json"):
+        debug_path = f"{os.path.splitext(output_path)[0]}.debug.json"
+        write_json(debug_path, context.get("internal_architecture_json", {}))
 
     print(f"[Done] Report saved: {os.path.basename(output_path)}")
     print(f"[Done] Manifest saved: {os.path.basename(manifest_path)}")
@@ -485,6 +514,7 @@ def generate_synastry_report(
             "consent_state": "cli_self_test",
             "person_a_label": person_a_birth_data["name"],
             "person_b_label": person_b_birth_data["name"],
+            "palette": person_a_birth_data.get("palette", person_b_birth_data.get("palette", "vibrant")),
         },
     )
     html = render_synastry_html(context)
@@ -565,6 +595,10 @@ def build_report_context(
     elif report_type == "identity_profile":
         from products.identity_profile.runtime.identity_profile_context import build_identity_profile_context
         ctx.update(build_identity_profile_context(variables, index_results, payload))
+
+    elif report_type == "internal_architecture":
+        from products.internal_architecture.runtime.internal_architecture_context import build_internal_architecture_context
+        ctx.update(build_internal_architecture_context(variables, index_results, payload))
 
     trace = ctx.get("report_surface_trace", {})
     if isinstance(trace, dict):
@@ -10303,6 +10337,7 @@ def render_template(report_type: str, context: dict) -> str:
         "personal_forecast":  "personal_forecast/templates/personal_forecast.html",
         "soul_ecosystem":     "soul_ecosystem/templates/soul_ecosystem.html",
         "identity_profile":   "identity_profile/templates/entangled_identity_profile.html",
+        "internal_architecture": "internal_architecture/templates/internal_architecture.html",
     }
     if report_type not in template_map:
         raise ValueError(
@@ -10457,7 +10492,7 @@ def main():
         description="Entangled Oracle Report Generator"
     )
     parser.add_argument("report_type",
-        choices=["horoscope", "weekly_horoscope", "year_ahead", "personal_forecast", "soul_ecosystem", "identity_profile", "place_resonance", "place_resonance_search", "world_lines", "local_compass", "living_map", "synastry"],
+        choices=["horoscope", "weekly_horoscope", "year_ahead", "personal_forecast", "soul_ecosystem", "identity_profile", "internal_architecture", "place_resonance", "place_resonance_search", "world_lines", "local_compass", "living_map", "synastry"],
         help="Type of report to generate"
     )
     parser.add_argument("--name",     required=False, help="Querent name")
@@ -10513,6 +10548,31 @@ def main():
         default=None,
         dest="report_end_date",
         help="Optional report end date (YYYY-MM-DD). Used by Living Map date windows.",
+    )
+    parser.add_argument(
+        "--include-debug-json",
+        action="store_true",
+        dest="include_debug_json",
+        help="For Internal Architecture, write/show developer JSON debug output.",
+    )
+    parser.add_argument(
+        "--include-practitioner-appendix",
+        action="store_true",
+        dest="include_practitioner_appendix",
+        help="For Internal Architecture, include the readable practitioner appendix table.",
+    )
+    parser.add_argument(
+        "--sample-identity-mode",
+        choices=["anonymized", "founder_demo"],
+        default=None,
+        dest="sample_identity_mode",
+        help="For public Internal Architecture samples, choose anonymized or explicit founder demo identity handling.",
+    )
+    parser.add_argument(
+        "--sample-display-name",
+        default="Sample Client",
+        dest="sample_display_name",
+        help="Display name used when --sample-identity-mode anonymized is enabled.",
     )
 
     args = parser.parse_args()

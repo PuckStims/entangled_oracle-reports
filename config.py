@@ -23,6 +23,7 @@ REPORT_BLOCK_DIRS = {
     "identity_profile": os.path.join(PRODUCTS_DIR, "identity_profile", "blocks"),
     "shared":           os.path.join(PRODUCTS_DIR, "identity_profile", "blocks"),
     "location_services": os.path.join(PRODUCTS_DIR, "location_services", "blocks", "plainspeak"),
+    "synastry":         os.path.join(PRODUCTS_DIR, "synastry", "blocks", "plainspeak"),
 }
 
 # ── Score Tier Thresholds ──────────────────────────────────────

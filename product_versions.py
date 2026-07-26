@@ -37,6 +37,7 @@ REPORT_TYPE_VERSIONS = {
     "year_ahead": "Year Ahead v2.0",
     "personal_forecast": "Personal Forecast v1.0",
     "soul_ecosystem": "Soul Ecosystem v1.0",
+    "internal_architecture": "Internal Architecture v0.1",
 }
 
 TEMPLATE_MAP = {
@@ -45,6 +46,7 @@ TEMPLATE_MAP = {
     "year_ahead": os.path.join(PRODUCTS_DIR, "year_ahead", "templates", "active", "year_ahead.html"),
     "personal_forecast": os.path.join(PRODUCTS_DIR, "personal_forecast", "templates", "personal_forecast.html"),
     "soul_ecosystem": os.path.join(PRODUCTS_DIR, "soul_ecosystem", "templates", "soul_ecosystem.html"),
+    "internal_architecture": os.path.join(PRODUCTS_DIR, "internal_architecture", "templates", "internal_architecture.html"),
 }
 
 VISUAL_SYSTEM_FILES = [
@@ -130,6 +132,7 @@ def _report_block_paths(report_type: str, content_pack: str) -> list[str]:
         "horoscope": os.path.join(PRODUCTS_DIR, "daily_horoscope", "blocks"),
         "weekly_horoscope": os.path.join(PRODUCTS_DIR, "weekly_horoscope", "blocks"),
         "soul_ecosystem": os.path.join(PRODUCTS_DIR, "soul_ecosystem", "blocks"),
+        "internal_architecture": os.path.join(BASE_DIR, "content", "eia"),
     }
     block_root = block_dirs.get(report_type)
     if not block_root or not os.path.isdir(block_root):
@@ -157,6 +160,7 @@ def build_version_registry(report_type: str, content_pack: str) -> dict:
         [os.path.join(BASE_DIR, "generate.py")]
         + _walk_files(os.path.join(BASE_DIR, "selectors"), (".py",))
         + _walk_files(os.path.join(BASE_DIR, "engine"), (".py",))
+        + _walk_files(os.path.join(BASE_DIR, "eia_engine"), (".py",))
     )
     block_paths = _report_block_paths(report_type, content_pack)
     template_paths = _existing_files([template_path(report_type)])

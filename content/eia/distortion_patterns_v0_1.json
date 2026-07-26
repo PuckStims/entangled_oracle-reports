@@ -1,0 +1,34 @@
+{
+  "Premature Yes": {
+    "trigger": "A request arrives with speed, charm, or emotional heat.",
+    "correction": "Separate the first signal from the final commitment."
+  },
+  "Urgency Collapse": {
+    "trigger": "Pressure turns timing into a false emergency.",
+    "correction": "Name the actual deadline and restore one clean pause."
+  },
+  "Over-Translation": {
+    "trigger": "The system begins explaining before it has consent or clarity.",
+    "correction": "Ask what needs to be made legible and what can remain private."
+  },
+  "Caretaker Drift": {
+    "trigger": "Attunement quietly becomes responsibility for the whole field.",
+    "correction": "Return each person's material to its proper owner."
+  },
+  "Control Lock": {
+    "trigger": "Uncertainty is managed by tightening every variable.",
+    "correction": "Choose the smallest real structure that restores trust."
+  },
+  "Signal Flood": {
+    "trigger": "Too much input enters before the system can sort relevance.",
+    "correction": "Lower the noise before interpreting the signal."
+  },
+  "Fortress Reflex": {
+    "trigger": "Protection becomes total withdrawal or hard refusal.",
+    "correction": "Distinguish clean limit from permanent exile."
+  },
+  "False Certainty": {
+    "trigger": "The mind closes the question before the whole system has reported.",
+    "correction": "Recheck the answer across time, body, and context."
+  }
+}

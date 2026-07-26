@@ -72,6 +72,16 @@ CONSUMER_REPORTS: dict[str, ReportDefinition] = {
         content_packs=("plainspeak", "entangled_oracle"),
         default_content_pack="plainspeak",
     ),
+    "internal_architecture": ReportDefinition(
+        key="internal_architecture",
+        label="Internal Architecture",
+        promise="A symbolic operating map for signal, decision tempo, energy economy, boundaries, pressure patterns, and restoration keys.",
+        best_for="Turning the natal chart and EO pattern logic into a practical self-mapping report.",
+        depth="Deep",
+        birth_time_rule="Exact birth time required",
+        status="EIA v0.1",
+        available=True,
+    ),
     "horoscope": ReportDefinition(
         key="horoscope",
         label="Daily Horoscope",
