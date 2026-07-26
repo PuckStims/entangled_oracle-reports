@@ -9,7 +9,7 @@ from __future__ import annotations
 import copy
 from typing import Any
 
-from engine.synastry import ANGLE_POINTS, ASPECT_POLARITY, BODY_WEIGHTS
+from engine.synastry import ANGLE_POINTS, ASPECT_POLARITY, BODY_DOMAINS, BODY_WEIGHTS
 from selectors.synastry_selector import (
     select_repeated_theme_confidence_leaf,
     select_repeated_theme_type_leaf,
@@ -100,6 +100,9 @@ POINT_LABELS = {
     "North_Node": "North Node",
     "South_Node": "South Node",
 }
+COMPOSITE_RESONANCE_BODIES = {"Sun", "Moon", "Venus", "Mars"}
+COMPOSITE_RESONANCE_HOUSES = {1, 4, 7, 10}
+COMPOSITE_RESONANCE_TARGETS = {"Sun", "Moon", "Venus", "Mars", "Ascendant", "Descendant", "Midheaven", "Imum_Coeli"}
 
 
 def _deepcopy(value: Any) -> Any:
@@ -124,6 +127,16 @@ def _serial_join(parts: list[str]) -> str:
 
 def _title_case_signal(value: str) -> str:
     return str(value or "").replace("_", " ").title()
+
+
+def _ordinal(number: int | None) -> str:
+    if not isinstance(number, int):
+        return ""
+    if 10 <= number % 100 <= 20:
+        suffix = "th"
+    else:
+        suffix = {1: "st", 2: "nd", 3: "rd"}.get(number % 10, "th")
+    return f"{number}{suffix}"
 
 
 def _body_name(body: Any) -> str:
@@ -256,6 +269,8 @@ class SynastryNarrativeCompiler:
         ]
         self.repeated_themes = [item for item in self.computations.get("repeated_natal_themes", []) or [] if isinstance(item, dict)]
         self.composite = self.computations.get("composite", {}) or {}
+        self.composite_resonance = self.computations.get("composite_to_natal_resonance", {}) or {}
+        self.advanced = self.computations.get("advanced_static_evidence", {}) or {}
 
     def compile_sections(self) -> list[dict]:
         sections: list[dict] = [
@@ -275,6 +290,8 @@ class SynastryNarrativeCompiler:
             self._directional_landing_section,
             self._shared_natal_baseline_section,
             self._composite_relationship_field_section,
+            self._composite_resonance_section,
+            self._advanced_evidence_section,
             self._friction_growth_edges_section,
             self._integrated_relationship_portrait_section,
         ):
@@ -648,6 +665,77 @@ class SynastryNarrativeCompiler:
             ],
         }
 
+    def _composite_resonance_section(self) -> dict | None:
+        by_person = self.composite_resonance.get("by_person") or {}
+        if not isinstance(by_person, dict) or not by_person:
+            return None
+        blocks = []
+        for label in ("A", "B"):
+            body = self._composite_resonance_body(label)
+            if body:
+                blocks.append(
+                    {
+                        "id": f"composite_resonance:{label}",
+                        "title": f"{self.names[label]}",
+                        "body": body,
+                    }
+                )
+        comparison = self._composite_resonance_comparison_body()
+        if comparison:
+            blocks.append(
+                {
+                    "id": "composite_resonance:comparison",
+                    "title": "Shared Comparison",
+                    "body": comparison,
+                }
+            )
+        if not blocks:
+            return None
+        return {
+            "id": "composite_resonance",
+            "title": "How The Relationship Lands",
+            "blocks": blocks,
+        }
+
+    def _advanced_evidence_section(self) -> dict | None:
+        midpoint_contacts = [item for item in self.advanced.get("midpoint_contacts", []) or [] if isinstance(item, dict)]
+        antiscia_contacts = [item for item in self.advanced.get("antiscia_contacts", []) or [] if isinstance(item, dict)]
+        if not midpoint_contacts and not antiscia_contacts:
+            return None
+        blocks = [
+            {
+                "id": "advanced_evidence:boundary",
+                "title": "Scope",
+                "body": (
+                    "This is a separate fine-grain resonance layer, not the report's core architecture. "
+                    "It uses tighter-orb midpoint and antiscia techniques as secondary evidence, and declination is not live in the current payload yet."
+                ),
+            }
+        ]
+        midpoint_body = self._advanced_midpoint_body()
+        if midpoint_body:
+            blocks.append(
+                {
+                    "id": "advanced_evidence:midpoints",
+                    "title": "Midpoint Contacts",
+                    "body": midpoint_body,
+                }
+            )
+        antiscia_body = self._advanced_antiscia_body()
+        if antiscia_body:
+            blocks.append(
+                {
+                    "id": "advanced_evidence:antiscia",
+                    "title": "Antiscia Resonance",
+                    "body": antiscia_body,
+                }
+            )
+        return {
+            "id": "advanced_evidence",
+            "title": "Advanced Evidence",
+            "blocks": blocks,
+        }
+
     def _friction_growth_edges_section(self) -> dict | None:
         tensions = [
             mutual for mutual in self.mutuals
@@ -749,6 +837,323 @@ class SynastryNarrativeCompiler:
             if bodies <= body_set and str(item.get("aspect") or "") == aspect:
                 return item
         return None
+
+    def _composite_resonance_records(self, person_label: str) -> tuple[list[dict], list[dict]]:
+        by_person = self.composite_resonance.get("by_person") or {}
+        person_bucket = by_person.get(person_label) or {}
+        contacts = [
+            item
+            for item in person_bucket.get("body_contacts", []) or []
+            if isinstance(item, dict) and not item.get("withheld")
+        ]
+        overlays = [
+            item
+            for item in person_bucket.get("house_overlays", []) or []
+            if isinstance(item, dict) and not item.get("withheld")
+        ]
+        return contacts, overlays
+
+    def _resonance_overlay_priority(self, overlay: dict) -> tuple[Any, ...]:
+        house = int(overlay.get("target_house") or 0)
+        body = str(overlay.get("composite_body") or "")
+        core_penalty = 0 if body in COMPOSITE_RESONANCE_BODIES else 1
+        house_penalty = 0 if house in COMPOSITE_RESONANCE_HOUSES else 1
+        house_order = {4: 0, 10: 1, 1: 2, 7: 3}
+        return (
+            core_penalty,
+            house_penalty,
+            house_order.get(house, 9),
+            -BODY_WEIGHTS.get(body, 0.0),
+        )
+
+    def _resonance_contact_priority(self, contact: dict) -> tuple[Any, ...]:
+        composite_body = str(contact.get("composite_body") or "")
+        target_body = str(contact.get("target_body") or "")
+        aspect = str(contact.get("aspect") or "")
+        core_penalty = 0 if composite_body in COMPOSITE_RESONANCE_BODIES else 1
+        target_penalty = 0 if target_body in COMPOSITE_RESONANCE_TARGETS else 1
+        polarity = ASPECT_POLARITY.get(aspect, "mixed")
+        polarity_order = {"supportive": 0, "mixed": 1, "tensional": 2}
+        return (
+            core_penalty,
+            target_penalty,
+            polarity_order.get(polarity, 3),
+            -float(contact.get("salience", 0.0) or 0.0),
+            float(contact.get("orb", 99.0) or 99.0),
+        )
+
+    def _find_resonance_overlay(self, person_label: str, *, composite_body: str | None = None, house: int | None = None) -> dict | None:
+        _, overlays = self._composite_resonance_records(person_label)
+        for overlay in sorted(overlays, key=self._resonance_overlay_priority):
+            if composite_body and str(overlay.get("composite_body") or "") != composite_body:
+                continue
+            if house and int(overlay.get("target_house") or 0) != house:
+                continue
+            return overlay
+        return None
+
+    def _find_resonance_contact(
+        self,
+        person_label: str,
+        *,
+        composite_body: str | None = None,
+        target_body: str | None = None,
+        aspects: set[str] | None = None,
+    ) -> dict | None:
+        contacts, _ = self._composite_resonance_records(person_label)
+        for contact in sorted(contacts, key=self._resonance_contact_priority):
+            if composite_body and str(contact.get("composite_body") or "") != composite_body:
+                continue
+            if target_body and str(contact.get("target_body") or "") != target_body:
+                continue
+            if aspects and str(contact.get("aspect") or "") not in aspects:
+                continue
+            return contact
+        return None
+
+    def _composite_overlay_sentence(self, person_label: str, overlay: dict) -> str:
+        name = self.names[person_label]
+        composite_body = str(overlay.get("composite_body") or "")
+        house = int(overlay.get("target_house") or 0)
+        body_phrase = {
+            "Sun": "puts the relationship's center of gravity in",
+            "Moon": "brings the relationship's emotional weather into",
+            "Mercury": "routes the relationship through",
+            "Venus": "carries the relationship's affectionate field into",
+            "Mars": "presses the relationship's drive into",
+            "Jupiter": "widens the relationship's field through",
+            "Saturn": "makes the relationship's weight and structure visible in",
+            "Uranus": "electrifies",
+            "Neptune": "softens and blurs",
+            "Pluto": "intensifies",
+        }.get(composite_body, "lands the relationship inside")
+        house_label = HOUSE_LABELS.get(house, "lived field")
+        return (
+            f"Composite {composite_body} in {name}'s {_ordinal(house)} house {body_phrase} {house_label}."
+        )
+
+    def _composite_contact_sentence(self, person_label: str, contact: dict) -> str:
+        name = self.names[person_label]
+        composite_body = str(contact.get("composite_body") or "")
+        target_body = _body_name(contact.get("target_body"))
+        aspect = str(contact.get("aspect") or "")
+        polarity = ASPECT_POLARITY.get(aspect, "mixed")
+        if polarity == "supportive":
+            implication = f"giving the relationship a smoother route into {name}'s {BODY_DOMAINS.get(str(contact.get('target_body') or ''), 'natal architecture').replace('/', ' / ')}."
+        elif polarity == "tensional":
+            implication = f"so the relationship presses on {name}'s {BODY_DOMAINS.get(str(contact.get('target_body') or ''), 'natal architecture').replace('/', ' / ')} rather than sliding into it effortlessly."
+        else:
+            implication = f"tying the relationship's {BODY_DOMAINS.get(composite_body, 'core symbolism').replace('/', ' / ')} directly to {name}'s {BODY_DOMAINS.get(str(contact.get('target_body') or ''), 'natal architecture').replace('/', ' / ')}."
+        return f"Composite {composite_body} {_aspect_verb(aspect)} {name}'s {target_body}, {implication}"
+
+    def _composite_resonance_body(self, person_label: str) -> str:
+        contacts, overlays = self._composite_resonance_records(person_label)
+        if not contacts and not overlays:
+            return ""
+        name = self.names[person_label]
+        pieces: list[str] = []
+        lead_overlay = self._find_resonance_overlay(person_label)
+        emotional_overlay = self._find_resonance_overlay(person_label, composite_body="Moon", house=4)
+        public_overlay = self._find_resonance_overlay(person_label, composite_body="Sun", house=10)
+        public_contact = self._find_resonance_contact(person_label, composite_body="Sun", target_body="Midheaven")
+        embodied_contact = self._find_resonance_contact(person_label, composite_body="Moon", target_body="Moon")
+        core_contacts = sorted(contacts, key=self._resonance_contact_priority)
+
+        if person_label == "A":
+            if lead_overlay:
+                pieces.append(f"For {name}, the relationship becomes concrete through lived placement before anything else.")
+                pieces.append(self._composite_overlay_sentence(person_label, lead_overlay))
+            else:
+                pieces.append(f"For {name}, the relationship field is landing through named internal contacts even where house localization is less central.")
+        else:
+            if lead_overlay:
+                pieces.append(f"In {name}'s chart, the relationship reads through a different door.")
+                pieces.append(self._composite_overlay_sentence(person_label, lead_overlay))
+            else:
+                pieces.append(f"In {name}'s chart, the relationship is being received more through aspect pressure than through one dominant house landing.")
+
+        if emotional_overlay and emotional_overlay is not lead_overlay:
+            pieces.append(self._composite_overlay_sentence(person_label, emotional_overlay))
+        elif embodied_contact:
+            pieces.append(self._composite_contact_sentence(person_label, embodied_contact))
+
+        if public_overlay and public_overlay is not lead_overlay:
+            pieces.append(self._composite_overlay_sentence(person_label, public_overlay))
+        elif public_contact:
+            pieces.append(self._composite_contact_sentence(person_label, public_contact))
+
+        for contact in core_contacts:
+            composite_body = str(contact.get("composite_body") or "")
+            target_body = str(contact.get("target_body") or "")
+            if composite_body not in COMPOSITE_RESONANCE_BODIES:
+                continue
+            if contact is embodied_contact or contact is public_contact:
+                continue
+            if target_body not in COMPOSITE_RESONANCE_TARGETS:
+                continue
+            pieces.append(self._composite_contact_sentence(person_label, contact))
+            break
+
+        return _sentence_join(pieces)
+
+    def _composite_person_scores(self, person_label: str) -> dict[str, float]:
+        contacts, overlays = self._composite_resonance_records(person_label)
+        supportive = 0.0
+        mixed = 0.0
+        tensional = 0.0
+        direct = 0.0
+
+        for contact in contacts:
+            composite_body = str(contact.get("composite_body") or "")
+            target_body = str(contact.get("target_body") or "")
+            if composite_body not in COMPOSITE_RESONANCE_BODIES or target_body not in COMPOSITE_RESONANCE_TARGETS:
+                continue
+            score = float(contact.get("salience", 0.0) or 0.0)
+            polarity = ASPECT_POLARITY.get(str(contact.get("aspect") or ""), "mixed")
+            if polarity == "supportive":
+                supportive += score
+            elif polarity == "tensional":
+                tensional += score
+            else:
+                mixed += score
+            direct += score
+
+        for overlay in overlays:
+            composite_body = str(overlay.get("composite_body") or "")
+            target_house = int(overlay.get("target_house") or 0)
+            if composite_body not in COMPOSITE_RESONANCE_BODIES or target_house not in COMPOSITE_RESONANCE_HOUSES:
+                continue
+            direct += float(overlay.get("salience", 0.0) or 0.0) * 0.6
+
+        return {
+            "supportive": round(supportive, 4),
+            "mixed": round(mixed, 4),
+            "tensional": round(tensional, 4),
+            "direct": round(direct, 4),
+        }
+
+    def _midpoint_label(self, midpoint_key: str) -> str:
+        mapping = {
+            "sun_moon": "Sun/Moon midpoint",
+            "venus_mars": "Venus/Mars midpoint",
+        }
+        return mapping.get(str(midpoint_key or ""), str(midpoint_key or "midpoint").replace("_", "/"))
+
+    def _advanced_midpoint_sentence(self, record: dict) -> str:
+        source_name = self.names.get(str(record.get("source_person") or ""), _fallback_person_name(record.get("source_person")))
+        target_name = self.names.get(str(record.get("target_person") or ""), _fallback_person_name(record.get("target_person")))
+        source_body = _body_name(record.get("source_body"))
+        midpoint_label = self._midpoint_label(str(record.get("midpoint_key") or ""))
+        aspect = str(record.get("aspect") or "")
+        if midpoint_label == "Sun/Moon midpoint":
+            implication = "so core identity and emotional rhythm are being touched through a highly sensitive internal pairing rather than only through ordinary body-to-body contact."
+        else:
+            implication = "so attraction, desire, and relational pacing are being contacted through a more concentrated sub-layer of the chart."
+        return f"{source_name}'s {source_body} {_aspect_verb(aspect)} {target_name}'s {midpoint_label}, {implication}"
+
+    def _advanced_midpoint_body(self) -> str:
+        contacts = [
+            item for item in self.advanced.get("midpoint_contacts", []) or []
+            if isinstance(item, dict)
+        ]
+        if not contacts:
+            return ""
+        contacts.sort(key=lambda item: (-float(item.get("salience", 0.0) or 0.0), float(item.get("orb", 99.0) or 99.0)))
+        selected: list[dict] = []
+        seen_keys: set[tuple[str, str]] = set()
+        for item in contacts:
+            key = (str(item.get("target_person") or ""), str(item.get("midpoint_key") or ""))
+            if key in seen_keys:
+                continue
+            selected.append(item)
+            seen_keys.add(key)
+            if len(selected) >= 2:
+                break
+        if not selected:
+            return ""
+        sentences = [
+            "The midpoint layer sharpens a theme that already exists elsewhere rather than replacing the main synastry story."
+        ]
+        sentences.extend(self._advanced_midpoint_sentence(item) for item in selected)
+        return _sentence_join(sentences)
+
+    def _advanced_antiscia_sentence(self, record: dict) -> str:
+        source_name = self.names.get(str(record.get("source_person") or ""), _fallback_person_name(record.get("source_person")))
+        target_name = self.names.get(str(record.get("target_person") or ""), _fallback_person_name(record.get("target_person")))
+        source_body = _body_name(record.get("source_body"))
+        target_body = _body_name(record.get("target_body"))
+        relation = str(record.get("relation") or "")
+        if relation == "antiscia":
+            implication = "suggesting mirrored recognition even where the ordinary aspect geometry is not doing all the explanatory work."
+            relation_label = "is in antiscia contact with"
+        else:
+            implication = "suggesting a tighter mirrored tension line rather than a straightforward visible aspect."
+            relation_label = "is in contra-antiscia contact with"
+        return f"{source_name}'s {source_body} {relation_label} {target_name}'s {target_body}, {implication}"
+
+    def _advanced_antiscia_body(self) -> str:
+        contacts = [
+            item for item in self.advanced.get("antiscia_contacts", []) or []
+            if isinstance(item, dict)
+        ]
+        if not contacts:
+            return ""
+        contacts.sort(key=lambda item: (-float(item.get("salience", 0.0) or 0.0), float(item.get("orb", 99.0) or 99.0)))
+        selected: list[dict] = []
+        seen_pairs: set[tuple[str, str, str, str]] = set()
+        for item in contacts:
+            key = (
+                str(item.get("source_person") or ""),
+                str(item.get("source_body") or ""),
+                str(item.get("target_person") or ""),
+                str(item.get("target_body") or ""),
+            )
+            reverse = (key[2], key[3], key[0], key[1])
+            if key in seen_pairs or reverse in seen_pairs:
+                continue
+            selected.append(item)
+            seen_pairs.add(key)
+            if len(selected) >= 2:
+                break
+        if not selected:
+            return ""
+        sentences = [
+            "The antiscia layer looks for mirrored resonance by solstice symmetry rather than by standard aspect shape."
+        ]
+        sentences.extend(self._advanced_antiscia_sentence(item) for item in selected)
+        return _sentence_join(sentences)
+
+    def _composite_resonance_comparison_body(self) -> str:
+        if not (self.composite_resonance.get("by_person") or {}):
+            return ""
+        scores_a = self._composite_person_scores("A")
+        scores_b = self._composite_person_scores("B")
+        name_a = self.names["A"]
+        name_b = self.names["B"]
+        direct_gap = scores_a["direct"] - scores_b["direct"]
+
+        if abs(direct_gap) < 0.45:
+            return (
+                f"The relationship's center of gravity lands in both charts at comparable depth, but not through identical doors. "
+                f"{name_a} and {name_b} are each being touched directly by the composite core, even if one receives it more through private or relational houses and the other through identity or public-direction channels."
+            )
+
+        if direct_gap > 0:
+            if scores_a["supportive"] >= scores_a["tensional"]:
+                return (
+                    f"The relationship's center of gravity looks a little easier for {name_a} to inhabit directly, because more of the composite core is reaching {name_a}'s chart through legible or supportive routes."
+                )
+            return (
+                f"The relationship lands more forcefully in {name_a}'s chart. That does not automatically make it easier for {name_a} to inhabit, but it does make it harder for {name_a} to experience the bond as background."
+            )
+
+        if scores_b["supportive"] >= scores_b["tensional"]:
+            return (
+                f"The relationship's center of gravity looks a little easier for {name_b} to inhabit directly, because more of the composite core is reaching {name_b}'s chart through legible or supportive routes."
+            )
+        return (
+            f"The relationship lands more forcefully in {name_b}'s chart. That does not automatically make it easier for {name_b} to inhabit, but it does make it harder for {name_b} to experience the bond as background."
+        )
 
     def _directional_fields(self, source_person: str, target_person: str) -> list[str]:
         overlays = [

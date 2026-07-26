@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
+from eia_engine.advanced_layers import build_advanced_layers
 from eia_engine.content_pack import content_for, load_modes_catalog
 from eia_engine.feature_extraction import extract_astrology_features
 from eia_engine.mode_selection import select_dominant_mode, select_secondary_mode
@@ -48,18 +49,24 @@ def build_eia_report(
             for mode, score in sorted(mode_scores.items(), key=lambda item: (-item[1], item[0]))
         )
 
+    pressure_patterns = _pressure_patterns(registers)
+    technical_appendix = {
+        "natal_positions": _natal_positions(natal_chart),
+        "register_scores": scoring_table,
+    }
+
+    client = _client_block(natal_chart)
+
     report = EIAReport(
-        client=_client_block(natal_chart),
+        client=client,
         method=_method_block(),
         architecture_summary=_architecture_summary(registers),
         registers=registers,
-        pressure_patterns=_pressure_patterns(registers),
+        pressure_patterns=pressure_patterns,
         mythic_overlay_optional=_mythic_overlay(eas_indexes),
         state_snapshot_optional=build_state_snapshot(state_overlay),
-        technical_appendix={
-            "natal_positions": _natal_positions(natal_chart),
-            "register_scores": scoring_table,
-        },
+        technical_appendix=technical_appendix,
+        advanced_layers_optional=build_advanced_layers(registers, pressure_patterns, technical_appendix, client),
     )
     validate_report_dict(report.to_dict())
     return report

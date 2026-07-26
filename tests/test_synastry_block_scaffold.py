@@ -146,6 +146,18 @@ def test_directional_aspect_file_covers_all_major_aspects_and_polarities():
     for aspect, polarity in ASPECT_POLARITY.items():
         assert polarity in data["aspect"][aspect]["body_to_body"]
         assert polarity in data["aspect"][aspect]["angle_dependent"]
+    exact_pair_keys = set(data["exact_body_pair"].keys()) - {"_note"}
+    assert {
+        "Moon__Sun",
+        "Moon__Venus",
+        "Venus__Mars",
+        "Mars__Saturn",
+        "Mercury__Neptune",
+        "Pluto__Venus",
+        "Moon__Saturn",
+        "North_Node__Sun",
+        "South_Node__Sun",
+    } <= exact_pair_keys
 
 
 def test_house_overlay_file_covers_core_source_bodies_and_twelve_houses():
@@ -154,6 +166,10 @@ def test_house_overlay_file_covers_core_source_bodies_and_twelve_houses():
     assert CORE_BODY_KEYS <= source_body_keys
     house_keys = set(data["target_house"].keys()) - {"_note", "fallback"}
     assert house_keys == {str(index) for index in range(1, 13)}
+    intersection_body_keys = set(data["body_house_intersection"].keys()) - {"_note"}
+    assert CORE_BODY_KEYS <= intersection_body_keys
+    for body in CORE_BODY_KEYS:
+        assert set(data["body_house_intersection"][body].keys()) == {str(index) for index in range(1, 13)}
 
 
 def test_composite_file_covers_body_midpoints_aspects_and_non_live_layers():

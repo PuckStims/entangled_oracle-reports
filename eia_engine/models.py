@@ -73,6 +73,7 @@ class EIAReport:
     technical_appendix: dict[str, Any]
     mythic_overlay_optional: dict[str, Any] | None = None
     state_snapshot_optional: EIAStateSnapshot | None = None
+    advanced_layers_optional: dict[str, Any] | None = None
     schema_version: str = SCHEMA_VERSION
     report_type: str = REPORT_TYPE
 

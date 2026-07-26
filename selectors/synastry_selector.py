@@ -152,6 +152,23 @@ def select_body_pair_family_leaf(family: str) -> dict[str, Any]:
     return _fallback_leaf(blocks)
 
 
+def normalize_body_pair_key(body_names: list[str] | tuple[str, ...] | set[str]) -> str:
+    names = sorted(str(name) for name in body_names if isinstance(name, str) and str(name).strip())
+    return "__".join(names)
+
+
+def select_exact_body_pair_leaf(body_names: list[str] | tuple[str, ...] | set[str]) -> dict[str, Any] | None:
+    blocks = _load_blocks("directional_aspect_blocks")
+    exact_pair_block = blocks.get("exact_body_pair", {})
+    if not isinstance(exact_pair_block, dict):
+        return None
+    key = normalize_body_pair_key(body_names)
+    leaf = _leaf_or_none(exact_pair_block.get(key))
+    if leaf:
+        return _copy_leaf(leaf)
+    return None
+
+
 def select_house_overlay_source_body_leaf(body: str | None) -> dict[str, Any]:
     blocks = _load_blocks("house_overlay_blocks")
     source_body_block = blocks.get("source_body", {})
@@ -180,6 +197,21 @@ def select_house_overlay_target_house_leaf(house_number: int | str | None) -> di
     if leaf:
         return _copy_leaf(leaf)
     return _fallback_leaf(blocks)
+
+
+def select_house_overlay_intersection_leaf(body: str | None, house_number: int | str | None) -> dict[str, Any] | None:
+    blocks = _load_blocks("house_overlay_blocks")
+    intersection_block = blocks.get("body_house_intersection", {})
+    if not isinstance(intersection_block, dict):
+        return None
+    body_block = intersection_block.get(str(body or ""))
+    if not isinstance(body_block, dict):
+        return None
+    key = str(house_number) if house_number is not None else ""
+    leaf = _leaf_or_none(body_block.get(key))
+    if leaf:
+        return _copy_leaf(leaf)
+    return None
 
 
 def select_house_overlay_confidence_leaf(confidence_state: str | None, *, withheld: bool = False) -> dict[str, Any]:
@@ -265,4 +297,3 @@ def select_topic_convergence_leaf(localization: str | None) -> dict[str, Any]:
 def select_topic_confidence_leaf(confidence_state: str | None) -> dict[str, Any]:
     blocks = _load_blocks("topic_convergence_blocks")
     return _select_family_leaf(blocks, "confidence_note", str(confidence_state or "fallback"))
-

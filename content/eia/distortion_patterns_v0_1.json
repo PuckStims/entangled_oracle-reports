@@ -1,34 +1,34 @@
 {
   "Premature Yes": {
-    "trigger": "A request arrives with speed, charm, or emotional heat.",
-    "correction": "Separate the first signal from the final commitment."
+    "trigger": "A request arrives warm, fast, or flattering enough that the first impulse gets mistaken for a full commitment.",
+    "correction": "Let the initial yes remain information until scope, cost, and actual capacity have been named."
   },
   "Urgency Collapse": {
-    "trigger": "Pressure turns timing into a false emergency.",
-    "correction": "Name the actual deadline and restore one clean pause."
+    "trigger": "Pressure compresses timing until every next step starts to feel like an emergency.",
+    "correction": "Separate the real deadline from the emotional charge, then restore one clean pause before acting."
   },
   "Over-Translation": {
-    "trigger": "The system begins explaining before it has consent or clarity.",
-    "correction": "Ask what needs to be made legible and what can remain private."
+    "trigger": "The system starts making everything explainable before consent, usefulness, or privacy has been checked.",
+    "correction": "Clarify what needs language now and what is allowed to remain unshared, unfinished, or private."
   },
   "Caretaker Drift": {
-    "trigger": "Attunement quietly becomes responsibility for the whole field.",
-    "correction": "Return each person's material to its proper owner."
+    "trigger": "Attunement slowly turns into responsibility for another person’s mood, timing, or repair process.",
+    "correction": "Return each person’s material to its proper owner while keeping your care precise and voluntary."
   },
   "Control Lock": {
-    "trigger": "Uncertainty is managed by tightening every variable.",
-    "correction": "Choose the smallest real structure that restores trust."
+    "trigger": "Uncertainty gets managed by tightening the structure until the living signal has no room to move.",
+    "correction": "Choose the smallest useful container, then leave enough space for the situation to keep reporting."
   },
   "Signal Flood": {
-    "trigger": "Too much input enters before the system can sort relevance.",
-    "correction": "Lower the noise before interpreting the signal."
+    "trigger": "Too much information enters at once, and relevance collapses under volume.",
+    "correction": "Lower the input, sort what is yours from what is ambient, and interpret only after the field quiets."
   },
   "Fortress Reflex": {
-    "trigger": "Protection becomes total withdrawal or hard refusal.",
-    "correction": "Distinguish clean limit from permanent exile."
+    "trigger": "A real need for protection becomes total withdrawal, hard refusal, or permanent exile.",
+    "correction": "Separate the clean limit from the fear response, and use only the boundary the moment actually requires."
   },
   "False Certainty": {
-    "trigger": "The mind closes the question before the whole system has reported.",
-    "correction": "Recheck the answer across time, body, and context."
+    "trigger": "The mind closes the question early because relief starts to feel better than accuracy.",
+    "correction": "Recheck the answer across time, body, context, and consequences before treating it as final."
   }
 }

@@ -77,7 +77,12 @@
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
       gap: 14px;
     }
-    .metadata-card, .summary-card, .register-card, .pressure-card, .practice-box, .method-card {
+    .blend-grid, .context-grid, .misread-grid, .evidence-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 14px;
+    }
+    .metadata-card, .summary-card, .register-card, .pressure-card, .practice-box, .method-card, .blend-card, .context-card, .misread-card, .evidence-card, .matrix-row, .cascade-card {
       background: var(--card);
       border: 1px solid var(--line);
       border-radius: 8px;
@@ -113,6 +118,22 @@
       font-weight: 700;
       margin: 6px 0;
     }
+    .mode-pair {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin: 12px 0;
+    }
+    .mode-chip {
+      border-top: 1px solid var(--line);
+      padding-top: 8px;
+    }
+    .mode-chip strong {
+      display: block;
+      color: #442e18;
+      font-size: 0.98rem;
+      line-height: 1.25;
+    }
     .signal-language {
       display: inline-block;
       margin: 5px 0 12px;
@@ -121,7 +142,11 @@
       padding: 4px 10px;
       background: var(--accent-soft);
       color: #604018;
-      font: 0.82rem Arial, sans-serif;
+      font: 0.76rem Arial, sans-serif;
+    }
+    .register-card .signal-language {
+      margin-bottom: 16px;
+      opacity: 0.82;
     }
     .register-card {
       margin-bottom: 18px;
@@ -144,6 +169,67 @@
     .practice-box {
       margin-top: 14px;
       background: #f4ead8;
+    }
+    .register-grid {
+      margin-top: 16px;
+    }
+    .register-grid > div {
+      border-top: 1px solid var(--line);
+      padding-top: 12px;
+    }
+    .pressure-card .label {
+      display: block;
+      margin-top: 14px;
+    }
+    .pressure-card .label:first-of-type {
+      margin-top: 0;
+    }
+    .section-note {
+      max-width: 760px;
+      margin: -6px 0 20px;
+      color: var(--soft-ink);
+      font: 0.95rem/1.55 Arial, sans-serif;
+    }
+    .system-logic {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 12px;
+      max-width: 900px;
+    }
+    .logic-panel {
+      border-left: 3px solid var(--accent);
+      padding: 3px 0 3px 16px;
+      color: #3a332b;
+    }
+    .blend-card h3, .context-card h3, .misread-card h3, .evidence-card h3 {
+      font-size: 1.05rem;
+    }
+    .cascade-card {
+      margin-bottom: 14px;
+      max-width: 900px;
+    }
+    .cascade-steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
+      margin: 14px 0;
+    }
+    .cascade-step {
+      border-top: 1px solid var(--line);
+      padding-top: 10px;
+    }
+    .matrix-row {
+      display: grid;
+      grid-template-columns: minmax(180px, 0.7fr) minmax(0, 1.3fr);
+      gap: 16px;
+      margin-bottom: 10px;
+    }
+    .matrix-row p {
+      margin-bottom: 0;
+    }
+    .evidence-list {
+      margin: 8px 0 0;
+      padding-left: 18px;
     }
     table {
       width: 100%;
@@ -184,6 +270,9 @@
       overflow-x: auto;
       font-size: 0.82rem;
     }
+    .print-flow-only {
+      display: none;
+    }
     footer {
       margin-top: 56px;
       border-top: 1px solid var(--line);
@@ -195,7 +284,40 @@
       body { background: #fffaf1; }
       .page { max-width: none; padding: 38px 36px; }
       .cover { min-height: 54vh; }
-      .register-card, .pressure-card, .summary-card { break-inside: avoid; }
+      .metadata-grid, .summary-grid, .register-grid, .pressure-grid, .method-grid, .mode-pair, .blend-grid, .context-grid, .misread-grid, .evidence-grid, .cascade-steps, .matrix-row {
+        display: block;
+      }
+      .metadata-card, .summary-card, .register-grid > div, .pressure-card, .method-card, .mode-chip, .blend-card, .context-card, .misread-card, .evidence-card, .cascade-step, .matrix-row {
+        margin-bottom: 14px;
+      }
+      .register-heading {
+        display: block;
+      }
+      .register-heading .question {
+        max-width: none;
+        margin-top: 4px;
+        text-align: left;
+      }
+      .screen-table {
+        display: none;
+      }
+      .print-flow-only {
+        display: block;
+      }
+      .print-index-row {
+        border: 1px solid var(--line);
+        background: var(--card);
+        border-radius: 8px;
+        margin-bottom: 12px;
+        padding: 12px 14px;
+        break-inside: avoid;
+      }
+      .print-index-row p {
+        margin-bottom: 6px;
+      }
+      .register-card, .pressure-card, .summary-card, .method-card, .metadata-card, .blend-card, .context-card, .misread-card, .evidence-card, .matrix-row, .cascade-card {
+        break-inside: avoid;
+      }
     }
   </style>
 </head>
@@ -250,12 +372,49 @@
           <article class="summary-card">
             <h3>{{ item.label }}</h3>
             <div class="mode-line">{{ item.value }}</div>
+            <div class="mode-pair">
+              <div class="mode-chip">
+                <div class="label">Primary Mode</div>
+                <strong>{{ item.primary_mode }}</strong>
+              </div>
+              {% if item.secondary_mode %}
+                <div class="mode-chip">
+                  <div class="label">Secondary Mode</div>
+                  <strong>{{ item.secondary_mode }}</strong>
+                </div>
+              {% endif %}
+            </div>
             <div class="signal-language">{{ item.signal }}</div>
-            <p>{{ item.summary }}</p>
+            {% if item.summary %}<p>{{ item.summary }}</p>{% endif %}
           </article>
         {% endfor %}
       </div>
     </section>
+
+    {% if is_expanded_internal_architecture %}
+      <section>
+        <h2>Blend Grammar</h2>
+        <div class="blend-grid">
+          {% for blend in internal_architecture_advanced_layers.blend_grammar %}
+            <article class="blend-card">
+              <div class="label">{{ blend.label }} Register</div>
+              <h3>{{ blend.primary_mode }}{% if blend.secondary_mode %} + {{ blend.secondary_mode }}{% endif %}</h3>
+              <div class="signal-language">{{ blend.blend_type }}</div>
+              <p>{{ blend.description }}</p>
+            </article>
+          {% endfor %}
+        </div>
+      </section>
+
+      <section>
+        <h2>{{ internal_architecture_advanced_layers.core_operating_tension.title }}</h2>
+        <div class="system-logic">
+          <div class="logic-panel"><p>{{ internal_architecture_advanced_layers.core_operating_tension.summary }}</p></div>
+          <div class="logic-panel"><p>{{ internal_architecture_advanced_layers.core_operating_tension.tension }}</p></div>
+          <div class="logic-panel"><p>{{ internal_architecture_advanced_layers.core_operating_tension.integration }}</p></div>
+        </div>
+      </section>
+    {% endif %}
 
     <section>
       <h2>Register Detail</h2>
@@ -291,6 +450,9 @@
 
     <section>
       <h2>Pressure Patterns</h2>
+      {% if pressure_patterns_intro %}
+        <p class="section-note">{{ pressure_patterns_intro }}</p>
+      {% endif %}
       <div class="pressure-grid">
         {% for pattern in internal_architecture_pressure_patterns %}
           <article class="pressure-card">
@@ -308,6 +470,25 @@
       </div>
     </section>
 
+    {% if is_expanded_internal_architecture %}
+      <section>
+        <h2>When The System Comes Under Pressure</h2>
+        <article class="cascade-card">
+          <div class="cascade-steps">
+            {% for step in internal_architecture_advanced_layers.pressure_cascade.steps %}
+              <div class="cascade-step">
+                <div class="label">{{ step.label }}</div>
+                <strong>{{ step.value }}</strong>
+              </div>
+            {% endfor %}
+          </div>
+          <p>{{ internal_architecture_advanced_layers.pressure_cascade.sequence }}</p>
+          <p>{{ internal_architecture_advanced_layers.pressure_cascade.earliest_repair_point }}</p>
+          <p>{{ internal_architecture_advanced_layers.pressure_cascade.restoration_key }}</p>
+        </article>
+      </section>
+    {% endif %}
+
     <section class="signal-path">
       <h2>Your Signal Path</h2>
       {% for paragraph in signal_path_paragraphs %}
@@ -315,23 +496,61 @@
       {% endfor %}
     </section>
 
+    {% if is_expanded_internal_architecture %}
+      <section>
+        <h2>Restoration Matrix</h2>
+        {% for row in internal_architecture_advanced_layers.restoration_matrix %}
+          <article class="matrix-row">
+            <div class="label">{{ row.state }}</div>
+            <p>{{ row.repair }}</p>
+          </article>
+        {% endfor %}
+      </section>
+    {% endif %}
+
+    {% if is_advanced_internal_architecture %}
+      <section>
+        <h2>Contextual Operating Environments</h2>
+        <div class="context-grid">
+          {% for item in internal_architecture_advanced_layers.operating_contexts %}
+            <article class="context-card">
+              <h3>{{ item.context }}</h3>
+              <p>{{ item.description }}</p>
+            </article>
+          {% endfor %}
+        </div>
+      </section>
+
+      <section>
+        <h2>Misread Lenses</h2>
+        <div class="misread-grid">
+          {% for lens in internal_architecture_advanced_layers.misread_lenses %}
+            <article class="misread-card">
+              <div class="label">{{ lens.register }} Register</div>
+              <h3>{{ lens.mode }}</h3>
+              <p><strong>Misread by others:</strong> {{ lens.others }}</p>
+              <p><strong>Misread from inside:</strong> {{ lens.self }}</p>
+            </article>
+          {% endfor %}
+        </div>
+      </section>
+    {% endif %}
+
     <section>
       <h2>Architecture Index</h2>
-      <table class="architecture-index-table">
+      <table class="architecture-index-table screen-table">
         <colgroup>
           <col style="width: 18%">
           <col style="width: 20%">
-          <col style="width: 18%">
-          <col style="width: 16%">
-          <col style="width: 28%">
+          <col style="width: 22%">
+          <col style="width: 20%">
         </colgroup>
         <thead>
           <tr>
             <th>Register</th>
             <th>Primary Mode</th>
             <th>Secondary Mode</th>
-            <th>Signal Language</th>
-            <th>Main Source Layers</th>
+            <th>Signal Type</th>
           </tr>
         </thead>
         <tbody>
@@ -341,12 +560,55 @@
               <td>{{ row.primary_mode }}</td>
               <td>{{ row.secondary_mode }}</td>
               <td>{{ row.signal_strength }}</td>
-              <td>{{ row.source_basis }}</td>
             </tr>
           {% endfor %}
         </tbody>
       </table>
+      <div class="print-flow-only">
+        {% for row in internal_architecture_practitioner_rows %}
+          <article class="print-index-row">
+            <h3>{{ row.register }}</h3>
+            <p><span class="label">Primary Mode</span><br>{{ row.primary_mode }}</p>
+            <p><span class="label">Secondary Mode</span><br>{{ row.secondary_mode }}</p>
+            <p><span class="label">Signal Type</span><br>{{ row.signal_strength }}</p>
+          </article>
+        {% endfor %}
+      </div>
     </section>
+
+    {% if is_advanced_internal_architecture %}
+      <section>
+        <h2>Why This Architecture Was Selected</h2>
+        <div class="evidence-grid">
+          {% for row in internal_architecture_advanced_layers.evidence_appendix %}
+            <article class="evidence-card">
+              <h3>{{ row.register }}</h3>
+              <p><span class="label">Primary Mode</span><br>{{ row.primary_mode }}</p>
+              <p><span class="label">Secondary Mode</span><br>{{ row.secondary_mode or "None" }}</p>
+              <p><span class="label">Blend Status</span><br>{{ row.blend_status }}</p>
+              <p><span class="label">Confidence Note</span><br>{{ row.confidence_note }}</p>
+              <p><span class="label">Birth-Time Sensitivity</span><br>{{ row.birth_time_sensitivity }}</p>
+              {% if row.strongest_source_layers %}
+                <div class="label">Strongest Source Layers</div>
+                <ul class="evidence-list">
+                  {% for layer in row.strongest_source_layers %}
+                    <li>{{ layer }}</li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
+              {% if row.close_alternates %}
+                <div class="label">Close Alternates</div>
+                <ul class="evidence-list">
+                  {% for alternate in row.close_alternates %}
+                    <li>{{ alternate }}</li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
+            </article>
+          {% endfor %}
+        </div>
+      </section>
+    {% endif %}
 
     <section>
       <h2>Calculation Basis</h2>

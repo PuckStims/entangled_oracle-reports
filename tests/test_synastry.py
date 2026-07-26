@@ -279,6 +279,83 @@ class SynastryComputationTests(unittest.TestCase):
         )
         self.assertEqual(pair["sidecar"]["computation_status"]["composite_aspects"], "implemented_verified")
 
+    def test_composite_to_natal_resonance_tracks_aspects_and_house_landings(self):
+        pair = build_pair_payload(
+            natal_payload({"Sun": 10.0, "Moon": 100.0, "Venus": 40.0, "Mars": 180.0}, ascendant=0.0),
+            natal_payload({"Sun": 10.0, "Moon": 108.0, "Venus": 44.0, "Mars": 184.0}, ascendant=90.0),
+        )
+
+        resonance = pair["computations"]["composite_to_natal_resonance"]
+        self.assertEqual(pair["sidecar"]["computation_status"]["composite_to_natal_resonance"], "implemented_verified")
+        self.assertTrue(
+            any(
+                item["target_person"] == "A"
+                and item["composite_body"] == "Moon"
+                and item["target_house"] == 4
+                for item in resonance["house_overlays"]
+                if not item["withheld"]
+            )
+        )
+        self.assertTrue(
+            any(
+                item["target_person"] == "B"
+                and item["composite_body"] == "Sun"
+                and item["target_house"] == 10
+                for item in resonance["house_overlays"]
+                if not item["withheld"]
+            )
+        )
+        self.assertTrue(
+            any(
+                item["target_person"] == "A"
+                and item["composite_body"] == "Sun"
+                and item["target_body"] == "Sun"
+                and item["aspect"] == "Conjunction"
+                for item in resonance["body_contacts"]
+                if not item["withheld"]
+            )
+        )
+        self.assertTrue(
+            any(
+                item["target_person"] == "B"
+                and item["composite_body"] == "Moon"
+                and item["target_body"] == "Moon"
+                and item["aspect"] == "Conjunction"
+                for item in resonance["body_contacts"]
+                if not item["withheld"]
+            )
+        )
+
+    def test_advanced_static_evidence_tracks_midpoints_and_antiscia_separately(self):
+        pair = build_pair_payload(
+            natal_payload({"Sun": 40.0, "Moon": 70.0, "Venus": 20.0, "Mars": 80.0}, ascendant=0.0),
+            natal_payload({"Venus": 55.0, "Moon": 140.0, "Sun": 190.0, "Mars": 200.0}, ascendant=90.0),
+        )
+
+        advanced = pair["computations"]["advanced_static_evidence"]
+        self.assertEqual(pair["sidecar"]["computation_status"]["advanced_static_evidence"], "implemented_verified")
+        self.assertEqual(advanced["status"]["declination_contacts"], "not_implemented")
+        self.assertTrue(
+            any(
+                item["source_person"] == "B"
+                and item["source_body"] == "Venus"
+                and item["target_person"] == "A"
+                and item["midpoint_key"] == "sun_moon"
+                and item["aspect"] == "Conjunction"
+                for item in advanced["midpoint_contacts"]
+            )
+        )
+        self.assertTrue(
+            any(
+                item["source_person"] == "A"
+                and item["source_body"] == "Sun"
+                and item["target_person"] == "B"
+                and item["target_body"] == "Moon"
+                and item["relation"] == "antiscia"
+                for item in advanced["antiscia_contacts"]
+            )
+        )
+
     def test_repeated_natal_themes_detect_shared_sign_and_aspect_family(self):
         person_a = natal_payload(
             {"Sun": 1.0, "Moon": 2.0, "Venus": 45.0, "Saturn": 135.0}

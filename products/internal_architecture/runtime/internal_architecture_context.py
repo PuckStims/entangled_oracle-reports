@@ -9,6 +9,7 @@ from eia_engine.content_pack import content_for
 
 
 REGISTER_ORDER = ("ignition", "reception", "decision", "current", "boundary", "contact", "restoration")
+REPORT_DEPTHS = ("core", "expanded", "advanced")
 
 REGISTER_TITLES = {
     "ignition": "Ignition Register",
@@ -78,9 +79,15 @@ def build_internal_architecture_context(
     ]
     include_practitioner_appendix = bool(variables.get("include_practitioner_appendix"))
     include_debug_json = bool(variables.get("include_debug_json"))
+    report_depth = _report_depth(variables)
+    advanced_layers = report_dict.get("advanced_layers_optional") or {}
     context = {
         "report_version": "Internal Architecture v0.1",
+        "report_depth": report_depth,
+        "is_expanded_internal_architecture": report_depth in {"expanded", "advanced"},
+        "is_advanced_internal_architecture": report_depth == "advanced",
         "internal_architecture": report_dict,
+        "internal_architecture_advanced_layers": advanced_layers,
         "internal_architecture_registers": register_blocks,
         "internal_architecture_pressure_patterns": _consumer_pressure_patterns(register_blocks),
         "internal_architecture_summary": _consumer_summary(register_blocks),
@@ -97,6 +104,7 @@ def build_internal_architecture_context(
         ),
         "architecture_at_a_glance": _architecture_at_a_glance(register_blocks),
         "opening_synthesis": _opening_synthesis(register_blocks),
+        "pressure_patterns_intro": _section_intro(variables, report_dict, "pressure_patterns"),
         "signal_path_paragraphs": _signal_path(register_blocks),
         "calculation_basis": _calculation_basis(report_dict, payload),
     }
@@ -124,6 +132,21 @@ def _report_footer_text(variables: dict[str, Any]) -> str | None:
     generation_date = str(variables.get("generation_date") or "").strip()
     footer = "Entangled Oracle - Public sample"
     return f"{footer} - Generated {generation_date}" if generation_date else footer
+
+
+def _section_intro(variables: dict[str, Any], report_dict: dict[str, Any], key: str) -> str:
+    section_intros = variables.get("section_intros")
+    if isinstance(section_intros, dict) and section_intros.get(key):
+        return str(section_intros[key]).strip()
+    report_section_intros = report_dict.get("section_intros")
+    if isinstance(report_section_intros, dict) and report_section_intros.get(key):
+        return str(report_section_intros[key]).strip()
+    return ""
+
+
+def _report_depth(variables: dict[str, Any]) -> str:
+    depth = str(variables.get("report_depth") or "core").strip().lower()
+    return depth if depth in REPORT_DEPTHS else "core"
 
 
 def _eas_overlay(index_results: dict[str, Any]) -> dict[str, Any]:
@@ -248,11 +271,20 @@ def _architecture_at_a_glance(blocks: list[dict[str, Any]]) -> list[dict[str, st
         {
             "label": block["title"],
             "value": block["mode_line"],
+            "primary_mode": block["dominant_mode"],
+            "secondary_mode": block.get("secondary_mode") or "",
             "signal": block["signal_language"],
-            "summary": block["summary_sentence"],
+            "summary": "" if _summary_is_generated_pairing(block) else block["summary_sentence"],
         }
         for block in blocks
     ]
+
+
+def _summary_is_generated_pairing(block: dict[str, Any]) -> bool:
+    return bool(block.get("secondary_mode")) and block.get("signal_language") in {
+        "Blended register",
+        "Blended-clear signal",
+    }
 
 
 def _opening_synthesis(blocks: list[dict[str, Any]]) -> list[str]:

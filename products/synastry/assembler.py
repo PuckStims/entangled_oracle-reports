@@ -20,7 +20,9 @@ from selectors.synastry_selector import (
     select_composite_body_midpoint_leaf,
     select_composite_unsupported_layer_leaf,
     select_directional_aspect_leaf,
+    select_exact_body_pair_leaf,
     select_house_overlay_confidence_leaf,
+    select_house_overlay_intersection_leaf,
     select_house_overlay_source_body_leaf,
     select_house_overlay_target_house_leaf,
     select_repeated_theme_confidence_leaf,
@@ -187,7 +189,8 @@ def _aspect_item(mutual: dict, names: dict[str, str]) -> dict:
     family = classify_body_pair_family(bodies)
 
     aspect_leaf = select_directional_aspect_leaf(aspect, dependency, polarity)
-    family_leaf = select_body_pair_family_leaf(family)
+    exact_pair_leaf = select_exact_body_pair_leaf(bodies) if dependency == "body_to_body" else None
+    family_leaf = select_body_pair_family_leaf(family) if exact_pair_leaf is None else None
     title = " - ".join(_body_phrase(entry, names) for entry in entries) + f" ({aspect})"
     mutual_key_id = "|".join(
         f"{entry.get('person')}:{entry.get('body')}"
@@ -204,7 +207,8 @@ def _aspect_item(mutual: dict, names: dict[str, str]) -> dict:
             else ""
             ,
             aspect_leaf.get("body"),
-            family_leaf.get("body"),
+            exact_pair_leaf.get("body") if exact_pair_leaf else "",
+            family_leaf.get("body") if family_leaf else "",
         ]
     )
     return {
@@ -214,6 +218,7 @@ def _aspect_item(mutual: dict, names: dict[str, str]) -> dict:
         "source": _deepcopy(mutual),
         "selected_leaves": {
             "aspect": aspect_leaf,
+            "exact_body_pair": exact_pair_leaf,
             "body_pair_family": family_leaf,
         },
         "metadata": {
@@ -230,6 +235,7 @@ def _aspect_item(mutual: dict, names: dict[str, str]) -> dict:
 def _overlay_item(overlay: dict, names: dict[str, str]) -> dict:
     source_name = names.get(overlay.get("source_person"), overlay.get("source_person"))
     target_name = names.get(overlay.get("target_person"), overlay.get("target_person"))
+    intersection_leaf = select_house_overlay_intersection_leaf(overlay.get("source_body"), overlay.get("target_house"))
     source_body_leaf = select_house_overlay_source_body_leaf(overlay.get("source_body"))
     house_leaf = select_house_overlay_target_house_leaf(overlay.get("target_house"))
     confidence_leaf = select_house_overlay_confidence_leaf(
@@ -242,8 +248,9 @@ def _overlay_item(overlay: dict, names: dict[str, str]) -> dict:
         [
             f"{source_name}'s {overlay.get('source_body')} falls in {target_name}'s {house_label} house"
             + (f" in {overlay.get('target_house_sign')}." if overlay.get("target_house_sign") else "."),
-            source_body_leaf.get("body"),
-            house_leaf.get("body"),
+            intersection_leaf.get("body") if intersection_leaf else "",
+            source_body_leaf.get("body") if intersection_leaf is None else "",
+            house_leaf.get("body") if intersection_leaf is None else "",
             confidence_leaf.get("body"),
         ]
     )
@@ -253,6 +260,7 @@ def _overlay_item(overlay: dict, names: dict[str, str]) -> dict:
         "body": body,
         "source": _deepcopy(overlay),
         "selected_leaves": {
+            "body_house_intersection": intersection_leaf,
             "source_body": source_body_leaf,
             "target_house": house_leaf,
             "confidence": confidence_leaf,
@@ -943,7 +951,7 @@ def _composite_section(pair_payload: dict) -> dict:
 
 def _technical_appendix_section(pair_payload: dict) -> dict:
     blocks = []
-    for key in ("directional_aspects", "mutual_aspects", "house_overlays", "midpoint_composite"):
+    for key in ("directional_aspects", "mutual_aspects", "house_overlays", "midpoint_composite", "composite_to_natal_resonance", "advanced_static_evidence"):
         leaf = select_technical_appendix_leaf("calculation_note", key)
         blocks.append(
             {

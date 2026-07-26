@@ -38,6 +38,18 @@
       "_note": "Explain midpoint composite as a separate method from synastry contacts and Davison. State that composite houses are not borrowed from either person.",
       "claim_level": "technical_disclosure",
       "requires_evidence": ["computations.composite"]
+    },
+    "composite_to_natal_resonance": {
+      "body": "Composite-to-natal resonance compares the midpoint-composite bodies back to each person's natal chart. It shows how the relationship field lands inside each person's existing architecture without turning either natal chart into the composite itself.",
+      "_note": "Explain that composite-to-natal resonance is a comparison layer between the midpoint-composite bodies and each natal chart. Keep the relationship field distinct from the natal charts and from composite houses.",
+      "claim_level": "technical_disclosure",
+      "requires_evidence": ["computations.composite", "computations.composite_to_natal_resonance"]
+    },
+    "advanced_static_evidence": {
+      "body": "Advanced static evidence is a separate fine-grain layer. In the current build it uses longitude-only midpoint and antiscia techniques with tighter orbs than the core synastry scan, and it should be read as secondary evidence rather than as the report's main architecture.",
+      "_note": "Explain that advanced static evidence is modular, secondary, and currently limited to the supported longitude-only techniques in this build. Keep declination and timing claims outside this note.",
+      "claim_level": "technical_disclosure",
+      "requires_evidence": ["computations.advanced_static_evidence"]
     }
   },
   "confidence_note": {

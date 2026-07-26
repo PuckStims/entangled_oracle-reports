@@ -1,5 +1,8 @@
 from datetime import datetime, timezone
+import sys
 
+if "selectors" in sys.modules and not hasattr(sys.modules["selectors"], "__path__"):
+    del sys.modules["selectors"]
 from generate import build_report_context, render_template
 
 from .test_report_builder import sample_natal_chart
@@ -44,6 +47,10 @@ def test_internal_architecture_template_renders():
     assert "Architecture At A Glance" in html
     assert "Your Signal Path" in html
     assert "Calculation Basis" in html
+    assert "Blend Grammar" not in html
+    assert "When The System Comes Under Pressure" not in html
+    assert "Contextual Operating Environments" not in html
+    assert context["report_depth"] == "core"
     assert "Technical JSON" not in html
     assert "Developer JSON" not in html
     assert "Score " not in html
@@ -113,3 +120,51 @@ def test_internal_architecture_founder_demo_identity_note():
 
     assert context["client_name"] == "Puck"
     assert "Founder demo, shared with consent." in html
+
+
+def test_internal_architecture_expanded_tier_renders_system_layers():
+    context = build_report_context(
+        "internal_architecture",
+        {
+            "querent_name": "EIA Fixture",
+            "birth_date_display": "March 21, 1992",
+            "birth_time_display": "08:11",
+            "birth_location": "Peoria, IL",
+            "report_depth": "expanded",
+        },
+        {},
+        sample_natal_chart(),
+    )
+
+    html = render_template("internal_architecture", context)
+
+    assert context["report_depth"] == "expanded"
+    assert "Blend Grammar" in html
+    assert "How This Architecture Moves" in html
+    assert "When The System Comes Under Pressure" in html
+    assert "Restoration Matrix" in html
+    assert "Contextual Operating Environments" not in html
+    assert "Why This Architecture Was Selected" not in html
+
+
+def test_internal_architecture_advanced_tier_renders_appendix_layers():
+    context = build_report_context(
+        "internal_architecture",
+        {
+            "querent_name": "EIA Fixture",
+            "birth_date_display": "March 21, 1992",
+            "birth_time_display": "08:11",
+            "birth_location": "Peoria, IL",
+            "report_depth": "advanced",
+        },
+        {},
+        sample_natal_chart(),
+    )
+
+    html = render_template("internal_architecture", context)
+
+    assert "Contextual Operating Environments" in html
+    assert "Misread Lenses" in html
+    assert "Why This Architecture Was Selected" in html
+    assert "activation_state" not in html
+    assert "Catalyst Index" not in html

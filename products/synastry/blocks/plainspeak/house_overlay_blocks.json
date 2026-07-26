@@ -175,6 +175,971 @@
       "requires_evidence": ["computations.house_overlays"]
     }
   },
+  "body_house_intersection": {
+    "_note": "Exact body-house intersections. These leaves should be preferred before the separate source-body and target-house leaves so the overlay can sound like a single lived event instead of two stacked abstractions.",
+    "Sun": {
+      "1": {
+        "body": "Sun in the first house makes the source person feel immediately present to the target person's body, style, and self-presentation. The contact often registers as instant noticeability: someone whose vitality lands right on how the other person arrives in the world.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "2": {
+        "body": "Sun in the second house brings visibility into value, security, and practical trust. The source person can become highly noticeable in the target person's decisions about worth, steadiness, resources, and what feels solid enough to build around.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "3": {
+        "body": "Sun in the third house makes identity travel through ordinary exchange: conversation, timing, messaging, errands, and the repeated texture of daily contact. The source person often becomes central inside the target person's communicative weather.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "4": {
+        "body": "Sun in the fourth house reaches the target person's private ground and emotional foundation. The source person can feel unusually central around home, belonging, roots, and the inner atmosphere that sits underneath public life.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "5": {
+        "body": "Sun in the fifth house lights up pleasure, play, creativity, and the desire to feel chosen. The source person often lands as a vivid spark in the target person's expressive and romantic field, making that area harder to keep muted.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "6": {
+        "body": "Sun in the sixth house becomes visible through routine, labor, maintenance, and practical care. The source person often matters in the target person's daily systems: how tasks are handled, help is given, and ordinary life is organized.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "7": {
+        "body": "Sun in the seventh house makes the source person stand out in the target person's direct relationship field. The contact often feels encounter-heavy: someone the target measures against, reaches toward, or experiences as distinctly partner-shaped.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "8": {
+        "body": "Sun in the eighth house brings visibility into intimacy, trust, shared stakes, and the parts of life that do not stay casual for long. The source person can feel highly consequential in the target person's deeper exchange territory.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "9": {
+        "body": "Sun in the ninth house makes the source person vivid inside the target person's search for meaning, horizon, and bigger framing. The contact often moves through worldview, study, distance, travel, or the sense that a larger perspective is being activated.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "10": {
+        "body": "Sun in the tenth house reaches the target person's public direction and visible ambition. The source person can become strikingly relevant to role, reputation, vocation, and the pressure or encouragement around being seen in the world.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "11": {
+        "body": "Sun in the eleventh house lights up friendship, networks, collective belonging, and future plans. The source person often matters in the target person's social atmosphere and in the kinds of larger possibilities the relationship seems to open.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "12": {
+        "body": "Sun in the twelfth house makes the source person's identity land in a subtle, private, or hard-to-name zone of the target person's life. The contact can feel quietly intimate, backgrounded, or dreamlike before the relationship has language for why.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      }
+    },
+    "Moon": {
+      "1": {
+        "body": "Moon in the first house puts feeling right on the target person's surface. The source person's moods, responsiveness, and emotional timing can register directly in how the target person feels met in the body and in immediate presence.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "2": {
+        "body": "Moon in the second house brings emotional rhythm into value, comfort, and practical steadiness. The source person can affect how safe, soothed, or materially settled the target person's resource field feels from the inside.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "3": {
+        "body": "Moon in the third house makes feeling travel through ordinary exchange: tone, timing, quick messages, repeated check-ins, and the emotional weather of daily conversation. The target person often experiences the source person as a living mood inside communication itself.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "4": {
+        "body": "Moon in the fourth house lands with unusual immediacy in the target person's private ground. The contact can feel domestic, protective, familiar, or deeply stirring around home, roots, and the need for emotional shelter.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "5": {
+        "body": "Moon in the fifth house makes care, attention, and emotional response show up through play, affection, creativity, and visible delight. The relationship can feel warmer and more expressive in the target person's pleasure field.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "6": {
+        "body": "Moon in the sixth house moves feeling into routine, maintenance, and practical care. The source person often becomes part of the target person's daily rhythms through help, habit, usefulness, or the emotional tone of ordinary tasks.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "7": {
+        "body": "Moon in the seventh house makes emotional responsiveness central to encounter. The source person can feel strongly present in the target person's partnership field through bonding, reaction, need, and the desire to be met in real time.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "8": {
+        "body": "Moon in the eighth house brings feeling into trust, vulnerability, intimacy, and shared depth. The source person's emotional rhythm can stir the target person's deeper bonding territory in ways that feel exposing, magnetic, or hard to keep light.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "9": {
+        "body": "Moon in the ninth house ties feeling to belief, meaning, and horizon. The source person may influence the target person's emotional relationship to worldview, learning, distance, spirituality, or the larger story they are living inside.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "10": {
+        "body": "Moon in the tenth house makes the source person's emotional timing more visible in the target person's public and vocational field. The contact can affect how supported, watched, or publicly exposed ambition and responsibility feel.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "11": {
+        "body": "Moon in the eleventh house brings feeling into friendship, community, and future vision. The source person often shapes the emotional atmosphere of the target person's networks and shared hopes more than a purely social reading would suggest.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "12": {
+        "body": "Moon in the twelfth house moves through private feeling, retreat, and material that is sensed before it is named. The source person can touch the target person's hidden emotional layer in ways that feel subtle, tender, or difficult to interpret quickly.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      }
+    },
+    "Mercury": {
+      "1": {
+        "body": "Mercury in the first house makes the source person's words, timing, and noticing feel immediate to the target person's sense of presence. The contact often shows up as rapid interpretation, quick response, or a strong conversational imprint on first impression.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "2": {
+        "body": "Mercury in the second house brings language into value, money, preference, and practical trust. The source person often becomes mentally active in the target person's decisions about what is worth keeping, funding, or treating as reliable.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "3": {
+        "body": "Mercury in the third house is a direct amplification of communication itself. The source person often becomes a frequent presence in the target person's thoughts, messages, errands, learning loops, and the ordinary mechanics of staying in touch.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "4": {
+        "body": "Mercury in the fourth house brings conversation into home, memory, family atmosphere, and the target person's inner foundation. The relationship may process private life through talk, naming, planning, or repeated discussion of what feels rooted and safe.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "5": {
+        "body": "Mercury in the fifth house makes expression playful, flirtatious, creative, or theatrically alive. The source person often activates the target person's pleasure field through banter, ideas, praise, storytelling, and the fun of being mentally engaged.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "6": {
+        "body": "Mercury in the sixth house works through logistics, habit, scheduling, and practical coordination. The source person often becomes mentally embedded in the target person's routines through reminders, problem-solving, planning, or the language of useful help.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "7": {
+        "body": "Mercury in the seventh house brings dialogue directly into the partnership field. The connection often turns on conversation, negotiation, interpretation, and the sense that relationship itself is being built through active exchange.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "8": {
+        "body": "Mercury in the eighth house makes the relationship think through depth, secrecy, intimacy, and shared stakes. The source person may draw the target person into probing conversations about trust, fear, resources, motives, or the meanings under the surface.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "9": {
+        "body": "Mercury in the ninth house turns communication toward philosophy, belief, study, and larger interpretation. The source person often widens the target person's mental horizon through teaching, debate, travel talk, or a bigger conceptual frame.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "10": {
+        "body": "Mercury in the tenth house brings thought and speech into public direction, career strategy, and visible responsibility. The source person can become consequential in how the target person plans, explains, or mentally organizes the outer path.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "11": {
+        "body": "Mercury in the eleventh house activates friendship, networks, and future plans through shared thinking. The source person often enters the target person's social and aspirational field as a conversational ally, idea generator, or planning partner.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "12": {
+        "body": "Mercury in the twelfth house makes language more private, indirect, or atmospheric. The source person may affect the target person's hidden mental field through subtle suggestion, unspoken understanding, dreamlike exchange, or difficulty getting everything fully into words.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      }
+    },
+    "Venus": {
+      "1": {
+        "body": "Venus in the first house makes liking visible on contact. The source person can land in the target person's bodily and stylistic field as attractive, pleasing, softening, or simply easier to receive than a neutral presence would be.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "2": {
+        "body": "Venus in the second house brings affection and preference into value, comfort, and resource exchange. The source person may influence what the target person enjoys, spends on, preserves, or experiences as materially and emotionally worthwhile.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "3": {
+        "body": "Venus in the third house sweetens the texture of communication. The relationship may move through affectionate talk, enjoyable messages, easy banter, and the sense that ordinary exchange itself becomes a place where liking is repeatedly expressed.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "4": {
+        "body": "Venus in the fourth house brings warmth, beauty, and receptivity into the target person's private ground. The source person can feel soothing or desirable around home life, domestic atmosphere, and the deeper need to feel emotionally settled.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "5": {
+        "body": "Venus in the fifth house strongly activates romance, pleasure, play, and creative enjoyment. The source person often feels like a direct invitation into the target person's expressive and affectionate field, where delight is easier to notice.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "6": {
+        "body": "Venus in the sixth house softens routine through helpfulness, small kindnesses, and shared practical ease. The source person may become part of the target person's daily systems in a way that feels pleasant, supportive, or gently harmonizing.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "7": {
+        "body": "Venus in the seventh house places attraction and relational ease directly in the target person's partnership field. The source person often registers as especially relevant to union, reciprocity, and the desire to meet one another in explicitly relational terms.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "8": {
+        "body": "Venus in the eighth house deepens affection through intimacy, trust, and shared vulnerability. Liking can become harder to keep casual here, because the source person touches the target person's attachment, exchange, and merging field at the same time.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "9": {
+        "body": "Venus in the ninth house brings enjoyment into worldview, travel, study, and meaning-making. The source person may widen the target person's horizon through shared tastes, philosophical attraction, or pleasure in what feels larger than the local routine.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "10": {
+        "body": "Venus in the tenth house can make the source person matter in the target person's public life through admiration, polish, support, or relational visibility. The contact often lands in reputation, direction, and the aesthetics of how outer life is carried.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "11": {
+        "body": "Venus in the eleventh house brings ease into friendship, networks, and future-oriented connection. The source person may feel especially welcome in the target person's social world and in the relational atmosphere around shared hopes and affiliations.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "12": {
+        "body": "Venus in the twelfth house moves affection through privacy, tenderness, and a less immediately legible emotional zone. The source person can feel quietly beautiful, elusive, or subtly consoling inside the target person's hidden inner field.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      }
+    },
+    "Mars": {
+      "1": {
+        "body": "Mars in the first house makes the source person's drive and heat feel immediate to the target person's body and presence. The contact often shows up as activation, chemistry, irritation, or challenge that is difficult to keep abstract.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "2": {
+        "body": "Mars in the second house energizes value, money, appetite, and practical survival concerns. The source person can press the target person's resource field toward action, defense, acquisition, or conflict about what is worth effort and protection.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "3": {
+        "body": "Mars in the third house pushes energy into speech, messaging, errands, and immediate reaction. The relationship may become lively, sharp, fast, argumentative, or highly mobilized through the target person's daily communication field.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "4": {
+        "body": "Mars in the fourth house brings heat into home, privacy, roots, and the emotional understructure of life. The source person can stir protectiveness, domestic momentum, or family tension in the target person's private ground.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "5": {
+        "body": "Mars in the fifth house strongly activates play, romance, performance, and erotic charge. The source person often lands as a spark in the target person's pleasure field, making desire, competitiveness, and expressive heat more available.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "6": {
+        "body": "Mars in the sixth house puts action into routine, maintenance, and problem-solving. The source person may become catalytic in the target person's work habits and daily systems, sometimes through useful momentum and sometimes through friction around pace.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "7": {
+        "body": "Mars in the seventh house places directness, desire, and confrontation in the target person's relationship field. The source person can feel vividly partner-relevant in a way that includes attraction, challenge, negotiation, and the need to answer back.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "8": {
+        "body": "Mars in the eighth house brings force into intimacy, trust, and shared risk. The source person may stir the target person's deeper exchange territory through desire, urgency, sexual heat, or conflict around what becomes entangled and hard to control.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "9": {
+        "body": "Mars in the ninth house energizes belief, travel, philosophy, and the drive to pursue a larger horizon. The source person can push the target person's worldview field toward action, argument, conviction, or the need to test ideas through experience.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "10": {
+        "body": "Mars in the tenth house brings ambition, pressure, and visible drive into the target person's public direction. The source person may act as a catalyst or irritant in role, reputation, career effort, and the demand to do something concrete in the world.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "11": {
+        "body": "Mars in the eleventh house energizes the target person's field of friendship, groups, and future aims. The source person can bring momentum, impatience, competition, or activism into social plans and shared visions for what comes next.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "12": {
+        "body": "Mars in the twelfth house moves through hidden stress, private effort, and material that is not always openly expressed. The source person can activate the target person's background tension, retreat pattern, or subtle courage in ways that take time to name clearly.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      }
+    },
+    "Jupiter": {
+      "1": {
+        "body": "Jupiter in the first house tends to enlarge the target person's sense of possibility in immediate presence. The source person can feel encouraging, confidence-building, or simply bigger-than-life in how the target person experiences arrival and embodiment.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "2": {
+        "body": "Jupiter in the second house expands value, appetite, and resource thinking. The source person may encourage the target person's material field toward generosity, growth, risk, or a wider sense of what is available and worth investing in.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "3": {
+        "body": "Jupiter in the third house makes conversation feel larger, more generous, or more meaning-loaded. The source person often expands the target person's daily mental world through teaching, encouragement, storytelling, and a bigger communicative frame.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "4": {
+        "body": "Jupiter in the fourth house widens the target person's private ground through warmth, hospitality, protection, or a greater sense of emotional room. The source person can matter around home life as someone who expands what shelter and belonging feel like.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "5": {
+        "body": "Jupiter in the fifth house amplifies joy, play, romance, and creative risk. The source person can make the target person's pleasure field feel more confident, generous, celebratory, or willing to take up expressive space.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "6": {
+        "body": "Jupiter in the sixth house expands routine through helpfulness, competence, and the impulse to improve daily life. The source person may bring morale, useful perspective, or excess into the target person's work and maintenance systems.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "7": {
+        "body": "Jupiter in the seventh house brings permission, generosity, and scale into the target person's partnership field. The source person can feel especially significant as an ally, encourager, teacher, or partner whose presence enlarges the relational horizon.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "8": {
+        "body": "Jupiter in the eighth house expands intimacy, trust, and shared exchange. The source person may widen the target person's tolerance for vulnerability, merging, or joint risk, sometimes in ways that feel liberating and sometimes in ways that call for proportion.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "9": {
+        "body": "Jupiter in the ninth house is one of the clearest growth-and-horizon overlays. The source person often opens the target person's field of meaning through learning, travel, philosophy, faith, or the sense that life can be framed at a larger scale.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "10": {
+        "body": "Jupiter in the tenth house expands the target person's public and vocational field. The source person can influence ambition, visibility, mentorship, or the belief that a larger outer role is possible and worth pursuing.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "11": {
+        "body": "Jupiter in the eleventh house widens friendship, networks, and shared future imagination. The source person may open the target person's social field toward bigger communities, larger hopes, and more expansive collective thinking.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "12": {
+        "body": "Jupiter in the twelfth house brings enlargement through privacy, retreat, intuition, and unseen support. The source person can affect the target person's hidden inner life through quiet faith, mercy, spaciousness, or the need to trust what is not yet fully explicit.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      }
+    },
+    "Saturn": {
+      "1": {
+        "body": "Saturn in the first house makes the source person feel weighty in the target person's immediate self-presentation. The contact can register as grounding, containing, exacting, or sobering in how the target person experiences their own presence with this person.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "2": {
+        "body": "Saturn in the second house puts structure and consequence into value, money, and practical stability. The source person may shape the target person's resource field through caution, discipline, scarcity-awareness, or serious attention to what can actually endure.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "3": {
+        "body": "Saturn in the third house slows and structures communication. The source person often enters the target person's daily exchange field through careful wording, restraint, obligation, repetition, or the sense that what is said now carries longer-term consequence.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "4": {
+        "body": "Saturn in the fourth house reaches the target person's deepest ground through responsibility, time, and emotional structure. The source person can matter heavily around home, family, belonging, and what has to be built carefully rather than assumed.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "5": {
+        "body": "Saturn in the fifth house puts seriousness into pleasure, creativity, romance, or the wish to feel openly chosen. The source person may stabilize or inhibit the target person's expressive field by making enjoyment feel more deliberate, accountable, or emotionally expensive.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "6": {
+        "body": "Saturn in the sixth house becomes visible through labor, habit, service, and practical duty. The source person can strongly affect the target person's routines through reliability, pressure, standards, or the need to keep daily life workable over time.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "7": {
+        "body": "Saturn in the seventh house places structure, commitment, and consequence right in the target person's partnership field. The source person often feels especially significant in questions of contract, durability, boundary, and what relationship must carry in real life.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "8": {
+        "body": "Saturn in the eighth house brings caution, boundary, and gravity into intimacy and shared exchange. The source person may affect the target person's deeper trust field through fear, restraint, accountability, debt, or the slow work of proving what is safe to share.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "9": {
+        "body": "Saturn in the ninth house tests worldview through discipline, realism, and long-form learning. The source person can make the target person's horizon field feel more rigorous, more limited, or more serious about what beliefs deserve to be lived out.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "10": {
+        "body": "Saturn in the tenth house reaches the target person's public path through pressure, legitimacy, and responsibility. The source person may matter strongly in ambition, reputation, authority, and the sense that outer life has real stakes attached to it.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "11": {
+        "body": "Saturn in the eleventh house structures friendship, network belonging, and future plans. The source person can affect the target person's collective field through loyalty, distance, responsibility, standards, or the demand that shared aims become concrete.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "12": {
+        "body": "Saturn in the twelfth house brings structure into retreat, hidden strain, and background emotional material. The source person can touch the target person's private burden field through quiet containment, guilt, endurance, or the need to face what has been carried alone.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      }
+    },
+    "Uranus": {
+      "1": {
+        "body": "Uranus in the first house makes the source person feel jolting, enlivening, or unpredictable in immediate presence. The target person's sense of self-presentation can become more experimental, restless, or awake around this contact.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "2": {
+        "body": "Uranus in the second house disrupts value and resource habits. The source person may shake up the target person's relationship to money, security, possessions, or self-worth through sudden change, nonstandard priorities, or a need for more autonomy there.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "3": {
+        "body": "Uranus in the third house electrifies communication. The relationship may move through surprising messages, abrupt perspective shifts, fast mental exchange, and a daily conversational field that resists staying routine for long.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "4": {
+        "body": "Uranus in the fourth house brings change pressure into home, roots, and private emotional patterning. The source person can unsettle or liberate the target person's domestic field by making old foundations harder to inhabit automatically.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "5": {
+        "body": "Uranus in the fifth house sparks unconventional pleasure, attraction, and creative expression. The source person may make the target person's romantic or playful field feel more experimental, thrilling, or difficult to predict.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "6": {
+        "body": "Uranus in the sixth house disrupts routine and practical systems. The source person can bring invention, instability, or sudden change into the target person's work habits, maintenance patterns, and everyday organization.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "7": {
+        "body": "Uranus in the seventh house lands in the target person's partnership field as freedom pressure, surprise, or relational disruption. The source person can feel highly encounter-relevant while also making ordinary expectations harder to keep fixed.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "8": {
+        "body": "Uranus in the eighth house brings volatility and awakening into intimacy, trust, and shared entanglement. The source person may activate the target person's deeper exchange field through sudden exposure, liberation, or abrupt changes in how closeness is handled.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "9": {
+        "body": "Uranus in the ninth house disrupts belief and enlarges perspective through rupture rather than gradual consensus. The source person can jolt the target person's worldview, study path, or horizon line into a less conventional frame.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "10": {
+        "body": "Uranus in the tenth house brings unpredictability and reinvention into public direction. The source person may influence the target person's career and visible role through disruption, independence, or a push away from established outer expectations.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "11": {
+        "body": "Uranus in the eleventh house strongly activates friendship, collective space, and future experimentation. The source person can shake up the target person's social ecosystem and long-range hopes in ways that feel freeing, unstable, or both.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "12": {
+        "body": "Uranus in the twelfth house moves through subtle unrest, private awakening, and background change. The source person can activate the target person's hidden inner field in ways that feel hard to predict yet difficult to ignore once they begin.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      }
+    },
+    "Neptune": {
+      "1": {
+        "body": "Neptune in the first house makes the source person's presence feel atmospheric, idealized, or hard to pin down. The target person's sense of immediate contact can become softer, more imaginative, or more porous around this person.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "2": {
+        "body": "Neptune in the second house diffuses the target person's field of value, ownership, and practical certainty. The source person may influence resources and self-worth through idealization, generosity, vagueness, or a more symbolic sense of what matters.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "3": {
+        "body": "Neptune in the third house brings atmosphere into language and daily exchange. The relationship may move through poetic understanding, subtle implication, projection, or confusion, because communication here is felt as much as it is literally parsed.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "4": {
+        "body": "Neptune in the fourth house softens and blurs the target person's private ground. The source person can affect home, emotional shelter, and family feeling through longing, tenderness, idealization, or uncertainty about what is truly stable there.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "5": {
+        "body": "Neptune in the fifth house enchants pleasure, romance, and creative expression. The source person may make the target person's enjoyment field feel dreamy, inspired, idealized, or difficult to keep wholly grounded in ordinary terms.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "6": {
+        "body": "Neptune in the sixth house diffuses routine through sensitivity, compassion, uncertainty, or blurred practical boundaries. The source person may enter the target person's daily systems in ways that feel healing, draining, helpful, or difficult to organize cleanly.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "7": {
+        "body": "Neptune in the seventh house brings idealization and permeability into the target person's partnership field. The source person can feel deeply compelling in relational imagination, even while the actual terms of connection may need extra clarity.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "8": {
+        "body": "Neptune in the eighth house blurs the edges of intimacy, trust, and shared merging. The source person may affect the target person's deeper exchange territory through spiritual longing, porous attachment, sacrifice, or uncertainty about what is fully mutual.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "9": {
+        "body": "Neptune in the ninth house brings imagination, devotion, and porous meaning into worldview and horizon. The source person can influence the target person's belief field through spiritual resonance, idealized vision, or a longing for something beyond the ordinary frame.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "10": {
+        "body": "Neptune in the tenth house diffuses the target person's public direction through glamour, projection, idealization, or uncertainty. The source person may affect vocation and reputation in ways that feel inspiring yet hard to measure with purely concrete tools.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "11": {
+        "body": "Neptune in the eleventh house softens friendship, community, and future vision through idealism and atmosphere. The source person can influence the target person's group field through hope, dream, compassion, projection, or the desire for a more transcendent belonging.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "12": {
+        "body": "Neptune in the twelfth house is especially at home in subtle territory. The source person can touch the target person's retreat, dream, grief, prayer, or hidden emotional layer through a contact that feels deeply atmospheric and not always immediately nameable.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      }
+    },
+    "Pluto": {
+      "1": {
+        "body": "Pluto in the first house makes the source person's presence feel penetrating and consequential. The target person's sense of self-presentation can be intensified by being seen, challenged, or transformed in direct contact with this person.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "2": {
+        "body": "Pluto in the second house intensifies value, ownership, and survival material. The source person can stir the target person's resource field around power, attachment, control, loss, rebuilding, or the pressure to discover what is truly nonnegotiable.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "3": {
+        "body": "Pluto in the third house deepens conversation through exposure, fixation, and psychological intensity. The source person may enter the target person's daily exchange field as someone whose words land harder, probe deeper, and are less easy to dismiss.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "4": {
+        "body": "Pluto in the fourth house reaches deep into home, roots, and emotional foundation. The source person can stir the target person's private ground through powerful attachment, excavation of old material, or change pressure around what home really means.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "5": {
+        "body": "Pluto in the fifth house intensifies romance, pleasure, and creative self-expression. The source person may make the target person's desire to be chosen or passionately engaged feel harder to take lightly once the contact starts to matter.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "6": {
+        "body": "Pluto in the sixth house concentrates power in routine, labor, and daily systems. The source person can affect the target person's practical life through compulsion, efficiency, pressure, crisis-response, or the need to change habits at a deeper level.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "7": {
+        "body": "Pluto in the seventh house puts intensity directly in the target person's partnership field. The source person can feel impossible to meet neutrally, because relationship here quickly touches power, attachment, exposure, or transformation pressure.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "8": {
+        "body": "Pluto in the eighth house is a concentrated depth overlay. The source person can powerfully activate the target person's territory of intimacy, trust, shared resources, and psychic merging, often making the bond feel consequential well below the surface.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "9": {
+        "body": "Pluto in the ninth house intensifies belief, truth-seeking, and larger framing. The source person can reshape the target person's worldview through challenge, obsession, conviction, or the pressure to go deeper than inherited assumptions allow.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "10": {
+        "body": "Pluto in the tenth house reaches the target person's public direction through power and consequence. The source person may matter strongly in ambition, visibility, vocation, or the deeper transformation of how outer authority is carried.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "11": {
+        "body": "Pluto in the eleventh house intensifies friendship, group allegiance, and future-oriented aims. The source person can bring depth, loyalty tests, or all-or-nothing energy into the target person's collective field and long-range hopes.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "12": {
+        "body": "Pluto in the twelfth house works in subterranean ways. The source person can touch the target person's hidden fears, private strength, and unconscious material through a contact that feels deep, difficult to manage casually, and not fully visible from the outside.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      }
+    },
+    "Chiron": {
+      "1": {
+        "body": "Chiron in the first house sensitizes the target person's sense of presence and embodied identity. The source person can touch exposed places around self-expression, confidence, awkwardness, or repair in how the target person shows up.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "2": {
+        "body": "Chiron in the second house brings tenderness into value, security, and self-worth. The source person may activate the target person's resource field around repair, insufficiency, stewardship, or the gradual work of treating worth as something livable.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "3": {
+        "body": "Chiron in the third house makes communication a site of sensitivity and learning. The source person can touch the target person's verbal confidence through words that wound, heal, teach, or expose where ordinary exchange is not entirely ordinary.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "4": {
+        "body": "Chiron in the fourth house reaches into home, family memory, and emotional shelter with a tender edge. The source person may activate the target person's private foundation around repair, belonging, or the places where roots do not feel simple.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "5": {
+        "body": "Chiron in the fifth house brings sensitivity into pleasure, romance, and creative self-display. The source person can touch the target person's wish to be joyfully seen in ways that feel healing, awkward, instructive, or emotionally revealing.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "6": {
+        "body": "Chiron in the sixth house makes routine, care, and usefulness a tender learning field. The source person may affect the target person's daily systems through repair work, practical sensitivity, helpfulness, or awareness of what labor is covering over.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "7": {
+        "body": "Chiron in the seventh house lands in the target person's direct relationship field as a learning curve around partnership itself. The source person can activate tenderness, repair, mirroring, and exposed relational material that asks for care rather than speed.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "8": {
+        "body": "Chiron in the eighth house sensitizes trust, intimacy, and shared vulnerability. The source person may touch the target person's deeper exchange territory through exposed attachment material, repair around closeness, or lessons in what can be safely shared.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "9": {
+        "body": "Chiron in the ninth house makes belief, teaching, and meaning a delicate growth field. The source person can influence the target person's horizon through guidance, discomfort, wisdom, or the exposure of where a worldview no longer fully holds.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "10": {
+        "body": "Chiron in the tenth house brings sensitivity into public direction, authority, and competence. The source person may touch the target person's outer path around visibility wounds, vocation as service, or the work of carrying responsibility while still feeling human.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "11": {
+        "body": "Chiron in the eleventh house sensitizes belonging, friendship, and the future imagined with others. The source person can affect the target person's social field through themes of difference, usefulness, inclusion, or repair around collective participation.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "12": {
+        "body": "Chiron in the twelfth house moves through hidden tenderness, retreat, and subtle healing work. The source person may activate the target person's quiet inner repair field in ways that feel compassionate, elusive, and difficult to explain quickly.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      }
+    },
+    "North_Node": {
+      "1": {
+        "body": "North Node in the first house makes the source person feel developmentally relevant to the target person's sense of self and presence. The contact often points toward new ways of showing up, choosing, and inhabiting identity more consciously.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "2": {
+        "body": "North Node in the second house makes value, resource-building, and steadiness feel like a growth edge. The source person may draw the target person's practical life toward newer habits of worth, stewardship, and what it means to build something reliable.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "3": {
+        "body": "North Node in the third house points growth through conversation, attention, learning, and ordinary exchange. The source person may pull the target person's daily communication field toward more conscious participation, curiosity, and repeated relational contact.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "4": {
+        "body": "North Node in the fourth house brings developmental emphasis into home, private life, and emotional rooting. The source person may call the target person toward newer patterns of belonging, family feeling, and inner foundation.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "5": {
+        "body": "North Node in the fifth house makes creativity, pleasure, and visible self-expression feel future-leaning. The source person may draw the target person's joy field toward braver participation, romance, play, and the willingness to be more fully seen.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "6": {
+        "body": "North Node in the sixth house points growth through routine, service, care, and skill-building. The source person may affect the target person's daily life by making useful habits, practical discipline, and incremental improvement feel more necessary.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "7": {
+        "body": "North Node in the seventh house makes partnership itself feel developmentally charged. The source person may draw the target person's relational field toward new forms of reciprocity, encounter, and conscious engagement with another person.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "8": {
+        "body": "North Node in the eighth house points growth through intimacy, trust, and shared depth. The source person may pull the target person's exchange field toward newer ways of handling vulnerability, entanglement, and transformation.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "9": {
+        "body": "North Node in the ninth house makes worldview, study, and horizon-expansion feel like living developmental territory. The source person may draw the target person's meaning field toward a larger frame, wider travel, or a more consciously chosen philosophy.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "10": {
+        "body": "North Node in the tenth house points growth through public direction, role, and visible responsibility. The source person may influence the target person's outer path by making ambition, accountability, and vocation feel more developmentally alive.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "11": {
+        "body": "North Node in the eleventh house makes community, future plans, and collective belonging feel forward-moving. The source person may open the target person's social horizon toward new alliances, wider participation, and more conscious long-range aims.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "12": {
+        "body": "North Node in the twelfth house points development through surrender, retreat, subtle feeling, and unseen inner work. The source person may draw the target person's hidden field toward a newer relationship with rest, faith, and what cannot be controlled by surface logic alone.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      }
+    },
+    "South_Node": {
+      "1": {
+        "body": "South Node in the first house can make the source person feel immediately recognizable in the target person's bodily and identity field. The contact often lands as fast familiarity around presence, instinct, and how the self is habitually expressed.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "2": {
+        "body": "South Node in the second house brings familiarity into value, resource habits, and practical comfort. The source person may fit quickly into the target person's established patterns around steadiness, worth, money, or what feels materially safe.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "3": {
+        "body": "South Node in the third house can make conversation and ordinary exchange feel immediately known. The source person may slot quickly into the target person's familiar communication patterns, local rhythms, and habitual ways of staying mentally connected.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "4": {
+        "body": "South Node in the fourth house brings strong familiarity into home, roots, and private feeling. The source person may touch the target person's emotional foundation in a way that feels already known, inherited, or easy to fall back into.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "5": {
+        "body": "South Node in the fifth house makes pleasure, attraction, and expressive play feel quickly familiar. The source person may activate the target person's established romantic and creative patterns with very little warm-up time.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "6": {
+        "body": "South Node in the sixth house brings familiarity into routine, care, and practical service. The source person may fit easily into the target person's existing daily patterns, sometimes helpfully and sometimes so quickly that the pattern goes unquestioned.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "7": {
+        "body": "South Node in the seventh house can make the source person feel immediately partnership-relevant in a way that seems familiar rather than new. The target person's relationship field may recognize the contact quickly, even before its long-term value is clear.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "8": {
+        "body": "South Node in the eighth house brings familiarity into intimacy, vulnerability, and shared entanglement. The source person may touch the target person's deep exchange field through old attachment habits, quick intensity, or a sense of already-known depth.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "9": {
+        "body": "South Node in the ninth house can make the source person feel familiar in the target person's meaning-making field. The relationship may quickly move through established beliefs, inherited worldview patterns, or recognizable philosophical lanes.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "10": {
+        "body": "South Node in the tenth house brings familiarity into public role, ambition, and visible responsibility. The source person may touch the target person's established outer-life patterns in ways that feel known, practiced, or already socially scripted.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "11": {
+        "body": "South Node in the eleventh house makes friendship, networks, and future plans feel quickly familiar. The source person may fit into the target person's existing social field and collective hopes with a strong sense of prior pattern recognition.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      },
+      "12": {
+        "body": "South Node in the twelfth house brings familiarity into the target person's hidden inner field. The source person may feel strangely known in retreat, dream, grief, or unconscious patterning, which can be comforting without automatically being simple.",
+        "_note": "Exact body-house route. Keep direction explicit and interpret the body through the target house field rather than through generic overlay shorthand.",
+        "claim_level": "bounded_interpretation",
+        "requires_evidence": ["computations.house_overlays"]
+      }
+    }
+  },
   "confidence_band": {
     "_note": "Confidence route for overlay prose.",
     "exact_birth_time": {

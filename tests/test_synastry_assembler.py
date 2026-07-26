@@ -10,6 +10,8 @@ from products.synastry.assembler import (
     CONTEXT_VERSION,
     PRODUCT_NAME,
     REPORT_TYPE,
+    _aspect_item,
+    _overlay_item,
     assemble_synastry_context,
     build_synastry_context,
 )
@@ -35,6 +37,26 @@ def _pair_payload_exact_exact() -> dict:
     return build_pair_payload(
         natal_payload({"Venus": 10.0, "Mercury": 65.0, "Moon": 90.0, "Pluto": 210.0}, ascendant=0.0),
         natal_payload({"Mars": 14.0, "Saturn": 190.0, "Moon": 94.0, "Jupiter": 94.0}, ascendant=90.0),
+        relationship_meta={"relationship_type": "test_fixture", "consent_state": "test"},
+    )
+
+
+def _pair_payload_composite_resonance() -> dict:
+    from engine.synastry import build_pair_payload
+
+    return build_pair_payload(
+        natal_payload({"Sun": 10.0, "Moon": 100.0, "Venus": 40.0, "Mars": 180.0}, ascendant=0.0),
+        natal_payload({"Sun": 10.0, "Moon": 108.0, "Venus": 44.0, "Mars": 184.0}, ascendant=90.0),
+        relationship_meta={"relationship_type": "test_fixture", "consent_state": "test"},
+    )
+
+
+def _pair_payload_advanced_evidence() -> dict:
+    from engine.synastry import build_pair_payload
+
+    return build_pair_payload(
+        natal_payload({"Sun": 40.0, "Moon": 70.0, "Venus": 20.0, "Mars": 80.0}, ascendant=0.0),
+        natal_payload({"Venus": 55.0, "Moon": 140.0, "Sun": 190.0, "Mars": 200.0}, ascendant=90.0),
         relationship_meta={"relationship_type": "test_fixture", "consent_state": "test"},
     )
 
@@ -95,6 +117,7 @@ def test_assemble_synastry_context_has_stable_top_level_shape():
     assert "directional_landing" in context["section_order"]
     assert "shared_natal_baseline" in context["section_order"]
     assert "composite_relationship_field" in context["section_order"]
+    assert "composite_resonance" in context["section_order"]
     assert "integrated_relationship_portrait" in context["section_order"]
     assert context["source_pair_payload"]["schema_version"] == pair["schema_version"]
 
@@ -172,6 +195,33 @@ def test_house_overlay_section_tracks_withheld_count_and_authored_prose():
     appendix = _section(context, "technical_appendix")
     assert context["withheld_summary"]["total"] > 0
     assert appendix["withheld_summary"]["total"] > 0
+
+
+def test_overlay_item_prefers_exact_body_house_intersection_prose():
+    item = _overlay_item(
+        {
+            "source_person": "A",
+            "source_body": "Moon",
+            "target_person": "B",
+            "target_house": 3,
+            "target_house_sign": "Gemini",
+            "confidence_state": "exact_birth_time",
+        },
+        {"A": "Person A", "B": "Person B"},
+    )
+    assert "feeling travel through ordinary exchange" in item["body"]
+    assert "living mood inside communication itself" in item["body"]
+    assert item["selected_leaves"]["body_house_intersection"] is not None
+
+
+def test_aspect_item_prefers_exact_body_pair_prose_before_family_fallback():
+    item = _aspect_item(
+        _synthetic_mutual("Sun", "Moon", aspect="Opposition", salience=1.2),
+        {"A": "Person A", "B": "Person B"},
+    )
+    assert "vitality and self-expression are meeting the other person's emotional rhythm" in item["body"]
+    assert item["selected_leaves"]["exact_body_pair"] is not None
+    assert item["selected_leaves"]["body_pair_family"] is None
 
 
 def test_shared_natal_baseline_section_handles_empty_and_non_empty_states():
@@ -278,7 +328,29 @@ def test_composite_relationship_field_section_synthesizes_bodies_and_aspects():
     assert section["blocks"]
     body = section["blocks"][0]["body"]
     assert "Composite Moon" in body
-    assert "emotional climate" in body
+
+
+def test_composite_resonance_section_describes_how_relationship_lands_in_each_person():
+    context = assemble_synastry_context(_pair_payload_composite_resonance())
+    section = _section(context, "composite_resonance")
+
+    assert len(section["blocks"]) == 3
+    joined = " ".join(block["body"] for block in section["blocks"])
+    assert "Composite Moon in Person A's 4th house" in joined
+    assert "Composite Sun in Person B's 10th house" in joined
+    assert "center of gravity" in joined
+    assert "emotional weather" in joined or "emotion" in joined
+
+
+def test_advanced_evidence_section_keeps_fine_grain_scope_explicit():
+    context = assemble_synastry_context(_pair_payload_advanced_evidence())
+    section = _section(context, "advanced_evidence")
+
+    joined = " ".join(block["body"] for block in section["blocks"])
+    assert "fine-grain resonance layer" in joined
+    assert "declination is not live in the current payload yet" in joined
+    assert "Sun/Moon midpoint" in joined
+    assert "antiscia" in joined
 
 
 def test_technical_appendix_includes_withheld_and_unsupported_routes():

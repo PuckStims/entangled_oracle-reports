@@ -180,5 +180,62 @@
       "claim_level": "bounded_interpretation",
       "requires_evidence": ["computations.mutual_aspects"]
     }
+  },
+  "exact_body_pair": {
+    "_note": "High-salience exact body-pair routes for mutual body-to-body contacts. These leaves complement aspect geometry with pair-specific meaning, and should be preferred before broader family language when the exact pair is present.",
+    "Moon__Sun": {
+      "body": "Sun and Moon contacts tend to feel central because one person's vitality and self-expression are meeting the other person's emotional rhythm and instinctive responsiveness. The pair often experiences this as immediate recognition around warmth, attention, habit, and the question of whether the relationship's pace can hold both identity and feeling at once.",
+      "_note": "Use for any mutual Sun/Moon contact before falling back to luminary family language. Keep the pair central without promising perfect fit.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.mutual_aspects"]
+    },
+    "Moon__Venus": {
+      "body": "Moon and Venus contacts usually soften the field through affection meeting feeling. They often describe ease around liking, soothing, receptivity, and the small gestures that make care feel pleasant rather than merely dutiful, though the exact aspect still determines whether that exchange lands smoothly or with some pressure.",
+      "_note": "Use for mutual Moon/Venus contacts. Emphasize felt affection, softness, and receptivity without reducing the pair to romance shorthand.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.mutual_aspects"]
+    },
+    "Venus__Mars": {
+      "body": "Venus and Mars contacts bring attraction and action into the same corridor. The relationship often feels more charged around pursuit, invitation, response, chemistry, and the question of how desire is expressed rather than merely imagined, which is why this pair reads differently from generic personal-planet language.",
+      "_note": "Use for mutual Venus/Mars contacts. Distinguish attraction-plus-activation from broader Mercury/Venus/Mars family prose.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.mutual_aspects"]
+    },
+    "Mars__Saturn": {
+      "body": "Mars and Saturn contacts put drive in direct conversation with boundary, pacing, and consequence. This pair often describes a recurring negotiation between urgency and control: the need to act, push, or initiate meeting the need to regulate, test, or make the action sustainable over time.",
+      "_note": "Use for mutual Mars/Saturn contacts. Keep effort, pacing, and regulation visible without moralizing either role.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.mutual_aspects"]
+    },
+    "Mercury__Neptune": {
+      "body": "Mercury and Neptune contacts shape how perception and language move through atmosphere, symbolism, and ambiguity. The pair may find it easier to share intuition, tone, and imaginative resonance, but also easier for assumptions, projection, or blurred wording to matter more than they would in a drier contact.",
+      "_note": "Use for mutual Mercury/Neptune contacts. Name porous communication and imaginative exchange without claiming deception or spiritual certainty.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.mutual_aspects"]
+    },
+    "Pluto__Venus": {
+      "body": "Venus and Pluto contacts intensify the field of attraction, value, and attachment. They often make liking feel less casual and more consequential, as if affection quickly touches depth, exposure, exclusivity, or the fear of what becomes harder to keep light once it starts to matter.",
+      "_note": "Use for mutual Venus/Pluto contacts. Keep intensity and attachment pressure clear without coercive or fated language.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.mutual_aspects"]
+    },
+    "Moon__Saturn": {
+      "body": "Moon and Saturn contacts bring feeling into contact with structure, reserve, and long-range consequence. This pair often describes care that has weight to it: emotional timing being steadied, contained, delayed, or tested, sometimes in ways that feel reliable and sometimes in ways that feel stark.",
+      "_note": "Use for mutual Moon/Saturn contacts. Highlight emotional weight, containment, and durability without reducing the pair to coldness.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.mutual_aspects"]
+    },
+    "North_Node__Sun": {
+      "body": "Sun and North Node contacts can make the relationship feel developmentally charged because one person's core presence is meeting the other's future-leaning growth line. The interaction often sharpens questions of visibility, direction, and what new expression or stretch the bond seems to call forward.",
+      "_note": "Use for mutual Sun/North Node contacts. Frame as developmental emphasis rather than fate or destiny.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.mutual_aspects"]
+    },
+    "South_Node__Sun": {
+      "body": "Sun and South Node contacts often feel quickly recognizable because core identity meets an already-familiar pattern line. The relationship may slide into a strong sense of knownness, habit, or immediate registration, which can be stabilizing or limiting depending on whether the rest of the evidence keeps the field growing.",
+      "_note": "Use for mutual Sun/South Node contacts. Emphasize familiarity and pattern memory without past-life certainty.",
+      "claim_level": "bounded_interpretation",
+      "requires_evidence": ["computations.mutual_aspects"]
+    }
   }
 }

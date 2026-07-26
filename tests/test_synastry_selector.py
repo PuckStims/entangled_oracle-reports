@@ -10,11 +10,14 @@ from config import REPORT_BLOCK_DIRS
 from selectors import synastry_selector as selector
 from selectors.synastry_selector import (
     classify_body_pair_family,
+    normalize_body_pair_key,
     select_body_pair_family_leaf,
     select_composite_aspect_leaf,
     select_composite_unsupported_layer_leaf,
     select_directional_aspect_leaf,
+    select_exact_body_pair_leaf,
     select_house_overlay_confidence_leaf,
+    select_house_overlay_intersection_leaf,
     select_house_overlay_source_body_leaf,
     select_house_overlay_target_house_leaf,
     select_repeated_theme_confidence_leaf,
@@ -52,8 +55,10 @@ def test_synastry_selector_returns_structured_leaf_dicts():
         select_technical_appendix_leaf("calculation_note", "pair_payload"),
         select_directional_aspect_leaf("Conjunction", "body_to_body", "mixed"),
         select_body_pair_family_leaf("luminary_contact"),
+        select_exact_body_pair_leaf({"Sun", "Moon"}),
         select_house_overlay_source_body_leaf("Venus"),
         select_house_overlay_target_house_leaf(7),
+        select_house_overlay_intersection_leaf("Moon", 3),
         select_house_overlay_confidence_leaf("exact_birth_time"),
         select_composite_aspect_leaf("Trine"),
         select_composite_unsupported_layer_leaf("davison"),
@@ -90,6 +95,21 @@ def test_unknown_house_and_source_body_fall_back_cleanly():
     assert "house overlay layer" in source_leaf["body"]
 
 
+def test_exact_routes_return_specific_leaves_only_when_authored():
+    pair_leaf = _assert_leaf(select_exact_body_pair_leaf({"Moon", "Sun"}))
+    overlay_leaf = _assert_leaf(select_house_overlay_intersection_leaf("Moon", 3))
+    assert "vitality and self-expression" in pair_leaf["body"]
+    assert "identity and feeling" in pair_leaf["body"]
+    assert "feeling travel through ordinary exchange" in overlay_leaf["body"]
+    assert select_exact_body_pair_leaf({"Mercury", "Mars"}) is None
+    assert select_house_overlay_intersection_leaf("Ceres", 3) is None
+
+
+def test_body_pair_key_normalization_is_order_insensitive():
+    assert normalize_body_pair_key(["Sun", "Moon"]) == "Moon__Sun"
+    assert normalize_body_pair_key(["Moon", "Sun"]) == "Moon__Sun"
+
+
 def test_topic_and_repeated_theme_unknown_keys_use_fallback_routes():
     topic_leaf = _assert_leaf(select_topic_signature_leaf("not_real"))
     theme_leaf = _assert_leaf(select_repeated_theme_type_leaf("new_theme_type"))
@@ -110,4 +130,3 @@ def test_selector_cache_uses_synastry_namespace_only():
     select_house_overlay_source_body_leaf("Moon")
     assert selector._cache
     assert all(key.startswith("synastry/") for key in selector._cache)
-

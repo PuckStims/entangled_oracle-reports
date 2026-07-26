@@ -198,6 +198,7 @@ def parse_birth_data(args) -> dict:
     birth_data["palette"] = getattr(args, "palette", "vibrant")
     birth_data["include_debug_json"] = bool(getattr(args, "include_debug_json", False))
     birth_data["include_practitioner_appendix"] = bool(getattr(args, "include_practitioner_appendix", False))
+    birth_data["report_depth"] = getattr(args, "report_depth", "core")
     birth_data["report_date"] = _validate_iso_date(getattr(args, "report_date", None), "--report-date")
     birth_data["report_end_date"] = _validate_iso_date(getattr(args, "report_end_date", None), "--report-end-date")
     report_start = datetime.strptime(
@@ -425,6 +426,7 @@ def generate_report(
     variables["palette"] = birth_data.get("palette", "vibrant")
     variables["include_debug_json"] = birth_data.get("include_debug_json", False)
     variables["include_practitioner_appendix"] = birth_data.get("include_practitioner_appendix", False)
+    variables["report_depth"] = birth_data.get("report_depth", "core")
     variables["sample_identity_mode"] = birth_data.get("sample_identity_mode")
     variables["sample_display_name"] = birth_data.get("sample_display_name", "Sample Client")
 
@@ -553,6 +555,9 @@ def build_report_context(
     from formulas.report_surface import build_layered_report_bundle, build_report_bundle_context_view
 
     ctx = dict(variables)  # start with all resolved variables
+    generation_now = datetime.now(timezone.utc)
+    ctx.setdefault("generation_date", generation_now.strftime("%B %d, %Y"))
+    ctx.setdefault("generation_timestamp_utc", generation_now.isoformat())
     standard_report_bundle = standard_report_bundle or build_layered_report_bundle(
         payload,
         report_type,
@@ -3797,7 +3802,8 @@ def _build_soul_ecosystem_context(variables, index_results, payload) -> dict:
         "birth_time_display": birth_meta["birth_time_display"],
         "birth_location":     birth_meta["birth_location"],
         **methodology,
-        "generation_date":    datetime.now().strftime("%B %d, %Y"),
+        "generation_date":    ctx.get("generation_date", ""),
+        "generation_timestamp_utc": ctx.get("generation_timestamp_utc", ""),
         "chart_wheel_svg":    chart_wheel_svg,
         "wheel_transit_retrograde_planets": wheel_transit_retrograde_planets,
         "chart_wheel_data":   chart_wheel_data,
@@ -5744,9 +5750,13 @@ def _write_report_manifest(
     output_root, _extension = os.path.splitext(output_path)
     manifest_path = f"{output_root}.manifest.json"
 
+    generation_timestamp = str(context.get("generation_timestamp_utc") or "").strip()
+    if not generation_timestamp:
+        generation_timestamp = datetime.now(timezone.utc).isoformat()
+
     manifest = {
         "manifest_schema_version": REPORT_MANIFEST_SCHEMA_VERSION,
-        "generation_date": datetime.now(timezone.utc).isoformat(),
+        "generation_date": generation_timestamp,
         "report_type": report_type,
         "report_version": report_version(report_type),
         "report_path": output_path,
@@ -10560,6 +10570,13 @@ def main():
         action="store_true",
         dest="include_practitioner_appendix",
         help="For Internal Architecture, include the readable practitioner appendix table.",
+    )
+    parser.add_argument(
+        "--report-depth",
+        choices=["core", "expanded", "advanced"],
+        default="core",
+        dest="report_depth",
+        help="For Internal Architecture, choose core, expanded, or advanced report depth.",
     )
     parser.add_argument(
         "--sample-identity-mode",

@@ -49,6 +49,9 @@ def test_build_eia_report_returns_all_registers_and_valid_schema():
     assert set(payload["registers"]) == set(REGISTERS)
     assert payload["state_snapshot_optional"]["active_register"] == "decision"
     assert payload["mythic_overlay_optional"]["eas_current"] == "Catalyst Index"
+    assert payload["advanced_layers_optional"]["blend_grammar"]
+    assert payload["advanced_layers_optional"]["pressure_cascade"]["earliest_repair_point"]
+    assert [item["label"].lower() for item in payload["advanced_layers_optional"]["blend_grammar"]] == list(REGISTERS)
 
 
 def test_report_output_avoids_public_human_design_terms():

@@ -117,6 +117,13 @@ ASPECT_POLARITY = {
     "Trine": "supportive",
     "Sextile": "supportive",
 }
+ADVANCED_MIDPOINT_SPECS = {
+    "sun_moon": ("Sun", "Moon"),
+    "venus_mars": ("Venus", "Mars"),
+}
+ADVANCED_BODY_SET = ("Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn")
+ADVANCED_MIDPOINT_ORB = 2.0
+ADVANCED_ANTISCIA_ORB = 2.0
 
 TOPIC_SPECS = {
     "attachment_emotional_rhythm": {
@@ -193,6 +200,8 @@ def build_pair_payload(
     mutual_aspects = normalize_mutual_aspects(directional_aspects)
     house_overlays, overlay_withheld = scan_house_overlays(people)
     composite = compute_midpoint_composite(person_a_natal_payload, person_b_natal_payload)
+    composite_to_natal_resonance, composite_resonance_withheld = compute_composite_to_natal_resonance(people, composite)
+    advanced_static_evidence = compute_advanced_static_evidence(people)
     repeated_natal_themes = compute_repeated_natal_themes(people)
     relationship_topic_signatures = compute_relationship_topic_signatures(
         mutual_aspects,
@@ -200,7 +209,7 @@ def build_pair_payload(
     )
     relationship_convergence = compute_relationship_convergence(relationship_topic_signatures)
 
-    withheld_records = aspect_withheld + overlay_withheld
+    withheld_records = aspect_withheld + overlay_withheld + composite_resonance_withheld
     meta = {
         "relationship_type": "unspecified",
         "consent_state": "unreviewed",
@@ -220,6 +229,8 @@ def build_pair_payload(
             "house_overlays": house_overlays,
             "repeated_natal_themes": repeated_natal_themes,
             "composite": composite,
+            "composite_to_natal_resonance": composite_to_natal_resonance,
+            "advanced_static_evidence": advanced_static_evidence,
             "relationship_topic_signatures": relationship_topic_signatures,
             "relationship_convergence": relationship_convergence,
             "relationship_timing": [],
@@ -239,6 +250,8 @@ def build_pair_payload(
                 "Synastry body-to-body contacts use existing natal longitudes from both payloads.",
                 "Synastry aspect orbs use config.ORB_CONFIG['max_orb_synastry'] as the hard cap.",
                 "Whole Sign house overlays reuse each natal payload's house-owner Ascendant sign.",
+                "Composite-to-natal resonance compares midpoint-composite body positions back to each natal chart without borrowing composite houses.",
+                "Advanced static evidence is a separate fine-grain layer built from longitude-only midpoint and antiscia techniques with tighter orbs than the core synastry scan.",
             ],
         },
         "sidecar": _build_sidecar(withheld_records),
@@ -613,6 +626,350 @@ def compute_repeated_natal_themes(
 
     records.sort(key=lambda item: (-item["salience"], item["theme_key"]))
     return records
+
+
+def compute_composite_to_natal_resonance(
+    people: dict[str, dict[str, Any]],
+    composite: dict[str, Any],
+) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+    """Compares midpoint-composite bodies back to each natal chart."""
+    live_bodies = [
+        item
+        for item in composite.get("bodies", []) or []
+        if isinstance(item, dict) and not item.get("ambiguous") and isinstance(item.get("longitude"), (int, float))
+    ]
+    body_contacts: list[dict[str, Any]] = []
+    house_overlays: list[dict[str, Any]] = []
+    withheld: list[dict[str, Any]] = []
+
+    for label, person in people.items():
+        payload = person["natal_payload"]
+        birth_time_state = person["birth_time_state"]
+        target_body_names = _available_body_names(payload)
+        target_body_points = [
+            {
+                "name": body_name,
+                "kind": "body",
+                "longitude": _body_longitude(payload, body_name),
+                "owner": label,
+                "owner_angle_eligible": person["angle_eligible"],
+            }
+            for body_name in target_body_names
+            if _body_longitude(payload, body_name) is not None
+        ]
+        target_angle_points = _angle_points(person)
+
+        for composite_body in live_bodies:
+            composite_name = str(composite_body.get("body") or "")
+            composite_longitude = float(composite_body.get("longitude") or 0.0)
+            source_point = {
+                "name": composite_name,
+                "kind": "composite_body",
+                "longitude": composite_longitude,
+                "owner": "Composite",
+                "owner_angle_eligible": True,
+            }
+
+            for target_point in target_body_points + target_angle_points:
+                unavailable = _angle_unavailable_reason(source_point, target_point)
+                if unavailable:
+                    record = {
+                        "record_type": "composite_to_natal_aspect",
+                        "target_person": label,
+                        "composite_body": composite_name,
+                        "target_body": target_point["name"],
+                        "aspect": None,
+                        "exact_angle": None,
+                        "measured_distance": None,
+                        "orb": None,
+                        "max_orb": ORB_CONFIG["max_orb_synastry"],
+                        "orb_fraction": 0.0,
+                        "target_domain": BODY_DOMAINS.get(target_point["name"], "unspecified"),
+                        "directional_dependency": "angle_dependent",
+                        "confidence_state": unavailable["confidence_state"],
+                        "withheld": True,
+                        "withheld_reason": unavailable["withheld_reason"],
+                        "missing_inputs": unavailable["missing_inputs"],
+                    }
+                    body_contacts.append(record)
+                    withheld.append(record)
+                    continue
+                match = _best_aspect_match(composite_longitude, float(target_point["longitude"]))
+                if not match:
+                    continue
+                dependency = "angle_dependent" if target_point["kind"] == "angle" else "body_to_body"
+                confidence_state = (
+                    birth_time_state
+                    if dependency == "angle_dependent"
+                    else _least_precise_state(people["A"]["birth_time_state"], people["B"]["birth_time_state"])
+                )
+                record = {
+                    "record_type": "composite_to_natal_aspect",
+                    "target_person": label,
+                    "composite_body": composite_name,
+                    "target_body": target_point["name"],
+                    "aspect": match["aspect"],
+                    "exact_angle": match["exact_angle"],
+                    "measured_distance": match["measured_distance"],
+                    "orb": match["orb"],
+                    "max_orb": match["max_orb"],
+                    "orb_fraction": match["orb_fraction"],
+                    "target_domain": BODY_DOMAINS.get(target_point["name"], "unspecified"),
+                    "directional_dependency": dependency,
+                    "confidence_state": confidence_state,
+                    "withheld": False,
+                    "withheld_reason": None,
+                    "missing_inputs": [],
+                }
+                record["salience"] = round(
+                    BODY_WEIGHTS.get(composite_name, 0.75)
+                    * BODY_WEIGHTS.get(target_point["name"], 0.75)
+                    * ASPECT_WEIGHTS.get(record["aspect"], 0.75)
+                    * record.get("orb_fraction", 0.0)
+                    * _confidence_score(confidence_state),
+                    4,
+                )
+                body_contacts.append(record)
+
+            if not person["angle_eligible"]:
+                record = {
+                    "record_type": "composite_to_natal_overlay",
+                    "target_person": label,
+                    "composite_body": composite_name,
+                    "target_house": None,
+                    "target_house_sign": None,
+                    "confidence_state": UNKNOWN_BIRTH_TIME,
+                    "withheld": True,
+                    "withheld_reason": WITHHELD_MISSING_BIRTH_TIME,
+                    "missing_inputs": [f"{label}.birth_time"],
+                    "salience": 0.0,
+                }
+                house_overlays.append(record)
+                withheld.append(record)
+                continue
+
+            ascendant = _angle_longitude(payload, "Ascendant")
+            if ascendant is None:
+                record = {
+                    "record_type": "composite_to_natal_overlay",
+                    "target_person": label,
+                    "composite_body": composite_name,
+                    "target_house": None,
+                    "target_house_sign": None,
+                    "confidence_state": birth_time_state,
+                    "withheld": True,
+                    "withheld_reason": "withheld_missing_payload_field",
+                    "missing_inputs": [f"{label}.angles.Ascendant"],
+                    "salience": 0.0,
+                }
+                house_overlays.append(record)
+                withheld.append(record)
+                continue
+
+            house_number = _whole_sign_house(composite_longitude, ascendant)
+            house = payload.get("houses", {}).get(f"House_{house_number}", {})
+            record = {
+                "record_type": "composite_to_natal_overlay",
+                "target_person": label,
+                "composite_body": composite_name,
+                "target_house": house_number,
+                "target_house_sign": house.get("sign") or _sign_for_house(ascendant, house_number),
+                "confidence_state": birth_time_state,
+                "withheld": False,
+                "withheld_reason": None,
+                "missing_inputs": [],
+                "salience": round(BODY_WEIGHTS.get(composite_name, 0.75) * _confidence_score(birth_time_state), 4),
+            }
+            house_overlays.append(record)
+
+    body_contacts.sort(
+        key=lambda item: (
+            str(item.get("target_person") or ""),
+            item.get("withheld", False),
+            -float(item.get("salience", 0.0) or 0.0),
+            float(item.get("orb", 99.0) or 99.0),
+            str(item.get("composite_body") or ""),
+            str(item.get("target_body") or ""),
+        )
+    )
+    house_overlays.sort(
+        key=lambda item: (
+            str(item.get("target_person") or ""),
+            item.get("withheld", False),
+            -BODY_WEIGHTS.get(str(item.get("composite_body") or ""), 0.0),
+            item.get("target_house") or 99,
+        )
+    )
+
+    return (
+        {
+            "record_type": "composite_to_natal_resonance",
+            "composite_method": COMPOSITE_METHOD,
+            "body_contacts": body_contacts,
+            "house_overlays": house_overlays,
+            "by_person": {
+                label: {
+                    "body_contacts": [item for item in body_contacts if item.get("target_person") == label],
+                    "house_overlays": [item for item in house_overlays if item.get("target_person") == label],
+                }
+                for label in people
+            },
+            "status": {
+                "body_contacts": LIVE_STATUS,
+                "house_overlays": LIVE_STATUS,
+            },
+        },
+        withheld,
+    )
+
+
+def compute_advanced_static_evidence(
+    people: dict[str, dict[str, Any]],
+) -> dict[str, Any]:
+    """Builds a separate fine-grain evidence layer from midpoint and antiscia techniques."""
+    midpoint_contacts: list[dict[str, Any]] = []
+    antiscia_contacts: list[dict[str, Any]] = []
+
+    for target_label, target_person in people.items():
+        source_label = "B" if target_label == "A" else "A"
+        source_payload = people[source_label]["natal_payload"]
+        target_payload = target_person["natal_payload"]
+        confidence_state = _least_precise_state(
+            people[source_label]["birth_time_state"],
+            target_person["birth_time_state"],
+        )
+
+        midpoint_definitions = _midpoint_definitions(target_payload)
+        for midpoint_key, midpoint_data in midpoint_definitions.items():
+            midpoint_longitude = midpoint_data.get("longitude")
+            if not isinstance(midpoint_longitude, (int, float)):
+                continue
+            for source_body in ADVANCED_BODY_SET:
+                source_longitude = _body_longitude(source_payload, source_body)
+                if source_longitude is None:
+                    continue
+                match = _best_aspect_match_with_orb(float(source_longitude), float(midpoint_longitude), ADVANCED_MIDPOINT_ORB)
+                if not match or str(match.get("aspect") or "") not in {"Conjunction", "Opposition"}:
+                    continue
+                record = {
+                    "record_type": "advanced_midpoint_contact",
+                    "source_person": source_label,
+                    "source_body": source_body,
+                    "target_person": target_label,
+                    "midpoint_key": midpoint_key,
+                    "midpoint_bodies": list(midpoint_data.get("bodies") or []),
+                    "midpoint_longitude": round(float(midpoint_longitude) % 360.0, 4),
+                    "aspect": match["aspect"],
+                    "exact_angle": match["exact_angle"],
+                    "measured_distance": match["measured_distance"],
+                    "orb": match["orb"],
+                    "max_orb": match["max_orb"],
+                    "orb_fraction": match["orb_fraction"],
+                    "confidence_state": confidence_state,
+                    "salience": round(
+                        BODY_WEIGHTS.get(source_body, 0.75)
+                        * sum(BODY_WEIGHTS.get(body, 0.75) for body in midpoint_data.get("bodies") or []) / max(len(midpoint_data.get("bodies") or []), 1)
+                        * ASPECT_WEIGHTS.get(match["aspect"], 0.75)
+                        * match["orb_fraction"]
+                        * _confidence_score(confidence_state),
+                        4,
+                    ),
+                }
+                midpoint_contacts.append(record)
+
+    for source_label, source_person in people.items():
+        target_label = "B" if source_label == "A" else "A"
+        source_payload = source_person["natal_payload"]
+        target_payload = people[target_label]["natal_payload"]
+        confidence_state = _least_precise_state(
+            source_person["birth_time_state"],
+            people[target_label]["birth_time_state"],
+        )
+        for source_body in ADVANCED_BODY_SET:
+            source_longitude = _body_longitude(source_payload, source_body)
+            if source_longitude is None:
+                continue
+            mirrored = _antiscia_longitude(source_longitude)
+            contra = (mirrored + 180.0) % 360.0
+            for target_body in ADVANCED_BODY_SET:
+                target_longitude = _body_longitude(target_payload, target_body)
+                if target_longitude is None:
+                    continue
+                for relation, reference_longitude in (("antiscia", mirrored), ("contra_antiscia", contra)):
+                    orb = _angular_distance(float(reference_longitude), float(target_longitude))
+                    if orb > ADVANCED_ANTISCIA_ORB:
+                        continue
+                    orb_fraction = round(_clamp(1.0 - (orb / ADVANCED_ANTISCIA_ORB), 0.0, 1.0), 4)
+                    record = {
+                        "record_type": "advanced_antiscia_contact",
+                        "source_person": source_label,
+                        "source_body": source_body,
+                        "target_person": target_label,
+                        "target_body": target_body,
+                        "relation": relation,
+                        "reference_longitude": round(reference_longitude % 360.0, 4),
+                        "orb": round(orb, 4),
+                        "max_orb": round(ADVANCED_ANTISCIA_ORB, 4),
+                        "orb_fraction": orb_fraction,
+                        "confidence_state": confidence_state,
+                        "salience": round(
+                            BODY_WEIGHTS.get(source_body, 0.75)
+                            * BODY_WEIGHTS.get(target_body, 0.75)
+                            * (0.92 if relation == "antiscia" else 0.82)
+                            * orb_fraction
+                            * _confidence_score(confidence_state),
+                            4,
+                        ),
+                    }
+                    antiscia_contacts.append(record)
+
+    midpoint_contacts.sort(
+        key=lambda item: (
+            str(item.get("target_person") or ""),
+            -float(item.get("salience", 0.0) or 0.0),
+            float(item.get("orb", 99.0) or 99.0),
+            str(item.get("midpoint_key") or ""),
+            str(item.get("source_body") or ""),
+        )
+    )
+    antiscia_contacts.sort(
+        key=lambda item: (
+            str(item.get("source_person") or ""),
+            -float(item.get("salience", 0.0) or 0.0),
+            float(item.get("orb", 99.0) or 99.0),
+            str(item.get("relation") or ""),
+            str(item.get("source_body") or ""),
+            str(item.get("target_body") or ""),
+        )
+    )
+
+    return {
+        "record_type": "advanced_static_evidence",
+        "techniques": {
+            "midpoint_contacts": {
+                "active": True,
+                "midpoints": sorted(ADVANCED_MIDPOINT_SPECS),
+                "orb": ADVANCED_MIDPOINT_ORB,
+                "aspects": ["Conjunction", "Opposition"],
+            },
+            "antiscia_contacts": {
+                "active": True,
+                "orb": ADVANCED_ANTISCIA_ORB,
+                "relations": ["antiscia", "contra_antiscia"],
+            },
+            "declination_contacts": {
+                "active": False,
+                "reason": "declination_not_in_payload",
+            },
+        },
+        "midpoint_contacts": midpoint_contacts,
+        "antiscia_contacts": antiscia_contacts,
+        "status": {
+            "midpoint_contacts": LIVE_STATUS,
+            "antiscia_contacts": LIVE_STATUS,
+            "declination_contacts": NOT_IMPLEMENTED,
+        },
+    }
 
 
 def compute_relationship_topic_signatures(
@@ -1078,6 +1435,48 @@ def _body_sign(payload: dict[str, Any], body_name: str) -> str | None:
     return SIGNS[int((longitude % 360.0) // 30.0)]
 
 
+def _available_body_names(payload: dict[str, Any]) -> tuple[str, ...]:
+    names = [body_name for body_name in CORE_BODIES if _body_longitude(payload, body_name) is not None]
+    for body_name in OPTIONAL_BODIES:
+        if _body_longitude(payload, body_name) is not None:
+            names.append(body_name)
+    return tuple(names)
+
+
+def _midpoint_longitude(
+    longitude_a: float,
+    longitude_b: float,
+    *,
+    ambiguity_epsilon: float = 1e-6,
+) -> float | None:
+    delta = ((longitude_b - longitude_a + 540.0) % 360.0) - 180.0
+    if abs(abs(delta) - 180.0) <= ambiguity_epsilon:
+        return None
+    return round((longitude_a + (delta / 2.0)) % 360.0, 4)
+
+
+def _midpoint_definitions(payload: dict[str, Any]) -> dict[str, dict[str, Any]]:
+    records: dict[str, dict[str, Any]] = {}
+    for key, bodies in ADVANCED_MIDPOINT_SPECS.items():
+        first, second = bodies
+        lon_a = _body_longitude(payload, first)
+        lon_b = _body_longitude(payload, second)
+        if lon_a is None or lon_b is None:
+            continue
+        midpoint = _midpoint_longitude(lon_a, lon_b)
+        if midpoint is None:
+            continue
+        records[key] = {
+            "bodies": bodies,
+            "longitude": midpoint,
+        }
+    return records
+
+
+def _antiscia_longitude(longitude: float) -> float:
+    return round((180.0 - float(longitude)) % 360.0, 4)
+
+
 def _angle_longitude(payload: dict[str, Any], angle_name: str) -> float | None:
     angle = payload.get("angles", {}).get(angle_name)
     if isinstance(angle, dict) and isinstance(angle.get("longitude"), (int, float)):
@@ -1134,6 +1533,27 @@ def _withheld_angle_aspect_record(
 def _best_aspect_match(longitude_a: float, longitude_b: float) -> dict[str, Any] | None:
     distance = _angular_distance(longitude_a, longitude_b)
     max_orb = float(ORB_CONFIG["max_orb_synastry"])
+    best = None
+    for aspect_name, exact_angle in MAJOR_ASPECTS:
+        orb = abs(distance - float(exact_angle))
+        if orb > max_orb:
+            continue
+        orb_fraction = _clamp(1.0 - (orb / max_orb), 0.0, 1.0)
+        candidate = {
+            "aspect": aspect_name,
+            "exact_angle": float(exact_angle),
+            "measured_distance": round(distance, 4),
+            "orb": round(orb, 4),
+            "max_orb": round(max_orb, 4),
+            "orb_fraction": round(orb_fraction, 4),
+        }
+        if best is None or (candidate["orb"], -candidate["orb_fraction"]) < (best["orb"], -best["orb_fraction"]):
+            best = candidate
+    return best
+
+
+def _best_aspect_match_with_orb(longitude_a: float, longitude_b: float, max_orb: float) -> dict[str, Any] | None:
+    distance = _angular_distance(longitude_a, longitude_b)
     best = None
     for aspect_name, exact_angle in MAJOR_ASPECTS:
         orb = abs(distance - float(exact_angle))
@@ -1263,6 +1683,8 @@ def _build_sidecar(withheld_records: list[dict[str, Any]]) -> dict[str, Any]:
             "house_overlays": LIVE_STATUS,
             "composite_midpoint_bodies": LIVE_STATUS,
             "composite_aspects": LIVE_STATUS,
+            "composite_to_natal_resonance": LIVE_STATUS,
+            "advanced_static_evidence": LIVE_STATUS,
             "composite_houses": NOT_IMPLEMENTED,
             "davison": NOT_IMPLEMENTED,
             "repeated_natal_themes": LIVE_STATUS,
