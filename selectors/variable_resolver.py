@@ -11,7 +11,7 @@ This preserves the existing report templates while exposing the newer
 formula layer for the next template migration.
 """
 
-from datetime import datetime
+from datetime import datetime, timezone
 import os
 import sys
 
@@ -153,10 +153,13 @@ def resolve_all(
 
     Returns a flat dictionary suitable for Jinja2 template rendering.
     """
-    now = datetime.now()
+    now = datetime.now(timezone.utc)
 
     if report_start_date is None:
         report_start_date = now
+    elif report_start_date.tzinfo is None:
+        # Guard: ensure any naive datetime reaching here is treated as UTC
+        report_start_date = report_start_date.replace(tzinfo=timezone.utc)
 
     variables = {}
     user_profile = _record(payload.get("user_profile"))

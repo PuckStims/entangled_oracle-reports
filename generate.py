@@ -5730,6 +5730,36 @@ def _trace_file_reference(report_type: str, output_path: str, context: dict) -> 
     return ""
 
 
+def _build_forecast_evidence_summary(context: dict) -> dict:
+    """
+    Extracts forecast evidence provenance from the rendered context for
+    inclusion in the report manifest.  Purely observational — no computation.
+    Returns a stable dict even when the predictive surface is absent.
+    """
+    _fs = context.get("forecast_synthesis") if isinstance(context.get("forecast_synthesis"), dict) else {}
+    _prs = context.get("predictive_report_surface") if isinstance(context.get("predictive_report_surface"), dict) else {}
+    _ev_chapters = _fs.get("evidence_chapters") or []
+
+    _all_event_ids: list[str] = []
+    _method_families: set[str] = set()
+    for _ch in _ev_chapters:
+        for _eid in (_ch.get("supporting_event_ids") or []):
+            if _eid and _eid not in _all_event_ids:
+                _all_event_ids.append(_eid)
+        for _prov in (_ch.get("provenance") or []):
+            if isinstance(_prov, dict) and _prov.get("method_family"):
+                _method_families.add(str(_prov["method_family"]))
+
+    return {
+        "predictive_surface_enabled": bool(_prs.get("enabled")),
+        "chapters_surfaced": len(_prs.get("chapters") or []),
+        "candidates_surfaced": len(_prs.get("candidates") or []),
+        "evidence_chapters_synthesized": len(_ev_chapters),
+        "method_families_active": sorted(_method_families),
+        "supporting_event_ids": _all_event_ids[:50],
+    }
+
+
 def _write_report_manifest(
     *,
     report_type: str,
@@ -5808,6 +5838,7 @@ def _write_report_manifest(
             "fallback_use": trace.get("fallback_use", []),
             "suppressed_candidates": trace.get("suppressed_candidates", []),
         },
+        "forecast_evidence_summary": _build_forecast_evidence_summary(context),
         "environment": {
             "content_pack": content_pack,
             "jinja2_available": JINJA2_AVAILABLE,

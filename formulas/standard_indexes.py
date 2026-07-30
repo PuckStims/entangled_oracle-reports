@@ -3,7 +3,7 @@ formulas/standard_indexes.py — Standard Astrological Computations
 Derives computed values from the v2 payload that are needed
 across all report types. No proprietary content here.
 """
-from datetime import datetime
+from datetime import datetime, timezone
 import sys, os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from config import (
@@ -70,7 +70,7 @@ def get_sun_moon_relationship(payload: dict) -> str:
 def get_day_ruler(date: datetime = None) -> str:
     """Chaldean planetary ruler for the given day."""
     if date is None:
-        date = datetime.now()
+        date = datetime.now(timezone.utc)
     return DAY_RULERS[date.weekday()]
 
 
