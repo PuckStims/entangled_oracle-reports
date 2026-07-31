@@ -282,7 +282,7 @@ def _directed_sources(natal_payload: dict, birth_time_state: str) -> dict[str, d
                 sources[name] = {"longitude": longitude, "kind": "angle"}
     policy = load_asteroid_policy()
     custom = natal_payload.get("custom_asteroids") if isinstance(natal_payload.get("custom_asteroids"), dict) else {}
-    for name in ANCHOR_ASTEROIDS:
+    for name in policy.asteroid_names:
         data = custom.get(name)
         if not isinstance(data, dict):
             continue

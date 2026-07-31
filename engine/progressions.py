@@ -26,6 +26,7 @@ TROPICAL_YEAR_DAYS = 365.2425
 SCAN_STEP_DAYS = 7
 CONTACT_ORB = 1.0
 ANGLE_ORB = 0.5
+DECLINATION_ORB = 1.0
 CHAPTER_WINDOW_DAYS = 60
 
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -75,6 +76,7 @@ def build_progressed_chart(natal_payload: dict, moment: datetime) -> dict:
     for body in PLANET_SOURCES:
         positions[body] = {
             "longitude": _body_longitude_at_jd(body, progressed_jd),
+            "declination": _body_declination_at_jd(body, progressed_jd),
             "sign": _sign_for_longitude(_body_longitude_at_jd(body, progressed_jd)),
         }
     birth_time_state = _birth_time_status(natal_payload)
@@ -131,6 +133,7 @@ def scan_progression_events(natal_payload: dict, start_date: datetime, end_date:
 
     events.extend(_progressed_ingresses(natal_payload, start, end, sources, birth_time_state))
     events.extend(_progressed_lunation_phase_events(natal_payload, start, end))
+    events.extend(scan_progression_declination_events(natal_payload, start, end))
 
     # Progressed to Progressed
     for source_name, source in sources.items():
@@ -204,6 +207,51 @@ def progressed_longitude(natal_payload: dict, body_name: str, moment: datetime) 
     return _body_longitude_at_jd(body_name, natal_jd + age_years)
 
 
+def progressed_declination(natal_payload: dict, body_name: str, moment: datetime) -> float | None:
+    if body_name not in PLANET_SOURCES:
+        return None
+    natal_jd = _natal_jd(natal_payload)
+    birth_dt = _birth_datetime(natal_payload)
+    if natal_jd is None or birth_dt is None:
+        return None
+    age_years = max(0.0, (_ensure_utc(moment) - birth_dt).total_seconds() / 86400.0 / TROPICAL_YEAR_DAYS)
+    return _body_declination_at_jd(body_name, natal_jd + age_years)
+
+
+def scan_progression_declination_events(natal_payload: dict, start_date: datetime, end_date: datetime) -> list[dict]:
+    start = _ensure_utc(start_date)
+    end = _ensure_utc(end_date)
+    targets = _natal_declination_targets(natal_payload)
+    if not targets:
+        return []
+    birth_time_state = _birth_time_status(natal_payload)
+    events: list[dict] = []
+    for source_name in PLANET_SOURCES:
+        if _natal_longitude(natal_payload, source_name) is None:
+            continue
+        source = {"kind": "planet"}
+        for target_name, target in targets.items():
+            if source_name == target_name:
+                continue
+            exact_at, aspect_name, orb = _find_declination_contact(natal_payload, source_name, target["declination"], start, end)
+            if exact_at is None or aspect_name is None or orb is None:
+                continue
+            events.append(
+                _progression_declination_event(
+                    source_name,
+                    target_name,
+                    source,
+                    target,
+                    aspect_name,
+                    orb,
+                    exact_at,
+                    birth_time_state,
+                )
+            )
+    events.sort(key=lambda event: (event["peak_datetime"], event["transit_planet"], event["natal_target"]))
+    return events
+
+
 def _find_contact_exact(natal_payload: dict, source_name: str, target_longitude: float, aspect_angle: float, start: datetime, end: datetime) -> datetime | None:
     cursor = start
     step = timedelta(days=SCAN_STEP_DAYS)
@@ -241,6 +289,42 @@ def _bisect_contact(natal_payload: dict, source_name: str, target_longitude: flo
         if abs((high - low).total_seconds()) <= 3600:
             break
     return low + (high - low) / 2
+
+
+def _find_declination_contact(
+    natal_payload: dict,
+    source_name: str,
+    target_declination: float,
+    start: datetime,
+    end: datetime,
+) -> tuple[datetime | None, str | None, float | None]:
+    cursor = start
+    step = timedelta(days=SCAN_STEP_DAYS)
+    best: tuple[datetime | None, str | None, float | None] = (None, None, None)
+    best_orb = 999.0
+    while cursor <= end:
+        source_declination = progressed_declination(natal_payload, source_name, cursor)
+        if source_declination is not None:
+            aspect, orb = _detect_declination_aspect(source_declination, target_declination)
+            if aspect and orb is not None and orb < best_orb:
+                best = (cursor, aspect, orb)
+                best_orb = orb
+        cursor += step
+    return best
+
+
+def _detect_declination_aspect(source_declination: float, target_declination: float) -> tuple[str | None, float | None]:
+    parallel_orb = abs(source_declination - target_declination)
+    contra_orb = abs(source_declination + target_declination)
+    matches = []
+    if parallel_orb <= DECLINATION_ORB:
+        matches.append(("Parallel", parallel_orb))
+    if contra_orb <= DECLINATION_ORB:
+        matches.append(("Contraparallel", contra_orb))
+    if not matches:
+        return None, None
+    aspect_name, orb = min(matches, key=lambda item: item[1])
+    return aspect_name, round(orb, 4)
 
 
 def _format_event_date(moment: datetime) -> str:
@@ -303,6 +387,64 @@ def _progression_contact_event(source_name: str, target_name: str, source: dict,
         "confidence_components": {"calculation_integrity": 0.95, "angle_support": angle_support, "method_maturity": 0.80},
         "confidence_state": confidence_state,
         "birth_time_dependency": "hard" if angle_involved else "soft",
+        "asteroid_involved": asteroid_involved,
+        "report_surface_visibility": ["internal_rd", "engineering_diagnostic"],
+        "formula_version": FORMULA_VERSION,
+        "policy_version": POLICY_VERSION,
+    }
+
+
+def _progression_declination_event(
+    source_name: str,
+    target_name: str,
+    source: dict,
+    target: dict,
+    aspect_name: str,
+    orb: float,
+    exact_at: datetime,
+    birth_time_state: str,
+) -> dict:
+    asteroid_involved = target["kind"] == "asteroid"
+    exactness = max(0.0, 1.0 - orb / DECLINATION_ORB)
+    strength = round(0.68 * target.get("relevance", 0.65) * exactness, 5)
+    exact_at = _ensure_utc(exact_at)
+    entry_at = exact_at - timedelta(days=CHAPTER_WINDOW_DAYS)
+    leave_at = exact_at + timedelta(days=CHAPTER_WINDOW_DAYS)
+    return {
+        "event_type": "progression",
+        "transit_planet": source_name,
+        "natal_target": target_name,
+        "natal_target_display": _target_display(target_name),
+        "aspect": aspect_name,
+        "method_variant": "progression_declination",
+        "clock_role": "chapter",
+        "activation_route": "progression_to_asteroid" if asteroid_involved else "progression_to_body",
+        "independence_group": "progression_family",
+        "temporal_precision": "season",
+        "declination_aspect": True,
+        "orb": round(orb, 4),
+        "orb_limit": DECLINATION_ORB,
+        "exactness": round(exactness, 5),
+        "weight": 0.68,
+        "target_relevance": target.get("relevance", 0.65),
+        "trigger_strength": strength,
+        "signal_strength": strength,
+        "raw_score": strength,
+        "entry_datetime": entry_at,
+        "peak_datetime": exact_at,
+        "leave_datetime": leave_at,
+        "entry_date": _format_event_date(entry_at),
+        "peak_date": _format_event_date(exact_at),
+        "leave_date": _format_event_date(leave_at),
+        "exact_datetimes": [exact_at],
+        "confidence": 0.76,
+        "confidence_components": {
+            "calculation_integrity": 0.95,
+            "angle_support": 1.0,
+            "method_maturity": 0.80,
+        },
+        "confidence_state": "moderate" if birth_time_state == "exact" else "moderate",
+        "birth_time_dependency": "soft",
         "asteroid_involved": asteroid_involved,
         "report_surface_visibility": ["internal_rd", "engineering_diagnostic"],
         "formula_version": FORMULA_VERSION,
@@ -463,7 +605,7 @@ def _progressed_sources(natal_payload: dict, birth_time_state: str) -> dict[str,
                 sources[angle] = {"kind": "angle"}
     policy = load_asteroid_policy()
     custom = natal_payload.get("custom_asteroids") if isinstance(natal_payload.get("custom_asteroids"), dict) else {}
-    for name in ANCHOR_ASTEROIDS:
+    for name in policy.asteroid_names:
         data = custom.get(name)
         if not isinstance(data, dict):
             continue
@@ -510,6 +652,30 @@ def _natal_targets(natal_payload: dict) -> dict[str, dict]:
     return targets
 
 
+def _natal_declination_targets(natal_payload: dict) -> dict[str, dict]:
+    targets: dict[str, dict] = {}
+    standard = natal_payload.get("standard_planets") if isinstance(natal_payload.get("standard_planets"), dict) else {}
+    for name, data in standard.items():
+        if isinstance(data, dict) and isinstance(data.get("declination"), (int, float)):
+            targets[name] = {
+                "declination": float(data["declination"]),
+                "kind": _body_kind(name),
+                "relevance": 0.70,
+            }
+    policy = load_asteroid_policy()
+    custom = natal_payload.get("custom_asteroids") if isinstance(natal_payload.get("custom_asteroids"), dict) else {}
+    for name, data in custom.items():
+        if not isinstance(data, dict) or not policy.target_eligible(name, "progression"):
+            continue
+        if isinstance(data.get("declination"), (int, float)):
+            targets[name] = {
+                "declination": float(data["declination"]),
+                "kind": "asteroid",
+                "relevance": policy.target_weight(name),
+            }
+    return targets
+
+
 def _contact_delta(natal_payload: dict, source_name: str, target_longitude: float, aspect_angle: float, moment: datetime) -> float:
     source = progressed_longitude(natal_payload, source_name, moment)
     if source is None:
@@ -526,6 +692,16 @@ def _body_longitude_at_jd(body_name: str, jd: float) -> float:
         raise RuntimeError("swisseph is unavailable; progression scanner cannot compute live positions")
     coordinates, _flags = swe.calc_ut(jd, BODY_IDS[body_name], CALC_FLAGS)
     return float(coordinates[0] % 360.0)
+
+
+def _body_declination_at_jd(body_name: str, jd: float) -> float | None:
+    if swe is None:
+        return None
+    try:
+        coordinates, _flags = swe.calc_ut(jd, BODY_IDS[body_name], swe.FLG_SWIEPH | swe.FLG_EQUATORIAL)
+        return float(coordinates[1])
+    except Exception:
+        return None
 
 
 def _natal_longitude(natal_payload: dict, body_name: str) -> float | None:

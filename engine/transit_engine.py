@@ -22,6 +22,8 @@ from zoneinfo import ZoneInfo
 
 import swisseph as swe
 
+from config import CAZIMI_ORB, CAZIMI_WEIGHT_MULTIPLIER
+from engine.asteroid_policy import load_asteroid_policy
 from engine.forecast_event_adapter import normalize_to_forecast_event
 from formulas.standard.forecast_activation import (
     build_forecast_activation_profile,
@@ -202,7 +204,12 @@ ASPECT_CHARACTERS = {
     "Opposition": "challenging",
     "Quintile": "creative",
     "Biquintile": "creative",
+    "Parallel": "flowing",
+    "Contraparallel": "challenging",
 }
+
+DECLINATION_ORB = 1.0
+DECLINATION_ASPECTS = ("Parallel", "Contraparallel")
 
 ANGLE_HOUSES = {
     "ASC": 1,
@@ -325,12 +332,40 @@ def _planet_state(body_id: int, moment: datetime) -> dict:
         sep = abs(lon - sun_lon)
         if sep > 180:
             sep = 360 - sep
-        cazimi = sep <= 1.0
+        cazimi = sep <= CAZIMI_ORB
     return {
         "longitude": lon,
         "speed": float(coordinates[3]),
         "cazimi": cazimi,
     }
+
+
+def _planet_declination(body_id: int, moment: datetime) -> float | None:
+    """Returns equatorial declination for a transiting body."""
+    try:
+        coordinates, _flags = swe.calc_ut(
+            _julian_day(moment),
+            body_id,
+            swe.FLG_SWIEPH | swe.FLG_EQUATORIAL,
+        )
+        return float(coordinates[1])
+    except Exception:
+        return None
+
+
+def _detect_declination_aspect(source_declination: float, target_declination: float) -> tuple[str | None, float | None]:
+    """Returns Parallel or Contraparallel when declinations are within orb."""
+    parallel_orb = abs(source_declination - target_declination)
+    contra_orb = abs(source_declination + target_declination)
+    matches = []
+    if parallel_orb <= DECLINATION_ORB:
+        matches.append(("Parallel", parallel_orb))
+    if contra_orb <= DECLINATION_ORB:
+        matches.append(("Contraparallel", contra_orb))
+    if not matches:
+        return None, None
+    aspect_name, orb = min(matches, key=lambda item: item[1])
+    return aspect_name, round(orb, 4)
 
 
 def _whole_sign_house(longitude: float, ascendant_longitude: float) -> int:
@@ -525,6 +560,7 @@ def _find_exact_contacts(
                 "sequence_index": 1,
                 "contact_orb": round(best_orb_val, 4),
                 "is_exact": best_orb_val <= _REFINE_TOLERANCE,
+                "source_cazimi": _planet_state(body_id, best_t)["cazimi"],
             })
         return contacts
 
@@ -546,6 +582,7 @@ def _find_exact_contacts(
                 "sequence_index": 0,  # filled in below
                 "contact_orb": round(refined_orb, 4),
                 "is_exact": refined_orb <= _REFINE_TOLERANCE,
+                "source_cazimi": _planet_state(body_id, refined)["cazimi"],
             })
 
     # Edge case: minimum lies at the very start or end of the window.
@@ -558,6 +595,7 @@ def _find_exact_contacts(
             "sequence_index": 1,
             "contact_orb": round(best_orb_val, 4),
             "is_exact": best_orb_val <= _REFINE_TOLERANCE,
+            "source_cazimi": _planet_state(body_id, best_t)["cazimi"],
         })
     else:
         for idx, c in enumerate(contacts):
@@ -668,6 +706,14 @@ def _build_transit_cycle(
 
     active_at_end = any(w.get("_active_at_end", False) for w in windows)
 
+    # Display anchor = first refined contact, else cycle start.
+    anchor_dt = all_contacts[0]["contact_datetime"] if all_contacts else cycle_start
+
+    source_cazimi = any(bool(contact.get("source_cazimi")) for contact in all_contacts)
+    if not all_contacts and primary.get("_body_id") is not None:
+        source_cazimi = bool(_planet_state(primary["_body_id"], anchor_dt)["cazimi"])
+    cazimi_multiplier = CAZIMI_WEIGHT_MULTIPLIER if source_cazimi else 1.0
+
     # Full cycle duration for the score modifier.
     if cycle_end is not None:
         duration_days = max(
@@ -692,7 +738,8 @@ def _build_transit_cycle(
     #                        selection and year-overview block routing.
     #                        Applies the duration modifier to amplify sustained
     #                        themes without inflating the visible tier label.
-    concentration_score = PLANET_SIGNIFICANCE[planet] * (1.0 - best_orb / primary["maximum_orb"])
+    base_concentration_score = PLANET_SIGNIFICANCE[planet] * (1.0 - best_orb / primary["maximum_orb"])
+    concentration_score = min(1.0, base_concentration_score * cazimi_multiplier)
     dur_mod             = _duration_modifier(duration_days)
     structural_score    = min(1.0, concentration_score * dur_mod)
 
@@ -700,9 +747,6 @@ def _build_transit_cycle(
     # labels, monthly maps, and EAS index contributions.
     combined_score = concentration_score
     label, bar     = _intensity_label(combined_score)
-
-    # Display anchor = first refined contact, else cycle start.
-    anchor_dt = all_contacts[0]["contact_datetime"] if all_contacts else cycle_start
 
     cycle_id = (
         f"{planet}_{primary['aspect']}_{primary['target_name']}_"
@@ -726,6 +770,9 @@ def _build_transit_cycle(
         "combined_intensity_score": round(combined_score, 4),
         "score":                round(combined_score, 4),
         # Scoring debug fields (used by EO_SCORE_TRACE; not rendered to HTML).
+        "_base_concentration_score": round(base_concentration_score, 4),
+        "source_cazimi":        source_cazimi,
+        "cazimi_multiplier":    round(cazimi_multiplier, 4),
         "_duration_days":       round(duration_days, 1),
         "_duration_modifier":   round(dur_mod, 4),
         "_best_orb":            round(best_orb, 4),
@@ -867,6 +914,54 @@ def _natal_targets(natal_payload: dict) -> dict[str, dict]:
             "kind": "angle",
         }
 
+    custom = natal_payload.get("custom_asteroids", {})
+    if isinstance(custom, dict):
+        policy = load_asteroid_policy()
+        for name, data in custom.items():
+            if not isinstance(data, dict) or not policy.target_eligible(name, "transit"):
+                continue
+            longitude = data.get("longitude")
+            if not isinstance(longitude, (int, float)):
+                continue
+            targets[name] = {
+                "longitude": float(longitude),
+                "house": int(data.get("house") or 0),
+                "kind": "asteroid",
+                "maximum_orb": policy.orb(name, "transit") or DECLINATION_ORB,
+                "allowed_aspects": policy.allowed_aspects(name, "transit"),
+                "relevance": policy.target_weight(name),
+            }
+
+    return targets
+
+
+def _natal_declination_targets(natal_payload: dict, clock: str = "transit") -> dict[str, dict]:
+    targets: dict[str, dict] = {}
+    standard = natal_payload.get("standard_planets", {})
+    if isinstance(standard, dict):
+        for name, data in standard.items():
+            if isinstance(data, dict) and isinstance(data.get("declination"), (int, float)):
+                targets[name] = {
+                    "declination": float(data["declination"]),
+                    "house": int(data.get("house") or 0),
+                    "kind": "planet",
+                    "relevance": 0.70,
+                }
+
+    custom = natal_payload.get("custom_asteroids", {})
+    if isinstance(custom, dict):
+        policy = load_asteroid_policy()
+        for name, data in custom.items():
+            if not isinstance(data, dict) or not policy.target_eligible(name, clock):
+                continue
+            if not isinstance(data.get("declination"), (int, float)):
+                continue
+            targets[name] = {
+                "declination": float(data["declination"]),
+                "house": int(data.get("house") or 0),
+                "kind": "asteroid",
+                "relevance": policy.target_weight(name),
+            }
     return targets
 
 
@@ -1518,13 +1613,19 @@ def scan_transit_windows(
 
         for body_id, transit_planet in TRANSIT_PLANETS.items():
             state = _planet_state(body_id, moment)
-            maximum_orb = TRANSIT_ORB[transit_planet]
-            target_names = MARS_TARGETS if transit_planet == "Mars" else STANDARD_TARGETS
+            default_orb = TRANSIT_ORB[transit_planet]
+            target_names = list(MARS_TARGETS if transit_planet == "Mars" else STANDARD_TARGETS)
+            target_names.extend(
+                name
+                for name, target in targets.items()
+                if target.get("kind") == "asteroid" and name not in target_names
+            )
 
             for target_name in target_names:
                 target = targets.get(target_name)
                 if not target:
                     continue
+                maximum_orb = float(target.get("maximum_orb") or default_orb)
 
                 aspect, orb = _detect_aspect(
                     state["longitude"],
@@ -1533,6 +1634,9 @@ def scan_transit_windows(
                 )
 
                 if not aspect or orb is None:
+                    continue
+                allowed_aspects = target.get("allowed_aspects")
+                if isinstance(allowed_aspects, list) and allowed_aspects and aspect not in allowed_aspects:
                     continue
 
                 key = (transit_planet, target_name, aspect)
@@ -1592,6 +1696,130 @@ def scan_transit_windows(
     # ── Phase 3: merge windows into cycles ────────────────────
     activation_profile = activation_profile or build_forecast_activation_profile(natal_payload)
     return _merge_into_transit_cycles(refined_windows, report_start, report_end, activation_profile)
+
+
+def scan_transit_declination_windows(
+    natal_payload: dict,
+    start_date: datetime | None = None,
+    end_date: datetime | None = None,
+    step_hours: int = 12,
+    activation_profile: dict | None = None,
+) -> list[dict]:
+    """Scan transiting planets for declination parallels/contraparallels."""
+    report_start = _ensure_utc(start_date)
+    report_end = _ensure_utc(end_date) if end_date else _add_year_window(report_start)
+    if report_end <= report_start:
+        raise ValueError("end_date must be later than start_date")
+    if step_hours <= 0:
+        raise ValueError("step_hours must be greater than zero")
+
+    targets = _natal_declination_targets(natal_payload, "transit")
+    if not targets:
+        return []
+
+    open_events: dict[tuple[str, str, str], dict] = {}
+    windows: list[dict] = []
+    moment = report_start
+
+    while moment <= report_end:
+        seen_keys: set[tuple[str, str, str]] = set()
+        for body_id, transit_planet in TRANSIT_PLANETS.items():
+            source_declination = _planet_declination(body_id, moment)
+            if source_declination is None:
+                continue
+            target_names = list(MARS_TARGETS if transit_planet == "Mars" else STANDARD_TARGETS)
+            target_names.extend(
+                name
+                for name, target in targets.items()
+                if target.get("kind") == "asteroid" and name not in target_names
+            )
+            for target_name in target_names:
+                target = targets.get(target_name)
+                if not target:
+                    continue
+                aspect, orb = _detect_declination_aspect(source_declination, float(target["declination"]))
+                if not aspect or orb is None:
+                    continue
+                key = (transit_planet, target_name, aspect)
+                seen_keys.add(key)
+                if key not in open_events:
+                    open_events[key] = {
+                        "transit_planet": transit_planet,
+                        "target_name": target_name,
+                        "target": target,
+                        "aspect": aspect,
+                        "maximum_orb": DECLINATION_ORB,
+                        "entry": moment,
+                        "last_active": moment,
+                        "peak": moment,
+                        "peak_orb": orb,
+                        "peak_declination": source_declination,
+                    }
+                else:
+                    open_events[key]["last_active"] = moment
+                    if orb < open_events[key]["peak_orb"]:
+                        open_events[key]["peak_orb"] = orb
+                        open_events[key]["peak"] = moment
+                        open_events[key]["peak_declination"] = source_declination
+
+        for key in list(open_events.keys()):
+            if key not in seen_keys:
+                windows.append(open_events.pop(key))
+        moment += timedelta(hours=step_hours)
+
+    windows.extend(open_events.values())
+
+    events: list[dict] = []
+    for working in windows:
+        duration_days = max(0.5, (working["last_active"] - working["entry"]).total_seconds() / 86_400.0)
+        transit_planet = working["transit_planet"]
+        target = working["target"]
+        target_name = working["target_name"]
+        exactness = max(0.0, 1.0 - working["peak_orb"] / DECLINATION_ORB)
+        concentration = PLANET_SIGNIFICANCE[transit_planet] * exactness * 0.72
+        structural = min(1.0, concentration * _duration_modifier(duration_days))
+        label, bar = _intensity_label(concentration)
+        peak = working["peak"]
+        event = {
+            "event_type": "transit",
+            "transit_planet": transit_planet,
+            "aspect": working["aspect"],
+            "natal_target": target_name,
+            "natal_target_display": _target_display(target_name, target),
+            "natal_house": int(target.get("house") or 0),
+            "maximum_orb": DECLINATION_ORB,
+            "orb": round(working["peak_orb"], 4),
+            "raw_score": round(concentration, 4),
+            "concentration_score": round(concentration, 4),
+            "structural_score": round(structural, 4),
+            "combined_intensity_score": round(concentration, 4),
+            "score": round(concentration, 4),
+            "intensity_label": label,
+            "intensity_bar": bar,
+            "aspect_character": ASPECT_CHARACTERS[working["aspect"]],
+            "priority": "B",
+            "declination_aspect": True,
+            "source_declination": round(working["peak_declination"], 4),
+            "target_declination": round(float(target["declination"]), 4),
+            "method_variant": "transit_declination",
+            "activation_route": "transit_to_asteroid" if target.get("kind") == "asteroid" else "transit_to_body",
+            "entry_datetime": working["entry"],
+            "peak_datetime": peak,
+            "leave_datetime": working["last_active"],
+            "entry_date": _format_event_date(working["entry"]),
+            "peak_date": _format_event_date(peak),
+            "leave_date": _format_event_date(working["last_active"]),
+            "duration_days": round(duration_days, 1),
+            "peak_month": (peak.year, peak.month),
+            "temporal_precision": "week" if duration_days <= 14 else "month",
+            "formula_version": "transit_declination_phase5.1.0",
+        }
+        if activation_profile:
+            event = enrich_forecast_event(event, activation_profile)
+        events.append(event)
+
+    events.sort(key=lambda event: (event["peak_datetime"], -event.get("combined_intensity_score", 0.0)))
+    return events
 
 
 # ── Whole Sign House Ingress Scanner ───────────────────────────
@@ -2380,6 +2608,14 @@ def compute_year_ahead_events(
         step_hours,
         activation_profile,
     )
+    declination_transit_events = scan_transit_declination_windows(
+        natal_payload,
+        report_start,
+        report_end,
+        step_hours,
+        activation_profile,
+    )
+    transit_events.extend(declination_transit_events)
     ingress_events = scan_house_ingresses(
         natal_payload,
         report_start,
@@ -2408,8 +2644,12 @@ def compute_year_ahead_events(
         eclipse_events=eclipse_events,
     )
 
-    from engine.profections import annual_profection_periods
-    profection_periods = annual_profection_periods(natal_payload, report_start, report_end)
+    from engine.profections import annual_profection_periods, monthly_profection_periods
+    profection_periods = (
+        annual_profection_periods(natal_payload, report_start, report_end)
+        + monthly_profection_periods(natal_payload, report_start, report_end)
+    )
+    profection_periods.sort(key=lambda period: (period.get("start_at") or "", period.get("level") or ""))
 
     return_events = []
     try:
@@ -2469,6 +2709,10 @@ def compute_year_ahead_events(
         time_lord_periods=profection_periods,
     )
     transit_events = linked_events["transit_events"]
+    declination_transit_events = [
+        event for event in transit_events
+        if bool(event.get("declination_aspect"))
+    ]
     ingress_events = linked_events["ingress_events"]
     station_events = linked_events["station_events"]
     eclipse_events = linked_events["eclipse_events"]
@@ -2490,6 +2734,10 @@ def compute_year_ahead_events(
     # work every call. Only the five families whose scanners predate the
     # adapter need it applied at this seam.
     transit_events = [normalize_to_forecast_event(e) for e in transit_events]
+    declination_transit_events = [
+        event for event in transit_events
+        if bool(event.get("declination_aspect"))
+    ]
     ingress_events = [normalize_to_forecast_event(e) for e in ingress_events]
     station_events = [normalize_to_forecast_event(e) for e in station_events]
     eclipse_events = [normalize_to_forecast_event(e) for e in eclipse_events]
@@ -2507,6 +2755,7 @@ def compute_year_ahead_events(
         "report_start": report_start,
         "report_end": report_end,
         "transits": transit_events,
+        "declination_transits": declination_transit_events,
         "ingresses": ingress_events,
         "stations": station_events,
         "eclipses": eclipse_events,

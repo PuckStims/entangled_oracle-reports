@@ -16,6 +16,7 @@ from typing import Any
 
 
 REQUIRED_ASTEROID_COUNT = 34
+USER_ACTIVATED_DEFERRED_TARGET_CLOCKS = frozenset({"progression", "solar_arc"})
 REGISTRY_PATH = Path(__file__).resolve().parents[1] / "phase0" / "02_asteroid_predictive_registry.json"
 
 _REQUIRED_ASTEROID_FIELDS = frozenset({
@@ -99,8 +100,14 @@ class AsteroidPolicy:
         return _safe_float(value, 0.0)
 
     def target_eligible(self, asteroid_name: str, clock: str) -> bool:
+        override = self._target_override(asteroid_name, clock)
+        if override is not None:
+            value = str(override).lower()
+            return value in {"yes", "conditional_within_1_degree_and_index_participation"}
         defaults = self.tier_defaults_for(asteroid_name)
         value = str(defaults.get("target_eligibility", {}).get(clock) or "").lower()
+        if value == "deferred" and clock in USER_ACTIVATED_DEFERRED_TARGET_CLOCKS:
+            return str(self.require_record(asteroid_name).get("tier") or "").lower() == "elevated"
         return value in {"yes", "conditional_within_1_degree_and_index_participation"}
 
     def source_eligible(
@@ -145,6 +152,13 @@ class AsteroidPolicy:
             return None
         value = overrides.get(clock)
         return value if isinstance(value, dict) else None
+
+    def _target_override(self, asteroid_name: str, clock: str) -> Any | None:
+        record = self.require_record(asteroid_name)
+        overrides = record.get("target_eligibility_override")
+        if not isinstance(overrides, dict):
+            return None
+        return overrides.get(clock)
 
 
 @lru_cache(maxsize=1)

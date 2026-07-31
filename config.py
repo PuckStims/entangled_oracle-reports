@@ -220,6 +220,7 @@ CONTENT_PACKS = {
         "zodiacal_releasing":        os.path.join(_YEAR_AHEAD_PLAINSPEAK_DIR, "zodiacal_releasing_blocks.json"),
         "exact_returns":             os.path.join(_YEAR_AHEAD_PLAINSPEAK_DIR, "return_blocks.json"),
         "forecast_synthesis_blocks": os.path.join(_YEAR_AHEAD_PLAINSPEAK_DIR, "forecast_synthesis_blocks.json"),
+        "editorial_scaffolds":       os.path.join(_YEAR_AHEAD_PLAINSPEAK_DIR, "editorial_scaffolds.json"),
         "predictive_chapters":       os.path.join(_YEAR_AHEAD_PLAINSPEAK_DIR, "predictive_chapters.json"),
         "personal_predictive_chapters": os.path.join(_PERSONAL_FORECAST_DIR, "predictive_chapters.json"),
         "personal_predictive_candidates": os.path.join(_PERSONAL_FORECAST_DIR, "predictive_candidates.json"),
@@ -265,6 +266,7 @@ CONTENT_PACKS = {
         "archetypal_opening_blocks": os.path.join(_YEAR_AHEAD_EO_DIR, "EO_Year_Ahead_Archetypal_Opening_Blocks.json"),
         "refraction_bridges":        os.path.join(_YEAR_AHEAD_EO_DIR, "EO_Year_Ahead_Refraction_Bridges.json"),
         "convergence_blocks":        os.path.join(_YEAR_AHEAD_EO_DIR, "EO_Year_Ahead_Convergence_Blocks.json"),
+        "editorial_scaffolds":       os.path.join(_YEAR_AHEAD_PLAINSPEAK_DIR, "editorial_scaffolds.json"),
         # EO eclipse blocks are keyed by Whole Sign house number (1–12).
         # Using natal_target_key (planet-order index) would select the wrong block.
         "eclipse_key": "natal_house",

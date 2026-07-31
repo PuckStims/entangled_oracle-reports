@@ -1,0 +1,184 @@
+{
+  "_note": "Production editorial scaffolds only. Text values intentionally remain TODO so content writers can author final copy without implementation agents inventing interpretation prose.",
+  "season_contours": {
+    "season_contour_even": {
+      "string_id": "season_contour_even",
+      "text": "TODO",
+      "content_status": "creative_required",
+      "selection_notes": [
+        "Use only when all three selected-month scores remain within even-rhythm tolerance.",
+        "Do not use when one month materially exceeds the others.",
+        "Score layer includes selected primary/supporting event weight, station/convergence presence, and local monthly intensity."
+      ]
+    },
+    "season_contour_front_loaded": {
+      "string_id": "season_contour_front_loaded",
+      "text": "TODO",
+      "content_status": "creative_required",
+      "selection_notes": [
+        "First month materially exceeds the next two months.",
+        "Later months show declining selected-event weight.",
+        "Do not use when the distribution remains within even-rhythm tolerance."
+      ]
+    },
+    "season_contour_middle_hinge": {
+      "string_id": "season_contour_middle_hinge",
+      "text": "TODO",
+      "content_status": "creative_required",
+      "selection_notes": [
+        "Middle month is the clear local peak.",
+        "First and third months are lower enough to frame the middle month as a hinge.",
+        "Peak-month label and contour label must share the same scoring layer."
+      ]
+    },
+    "season_contour_late_building": {
+      "string_id": "season_contour_late_building",
+      "text": "TODO",
+      "content_status": "creative_required",
+      "selection_notes": [
+        "Third month materially exceeds the first two months.",
+        "Selected-event weight builds toward the end of the season.",
+        "Use when late-month growth is stronger than even-rhythm tolerance."
+      ]
+    },
+    "season_contour_single_clear_peak": {
+      "string_id": "season_contour_single_clear_peak",
+      "text": "TODO",
+      "content_status": "creative_required",
+      "selection_notes": [
+        "One month has a clear score lead, but the pattern is not specifically front-loaded, middle-hinge, or late-building.",
+        "Use when score variance is high and one month dominates the other two.",
+        "Attach the selected peak month in context."
+      ]
+    },
+    "season_contour_gradual_taper": {
+      "string_id": "season_contour_gradual_taper",
+      "text": "TODO",
+      "content_status": "creative_required",
+      "selection_notes": [
+        "Month scores descend in order across the season.",
+        "Opening weight is materially higher than closing weight.",
+        "Use when the contour is a true taper, not a single opening spike."
+      ]
+    },
+    "season_contour_sparse_integration": {
+      "string_id": "season_contour_sparse_integration",
+      "text": "TODO",
+      "content_status": "creative_required",
+      "selection_notes": [
+        "All three selected-month scores are low relative to the annual rhythm.",
+        "Visible reader-facing entries are sparse.",
+        "Use as an integration contour rather than pretending the season is evenly active."
+      ]
+    },
+    "season_contour_two_peak": {
+      "string_id": "season_contour_two_peak",
+      "text": "TODO",
+      "content_status": "creative_required",
+      "selection_notes": [
+        "Two months carry materially similar high scores.",
+        "The remaining month is lower enough to avoid an even-rhythm classification.",
+        "Use when the season has two distinct emphasized months."
+      ]
+    }
+  },
+  "customer_metadata_labels": {
+    "primary_natal_factor": {
+      "string_id": "metadata_primary_natal_factor",
+      "text": "TODO",
+      "content_status": "creative_required",
+      "rule_notes": [
+        "Use when natal target belongs to angles, luminaries, or other configured primary chart factors.",
+        "Customer-facing label must not expose score values or developer terminology."
+      ]
+    },
+    "annual_structural_cycle": {
+      "string_id": "metadata_annual_structural_cycle",
+      "text": "TODO",
+      "content_status": "creative_required",
+      "rule_notes": [
+        "Use when duration and structural score qualify an event as a long-cycle carrier.",
+        "Detailed ranking explanation belongs in methodology, not repeated event prose."
+      ]
+    },
+    "reinforced_timing_signal": {
+      "string_id": "metadata_reinforced_timing_signal",
+      "text": "TODO",
+      "content_status": "creative_required",
+      "rule_notes": [
+        "Use when profections, cazimi, returns, progressions, solar arc, or convergence rules reinforce a selected event.",
+        "Requires traceable source method IDs in internal metadata."
+      ]
+    },
+    "birth_time_dependent": {
+      "string_id": "metadata_birth_time_dependent",
+      "text": "TODO",
+      "content_status": "creative_required",
+      "rule_notes": [
+        "Use when houses, angles, Vertex, or directed angles depend on exact birth time.",
+        "Suppress or soften when birth-time confidence is not exact."
+      ]
+    },
+    "supporting_contact": {
+      "string_id": "metadata_supporting_contact",
+      "text": "TODO",
+      "content_status": "creative_required",
+      "rule_notes": [
+        "Use for Tier B events retained as compact reinforcement or timing notes.",
+        "Must not imply the event is a full primary interpretation."
+      ]
+    }
+  },
+  "render_profiles": {
+    "primary_long_cycle": {
+      "render_profile": "primary_long_cycle",
+      "required_roles": [
+        "event_core",
+        "target_specificity",
+        "practical_integration"
+      ],
+      "optional_roles": [
+        "house_domain",
+        "natal_priority",
+        "timing_method"
+      ],
+      "max_optional_roles": 2
+    },
+    "monthly_primary": {
+      "render_profile": "monthly_primary",
+      "required_roles": [
+        "event_core",
+        "target_specificity"
+      ],
+      "optional_roles": [
+        "house_domain",
+        "monthly_shift",
+        "practical_integration"
+      ],
+      "max_optional_roles": 2
+    },
+    "supporting_compact": {
+      "render_profile": "supporting_compact",
+      "required_roles": [
+        "event_core"
+      ],
+      "optional_roles": [
+        "timing_method",
+        "continuing_thread"
+      ],
+      "max_optional_roles": 1
+    }
+  },
+  "synthesis_bridges": {
+    "annual_theme_cycle_bridge_01": {
+      "string_id": "annual_theme_cycle_bridge_01",
+      "bridge_text": "TODO",
+      "content_status": "creative_required",
+      "relationship_type": "carrier_of_broader_theme",
+      "selection_notes": [
+        "Use when annual headline and dominant long cycle are related but not identical.",
+        "Bridge must cite annual_theme_id, dominant_cycle_id, and supporting_event_ids."
+      ]
+    }
+  }
+}

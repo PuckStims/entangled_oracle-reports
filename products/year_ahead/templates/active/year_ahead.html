@@ -4006,7 +4006,7 @@
               <div class="annual-rhythm-month-bar-wrap">
                 <div class="annual-rhythm-month-bar" style="width: {{ month.event_count_percent | default(4) }}%;"></div>
               </div>
-              <div class="annual-rhythm-month-tier">{{ month.event_count }} {{ 'event' if month.event_count == 1 else 'events' }}</div>
+              <div class="annual-rhythm-month-tier">{{ month.reader_facing_total }} reader-facing {{ 'entry' if month.reader_facing_total == 1 else 'entries' }}</div>
             </article>
             {% endfor %}
           </div>
@@ -4088,7 +4088,7 @@
                 <div class="month-opener-aside-card">
                   <span>Chapter pace</span>
                   <strong>{{ month.chapter_density }}</strong>
-                  <p>This chapter gathers {{ month.event_count }} dated {{ 'entry' if month.event_count == 1 else 'entries' }} arranged below in chronological order.</p>
+                  <p>{{ month.primary_event_count }} dated {{ 'entry' if month.primary_event_count == 1 else 'entries' }} appear in the chronological forecast. {{ month.supporting_event_count }} supporting {{ 'cue' if month.supporting_event_count == 1 else 'cues' }} appear in the chapter map.</p>
                 </div>
                 {% if month.chapter_focus or month.chapter_driver or month.chapter_signal %}
                 <div class="month-opener-aside-card">

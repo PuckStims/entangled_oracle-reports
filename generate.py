@@ -4563,6 +4563,13 @@ def _duration_descriptor(event: dict) -> str:
     if event.get("event_type") not in {"transit", "eclipse"}:
         return ""
 
+    reader_window = str(event.get("reader_window_label") or "").strip()
+    recurrence_label = str(event.get("reader_recurrence_label") or "").strip()
+    if reader_window:
+        if recurrence_label:
+            return f"{reader_window} | Recurs: {recurrence_label}"
+        return reader_window
+
     duration = event.get("duration_days", 0.0)
     in_orb_at_start = (
         event.get("in_orb_at_forecast_start")
@@ -4628,6 +4635,207 @@ def _iso_date_or_none(value: object) -> str | None:
         return value.strftime("%Y-%m-%d")
     text = str(value).strip()
     return text or None
+
+
+def _dt_or_none(value: object) -> datetime | None:
+    if isinstance(value, datetime):
+        return value
+    if not value:
+        return None
+    text = str(value).strip()
+    if not text:
+        return None
+    for fmt in ("%Y-%m-%d", "%B %d, %Y", "%b %d, %Y"):
+        try:
+            return datetime.strptime(text, fmt).replace(tzinfo=timezone.utc)
+        except ValueError:
+            continue
+    try:
+        parsed = datetime.fromisoformat(text)
+        return parsed if parsed.tzinfo else parsed.replace(tzinfo=timezone.utc)
+    except ValueError:
+        return None
+
+
+def _display_date(value: datetime | None) -> str:
+    return value.strftime("%B %d, %Y") if value else ""
+
+
+def _days_between(start: datetime | None, end: datetime | None) -> float:
+    if not start or not end:
+        return 0.0
+    return max(0.0, (end - start).total_seconds() / 86_400.0)
+
+
+def _expected_window_limit_days(event: dict) -> float:
+    primary_type = _year_ahead_primary_event_type(event)
+    if primary_type == "natal_transit":
+        body = str(event.get("transit_planet") or event.get("transiting_body") or "").strip()
+        return float(_YEAR_AHEAD_MAX_EXPECTED_WINDOW_DAYS["natal_transit"].get(body, 120))
+    return float(_YEAR_AHEAD_MAX_EXPECTED_WINDOW_DAYS.get(primary_type, 120))
+
+
+def _pass_half_window_days(event: dict) -> float:
+    body = str(event.get("transit_planet") or event.get("transiting_body") or "").strip()
+    return float(_YEAR_AHEAD_PASS_HALF_WINDOW_DAYS.get(body, 21))
+
+
+def _contact_datetime(contact: dict) -> datetime | None:
+    if not isinstance(contact, dict):
+        return None
+    return _dt_or_none(contact.get("contact_datetime") or contact.get("contact_date"))
+
+
+def _build_event_pass_windows(event: dict) -> list[dict]:
+    primary_type = _year_ahead_primary_event_type(event)
+    entry = _dt_or_none(event.get("entry_datetime") or event.get("entry_date"))
+    leave = _dt_or_none(event.get("leave_datetime") or event.get("leave_date")) or entry
+    contacts = [
+        contact for contact in (event.get("contacts") or [])
+        if isinstance(contact, dict) and _contact_datetime(contact)
+    ]
+
+    if primary_type == "natal_transit" and contacts:
+        half_days = _pass_half_window_days(event)
+        pass_windows: list[dict] = []
+        for index, contact in enumerate(sorted(contacts, key=lambda item: _contact_datetime(item) or datetime.max.replace(tzinfo=timezone.utc)), start=1):
+            exact = _contact_datetime(contact)
+            if not exact:
+                continue
+            local_start = exact - timedelta(days=half_days)
+            local_end = exact + timedelta(days=half_days)
+            if entry:
+                local_start = max(local_start, entry)
+            if leave:
+                local_end = min(local_end, leave)
+            pass_windows.append(
+                {
+                    "pass_number": index,
+                    "exact_date": _iso_date_or_none(exact),
+                    "window_start": _iso_date_or_none(local_start),
+                    "window_end": _iso_date_or_none(local_end),
+                    "duration_days": round(_days_between(local_start, local_end), 2),
+                    "motion_direction": str(contact.get("motion_direction") or "").strip(),
+                    "source_contact": "refined_exact_contact",
+                }
+            )
+        return pass_windows
+
+    peak = _dt_or_none(
+        event.get("peak_datetime")
+        or event.get("display_anchor_datetime")
+        or event.get("peak_date")
+        or event.get("date_label")
+    )
+    if not peak:
+        peak = entry
+    if not peak:
+        return []
+    if not entry:
+        entry = peak
+    if not leave:
+        leave = peak
+    return [
+        {
+            "pass_number": 1,
+            "exact_date": _iso_date_or_none(peak),
+            "window_start": _iso_date_or_none(entry),
+            "window_end": _iso_date_or_none(leave),
+            "duration_days": round(_days_between(entry, leave), 2),
+            "motion_direction": str(event.get("motion_direction") or event.get("motion_state") or "").strip(),
+            "source_contact": "single_event_window",
+        }
+    ]
+
+
+def _normalize_year_ahead_event_windows(events: list[dict]) -> dict:
+    warnings: list[dict] = []
+    normalized_count = 0
+    merged_cycle_count = 0
+
+    for event in events:
+        if not isinstance(event, dict):
+            continue
+        primary_type = _year_ahead_primary_event_type(event)
+        entry = _dt_or_none(event.get("entry_datetime") or event.get("entry_date"))
+        leave = _dt_or_none(event.get("leave_datetime") or event.get("leave_date")) or entry
+        peak = _dt_or_none(
+            event.get("peak_datetime")
+            or event.get("display_anchor_datetime")
+            or event.get("peak_date")
+            or event.get("date_label")
+        )
+        pass_windows = _build_event_pass_windows(event)
+        if pass_windows:
+            normalized_count += 1
+        if int(event.get("contact_count", 0) or 0) > 1 or int(event.get("_window_count", 0) or 0) > 1:
+            merged_cycle_count += 1
+
+        event["canonical_event_id"] = str(event.get("cycle_id") or event.get("convergence_id") or _year_ahead_event_id(event, primary_type))
+        event["canonical_timing"] = {
+            "version": _YEAR_AHEAD_WINDOW_QA_VERSION,
+            "canonical_event_id": event["canonical_event_id"],
+            "timing_method": str(event.get("method_variant") or primary_type),
+            "cycle_start": _iso_date_or_none(event.get("cycle_start_datetime") or entry),
+            "cycle_end": _iso_date_or_none(event.get("cycle_end_datetime") or leave),
+            "exact_date": _iso_date_or_none(peak),
+            "passes": pass_windows,
+            "parent_cycle_grouping": bool(int(event.get("contact_count", 0) or 0) > 1 or int(event.get("_window_count", 0) or 0) > 1),
+        }
+        if pass_windows:
+            display_pass = min(
+                pass_windows,
+                key=lambda item: (
+                    abs(
+                        (
+                            (_dt_or_none(item.get("exact_date")) or datetime.max.replace(tzinfo=timezone.utc))
+                            - (peak or _dt_or_none(item.get("exact_date")) or datetime.max.replace(tzinfo=timezone.utc))
+                        ).days
+                    ),
+                    item.get("pass_number", 0),
+                ),
+            )
+            event["publication_window"] = display_pass
+            start_label = _display_date(_dt_or_none(display_pass.get("window_start")))
+            end_label = _display_date(_dt_or_none(display_pass.get("window_end")))
+            exact_label = _display_date(_dt_or_none(display_pass.get("exact_date")))
+            if start_label and end_label and start_label != end_label:
+                event["reader_window_label"] = f"Pass {display_pass.get('pass_number', 1)} window: {start_label} through {end_label}"
+            else:
+                event["reader_window_label"] = exact_label or start_label or end_label
+            if len(pass_windows) > 1:
+                event["reader_recurrence_label"] = "; ".join(
+                    f"Pass {item.get('pass_number')}: {_display_date(_dt_or_none(item.get('exact_date')))}"
+                    for item in pass_windows
+                    if item.get("exact_date")
+                )
+
+        duration_days = _days_between(entry, leave)
+        limit_days = _expected_window_limit_days(event)
+        if duration_days > limit_days:
+            resolved_by_pass_windows = primary_type == "natal_transit" and bool(pass_windows)
+            warning = {
+                "code": "implausible_active_window_duration",
+                "event_id": event["canonical_event_id"],
+                "event_type": primary_type,
+                "moving_body": str(event.get("transit_planet") or event.get("transiting_body") or ""),
+                "natal_target": str(event.get("natal_target") or ""),
+                "duration_days": round(duration_days, 2),
+                "expected_max_days": limit_days,
+                "pass_count": len(pass_windows),
+                "blocking": not resolved_by_pass_windows,
+            }
+            if resolved_by_pass_windows:
+                warning["resolution"] = "reader_uses_pass_local_windows_parent_cycle_preserved"
+            warnings.append(warning)
+            event.setdefault("window_duration_warnings", []).append(warning)
+
+    return {
+        "version": _YEAR_AHEAD_WINDOW_QA_VERSION,
+        "normalized_event_count": normalized_count,
+        "merged_cycle_count": merged_cycle_count,
+        "window_duration_warnings": warnings,
+    }
 
 
 def _ordinary_orb_status(event: dict, primary_type: str) -> str:
@@ -4989,6 +5197,300 @@ def _select_year_block(event: dict, pack_paths: dict) -> str:
     return ""
 
 
+def _traverse_mapping(data: dict, keys: list[str]) -> object | None:
+    current: object = data
+    for key in keys:
+        if not isinstance(current, dict) or key not in current:
+            return None
+        current = current[key]
+    return current
+
+
+def _trace_block_from_path(file_path: str, keys: list[str]) -> dict:
+    blocks = _load_json_file(file_path)
+    if not isinstance(blocks, dict):
+        return {
+            "text": "",
+            "resolved_key_path": [],
+            "fallback_used": True,
+            "specificity_level": "missing_file",
+            "source_path": file_path,
+        }
+
+    result = _traverse_mapping(blocks, keys)
+    if isinstance(result, str):
+        return {
+            "text": _usable_block(result),
+            "resolved_key_path": keys,
+            "fallback_used": False,
+            "specificity_level": "exact",
+            "source_path": file_path,
+        }
+
+    keys_list = list(keys)
+    while keys_list:
+        candidate = keys_list[:-1] + ["fallback"]
+        result = _traverse_mapping(blocks, candidate)
+        if isinstance(result, str):
+            dropped = len(keys) - len(keys_list) + 1
+            return {
+                "text": _usable_block(result),
+                "resolved_key_path": candidate,
+                "fallback_used": True,
+                "specificity_level": f"fallback_depth_{dropped}",
+                "source_path": file_path,
+            }
+        keys_list.pop()
+
+    if isinstance(blocks.get("fallback"), str):
+        return {
+            "text": _usable_block(blocks["fallback"]),
+            "resolved_key_path": ["fallback"],
+            "fallback_used": True,
+            "specificity_level": "top_level_fallback",
+            "source_path": file_path,
+        }
+
+    return {
+        "text": "",
+        "resolved_key_path": [],
+        "fallback_used": True,
+        "specificity_level": "missing_block",
+        "source_path": file_path,
+    }
+
+
+def _year_ahead_block_lookup(event: dict, pack_paths: dict) -> tuple[str, list[str]]:
+    event_type = event.get("event_type")
+    if event_type in {"transit", "natal_transit"}:
+        return (
+            pack_paths["transits"],
+            [
+                str(event.get("transit_planet") or "fallback"),
+                str(event.get("aspect") or "fallback"),
+                str(event.get("natal_target") or "fallback"),
+            ],
+        )
+    if event_type in {"ingress", "house_ingress"}:
+        return (
+            pack_paths["ingresses"],
+            [
+                str(event.get("transit_planet") or "fallback"),
+                str(event.get("house_number") or "fallback"),
+            ],
+        )
+    if event_type == "eclipse":
+        eclipse_key_field = pack_paths.get("eclipse_key", "natal_target_key")
+        if eclipse_key_field == "natal_house":
+            house = event.get("natal_house") or event.get("whole_sign_house") or 0
+            eclipse_key = str(house) if house else "fallback"
+        else:
+            eclipse_key = str(event.get("natal_target_key") or "fallback")
+        return (
+            pack_paths["eclipses"],
+            [str(event.get("eclipse_type") or "fallback"), eclipse_key],
+        )
+    if event_type in {"station", "planetary_station"}:
+        return (
+            pack_paths["stations"],
+            [
+                str(event.get("transit_planet") or "fallback"),
+                str(event.get("station_type") or "fallback"),
+            ],
+        )
+    if event_type == "progression":
+        return (
+            pack_paths["year_texture_progressions"],
+            [
+                str(event.get("transit_planet") or "fallback"),
+                str(event.get("aspect") or "fallback"),
+                str(event.get("natal_target") or "fallback"),
+            ],
+        )
+    if event_type == "solar_arc":
+        return (
+            pack_paths["year_texture_solar_arc"],
+            [
+                str(event.get("transit_planet") or "fallback"),
+                str(event.get("aspect") or "fallback"),
+                str(event.get("natal_target") or "fallback"),
+            ],
+        )
+    return ("", [])
+
+
+def _year_ahead_block_selection_trace(event: dict, pack_paths: dict | None) -> dict:
+    if not pack_paths:
+        return {
+            "text": "",
+            "resolved_key_path": [],
+            "fallback_used": False,
+            "specificity_level": "not_checked",
+            "source_path": "",
+        }
+    file_path, keys = _year_ahead_block_lookup(event, pack_paths)
+    if not file_path:
+        return {
+            "text": "",
+            "resolved_key_path": [],
+            "fallback_used": True,
+            "specificity_level": "unsupported_event_type",
+            "source_path": "",
+        }
+    trace = _trace_block_from_path(file_path, keys)
+    trace["requested_key_path"] = keys
+    trace["content_status"] = "ready" if trace.get("text") and not trace.get("fallback_used") else "creative_required"
+    return trace
+
+
+def _creative_string_id_for_event(event: dict, role: str = "primary") -> str:
+    primary_type = _year_ahead_primary_event_type(event)
+    parts = [
+        primary_type,
+        str(event.get("method_variant") or "").strip(),
+        str(event.get("transit_planet") or event.get("transiting_body") or event.get("eclipse_type") or "").strip(),
+        str(event.get("aspect") or event.get("station_type") or "").strip(),
+        str(event.get("natal_target") or event.get("natal_target_display") or event.get("house_number") or "").strip(),
+        role,
+    ]
+    cleaned = [_slugify_label(part) for part in parts if part]
+    return "_".join(cleaned)[:96]
+
+
+def _creative_source_notes_for_event(event: dict, house_domains: dict, block_trace: dict) -> dict:
+    natal_house = 0
+    try:
+        natal_house = int(event.get("natal_house") or event.get("house_number") or 0)
+    except (TypeError, ValueError):
+        natal_house = 0
+    return {
+        "method": [
+            str(event.get("method_variant") or _year_ahead_primary_event_type(event)),
+            str(event.get("independence_group") or "").strip(),
+        ],
+        "moving_body": [str(event.get("transit_planet") or event.get("transiting_body") or event.get("eclipse_type") or "").strip()],
+        "aspect": [str(event.get("aspect") or event.get("station_type") or "").strip()],
+        "target": [str(event.get("natal_target") or event.get("natal_target_display") or "").strip()],
+        "house": [str(natal_house) if natal_house else ""],
+        "domain": [house_domains.get(natal_house, "") if natal_house else ""],
+        "timing": [
+            str(event.get("reader_window_label") or event.get("duration_descriptor") or event.get("date_label") or ""),
+            str(event.get("reader_recurrence_label") or ""),
+        ],
+        "natal_priority_metadata": event.get("ordinary_salience", {}),
+        "existing_related_strings": {
+            "source_path": str(block_trace.get("source_path") or ""),
+            "requested_key_path": block_trace.get("requested_key_path", []),
+            "resolved_key_path": block_trace.get("resolved_key_path", []),
+            "specificity_level": str(block_trace.get("specificity_level") or ""),
+            "fallback_text": str(block_trace.get("text") or "")[:1000],
+        },
+    }
+
+
+def _attach_year_ahead_string_support(
+    events: list[dict],
+    pack_paths: dict,
+    house_domains: dict,
+) -> dict:
+    creative_tasks: list[dict] = []
+    ready_count = 0
+    creative_required_count = 0
+    for event in events:
+        if not isinstance(event, dict):
+            continue
+        if _year_ahead_primary_event_type(event) == "convergence_window":
+            event["content_support"] = {
+                "content_status": "ready" if str(event.get("reader_synthesis") or event.get("block") or "").strip() else "creative_required",
+                "specificity_level": "synthetic_convergence",
+                "render_profile": "supporting_compact",
+            }
+            if event["content_support"]["content_status"] == "ready":
+                ready_count += 1
+            else:
+                creative_required_count += 1
+            continue
+        trace = _year_ahead_block_selection_trace(event, pack_paths)
+        status = str(trace.get("content_status") or "creative_required")
+        render_profile = "primary_long_cycle" if float(event.get("duration_days", 0.0) or 0.0) >= 42 else "monthly_primary"
+        event["content_support"] = {
+            "content_status": status,
+            "specificity_level": str(trace.get("specificity_level") or ""),
+            "requested_key_path": trace.get("requested_key_path", []),
+            "resolved_key_path": trace.get("resolved_key_path", []),
+            "source_path": str(trace.get("source_path") or ""),
+            "render_profile": render_profile,
+            "role_plan": _render_profile_scaffold(pack_paths, render_profile),
+        }
+        if status == "ready":
+            ready_count += 1
+            continue
+        creative_required_count += 1
+        string_id = _creative_string_id_for_event(event)
+        event["creative_required"] = True
+        event["creative_string_id"] = string_id
+        task = {
+            "string_id": string_id,
+            "text": "TODO",
+            "content_status": "creative_required",
+            "event_id": str(event.get("canonical_event_id") or _year_ahead_event_id(event, _year_ahead_primary_event_type(event))),
+            "event_title": _climate_event_title(event),
+            "publication_tier": _year_ahead_publication_tier(event),
+            "missing_reason": str(trace.get("specificity_level") or "missing_specific_block"),
+            "context_requirements": {
+                "natal_house": bool(event.get("natal_house") or event.get("house_number")),
+                "birth_time_confidence": "exact_required" if _ordinary_angular_activation(event) == "angular" else "not_angle_required",
+                "domain": str(_creative_source_notes_for_event(event, house_domains, trace)["domain"][0] or ""),
+            },
+            "leaf_notes": _creative_source_notes_for_event(event, house_domains, trace),
+        }
+        creative_tasks.append(task)
+
+    return {
+        "ready_event_count": ready_count,
+        "creative_required_count": creative_required_count,
+        "creative_tasks": creative_tasks,
+    }
+
+
+def _render_profile_scaffold(pack_paths: dict, render_profile: str) -> dict:
+    scaffolds = _load_json_file(pack_paths.get("editorial_scaffolds", ""))
+    profiles = scaffolds.get("render_profiles", {}) if isinstance(scaffolds, dict) else {}
+    return profiles.get(render_profile, {})
+
+
+def _demote_tier_a_creative_required(events: list[dict]) -> list[dict]:
+    demotions: list[dict] = []
+    for event in events:
+        if not isinstance(event, dict):
+            continue
+        if _year_ahead_publication_tier(event) == "A" and event.get("creative_required"):
+            event["publication_tier"] = "B"
+            event["publication_treatment"] = "supporting_note"
+            event["publication_suppression_reason"] = "creative_required_before_primary_publication"
+            demotions.append(
+                {
+                    "event_id": str(event.get("canonical_event_id") or _year_ahead_event_id(event, _year_ahead_primary_event_type(event))),
+                    "string_id": str(event.get("creative_string_id") or ""),
+                    "reason": "Tier A event requires a more specific authored string before full publication.",
+                }
+            )
+    return demotions
+
+
+def _recount_publication_tiers(events: list[dict], publication_audit: dict, extra: dict | None = None) -> dict:
+    counts = {"A": 0, "B": 0, "C": 0}
+    for event in events:
+        if isinstance(event, dict):
+            tier = _year_ahead_publication_tier(event)
+            counts[tier] = counts.get(tier, 0) + 1
+    updated = dict(publication_audit or {})
+    updated["tier_counts"] = counts
+    if extra:
+        updated.update(extra)
+    return updated
+
+
 def _event_tone(event: dict) -> str:
     """Provides a stable visual tone class for every event type."""
     event_type = event.get("event_type")
@@ -5035,6 +5537,7 @@ def _format_timeline_event(
         result.setdefault("duration_descriptor", "")
         result.setdefault("house_domain", "")
         result.setdefault("why_this_matters", "")
+        result.setdefault("content_support", event.get("content_support", {}))
         return result
 
     natal_house  = int(event.get("natal_house") or 0)
@@ -5066,10 +5569,22 @@ def _format_timeline_event(
         result["block"] = ""
         result["is_cycle_milestone"] = True
     else:
+        block_trace = _year_ahead_block_selection_trace(event, pack_paths)
+        selected_block = block_trace.get("text") or _select_year_block(event, pack_paths)
         result["block"] = _apply_year_ahead_prose_variation(
-            _select_year_block(event, pack_paths),
+            selected_block,
             event,
         )
+        result["content_support"] = event.get("content_support") or {
+            "content_status": block_trace.get("content_status", "creative_required"),
+            "specificity_level": block_trace.get("specificity_level", ""),
+            "requested_key_path": block_trace.get("requested_key_path", []),
+            "resolved_key_path": block_trace.get("resolved_key_path", []),
+            "source_path": block_trace.get("source_path", ""),
+        }
+        if event.get("creative_string_id"):
+            result["creative_string_id"] = event.get("creative_string_id")
+            result["creative_required"] = bool(event.get("creative_required"))
         result["is_cycle_milestone"] = False
         if raw_event_type == "transit" and cycle_id and rendered_cycle_ids is not None:
             rendered_cycle_ids.add(cycle_id)
@@ -5170,52 +5685,275 @@ def _format_timeline_event(
     return _canonicalize_year_ahead_event(result, house_domains)
 
 
-def _filter_monthly_events(events: list[dict]) -> list[dict]:
-    """
-    Applies the published Year Ahead priority filter.
+def _year_ahead_full_prose_signature(event: dict) -> str:
+    primary_type = _year_ahead_primary_event_type(event)
+    if primary_type == "planetary_station":
+        parts = [
+            primary_type,
+            str(event.get("transit_planet") or event.get("transiting_body") or "").strip(),
+            str(event.get("station_type") or "").strip(),
+        ]
+        return "|".join(_slugify_label(part) for part in parts if part)
+    parts = [
+        primary_type,
+        str(event.get("transit_planet") or event.get("transiting_body") or event.get("eclipse_type") or "").strip(),
+        str(event.get("aspect") or event.get("station_type") or event.get("phase") or "").strip(),
+        str(event.get("natal_target") or event.get("natal_target_display") or event.get("house_number") or event.get("natal_house") or "").strip(),
+    ]
+    return "|".join(_slugify_label(part) for part in parts if part)
 
-    Priority A entries are always retained. When a period becomes dense,
-    only the two highest-intensity Priority B entries are added.
+
+def _has_year_ahead_full_block(event: dict, pack_paths: dict | None) -> bool:
+    if _year_ahead_primary_event_type(event) == "convergence_window":
+        return bool(str(event.get("block") or event.get("body") or "").strip())
+    if event.get("creative_required") or str((event.get("content_support") or {}).get("content_status") or "") == "creative_required":
+        return False
+    if not pack_paths:
+        return True
+    return bool(str(_select_year_block(event, pack_paths) or "").strip())
+
+
+def _filter_monthly_events(
+    events: list[dict],
+    pack_paths: dict | None = None,
+    rendered_publication_signatures: set[str] | None = None,
+) -> list[dict]:
+    """
+    Applies the Year Ahead publication filter.
+
+    The calculation layer can remain high-recall; this layer decides which
+    events receive reader-facing cards. Tier C remains available to the
+    technical ledger and QA manifest.
     """
     qualified = [
         event
         for event in events
         if (
-            event.get("event_type") != "transit"
-            or event.get("combined_intensity_score", 0.0) >= 0.20
+            _year_ahead_publication_tier(event) == "A"
+            and _has_year_ahead_full_block(event, pack_paths)
+            and (
+                event.get("event_type") != "transit"
+                or event.get("combined_intensity_score", 0.0) >= 0.20
+            )
         )
     ]
 
-    if len(qualified) <= 6:
-        return sorted(
-            qualified,
-            key=lambda event: (
-                event.get("peak_datetime"),
-                -event.get("combined_intensity_score", 0.0),
-            ),
-        )
-
-    priority_a = [
-        event for event in qualified
-        if event.get("priority", "A") == "A"
-    ]
-
-    priority_b = sorted(
-        [
-            event for event in qualified
-            if event.get("priority", "A") != "A"
-        ],
-        key=lambda event: event.get("combined_intensity_score", 0.0),
-        reverse=True,
-    )[:2]
-
-    return sorted(
-        priority_a + priority_b,
+    qualified = _dedupe_year_ahead_publication_events(qualified)
+    qualified = sorted(
+        qualified,
         key=lambda event: (
-            event.get("peak_datetime"),
-            -event.get("combined_intensity_score", 0.0),
+            0 if _year_ahead_publication_tier(event) == "A" else 1,
+            -float(event.get("editorial_salience_score", event.get("combined_intensity_score", 0.0)) or 0.0),
+            event.get("peak_datetime") or datetime.max.replace(tzinfo=timezone.utc),
         ),
     )
+    active_limit = _YEAR_AHEAD_MONTH_ACTIVE_LIMIT if len([e for e in qualified if _year_ahead_publication_tier(e) == "A"]) >= 6 else _YEAR_AHEAD_MONTH_TYPICAL_LIMIT
+    selected = []
+    seen = rendered_publication_signatures if rendered_publication_signatures is not None else set()
+    for event in qualified:
+        signature = _year_ahead_full_prose_signature(event)
+        if signature and signature in seen:
+            event["publication_treatment"] = "technical_trace"
+            event["publication_suppression_reason"] = "duplicate_full_prose_signature"
+            continue
+        selected.append(event)
+        if signature:
+            seen.add(signature)
+        if len(selected) >= active_limit:
+            break
+    selected.sort(
+        key=lambda event: (
+            event.get("peak_datetime"),
+            -float(event.get("editorial_salience_score", event.get("combined_intensity_score", 0.0)) or 0.0),
+        )
+    )
+    return selected
+
+
+def _year_ahead_event_signature(event: dict) -> str:
+    primary_type = _year_ahead_primary_event_type(event)
+    cycle_id = str(event.get("cycle_id") or "").strip()
+    if primary_type == "natal_transit" and cycle_id:
+        return f"cycle:{cycle_id}"
+    if primary_type == "convergence_window":
+        return str(event.get("convergence_id") or _year_ahead_event_id(event, primary_type))
+    parts = [
+        primary_type,
+        str(event.get("method_family") or "").strip(),
+        str(event.get("method_variant") or "").strip(),
+        str(event.get("transit_planet") or event.get("transiting_body") or event.get("eclipse_type") or "").strip(),
+        str(event.get("aspect") or event.get("station_type") or event.get("phase") or "").strip(),
+        str(event.get("natal_target") or event.get("natal_contact") or event.get("natal_target_display") or "").strip(),
+        str(event.get("natal_house") or event.get("house_number") or event.get("whole_sign_house") or "").strip(),
+        str(event.get("peak_date") or event.get("display_anchor_date") or event.get("date_label") or "").strip(),
+    ]
+    return "|".join(_slugify_label(part) for part in parts if part)
+
+
+def _year_ahead_aspect_family(event: dict) -> str:
+    aspect = str(event.get("aspect") or "").strip()
+    if aspect in {"Conjunction", "Opposition", "Square", "Trine", "Sextile"}:
+        return "major"
+    if aspect in {"Quintile", "Biquintile"}:
+        return "creative_minor"
+    if aspect in {"Parallel", "Contraparallel"}:
+        return "declination"
+    if not aspect:
+        return "none"
+    return "other"
+
+
+def _year_ahead_editorial_salience(event: dict) -> tuple[float, list[str]]:
+    primary_type = _year_ahead_primary_event_type(event)
+    reasons: list[str] = []
+    base = float(
+        event.get(
+            "editorial_salience_score",
+            event.get("reader_facing_activity_score", event.get("combined_intensity_score", event.get("score", 0.0))),
+        )
+        or 0.0
+    )
+    score = _clamp(base, 0.0, 1.0)
+    reasons.append(f"base_score={score:.2f}")
+
+    structural = float(event.get("structural_score", event.get("structural_importance", 0.0)) or 0.0)
+    if structural > score:
+        score = min(1.0, score + min(0.18, (structural - score) * 0.45))
+        reasons.append("structural_lift")
+
+    type_lift = {
+        "natal_transit": 0.10,
+        "eclipse": 0.10,
+        "planetary_station": 0.06,
+        "house_ingress": 0.02,
+        "lunation": 0.00,
+        "convergence_window": 0.12,
+    }.get(primary_type, 0.0)
+    if type_lift:
+        score = min(1.0, score + type_lift)
+        reasons.append(f"{primary_type}_method_weight")
+
+    aspect_family = _year_ahead_aspect_family(event)
+    if aspect_family == "major":
+        score = min(1.0, score + 0.06)
+        reasons.append("major_aspect")
+    elif aspect_family == "creative_minor":
+        score *= 0.82
+        reasons.append("minor_aspect_compacted")
+    elif aspect_family == "declination":
+        score *= 0.72
+        reasons.append("declination_supporting_layer")
+
+    if event.get("source_cazimi"):
+        score = min(1.0, score + 0.08)
+        reasons.append("cazimi")
+    if event.get("annual_profection_linkage"):
+        score = min(1.0, score + 0.06)
+        reasons.append("annual_profection")
+    if event.get("monthly_profection_linkage"):
+        score = min(1.0, score + 0.035)
+        reasons.append("monthly_profection")
+    if int(event.get("contact_count", 0) or 0) >= 3:
+        score = min(1.0, score + 0.05)
+        reasons.append("repeated_passes")
+
+    target_kind = str(event.get("target_kind") or "").strip().lower()
+    asteroid_involved = target_kind == "asteroid" or bool(event.get("asteroid_participants"))
+    if asteroid_involved:
+        score *= 0.78
+        reasons.append("asteroid_requires_selector_support")
+    if str(event.get("routing_state") or "") == "technical reference":
+        score *= 0.58
+        reasons.append("technical_reference")
+
+    return round(_clamp(score, 0.0, 1.0), 4), reasons
+
+
+def _year_ahead_publication_tier(event: dict) -> str:
+    return str(event.get("publication_tier") or event.get("editorial_tier") or "C").strip().upper() or "C"
+
+
+def _assign_year_ahead_publication_tiers(events: list[dict]) -> dict:
+    counts = {"A": 0, "B": 0, "C": 0}
+    suppressions: list[dict] = []
+    seen: dict[str, dict] = {}
+
+    for event in events:
+        if not isinstance(event, dict):
+            continue
+        score, reasons = _year_ahead_editorial_salience(event)
+        event["editorial_salience_score"] = score
+        event["editorial_salience_reasons"] = reasons
+
+        if score >= 0.62:
+            tier = "A"
+        elif score >= 0.34:
+            tier = "B"
+        else:
+            tier = "C"
+        aspect_family = _year_ahead_aspect_family(event)
+        target_kind = str(event.get("target_kind") or "").strip().lower()
+        asteroid_involved = target_kind == "asteroid" or bool(event.get("asteroid_participants"))
+        if tier == "A" and (
+            aspect_family in {"declination", "creative_minor"}
+            or asteroid_involved
+        ):
+            tier = "B"
+            reasons.append("full_prose_requires_major_non_asteroid_event")
+        event["publication_tier"] = tier
+        event["publication_treatment"] = {
+            "A": "primary_interpretation",
+            "B": "supporting_note",
+            "C": "technical_trace",
+        }[tier]
+        signature = _year_ahead_event_signature(event)
+        event["publication_signature"] = signature
+        existing = seen.get(signature)
+        if existing is not None:
+            existing_score = float(existing.get("editorial_salience_score", 0.0) or 0.0)
+            if score > existing_score:
+                existing["publication_tier"] = "C"
+                existing["publication_treatment"] = "technical_trace"
+                existing["publication_suppression_reason"] = "deduped_by_higher_salience_event"
+                seen[signature] = event
+                suppressions.append({"kept": _year_ahead_event_id(event, _year_ahead_primary_event_type(event)), "suppressed": _year_ahead_event_id(existing, _year_ahead_primary_event_type(existing)), "reason": "same_publication_signature"})
+            else:
+                event["publication_tier"] = "C"
+                event["publication_treatment"] = "technical_trace"
+                event["publication_suppression_reason"] = "deduped_by_higher_salience_event"
+                suppressions.append({"kept": _year_ahead_event_id(existing, _year_ahead_primary_event_type(existing)), "suppressed": _year_ahead_event_id(event, _year_ahead_primary_event_type(event)), "reason": "same_publication_signature"})
+        else:
+            seen[signature] = event
+
+    for event in events:
+        if isinstance(event, dict):
+            counts[_year_ahead_publication_tier(event)] = counts.get(_year_ahead_publication_tier(event), 0) + 1
+    return {
+        "version": _YEAR_AHEAD_PUBLICATION_VERSION,
+        "tier_counts": counts,
+        "dedupe_suppressions": suppressions,
+    }
+
+
+def _dedupe_year_ahead_publication_events(events: list[dict]) -> list[dict]:
+    selected: dict[str, dict] = {}
+    for event in events:
+        signature = str(event.get("publication_signature") or _year_ahead_event_signature(event))
+        existing = selected.get(signature)
+        if existing is None:
+            selected[signature] = event
+            continue
+        current_key = (
+            0 if _year_ahead_publication_tier(event) == "A" else 1,
+            -float(event.get("editorial_salience_score", 0.0) or 0.0),
+        )
+        existing_key = (
+            0 if _year_ahead_publication_tier(existing) == "A" else 1,
+            -float(existing.get("editorial_salience_score", 0.0) or 0.0),
+        )
+        if current_key < existing_key:
+            selected[signature] = event
+    return list(selected.values())
 
 
 def _event_month_relevance(
@@ -5839,6 +6577,7 @@ def _write_report_manifest(
             "suppressed_candidates": trace.get("suppressed_candidates", []),
         },
         "forecast_evidence_summary": _build_forecast_evidence_summary(context),
+        "qa_manifest": context.get("year_ahead_qa_manifest", {}),
         "environment": {
             "content_pack": content_pack,
             "jinja2_available": JINJA2_AVAILABLE,
@@ -6120,25 +6859,102 @@ def _aggregate_domain_names(months: list[dict], limit: int = 3) -> list[str]:
     ]
 
 
-def _describe_season_trend(months: list[dict]) -> str:
+def _season_month_score(month: dict) -> float:
+    primary = float(month.get("primary_event_count", month.get("event_count", 0)) or 0)
+    supporting = float(month.get("supporting_event_count", 0) or 0)
+    station = float(month.get("station_count", 0) or 0)
+    convergence = float(month.get("convergence_count", 0) or 0)
+    arc = float(month.get("arc_score", 0.0) or 0.0)
+    return round(arc + primary * 0.075 + supporting * 0.035 + station * 0.04 + convergence * 0.06, 4)
+
+
+def _season_contour_record(months: list[dict], pack_paths: dict | None = None) -> dict:
+    if not months:
+        return {
+            "contour_type": "sparse_integration",
+            "string_id": "season_contour_sparse_integration",
+            "confidence": "low",
+            "scores": [],
+            "selection_notes": ["No season months available."],
+        }
+
+    scores = [_season_month_score(month) for month in months]
+    peak = max(scores) if scores else 0.0
+    low = min(scores) if scores else 0.0
+    spread = peak - low
+    total_visible = sum(int(month.get("reader_facing_total", month.get("event_count", 0)) or 0) for month in months)
+    peak_indexes = [idx for idx, score in enumerate(scores) if peak and score >= peak * 0.86]
+
+    if peak <= 0.22 and total_visible <= 5:
+        contour = "sparse_integration"
+    elif len(peak_indexes) == 2 and spread > max(0.08, peak * 0.18):
+        contour = "two_peak"
+    elif spread <= max(0.08, peak * 0.18):
+        contour = "even"
+    elif len(scores) == 3 and scores[0] > scores[1] * 1.18 and scores[0] > scores[2] * 1.18:
+        contour = "gradual_taper" if scores[0] > scores[1] > scores[2] else "front_loaded"
+    elif len(scores) == 3 and scores[2] > scores[0] * 1.18 and scores[2] > scores[1] * 1.18:
+        contour = "late_building"
+    elif len(scores) == 3 and scores[1] > scores[0] * 1.15 and scores[1] > scores[2] * 1.15:
+        contour = "middle_hinge"
+    else:
+        contour = "single_clear_peak"
+
+    string_id = f"season_contour_{contour}"
+    scaffolds = _load_json_file((pack_paths or {}).get("editorial_scaffolds", ""))
+    contour_scaffold = {}
+    if isinstance(scaffolds, dict):
+        contour_scaffold = (scaffolds.get("season_contours") or {}).get(string_id, {})
+    confidence = "high" if spread > 0.12 or contour in {"even", "sparse_integration"} else "medium"
+    return {
+        "version": _YEAR_AHEAD_SEASON_CONTOUR_VERSION,
+        "contour_type": contour,
+        "string_id": string_id,
+        "text": contour_scaffold.get("text", "TODO"),
+        "content_status": contour_scaffold.get("content_status", "creative_required"),
+        "confidence": confidence,
+        "scores": scores,
+        "normalized_scores": _normalize_shape_values(scores),
+        "selection_notes": contour_scaffold.get("selection_notes", []),
+        "peak_month": months[max(range(len(scores)), key=scores.__getitem__)].get("name", "") if scores else "",
+    }
+
+
+def _describe_season_trend(months: list[dict], contour: dict | None = None) -> str:
     if not months:
         return "This portion of the year is still developing."
 
-    scores = [float(month.get("arc_score", 0.0) or 0.0) for month in months]
-    first = scores[0]
-    last = scores[-1]
+    contour = contour or _season_contour_record(months)
+    scores = contour.get("scores") or [_season_month_score(month) for month in months]
     peak_index = max(range(len(scores)), key=scores.__getitem__)
+    quiet_index = min(range(len(scores)), key=scores.__getitem__)
+    peak_name = months[peak_index]["name"]
+    quiet_name = months[quiet_index]["name"]
+    contour_type = str(contour.get("contour_type") or "single_clear_peak")
 
-    if len(scores) >= 2 and last > first * 1.2:
-        return f"Activity builds across the season and peaks in {months[peak_index]['name']}."
-    if len(scores) >= 2 and first > last * 1.2:
-        return f"The season opens with the strongest concentration, then gradually settles by {months[-1]['name']}."
-    if peak_index == 1 and len(months) == 3:
-        return f"The middle month, {months[peak_index]['name']}, acts as the hinge point for this stretch."
-    return "The season moves with a relatively even rhythm, without one month overpowering the others."
+    if contour_type == "front_loaded":
+        return f"The strongest concentration gathers in {months[0]['name']}; the selected-event contour then releases pressure across the next two chapters."
+    if contour_type == "gradual_taper":
+        return f"The strongest concentration gathers in {months[0]['name']}; the selected-event contour tapers toward {months[-1]['name']}."
+    if contour_type == "late_building":
+        return f"The selected-event contour builds toward {months[-1]['name']}, which carries the strongest concentration in this stretch."
+    if contour_type == "middle_hinge":
+        return f"The selected-event contour hinges on {peak_name}, with the surrounding months acting as approach and integration."
+    if contour_type == "sparse_integration":
+        return f"This is a sparse integration stretch; {peak_name} is the clearest month, but the selected-event load remains light overall."
+    if contour_type == "two_peak":
+        peak_months = [
+            months[index]["name"]
+            for index, score in enumerate(scores)
+            if score >= max(scores) * 0.86
+        ][:2]
+        return f"The selected-event contour has two emphasized months: {', '.join(peak_months)}."
+    if contour_type == "even":
+        return "The selected-event contour is genuinely even across this stretch, so the three monthly chapters can be read as a shared movement using the same score layer as the peak-month label."
+    return f"The selected-event contour has a single clear peak in {peak_name}, with {quiet_name} carrying the quieter point."
 
 
-def _build_season_summaries(months: list[dict]) -> list[dict]:
+def _build_season_summaries(months: list[dict], pack_paths: dict | None = None) -> list[dict]:
     season_titles = [
         "Opening Season",
         "Building Season",
@@ -6155,12 +6971,17 @@ def _build_season_summaries(months: list[dict]) -> list[dict]:
         peak_month = max(season_months, key=lambda month: float(month.get("arc_score", 0.0) or 0.0))
         quiet_month = min(season_months, key=lambda month: float(month.get("arc_score", 0.0) or 0.0))
         domains = _aggregate_domain_names(season_months, limit=3)
+        contour = _season_contour_record(season_months, pack_paths)
 
         summaries.append(
             {
                 "title": title,
                 "months_label": ", ".join(month["short_name"] for month in season_months),
-                "summary": _describe_season_trend(season_months),
+                "summary": _describe_season_trend(season_months, contour),
+                "contour": contour,
+                "seasonal_contour_selection": contour.get("contour_type", ""),
+                "seasonal_contour_string_id": contour.get("string_id", ""),
+                "seasonal_contour_confidence": contour.get("confidence", ""),
                 "peak_month": peak_month["name"],
                 "quiet_month": quiet_month["name"],
                 "dominant_domains": ", ".join(domains) if domains else "No dominant chart areas surfaced clearly.",
@@ -6213,14 +7034,17 @@ def _build_annual_rhythm_quarters(
             for name, score in sorted(scores.items(), key=lambda item: item[1], reverse=True)[:limit]
         ]
 
-    def _quarter_title(q_months: list[dict], peak_month: dict, quiet_month: dict) -> str:
+    def _quarter_title(q_months: list[dict], peak_month: dict, quiet_month: dict, contour: dict) -> str:
         first = str(q_months[0].get("short_name") or q_months[0].get("name") or "This stretch")
         last = str(q_months[-1].get("short_name") or q_months[-1].get("name") or "")
-        peak_score = float(peak_month.get("arc_score", 0.0) or 0.0)
-        quiet_score = float(quiet_month.get("arc_score", 0.0) or 0.0)
         peak_label = str(peak_month.get("name") or peak_month.get("short_name") or "One month")
-        if peak_score >= max(quiet_score * 1.2, quiet_score + 0.05):
+        contour_type = str(contour.get("contour_type") or "")
+        if contour_type in {"front_loaded", "middle_hinge", "late_building", "single_clear_peak", "gradual_taper"}:
             return f"{peak_label} Carries the Emphasis"
+        if contour_type == "two_peak":
+            return f"{first} to {last}: Two-Peak Stretch"
+        if contour_type == "sparse_integration":
+            return f"{first} to {last}: Integration Stretch"
         return f"{first} to {last}: Shared Rhythm"
 
     def _quarter_summary(
@@ -6229,25 +7053,9 @@ def _build_annual_rhythm_quarters(
         quiet_month: dict,
         domains: list[dict],
         dominant_cycles: list[dict],
+        contour: dict,
     ) -> str:
-        month_names = ", ".join(
-            str(month.get("name") or month.get("short_name") or "").strip()
-            for month in q_months
-        )
-        peak_score = float(peak_month.get("arc_score", 0.0) or 0.0)
-        quiet_score = float(quiet_month.get("arc_score", 0.0) or 0.0)
-        peak_name = str(peak_month.get("name") or peak_month.get("short_name") or "the strongest month")
-        quiet_name = str(quiet_month.get("name") or quiet_month.get("short_name") or "the quietest month")
-        if peak_score >= max(quiet_score * 1.2, quiet_score + 0.05):
-            sentence = (
-                f"Across {month_names}, the strongest concentration gathers in {peak_name}, "
-                f"while {quiet_name} carries the lighter part of the stretch."
-            )
-        else:
-            sentence = (
-                f"Across {month_names}, the rhythm stays comparatively even, "
-                "so the three monthly chapters are best read as a shared movement."
-            )
+        sentence = _describe_season_trend(q_months, contour)
         if domains:
             domain_text = ", ".join(domain["domain"] for domain in domains[:2])
             sentence += f" The most repeated chart area is {domain_text}."
@@ -6309,8 +7117,9 @@ def _build_annual_rhythm_quarters(
         )
         peak_month = max(q_months, key=lambda month: float(month.get("arc_score", 0.0) or 0.0))
         quiet_month = min(q_months, key=lambda month: float(month.get("arc_score", 0.0) or 0.0))
-        season_name = _quarter_title(q_months, peak_month, quiet_month)
-        summary = _quarter_summary(q_months, peak_month, quiet_month, activated_domains, dominant_cycles)
+        contour = _season_contour_record(q_months)
+        season_name = _quarter_title(q_months, peak_month, quiet_month, contour)
+        summary = _quarter_summary(q_months, peak_month, quiet_month, activated_domains, dominant_cycles, contour)
 
         station_in_quarter = any(
             _year_ahead_primary_event_type(e) == "planetary_station"
@@ -6349,6 +7158,10 @@ def _build_annual_rhythm_quarters(
                 "summary": summary,
                 "peak_month": peak_month.get("name", ""),
                 "quiet_month": quiet_month.get("name", ""),
+                "contour": contour,
+                "seasonal_contour_selection": contour.get("contour_type", ""),
+                "seasonal_contour_string_id": contour.get("string_id", ""),
+                "seasonal_contour_confidence": contour.get("confidence", ""),
                 "dominant_cycles": dominant_cycles,
                 "activated_domains": activated_domains,
                 "footnote": footnote,
@@ -6619,6 +7432,54 @@ _YEAR_AHEAD_ALLOWED_EVENT_TYPES = {
     "eclipse",
     "lunation",
     "convergence_window",
+}
+
+_YEAR_AHEAD_PUBLICATION_VERSION = "year_ahead_editorial_publication_v0.1.0"
+_YEAR_AHEAD_MONTH_TYPICAL_LIMIT = 9
+_YEAR_AHEAD_MONTH_ACTIVE_LIMIT = 12
+_YEAR_AHEAD_WINDOW_QA_VERSION = "year_ahead_window_normalization_v0.1.0"
+_YEAR_AHEAD_COUNT_QA_VERSION = "year_ahead_reader_count_v0.1.0"
+_YEAR_AHEAD_SEASON_CONTOUR_VERSION = "year_ahead_season_contour_v0.1.0"
+
+_YEAR_AHEAD_PRIMARY_READER_SECTIONS = {
+    "long_stories_in_motion",
+    "directed_clock_progression",
+    "directed_clock_solar_arc",
+}
+
+_YEAR_AHEAD_MAX_EXPECTED_WINDOW_DAYS = {
+    "natal_transit": {
+        "Sun": 45,
+        "Moon": 5,
+        "Mercury": 45,
+        "Venus": 45,
+        "Mars": 45,
+        "Jupiter": 150,
+        "Saturn": 210,
+        "Uranus": 365,
+        "Neptune": 365,
+        "Pluto": 365,
+    },
+    "progression": 920,
+    "solar_arc": 920,
+    "planetary_station": 3,
+    "house_ingress": 3,
+    "eclipse": 3,
+    "lunation": 3,
+    "convergence_window": 62,
+}
+
+_YEAR_AHEAD_PASS_HALF_WINDOW_DAYS = {
+    "Sun": 8,
+    "Moon": 1,
+    "Mercury": 8,
+    "Venus": 8,
+    "Mars": 10,
+    "Jupiter": 28,
+    "Saturn": 45,
+    "Uranus": 60,
+    "Neptune": 75,
+    "Pluto": 75,
 }
 
 _DISPLAY_STATUS_MAP = {
@@ -7526,6 +8387,31 @@ def _chapter_density_label(event_count: int) -> str:
     return "Dense chapter"
 
 
+def _month_reader_count_bundle(month: dict) -> dict:
+    events = [event for event in (month.get("events") or []) if isinstance(event, dict)]
+    major = [item for item in (month.get("major_timing_windows") or []) if isinstance(item, dict)]
+    convergences = [item for item in (month.get("convergence_windows") or []) if isinstance(item, dict)]
+    station_count = sum(1 for event in events if _year_ahead_primary_event_type(event) == "planetary_station")
+    carried_cycle_count = sum(1 for signal in (month.get("continuity_signals") or []) if isinstance(signal, dict) and signal.get("kind") == "shared_cycle")
+    primary_event_count = len(events)
+    supporting_event_count = len(major) + len(convergences)
+    reader_facing_total = primary_event_count + supporting_event_count
+    return {
+        "count_schema_version": _YEAR_AHEAD_COUNT_QA_VERSION,
+        "primary_event_count": primary_event_count,
+        "supporting_event_count": supporting_event_count,
+        "station_count": station_count,
+        "convergence_count": len(convergences),
+        "carried_cycle_count": carried_cycle_count,
+        "technical_only_count": int(month.get("technical_only_count", 0) or 0),
+        "reader_facing_total": reader_facing_total,
+        "rendered_major_timing_window_count": len(major),
+        "rendered_convergence_window_count": len(convergences),
+        "rendered_chronology_card_count": len(events),
+        "count_reconciliation_status": "ok",
+    }
+
+
 def _augment_months_for_template(months: list[dict], landmarks: list[dict] | None = None) -> list[dict]:
     augmented: list[dict] = []
     continuity_ready = _build_month_continuity(months, landmarks or [])
@@ -7537,7 +8423,8 @@ def _augment_months_for_template(months: list[dict], landmarks: list[dict] | Non
         item["looking_ahead"] = _build_looking_ahead(months, index)
         item["chapter_focus"] = _top_domain_name(month) or ""
         item["chapter_driver"] = _dominant_family(month) or ""
-        item["chapter_density"] = _chapter_density_label(int(month.get("event_count", 0) or 0))
+        item.update(_month_reader_count_bundle(item))
+        item["chapter_density"] = _chapter_density_label(int(item.get("reader_facing_total", 0) or 0))
         item["chapter_signal"] = (
             item["major_timing_windows"][0].get("title", "")
             if item["major_timing_windows"] else ""
@@ -8169,6 +9056,375 @@ def _build_ledger_months(months: list[dict]) -> list[dict]:
         for month in months
         if month.get("events")
     ]
+
+
+def _visible_year_ahead_event_cards(
+    months: list[dict],
+    landmarks: list[dict],
+    year_texture_progressions: list[dict] | None = None,
+    year_texture_solar_arc: list[dict] | None = None,
+) -> list[dict]:
+    cards: list[dict] = []
+    for landmark in landmarks or []:
+        if isinstance(landmark, dict):
+            card = dict(landmark)
+            card["_section_owner"] = "long_stories_in_motion"
+            cards.append(card)
+    for event in year_texture_progressions or []:
+        if isinstance(event, dict):
+            card = dict(event)
+            card["_section_owner"] = "directed_clock_progression"
+            cards.append(card)
+    for event in year_texture_solar_arc or []:
+        if isinstance(event, dict):
+            card = dict(event)
+            card["_section_owner"] = "directed_clock_solar_arc"
+            cards.append(card)
+    for month in months or []:
+        month_name = str(month.get("name") or "")
+        for event in month.get("events", []) or []:
+            if isinstance(event, dict):
+                card = dict(event)
+                card["_section_owner"] = f"monthly_chapter:{month_name}"
+                cards.append(card)
+    return cards
+
+
+def _normalized_visible_text(value: object) -> str:
+    text = re.sub(r"<[^>]+>", " ", str(value or ""))
+    text = html.unescape(text)
+    text = re.sub(r"[^a-z0-9]+", " ", text.lower())
+    return re.sub(r"\s+", " ", text).strip()
+
+
+def _event_card_paragraphs(card: dict) -> list[str]:
+    block = str(card.get("block") or "")
+    paragraphs = re.split(r"\n\s*\n+", block)
+    return [
+        paragraph.strip()
+        for paragraph in paragraphs
+        if len(_normalized_visible_text(paragraph).split()) >= 18
+    ]
+
+
+def _find_duplicate_event_paragraphs(cards: list[dict]) -> list[dict]:
+    seen: dict[str, dict] = {}
+    duplicates: list[dict] = []
+    for card in cards:
+        for paragraph in _event_card_paragraphs(card):
+            normalized = _normalized_visible_text(paragraph)
+            if len(normalized) < 120:
+                continue
+            prior = seen.get(normalized)
+            current = {
+                "event_id": str(card.get("event_id") or ""),
+                "title": str(card.get("title") or ""),
+                "section": str(card.get("_section_owner") or ""),
+            }
+            if prior:
+                duplicates.append({"first": prior, "second": current})
+            else:
+                seen[normalized] = current
+    return duplicates
+
+
+def _token_similarity(left: str, right: str) -> float:
+    left_tokens = set(_normalized_visible_text(left).split())
+    right_tokens = set(_normalized_visible_text(right).split())
+    if not left_tokens or not right_tokens:
+        return 0.0
+    return len(left_tokens & right_tokens) / len(left_tokens | right_tokens)
+
+
+def _find_high_similarity_event_paragraphs(cards: list[dict], threshold: float = 0.86) -> list[dict]:
+    paragraphs: list[tuple[dict, str]] = []
+    for card in cards:
+        for paragraph in _event_card_paragraphs(card):
+            paragraphs.append((card, paragraph))
+    findings: list[dict] = []
+    for index, (left_card, left_paragraph) in enumerate(paragraphs):
+        for right_card, right_paragraph in paragraphs[index + 1:]:
+            if left_card.get("event_id") == right_card.get("event_id"):
+                continue
+            score = _token_similarity(left_paragraph, right_paragraph)
+            if score >= threshold:
+                findings.append(
+                    {
+                        "similarity": round(score, 4),
+                        "first": {
+                            "event_id": str(left_card.get("event_id") or ""),
+                            "title": str(left_card.get("title") or ""),
+                            "section": str(left_card.get("_section_owner") or ""),
+                        },
+                        "second": {
+                            "event_id": str(right_card.get("event_id") or ""),
+                            "title": str(right_card.get("title") or ""),
+                            "section": str(right_card.get("_section_owner") or ""),
+                        },
+                    }
+                )
+    return findings[:25]
+
+
+def _find_local_repetition_flags(cards: list[dict], ngram_size: int = 5) -> list[dict]:
+    findings: list[dict] = []
+    for card in cards:
+        for paragraph in _event_card_paragraphs(card):
+            tokens = _normalized_visible_text(paragraph).split()
+            if len(tokens) < ngram_size * 2:
+                continue
+            seen: dict[str, int] = {}
+            repeats: list[str] = []
+            for index in range(0, len(tokens) - ngram_size + 1):
+                ngram = " ".join(tokens[index:index + ngram_size])
+                seen[ngram] = seen.get(ngram, 0) + 1
+                if seen[ngram] == 2:
+                    repeats.append(ngram)
+            if repeats:
+                findings.append(
+                    {
+                        "event_id": str(card.get("event_id") or ""),
+                        "title": str(card.get("title") or ""),
+                        "section": str(card.get("_section_owner") or ""),
+                        "repeated_phrases": repeats[:8],
+                        "resolution_options": [
+                            "select_more_specific_alternative_string",
+                            "suppress_redundant_module",
+                            "create_todo_string_slot",
+                        ],
+                    }
+                )
+    return findings[:50]
+
+
+def _find_within_event_redundancy_flags(cards: list[dict], threshold: float = 0.82) -> list[dict]:
+    findings: list[dict] = []
+    for card in cards:
+        paragraphs = _event_card_paragraphs(card)
+        if len(paragraphs) < 2:
+            continue
+        for index, left in enumerate(paragraphs):
+            for right in paragraphs[index + 1:]:
+                score = _token_similarity(left, right)
+                if score >= threshold:
+                    findings.append(
+                        {
+                            "event_id": str(card.get("event_id") or ""),
+                            "title": str(card.get("title") or ""),
+                            "section": str(card.get("_section_owner") or ""),
+                            "similarity": round(score, 4),
+                            "resolution_options": [
+                                "suppress_redundant_module",
+                                "assign_distinct_render_roles",
+                                "route_later_point_to_compact_reminder",
+                            ],
+                        }
+                    )
+    return findings[:50]
+
+
+def _visible_raw_label_findings(cards: list[dict]) -> list[dict]:
+    findings: list[dict] = []
+    raw_pattern = re.compile(r"\b[a-z]+_[a-z0-9_]+\b|\bya_[a-z0-9_]+\b", re.IGNORECASE)
+    for card in cards:
+        combined = " ".join(
+            str(card.get(key) or "")
+            for key in ("title", "subtitle", "event_label", "date_label", "block", "why_this_matters")
+        )
+        matches = sorted(set(raw_pattern.findall(combined)))
+        if matches:
+            findings.append(
+                {
+                    "event_id": str(card.get("event_id") or ""),
+                    "title": str(card.get("title") or ""),
+                    "section": str(card.get("_section_owner") or ""),
+                    "raw_labels": matches[:8],
+                }
+            )
+    return findings
+
+
+def _month_count_reconciliation(months: list[dict]) -> list[dict]:
+    results: list[dict] = []
+    for month in months or []:
+        rendered_primary = len([event for event in month.get("events", []) or [] if isinstance(event, dict)])
+        rendered_support = len(month.get("major_timing_windows", []) or []) + len(month.get("convergence_windows", []) or [])
+        expected_primary = int(month.get("primary_event_count", 0) or 0)
+        expected_support = int(month.get("supporting_event_count", 0) or 0)
+        expected_total = int(month.get("reader_facing_total", 0) or 0)
+        rendered_total = rendered_primary + rendered_support
+        status = "ok" if (
+            rendered_primary == expected_primary
+            and rendered_support == expected_support
+            and rendered_total == expected_total
+        ) else "mismatch"
+        results.append(
+            {
+                "month": str(month.get("name") or ""),
+                "status": status,
+                "rendered_primary_event_count": rendered_primary,
+                "primary_event_count": expected_primary,
+                "rendered_supporting_event_count": rendered_support,
+                "supporting_event_count": expected_support,
+                "rendered_reader_facing_total": rendered_total,
+                "reader_facing_total": expected_total,
+            }
+        )
+    return results
+
+
+def _seasonal_contour_manifest(season_summaries: list[dict]) -> list[dict]:
+    return [
+        {
+            "title": str(season.get("title") or ""),
+            "months_label": str(season.get("months_label") or ""),
+            "seasonal_contour_selection": str(season.get("seasonal_contour_selection") or ""),
+            "seasonal_contour_string_id": str(season.get("seasonal_contour_string_id") or ""),
+            "seasonal_contour_confidence": str(season.get("seasonal_contour_confidence") or ""),
+            "scores": (season.get("contour") or {}).get("scores", []),
+            "normalized_scores": (season.get("contour") or {}).get("normalized_scores", []),
+            "content_status": (season.get("contour") or {}).get("content_status", ""),
+        }
+        for season in season_summaries or []
+        if isinstance(season, dict)
+    ]
+
+
+def _build_year_ahead_qa_manifest(
+    *,
+    raw_events: list[dict],
+    published_events: list[dict],
+    months: list[dict],
+    landmarks: list[dict],
+    year_texture_progressions: list[dict] | None = None,
+    year_texture_solar_arc: list[dict] | None = None,
+    season_summaries: list[dict] | None = None,
+    publication_audit: dict,
+    window_audit: dict | None = None,
+    string_support_audit: dict | None = None,
+) -> dict:
+    window_audit = window_audit or {}
+    string_support_audit = string_support_audit or {}
+    cards = _visible_year_ahead_event_cards(months, landmarks, year_texture_progressions, year_texture_solar_arc)
+    duplicate_paragraphs = _find_duplicate_event_paragraphs(cards)
+    similar_paragraphs = _find_high_similarity_event_paragraphs(cards)
+    local_repetition_flags = _find_local_repetition_flags(cards)
+    within_event_flags = _find_within_event_redundancy_flags(cards)
+    raw_label_findings = _visible_raw_label_findings(cards)
+    count_reconciliation = _month_count_reconciliation(months)
+    count_mismatches = [row for row in count_reconciliation if row.get("status") != "ok"]
+    density_overages = [
+        {
+            "month": str(month.get("name") or ""),
+            "reader_facing_total": int(month.get("reader_facing_total", month.get("event_count", 0)) or 0),
+            "limit": _YEAR_AHEAD_MONTH_ACTIVE_LIMIT,
+        }
+        for month in months or []
+        if int(month.get("reader_facing_total", month.get("event_count", 0)) or 0) > _YEAR_AHEAD_MONTH_ACTIVE_LIMIT
+    ]
+    blocking_window_warnings = [
+        warning for warning in window_audit.get("window_duration_warnings", []) or []
+        if bool(warning.get("blocking", True))
+    ]
+    tier_a_missing_blocks = [
+        {
+            "event_id": str(card.get("event_id") or ""),
+            "title": str(card.get("title") or ""),
+            "section": str(card.get("_section_owner") or ""),
+        }
+        for card in cards
+        if _year_ahead_publication_tier(card) == "A"
+        and not str(card.get("block") or "").strip()
+    ]
+    tier_a_todo_tasks = [
+        task for task in string_support_audit.get("creative_tasks", []) or []
+        if str(task.get("publication_tier") or "").upper() == "A"
+    ]
+    unresolved_placeholders = [
+        {
+            "event_id": str(card.get("event_id") or ""),
+            "title": str(card.get("title") or ""),
+            "section": str(card.get("_section_owner") or ""),
+        }
+        for card in cards
+        if re.search(r"\[(?:TODO|TBD|PLACEHOLDER)\]|\{\{[^}]+\}\}", " ".join(str(card.get(key) or "") for key in ("title", "subtitle", "block", "why_this_matters")), re.IGNORECASE)
+    ]
+    blockers = []
+    for name, active, count in [
+        ("duplicate_full_paragraphs", bool(duplicate_paragraphs), len(duplicate_paragraphs)),
+        ("monthly_density_over_limit", bool(density_overages), len(density_overages)),
+        ("tier_a_missing_full_block", bool(tier_a_missing_blocks), len(tier_a_missing_blocks)),
+        ("tier_a_todo_prose", bool(tier_a_todo_tasks), len(tier_a_todo_tasks)),
+        ("unresolved_placeholders", bool(unresolved_placeholders), len(unresolved_placeholders)),
+        ("count_reconciliation_mismatch", bool(count_mismatches), len(count_mismatches)),
+        ("window_duration_warnings", bool(blocking_window_warnings), len(blocking_window_warnings)),
+        ("visible_raw_internal_labels", bool(raw_label_findings), len(raw_label_findings)),
+    ]:
+        if active:
+            blockers.append({"code": name, "count": count})
+
+    tier_counts = publication_audit.get("tier_counts", {})
+    primary_count = int(tier_counts.get("A", 0) or 0)
+    supporting_count = int(tier_counts.get("B", 0) or 0)
+    technical_count = int(tier_counts.get("C", 0) or 0)
+    reader_facing_total = sum(int(month.get("reader_facing_total", month.get("event_count", 0)) or 0) for month in months or []) + len(landmarks or []) + len(year_texture_progressions or []) + len(year_texture_solar_arc or [])
+
+    return {
+        "qa_manifest_version": "year_ahead_qa_manifest_v0.2.0",
+        "delivery_status": "blocked" if blockers else "review_ready",
+        "production_blockers": blockers,
+        "event_counts": {
+            "raw_detected": len([event for event in raw_events if isinstance(event, dict)]),
+            "published": len([event for event in published_events if isinstance(event, dict)]),
+            "rendered_cards": len(cards),
+            "tier_counts": publication_audit.get("tier_counts", {}),
+            "dedupe_suppression_count": len(publication_audit.get("dedupe_suppressions", []) or []),
+            "detected_event_count": len([event for event in raw_events if isinstance(event, dict)]),
+            "primary_event_count": primary_count,
+            "supporting_event_count": supporting_count,
+            "technical_only_count": technical_count,
+            "reader_facing_total": reader_facing_total,
+            "merged_cycle_count": int(window_audit.get("merged_cycle_count", 0) or 0),
+        },
+        "monthly_density": [
+            {
+                "month": str(month.get("name") or ""),
+                "primary_event_count": int(month.get("primary_event_count", month.get("event_count", 0)) or 0),
+                "supporting_event_count": int(month.get("supporting_event_count", 0) or 0),
+                "station_count": int(month.get("station_count", 0) or 0),
+                "carried_cycle_count": int(month.get("carried_cycle_count", 0) or 0),
+                "technical_only_count": int(month.get("technical_only_count", 0) or 0),
+                "reader_facing_total": int(month.get("reader_facing_total", month.get("event_count", 0)) or 0),
+                "status": "review" if int(month.get("reader_facing_total", month.get("event_count", 0)) or 0) > _YEAR_AHEAD_MONTH_TYPICAL_LIMIT else "ok",
+            }
+            for month in months or []
+        ],
+        "count_reconciliation": count_reconciliation,
+        "count_reconciliation_status": "ok" if not count_mismatches else "mismatch",
+        "window_normalization": window_audit,
+        "window_duration_warnings": window_audit.get("window_duration_warnings", []),
+        "duplicate_full_paragraphs": duplicate_paragraphs,
+        "high_similarity_passages": similar_paragraphs,
+        "paragraph_local_repetition_flags": local_repetition_flags,
+        "within_event_redundancy_flags": within_event_flags,
+        "tier_a_missing_full_block": tier_a_missing_blocks,
+        "unresolved_TODO_count": len(string_support_audit.get("creative_tasks", []) or []),
+        "tier_A_TODO_count": len(tier_a_todo_tasks),
+        "creative_content_tasks": string_support_audit.get("creative_tasks", []),
+        "seasonal_contour_selection": _seasonal_contour_manifest(season_summaries or []),
+        "seasonal_contour_confidence": [
+            item.get("seasonal_contour_confidence", "")
+            for item in _seasonal_contour_manifest(season_summaries or [])
+        ],
+        "unresolved_placeholders": unresolved_placeholders,
+        "semantic_similarity_flags": similar_paragraphs,
+        "encoding_warnings": [],
+        "internal_identifier_warnings": raw_label_findings[:25],
+        "birth_time_confidence_warnings": [],
+        "rendering_warnings": [],
+        "visible_raw_internal_labels": raw_label_findings[:25],
+        "publication_audit": publication_audit,
+    }
 
 
 def _most_activated_domains(
@@ -9104,6 +10360,89 @@ def _convergence_relationship_details(
     return list(dict.fromkeys(details))
 
 
+def _convergence_method_key(event: dict) -> str:
+    return str(
+        event.get("method_family")
+        or event.get("independence_group")
+        or event.get("method_variant")
+        or _year_ahead_primary_event_type(event)
+    ).strip()
+
+
+def _convergence_body_pair(event: dict) -> tuple[str, str]:
+    return (
+        _slugify_label(str(event.get("transit_planet") or event.get("transiting_body") or event.get("eclipse_type") or "")),
+        _slugify_label(str(event.get("natal_target") or event.get("natal_target_display") or event.get("house_number") or "")),
+    )
+
+
+def _convergence_is_minor_variant_only(anchor: dict, candidate: dict) -> bool:
+    if _convergence_body_pair(anchor) != _convergence_body_pair(candidate):
+        return False
+    families = {_year_ahead_aspect_family(anchor), _year_ahead_aspect_family(candidate)}
+    if "declination" in families and ("major" in families or "other" in families):
+        return True
+    return str(anchor.get("cycle_id") or "") and str(anchor.get("cycle_id") or "") == str(candidate.get("cycle_id") or "")
+
+
+def _convergence_materially_independent(anchor: dict, candidate: dict) -> bool:
+    if anchor is candidate:
+        return False
+    if str(anchor.get("cycle_id") or "") and str(anchor.get("cycle_id") or "") == str(candidate.get("cycle_id") or ""):
+        return False
+    if _convergence_is_minor_variant_only(anchor, candidate):
+        return False
+    if _convergence_body_pair(anchor) == _convergence_body_pair(candidate):
+        return _convergence_method_key(anchor) != _convergence_method_key(candidate)
+    return True
+
+
+def _convergence_promotion_rule(cluster: list[dict], house_domains: dict) -> dict:
+    method_keys = {
+        _convergence_method_key(event)
+        for event in cluster
+        if _convergence_method_key(event)
+    }
+    body_pairs = {
+        _convergence_body_pair(event)
+        for event in cluster
+        if any(_convergence_body_pair(event))
+    }
+    domains: dict[str, set[str]] = {}
+    for event in cluster:
+        event_key = str(event.get("event_id") or _year_ahead_event_id(event, _year_ahead_primary_event_type(event)))
+        for domain in _convergence_domain_set(event, house_domains):
+            domains.setdefault(domain, set()).add(event_key)
+
+    has_major_cycle = any(
+        _year_ahead_primary_event_type(event) == "natal_transit"
+        and float(event.get("duration_days", 0.0) or 0.0) >= 42
+        and _year_ahead_aspect_family(event) == "major"
+        for event in cluster
+    )
+    separate_same_domain = any(len(event_ids) >= 2 for event_ids in domains.values()) and len(body_pairs) >= 2
+
+    if len(method_keys) >= 2:
+        rule = "two_materially_independent_timing_methods"
+        promotable = True
+    elif has_major_cycle and len(method_keys) >= 2:
+        rule = "major_cycle_reinforced_by_separate_method"
+        promotable = True
+    elif separate_same_domain:
+        rule = "separate_events_same_domain_overlap"
+        promotable = True
+    else:
+        rule = "technical_cluster_only"
+        promotable = False
+    return {
+        "promotable": promotable,
+        "rule": rule,
+        "method_keys": sorted(method_keys),
+        "body_pair_count": len(body_pairs),
+        "domain_event_counts": {domain: len(event_ids) for domain, event_ids in domains.items()},
+    }
+
+
 def _convergence_scope_label(scope: str) -> str:
     return {
         "brief": "Brief convergence",
@@ -9166,15 +10505,53 @@ def _build_convergence_window(
     house_domains: dict,
     birth_time_status: str,
     relationship_labels: list[str],
+    promotion_record: dict | None = None,
 ) -> dict:
     canonical_cluster = [_canonicalize_year_ahead_event(event, house_domains) for event in cluster]
     canonical_cluster.sort(
         key=lambda event: event.get("peak_datetime") or event.get("entry_datetime") or datetime.min.replace(tzinfo=timezone.utc)
     )
-    entry_dates = [event.get("entry_datetime") or event.get("peak_datetime") for event in canonical_cluster if event.get("entry_datetime") or event.get("peak_datetime")]
-    leave_dates = [event.get("leave_datetime") or event.get("peak_datetime") or event.get("entry_datetime") for event in canonical_cluster if event.get("leave_datetime") or event.get("peak_datetime") or event.get("entry_datetime")]
-    start_dt = min(entry_dates) if entry_dates else None
-    end_dt = max(leave_dates) if leave_dates else start_dt
+    local_bounds: list[tuple[datetime, datetime, str]] = []
+    peak_dates: list[datetime] = []
+    for event in canonical_cluster:
+        publication_window = event.get("publication_window") or {}
+        local_start = _dt_or_none(publication_window.get("window_start"))
+        local_end = _dt_or_none(publication_window.get("window_end"))
+        peak = event.get("peak_datetime") or _dt_or_none(publication_window.get("exact_date")) or event.get("entry_datetime")
+        if isinstance(peak, datetime):
+            peak_dates.append(peak)
+        if not local_start:
+            local_start = event.get("entry_datetime") or peak
+        if not local_end:
+            local_end = event.get("leave_datetime") or peak or local_start
+        if local_start and local_end:
+            local_bounds.append(
+                (
+                    local_start,
+                    local_end,
+                    str(event.get("event_id") or event.get("canonical_event_id") or ""),
+                )
+            )
+    if local_bounds:
+        overlap_start = max(item[0] for item in local_bounds)
+        overlap_end = min(item[1] for item in local_bounds)
+        if overlap_start <= overlap_end:
+            start_dt = overlap_start
+            end_dt = overlap_end
+            overlap_method = "pass_local_window_overlap"
+        else:
+            sorted_peaks = sorted(peak_dates)
+            start_dt = sorted_peaks[0] if sorted_peaks else min(item[0] for item in local_bounds)
+            end_dt = sorted_peaks[-1] if sorted_peaks else max(item[1] for item in local_bounds)
+            if start_dt and end_dt and _days_between(start_dt, end_dt) > _CONVERGENCE_PROXIMITY_DAYS * 2:
+                midpoint = start_dt + (end_dt - start_dt) / 2
+                start_dt = midpoint - timedelta(days=_CONVERGENCE_PROXIMITY_DAYS)
+                end_dt = midpoint + timedelta(days=_CONVERGENCE_PROXIMITY_DAYS)
+            overlap_method = "peak_proximity_fallback"
+    else:
+        start_dt = peak_dates[0] if peak_dates else None
+        end_dt = peak_dates[-1] if peak_dates else start_dt
+        overlap_method = "peak_only"
     confidence = "exact" if birth_time_status == "exact" else "reduced"
     field_scores: dict[str, float] = {}
     for event in canonical_cluster:
@@ -9227,6 +10604,20 @@ def _build_convergence_window(
         "activated_territories": territories[:3],
         "constituent_event_ids": [str(event.get("event_id") or "") for event in canonical_cluster if str(event.get("event_id") or "").strip()],
         "selection_rationale": _convergence_selection_rationale(canonical_cluster, relationship_labels, territories, field_focus),
+        "promotion_rule": (promotion_record or {}).get("rule", ""),
+        "promotion_record": promotion_record or {},
+        "overlap_calculation": {
+            "method": overlap_method,
+            "supporting_event_ids": [item[2] for item in local_bounds if item[2]],
+            "local_bounds": [
+                {
+                    "event_id": event_id,
+                    "window_start": _iso_date_or_none(start),
+                    "window_end": _iso_date_or_none(end),
+                }
+                for start, end, event_id in local_bounds
+            ],
+        },
         "reader_synthesis": block_text,
         "crosses_month_boundary": crosses_month_boundary,
         "shared_emphasis": shared_emphasis,
@@ -9342,6 +10733,8 @@ def _detect_and_frame_convergences_legacy_dead(
                 continue
             candidate_dt = candidate.get("peak_datetime")
             if candidate_dt is None or candidate_dt > anchor_dt + window:
+                continue
+            if not _convergence_materially_independent(anchor, candidate):
                 continue
             if not _convergence_dates_link(anchor, candidate):
                 continue
@@ -9493,6 +10886,9 @@ def _detect_and_frame_convergences(
             continue
         if not any(_is_convergence_anchor_event(event) for event in cluster):
             continue
+        promotion_record = _convergence_promotion_rule(cluster, house_domains)
+        if not promotion_record.get("promotable"):
+            continue
 
         for event in cluster:
             consumed_ids.add(id(event))
@@ -9513,6 +10909,7 @@ def _detect_and_frame_convergences(
                 house_domains,
                 birth_time_status,
                 relationship_labels,
+                promotion_record,
             )
         )
 
@@ -9910,14 +11307,51 @@ def _build_year_ahead_context(
     rendered_cycle_ids: set = set()
     birth_meta = _build_birth_metadata(payload)
 
+    window_audit = _normalize_year_ahead_event_windows(all_events)
+    publication_audit = _assign_year_ahead_publication_tiers(all_events)
+    reader_candidate_events = [
+        event for event in all_events
+        if _year_ahead_publication_tier(event) in {"A", "B"}
+    ]
+
     convergence_events = _detect_and_frame_convergences(
-        all_events,
+        reader_candidate_events,
         pack,
         conv_tracker,
         HOUSE_DOMAINS,
         birth_meta["birth_time_status"],
     )
     all_events = list(all_events) + convergence_events
+    window_audit = _normalize_year_ahead_event_windows(all_events)
+    publication_audit = _assign_year_ahead_publication_tiers(all_events)
+    string_support_audit = _attach_year_ahead_string_support(all_events, pack, HOUSE_DOMAINS)
+    creative_demotions = _demote_tier_a_creative_required(all_events)
+    if creative_demotions:
+        for task in string_support_audit.get("creative_tasks", []) or []:
+            for event in all_events:
+                if str(event.get("creative_string_id") or "") == str(task.get("string_id") or ""):
+                    task["publication_tier"] = _year_ahead_publication_tier(event)
+                    break
+    publication_audit = _recount_publication_tiers(
+        all_events,
+        publication_audit,
+        {
+            "creative_required_demotions": creative_demotions,
+            "string_support": {
+                "ready_event_count": string_support_audit.get("ready_event_count", 0),
+                "creative_required_count": string_support_audit.get("creative_required_count", 0),
+                "creative_task_count": len(string_support_audit.get("creative_tasks", []) or []),
+            },
+        },
+    )
+    published_events = [
+        event for event in all_events
+        if _year_ahead_publication_tier(event) in {"A", "B"}
+    ]
+    published_transit_events = [
+        event for event in published_events
+        if _year_ahead_primary_event_type(event) == "natal_transit"
+    ]
 
     # A "landmark" is intentionally only a sustained, high-intensity natal transit.
     # Landmarks represent sustained developmental themes, so they are selected
@@ -9926,9 +11360,11 @@ def _build_year_ahead_context(
     # cycles as landmarks while the reader-facing tier label uses concentration.
     landmark_candidates = [
         event
-        for event in transit_events
+        for event in published_transit_events
         if (
             event.get("transit_planet") != "Mars"
+            and _year_ahead_publication_tier(event) == "A"
+            and _has_year_ahead_full_block(event, pack)
             and event.get("structural_score", event.get("combined_intensity_score", 0.0)) >= LANDMARK_MIN_SCORE
             and event.get("duration_days", 0.0) >= LANDMARK_MIN_DAYS
         )
@@ -9944,10 +11380,12 @@ def _build_year_ahead_context(
 
     year_arc_candidates = [
         event
-        for event in transit_events
+        for event in published_transit_events
         if (
             _event_type_matches(event, "transit", "natal_transit")
             and event.get("transit_planet") != "Mars"
+            and _year_ahead_publication_tier(event) == "A"
+            and _has_year_ahead_full_block(event, pack)
             and float(event.get("duration_days", 0.0) or 0.0) >= LANDMARK_MIN_DAYS
         )
     ]
@@ -9966,6 +11404,11 @@ def _build_year_ahead_context(
                                rendered_cycle_ids=rendered_cycle_ids)
         for event in year_arc_candidates[:LANDMARK_MAX_COUNT]
     ]
+    rendered_publication_signatures = {
+        _year_ahead_full_prose_signature(event)
+        for event in year_arc_candidates[:LANDMARK_MAX_COUNT]
+        if _year_ahead_full_prose_signature(event)
+    }
 
     # Progressions & Solar Arc run on their own season-scale clock. The scanners
     # stay high-recall for diagnostics; the client report receives only a small
@@ -9974,6 +11417,25 @@ def _build_year_ahead_context(
         year_texture_progressions,
         year_texture_solar_arc,
     )
+    _normalize_year_ahead_event_windows(year_texture_progressions + year_texture_solar_arc)
+    year_texture_string_audit = _attach_year_ahead_string_support(
+        year_texture_progressions + year_texture_solar_arc,
+        pack,
+        HOUSE_DOMAINS,
+    )
+    string_support_audit.setdefault("creative_tasks", []).extend(
+        year_texture_string_audit.get("creative_tasks", []) or []
+    )
+    string_support_audit["ready_event_count"] = int(string_support_audit.get("ready_event_count", 0) or 0) + int(year_texture_string_audit.get("ready_event_count", 0) or 0)
+    string_support_audit["creative_required_count"] = int(string_support_audit.get("creative_required_count", 0) or 0) + int(year_texture_string_audit.get("creative_required_count", 0) or 0)
+    year_texture_progressions = [
+        event for event in year_texture_progressions
+        if not event.get("creative_required")
+    ]
+    year_texture_solar_arc = [
+        event for event in year_texture_solar_arc
+        if not event.get("creative_required")
+    ]
     year_texture_progressions = [
         _format_timeline_event(event, HOUSE_DOMAINS, pack, standard_report_bundle, payload, index_results, lens_ctx,
                                rendered_cycle_ids=rendered_cycle_ids)
@@ -9988,7 +11450,7 @@ def _build_year_ahead_context(
     # Build the annual orientation from the aggregated slow-planet pattern
     # rather than whichever individual event happens to win a score tie.
     dominant_event, dominant_planet, dominant_character = _dominant_slow_theme(
-        transit_events
+        published_transit_events
     )
 
     year_overview_block = ""
@@ -10031,7 +11493,7 @@ def _build_year_ahead_context(
         # long-running context.
         events_peaking = []
         events_active = []
-        for event in all_events:
+        for event in published_events:
             peak_datetime = event.get("peak_datetime")
             if peak_datetime is not None and period_start <= peak_datetime < period_end:
                 events_peaking.append(event)
@@ -10042,8 +11504,21 @@ def _build_year_ahead_context(
                 period_end,
             ):
                 events_active.append(event)
+        technical_only_count = len(
+            [
+                event for event in all_events
+                if isinstance(event, dict)
+                and _year_ahead_publication_tier(event) == "C"
+                and event.get("peak_datetime") is not None
+                and period_start <= event["peak_datetime"] < period_end
+            ]
+        )
 
-        selected_events = _filter_monthly_events(events_peaking)
+        selected_events = _filter_monthly_events(
+            events_peaking,
+            pack,
+            rendered_publication_signatures,
+        )
         formatted_events = [
             _format_timeline_event(event, HOUSE_DOMAINS, pack, standard_report_bundle, payload, index_results, lens_ctx,
                                    rendered_cycle_ids=rendered_cycle_ids)
@@ -10113,6 +11588,8 @@ def _build_year_ahead_context(
                 ),
                 "events": formatted_events,
                 "event_count": len(formatted_events),
+                "primary_event_count": len(formatted_events),
+                "technical_only_count": technical_only_count,
             }
         )
 
@@ -10212,14 +11689,14 @@ def _build_year_ahead_context(
         HOUSE_DOMAINS,
     )
     calculation_record = _build_calculation_record(payload, variables, report_start, report_end)
-    season_summaries = _build_season_summaries(months)
-    annual_rhythm_quarters = _build_annual_rhythm_quarters(months, all_events, HOUSE_DOMAINS)
+    season_summaries = _build_season_summaries(months, pack)
+    annual_rhythm_quarters = _build_annual_rhythm_quarters(months, published_events, HOUSE_DOMAINS)
     forecast_shape_details = _build_forecast_shape_details(months, birth_meta["birth_time_status"])
     for month, detail in zip(months, forecast_shape_details.get("months", [])):
         month["shape_percent"] = detail.get("display_value", 0)
-    _max_events = max((m["event_count"] for m in months), default=1) or 1
+    _max_events = max((m.get("reader_facing_total", m.get("event_count", 0)) for m in months), default=1) or 1
     for m in months:
-        m["event_count_percent"] = max(4, round(m["event_count"] / _max_events * 100))
+        m["event_count_percent"] = max(4, round(m.get("reader_facing_total", m.get("event_count", 0)) / _max_events * 100))
     orientation_summary = _build_year_orientation_summary(
         months,
         landmarks,
@@ -10232,8 +11709,8 @@ def _build_year_ahead_context(
         HOUSE_DOMAINS,
     )
     forecast_climate = _build_forecast_climate(
-        transit_events,
-        all_events,
+        published_transit_events,
+        published_events,
         convergence_events,
         landmarks,
         HOUSE_DOMAINS,
@@ -10241,7 +11718,7 @@ def _build_year_ahead_context(
         pack,
     )
     predictive_evidence_events = (
-        all_events
+        published_events
         + year_texture_progressions
         + year_texture_solar_arc
         + timeline.get("return_events", [])
@@ -10270,6 +11747,30 @@ def _build_year_ahead_context(
         tier5_predictive_surfaces,
     )
     ledger_months = _build_ledger_months(months)
+    publication_audit = _recount_publication_tiers(
+        all_events,
+        publication_audit,
+        {
+            "creative_required_demotions": publication_audit.get("creative_required_demotions", []),
+            "string_support": {
+                "ready_event_count": string_support_audit.get("ready_event_count", 0),
+                "creative_required_count": string_support_audit.get("creative_required_count", 0),
+                "creative_task_count": len(string_support_audit.get("creative_tasks", []) or []),
+            },
+        },
+    )
+    year_ahead_qa_manifest = _build_year_ahead_qa_manifest(
+        raw_events=all_events,
+        published_events=published_events,
+        months=months,
+        landmarks=landmarks,
+        year_texture_progressions=year_texture_progressions,
+        year_texture_solar_arc=year_texture_solar_arc,
+        season_summaries=season_summaries,
+        publication_audit=publication_audit,
+        window_audit=window_audit,
+        string_support_audit=string_support_audit,
+    )
 
     from config import PALETTES as _PALETTES
     __ya_palette_name = variables.get("palette", "vibrant")
@@ -10295,6 +11796,11 @@ def _build_year_ahead_context(
         "timeline_start": timeline.get("report_start"),
         "timeline_end": timeline.get("report_end"),
         "timeline_event_count": len(all_events),
+        "published_timeline_event_count": len(published_events),
+        "year_ahead_publication_audit": publication_audit,
+        "year_ahead_window_audit": window_audit,
+        "year_ahead_string_support_audit": string_support_audit,
+        "year_ahead_qa_manifest": year_ahead_qa_manifest,
         "landmarks": landmarks,
         # Compatibility alias for any downstream code still using the old key.
         "landmark_influences": landmarks,

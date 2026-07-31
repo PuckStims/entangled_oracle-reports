@@ -655,6 +655,9 @@ def _reader_activity_score_components(
     dignity_supported = dignity_value >= 0.0
     if not dignity_supported:
         dignity_value = 0.0
+    cazimi_multiplier = _safe_float(event.get("cazimi_multiplier"), 1.0)
+    cazimi_active = bool(event.get("source_cazimi")) and cazimi_multiplier > 1.0
+    cazimi_contribution = min(0.08, max(0.0, cazimi_multiplier - 1.0) * 0.04) if cazimi_active else 0.0
 
     score_components = {
         "timing_exactness": _score_component(
@@ -670,8 +673,9 @@ def _reader_activity_score_components(
         "method_weight": _score_component(
             method_baseline / max_baseline if max_baseline else 0.0,
             0.0,
-            status="diagnostic_structural_baseline",
-            source="EVENT_TYPE_BASELINES",
+            contribution=cazimi_contribution,
+            status="supported_cazimi_method_boost" if cazimi_active else "diagnostic_structural_baseline",
+            source="cazimi_multiplier" if cazimi_active else "EVENT_TYPE_BASELINES",
         ),
         "time_lord_support": _score_component(
             0.0,
@@ -831,6 +835,12 @@ def enrich_forecast_event(event: dict, profile: dict[str, Any]) -> dict[str, Any
         "single_pass": 0.03,
         "standalone": 0.0,
     }.get(pass_sequence, 0.0)
+    cazimi_multiplier = _safe_float(enriched.get("cazimi_multiplier"), 1.0)
+    cazimi_structural_bonus = (
+        min(0.12, max(0.0, cazimi_multiplier - 1.0) * 0.06)
+        if bool(enriched.get("source_cazimi")) and cazimi_multiplier > 1.0
+        else 0.0
+    )
 
     baseline = EVENT_TYPE_BASELINES.get(event_type, 0.24)
     structural_importance = _clamp(
@@ -844,6 +854,7 @@ def enrich_forecast_event(event: dict, profile: dict[str, Any]) -> dict[str, Any
             + duration_factor * 0.16
             + pass_bonus,
         )
+        + cazimi_structural_bonus
     )
 
     activity_score, score_components, score_totals = _reader_activity_score_components(
@@ -875,6 +886,8 @@ def enrich_forecast_event(event: dict, profile: dict[str, Any]) -> dict[str, Any
         structural_importance,
         theme_convergence,
     )
+    if cazimi_structural_bonus:
+        enriched["cazimi_structural_bonus"] = round(cazimi_structural_bonus, 4)
     enriched["shared_life_domains"] = matched_theme_labels[:3]
     enriched["activated_house_ruler"] = house_ruler or ""
     enriched["activated_structures"] = [
@@ -1057,16 +1070,66 @@ def link_related_forecast_events(
             ]
             components = transit.get("score_components")
             if isinstance(components, dict) and "time_lord_support" in components:
+                support_value = min(1.0, max(0.0, weight_modifier - 1.0) / 0.35 if weight_modifier > 1.0 else 0.0)
                 components["time_lord_support"] = _score_component(
-                    min(1.0, max(0.0, weight_modifier - 1.0) / 0.35 if weight_modifier > 1.0 else 0.0),
+                    support_value,
                     0.0,
                     status="diagnostic_annual_profection_support",
                     source="annual_profection",
+                    contribution=min(0.06, support_value * 0.06),
                 )
-                transit["ranking_diagnostics"] = build_ranking_diagnostics(
-                    transit,
-                    context="reader_activity",
+                _sync_event_score_from_components(transit, context="reader_activity")
+
+    monthly_profections = [tl for tl in time_lords if str(tl.get("system") or "") == "monthly_profection"]
+    if monthly_profections:
+        for transit in transits:
+            peak_dt = transit.get("peak_datetime")
+            if peak_dt is None:
+                continue
+            active_period = _covering_period(monthly_profections, peak_dt)
+            if active_period is None:
+                continue
+            period_lord = str(active_period.get("period_lord") or "").strip()
+            period_house = active_period.get("period_house")
+            transit_planet = str(transit.get("transit_planet") or "").strip()
+            target_name = _event_target_name(transit)
+            house_number = _event_house_number(transit)
+            is_time_lord_transit = bool(period_lord) and transit_planet == period_lord
+            is_aspect_to_lord = bool(period_lord) and target_name == period_lord
+            is_profected_house = bool(period_house) and house_number == period_house
+            if not (is_time_lord_transit or is_aspect_to_lord or is_profected_house):
+                continue
+            weight_modifier = float(active_period.get("weight_modifier", 1.0) or 1.0)
+            monthly_support = min(1.0, max(0.0, weight_modifier - 1.0) / 0.25 if weight_modifier > 1.0 else 0.0)
+            transit["structural_importance"] = round(
+                _clamp(float(transit.get("structural_importance", 0.0) or 0.0) * min(1.12, weight_modifier)), 4,
+            )
+            transit["structural_score"] = transit["structural_importance"]
+            transit["theme_convergence"] = round(
+                _clamp(float(transit.get("theme_convergence", 0.0) or 0.0) * min(1.10, weight_modifier)), 4,
+            )
+            transit["monthly_profection_linkage"] = [
+                label
+                for label, is_active in [
+                    ("time_lord_transit", is_time_lord_transit),
+                    ("aspect_to_time_lord", is_aspect_to_lord),
+                    ("profected_house", is_profected_house),
+                ]
+                if is_active
+            ]
+            components = transit.get("score_components")
+            if isinstance(components, dict) and "time_lord_support" in components:
+                current = components.get("time_lord_support")
+                current_value = _safe_float(current.get("value")) if isinstance(current, dict) else 0.0
+                current_contribution = _safe_float(current.get("contribution")) if isinstance(current, dict) else 0.0
+                components["time_lord_support"] = _score_component(
+                    min(1.0, current_value + monthly_support * 0.72),
+                    0.0,
+                    status="supported_annual_and_monthly_profection" if current_contribution else "supported_monthly_profection",
+                    source="annual_profection+monthly_profection" if current_contribution else "monthly_profection",
+                    contribution=min(0.09, current_contribution + monthly_support * 0.035),
                 )
+                _sync_event_score_from_components(transit, context="reader_activity")
 
     for station in stations:
         if not bool(station.get("near_active_transit_cycle")):
