@@ -90,6 +90,94 @@ def annual_profection_periods(natal_payload: dict, start_date: datetime, end_dat
     return periods
 
 
+def monthly_profection_periods(natal_payload: dict, start_date: datetime, end_date: datetime) -> list[dict]:
+    """
+    Returns monthly profection TimeLordPeriod records intersecting the report window.
+
+    Monthly profections advance the profected house by one sign per month,
+    starting from the annual profected house on each birthday. Each month
+    gets its own time lord (traditional ruler of the monthly profected sign).
+    """
+    birth_date = _birth_date(natal_payload)
+    asc_sign = _ascendant_sign(natal_payload)
+    if birth_date is None or asc_sign not in SIGNS:
+        return []
+
+    start = _ensure_utc(start_date)
+    end = _ensure_utc(end_date)
+    start_year = start.year - 1
+    end_year = end.year + 1
+    periods: list[dict] = []
+
+    for year in range(start_year, end_year + 1):
+        birthday = _birthday_in_year(birth_date, year)
+        next_birthday = _birthday_in_year(birth_date, year + 1)
+        age = _age_on_birthday(birth_date, year)
+        annual_house = (int(age) % 12) + 1
+
+        # Each month advances one sign from the annual profected house
+        for month_offset in range(12):
+            # Monthly period runs from birthday + N months to birthday + (N+1) months
+            month_start_date = _add_months(birthday, month_offset)
+            month_end_date = _add_months(birthday, month_offset + 1)
+            period_start = datetime.combine(month_start_date, time.min, tzinfo=timezone.utc)
+            period_end = datetime.combine(month_end_date, time.min, tzinfo=timezone.utc)
+
+            # Skip if entirely outside the report window
+            if period_end <= start or period_start >= end:
+                continue
+
+            monthly_house = ((annual_house - 1 + month_offset) % 12) + 1
+            monthly_sign = _profected_sign(asc_sign, monthly_house)
+            monthly_lord = TRADITIONAL_RULERS[monthly_sign]
+            lord_state = _lord_natal_state(natal_payload, monthly_lord)
+            confidence_state = _birth_time_confidence(natal_payload)
+            confidence = 0.78 if confidence_state != "unknown" else 0.60
+
+            record = {
+                "schema_version": TIME_LORD_PERIOD_SCHEMA_VERSION,
+                "period_id": "",
+                "system": "monthly_profection",
+                "level": "month",
+                "parent_period_id": None,  # linked to annual at consumption time
+                "start_at": _iso_datetime(period_start),
+                "end_at": _iso_datetime(period_end),
+                "period_lord": monthly_lord,
+                "period_sign": monthly_sign,
+                "period_house": monthly_house,
+                "lord_natal_state": lord_state,
+                "is_peak": False,
+                "is_loosing_of_the_bond": False,
+                "activated_house_topics": list(HOUSE_TOPICS[monthly_house]),
+                "natal_anchor_ids": [],
+                "weight_modifier": 1.06,  # gentler than annual (1.12)
+                "confidence": round(confidence, 4),
+                "confidence_components": {
+                    "calculation_integrity": 0.99,
+                    "method_maturity": 0.78,
+                    "birth_time_state": 1.0 if confidence_state != "unknown" else 0.70,
+                },
+                "birth_time_dependency": "none",
+                "report_surface_visibility": ["internal_rd", "engineering_diagnostic"],
+                "formula_version": FORMULA_VERSION,
+                "policy_version": POLICY_VERSION,
+                "provenance": {
+                    "scanner": "engine.profections.monthly_profection_periods",
+                    "scanner_version": FORMULA_VERSION,
+                    "birth_date": birth_date.isoformat(),
+                    "age": age,
+                    "month_offset": month_offset,
+                    "annual_profected_house": annual_house,
+                    "ascendant_sign": asc_sign,
+                },
+            }
+            record["period_id"] = _period_id(record)
+            periods.append(record)
+
+    periods.sort(key=lambda period: period["start_at"])
+    return periods
+
+
 def annual_profection_for_age(natal_payload: dict, age: int) -> dict | None:
     """Convenience API for tests and downstream topic checks."""
     asc_sign = _ascendant_sign(natal_payload)
@@ -248,3 +336,15 @@ def _ensure_utc(value: datetime) -> datetime:
     if value.tzinfo is None:
         return value.replace(tzinfo=timezone.utc)
     return value.astimezone(timezone.utc)
+
+
+def _add_months(d: date, months: int) -> date:
+    """Adds a specific number of months to a date, preserving day if possible."""
+    month = d.month - 1 + months
+    year = d.year + month // 12
+    month = month % 12 + 1
+    day = d.day
+    # Clamp day to the valid range for the new month/year
+    import calendar
+    max_day = calendar.monthrange(year, month)[1]
+    return date(year, month, min(day, max_day))

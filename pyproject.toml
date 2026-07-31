@@ -42,3 +42,27 @@ include = [
     "selectors*",
     "visuals*",
 ]
+
+[tool.pytest.ini_options]
+testpaths = [
+    "tests",
+    "test_offline_location.py",
+]
+norecursedirs = [
+    ".git",
+    ".venv",
+    ".pytest_cache",
+    ".claude",
+    ".codex",
+    ".agents",
+    "archive",
+    "audit_output",
+    "entangled-astrology-v0.1",
+    "entangled-dashboard-v0.1",
+    "node_modules",
+    "output",
+    "outputs",
+    "runtime",
+    "tmp",
+    "__pycache__",
+]

@@ -141,8 +141,10 @@ SIGNS = [
 ASPECTS = [
     ("Conjunction", 0),
     ("Sextile", 60),
+    ("Quintile", 72),
     ("Square", 90),
     ("Trine", 120),
+    ("Biquintile", 144),
     ("Opposition", 180),
 ]
 
@@ -244,16 +246,28 @@ def generate_whole_sign_houses(ascendant_longitude: float) -> dict:
 
 # ── Data Builders ──────────────────────────────────────────────
 
+
+def _is_cazimi(longitude: float, sun_longitude: float | None) -> bool:
+    """Returns True when a body is within 1° of the Sun (cazimi)."""
+    if sun_longitude is None:
+        return False
+    sep = abs((longitude - sun_longitude) % 360)
+    if sep > 180:
+        sep = 360 - sep
+    return sep <= 1.0
+
 def build_body_data(
     longitude: float,
     speed: float,
     ascendant_longitude: float,
+    sun_longitude: float = None,
 ) -> dict:
     """Creates one standardized body record for the Entangled Oracle payload."""
     return {
         "longitude": round(longitude % 360, 4),
         "speed": round(speed, 4),
         "retrograde": is_retrograde(speed),
+        "cazimi": _is_cazimi(longitude, sun_longitude),
         "house": whole_sign_house(longitude, ascendant_longitude),
         **zodiac_position(longitude),
     }
@@ -496,6 +510,10 @@ def generate_payload(birth_data: dict) -> dict:
 
     # ── Standard Planets ───────────────────────────────────────
 
+    # Pre-compute Sun longitude for cazimi detection
+    _sun_coords, _sun_flag = swe.calc_ut(julian_day, swe.SUN, CALC_FLAGS)
+    _sun_longitude = float(_sun_coords[0] % 360)
+
     for body_id, body_name in STANDARD_PLANETS.items():
         coordinates, _flag = swe.calc_ut(
             julian_day,
@@ -510,6 +528,7 @@ def generate_payload(birth_data: dict) -> dict:
             body_longitude,
             body_speed,
             ascendant,
+            sun_longitude=_sun_longitude,
         )
 
     # ── True North and South Nodes ─────────────────────────────
@@ -529,12 +548,14 @@ def generate_payload(birth_data: dict) -> dict:
         north_node_longitude,
         north_node_speed,
         ascendant,
+        sun_longitude=_sun_longitude,
     )
 
     master_payload["standard_planets"]["South_Node"] = build_body_data(
         south_node_longitude,
         north_node_speed,
         ascendant,
+        sun_longitude=_sun_longitude,
     )
 
     # ── Black Moon Lilith: Mean Lunar Apogee ───────────────────
@@ -552,6 +573,7 @@ def generate_payload(birth_data: dict) -> dict:
         bml_longitude,
         bml_speed,
         ascendant,
+        sun_longitude=_sun_longitude,
     )
 
     # ── Custom Asteroids ───────────────────────────────────────
@@ -571,6 +593,7 @@ def generate_payload(birth_data: dict) -> dict:
                 asteroid_longitude,
                 asteroid_speed,
                 ascendant,
+                sun_longitude=_sun_longitude,
             )
 
         except Exception as error:
@@ -579,6 +602,46 @@ def generate_payload(birth_data: dict) -> dict:
             master_payload["custom_asteroids"][asteroid_name] = (
                 f"Calculation failed: {error}"
             )
+
+
+    # ── Declination Computation ──────────────────────────────────
+    # Second ephemeris call per body for equatorial coordinates.
+    # Pattern from engine/world_lines.py L92.
+
+    for body_id, body_name in STANDARD_PLANETS.items():
+        try:
+            eq_coords, _eq_flag = swe.calc_ut(
+                julian_day, body_id, swe.FLG_SWIEPH | swe.FLG_EQUATORIAL,
+            )
+            master_payload["standard_planets"][body_name]["declination"] = round(float(eq_coords[1]), 4)
+        except Exception:
+            pass
+
+    for body_id, asteroid_name in ASTEROID_DICTIONARY.items():
+        body_data = master_payload["custom_asteroids"].get(asteroid_name)
+        if not isinstance(body_data, dict):
+            continue
+        try:
+            eq_coords, _eq_flag = swe.calc_ut(
+                julian_day, body_id, swe.FLG_SWIEPH | swe.FLG_EQUATORIAL,
+            )
+            body_data["declination"] = round(float(eq_coords[1]), 4)
+        except Exception:
+            pass
+
+    for _node_id, _node_name in [(swe.TRUE_NODE, 'North_Node'), (swe.MEAN_APOG, 'Lilith_BML')]:
+        try:
+            eq_coords, _eq_flag = swe.calc_ut(
+                julian_day, _node_id, swe.FLG_SWIEPH | swe.FLG_EQUATORIAL,
+            )
+            if _node_name in master_payload["standard_planets"]:
+                master_payload["standard_planets"][_node_name]["declination"] = round(float(eq_coords[1]), 4)
+            if _node_name == 'North_Node':
+                sn = master_payload["standard_planets"].get("South_Node")
+                if isinstance(sn, dict):
+                    sn["declination"] = round(-float(eq_coords[1]), 4)
+        except Exception:
+            pass
 
     # ── Natal Aspect Matrix ────────────────────────────────────
     #
@@ -623,6 +686,37 @@ def generate_payload(birth_data: dict) -> dict:
                     "body_2": body_b_name,
                     **aspect,
                 })
+
+
+    # ── Declination Aspects (Parallel / Contraparallel) ────────
+    declination_aspects = []
+    decl_body_names = [
+        n for n in all_bodies
+        if isinstance(all_bodies[n], dict) and 'declination' in all_bodies[n]
+    ]
+    for idx_a in range(len(decl_body_names)):
+        for idx_b in range(idx_a + 1, len(decl_body_names)):
+            name_a = decl_body_names[idx_a]
+            name_b = decl_body_names[idx_b]
+            dec_a = all_bodies[name_a]['declination']
+            dec_b = all_bodies[name_b]['declination']
+            if abs(dec_a - dec_b) <= 1.0:
+                declination_aspects.append({
+                    "body_1": name_a, "body_2": name_b,
+                    "aspect": "Parallel",
+                    "orb": round(abs(dec_a - dec_b), 4),
+                    "character": "flowing",
+                    "declination_aspect": True,
+                })
+            elif abs(dec_a + dec_b) <= 1.0:
+                declination_aspects.append({
+                    "body_1": name_a, "body_2": name_b,
+                    "aspect": "Contraparallel",
+                    "orb": round(abs(dec_a + dec_b), 4),
+                    "character": "challenging",
+                    "declination_aspect": True,
+                })
+    master_payload["declination_aspects"] = declination_aspects
 
     print(
         "[Engine] Chart complete: "

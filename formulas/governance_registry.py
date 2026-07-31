@@ -278,8 +278,31 @@ PREDICTIVE_METHOD_REGISTRY: dict[str, PredictiveMethodRecord] = {
             "Does not calculate: the time lord's aspects (always empty) or a "
             "real dignity/essential-condition read -- 'condition' is only "
             "available/unavailable (data presence), not domicile/exalted/"
-            "fallen; no monthly-profection period logic exists in this file. "
+            "fallen; monthly-profection period logic now exists independently. "
             "Can claim: which planet is time lord for a given year, and "
+            "whether it's angular/retrograde/in a known house. Merely "
+            "contextualizes: consumed as a transit-scoring weight via "
+            "time_lord_periods and promoted in Tier 5 as a live TODO "
+            "scaffold/report-surface tracking card, not finished prose."
+        ),
+    ),
+    "monthly_profections": PredictiveMethodRecord(
+        display_name="Monthly Profections",
+        internal_key="monthly_profections",
+        calculation_convention="Phase 4 whole-sign monthly periods",
+        required_inputs=("birth_date", "ascendant_sign"),
+        birth_time_dependency="none",
+        supported_bodies_and_points=("Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn"),
+        orb_and_window_policy="1 month window per period",
+        confidence_policy="0.78 if time known, 0.60 if unknown",
+        report_surface_permission=("year_ahead", "personal_forecast", "internal_rd", "engineering_diagnostic"),
+        method_status="scaffolded_report_surface",
+        notes=(
+            "Calculates: a full TimeLordPeriod span per month. Advances one sign "
+            "per month from the annual profected house, starting on the birthday. "
+            "Does not calculate: the time lord's aspects (always empty) or a "
+            "real dignity/essential-condition read. "
+            "Can claim: which planet is time lord for a given month, and "
             "whether it's angular/retrograde/in a known house. Merely "
             "contextualizes: consumed as a transit-scoring weight via "
             "time_lord_periods and promoted in Tier 5 as a live TODO "

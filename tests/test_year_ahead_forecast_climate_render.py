@@ -38,17 +38,17 @@ def test_client_report_omits_forecast_climate_section_in_three_report_outputs():
             ],
             "must_include": [],
         },
-        {
-            "args": [
-                "--name", "Visitor",
-                "--date", "1990-06-15",
+            {
+                "args": [
+                    "--name", "Visitor",
+                    "--date", "1990-06-15",
                 "--location", "Peoria, IL",
                 "--simple",
                 "--report-date", "2026-06-28",
-                "--output-filename", "test_visitor_forecast_climate.html",
-            ],
-            "must_include": ["House- and angle-based routing is withheld without exact birth time."],
-        },
+                    "--output-filename", "test_visitor_forecast_climate.html",
+                ],
+                "must_include": ["Birth time unknown or approximate"],
+            },
         {
             "args": [
                 "--name", "Puck",

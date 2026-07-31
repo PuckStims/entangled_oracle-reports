@@ -176,3 +176,47 @@ The runtime separation between engine, formulas, selectors, products, and render
 The main architectural debt is that report orchestration and report-specific helpers still live in a large shared [generate.py](C:/entangled_oracle/generate.py) module rather than product-local context modules.
 
 That is a refactor target, not a statement that the active runtime path is broken.
+
+## Repository boundaries and cleanup posture
+
+This repository is currently preservation-first. The system has working
+runtime paths and a broad regression suite, so professionalization should
+start with documentation, test discovery, and import-compatible extraction
+before any source moves.
+
+### Stable production boundaries
+
+- `generate.py` remains the public CLI and shared report orchestration module.
+  Tests and the Flask app import public helpers from this file directly.
+- `engine/` owns chart, transit, location, synastry, progression, return,
+  local-space, and world-line computation.
+- `formulas/` owns standard and EO scoring/ranking layers. Formula behavior
+  must not be edited during structural cleanup.
+- `selectors/` owns variable resolution and authored-block fallback routing.
+  Selector changes are output-affecting and require dedicated verification.
+- `products/` owns report templates, product-local assemblers/renderers,
+  authored blocks, product docs, and product tooling.
+- `content/eia/` owns Internal Architecture content packs; `eia_engine/`
+  owns the bounded EIA scoring/report-building subsystem.
+- `app/` owns the local Flask workflow and delegates report generation back
+  through `generate.generate_report`.
+
+### Generated, local, and historical areas
+
+- `output/`, `tmp/`, `audit_output/`, `runtime/`, Python caches, frontend
+  build artifacts, and mobile build artifacts are generated/local material.
+- `archive/` and `quarantine/` are historical or intentionally isolated
+  material. They should be documented before being moved or removed.
+- Untracked large folders such as `entangled-dashboard-v0.1/`,
+  `entangled-astrology-v0.1/`, and `eia_concept_research_v0_1/` need an
+  owner decision before they become production source, documented research,
+  or ignored local workspaces.
+
+### Refactor order
+
+1. Keep current paths stable and make tests collect predictably.
+2. Add preservation output comparisons for representative reports.
+3. Extract from `generate.py` only through import-compatible wrappers.
+4. Move product docs/drafts/generated files only after path usage is proven.
+5. Require human review for formulas, selectors, content libraries,
+   templates, report copy, astrology methodology, and rendered output changes.

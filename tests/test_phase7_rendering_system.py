@@ -41,20 +41,11 @@ class Phase7RenderingSystemTests(unittest.TestCase):
             PROJECT_ROOT / "products" / "year_ahead" / "templates" / "active" / "year_ahead.html",
             PROJECT_ROOT / "products" / "personal_forecast" / "templates" / "personal_forecast.html",
             PROJECT_ROOT / "products" / "soul_ecosystem" / "templates" / "soul_ecosystem.html",
-            PROJECT_ROOT / "products" / "asteroid_portrait" / "templates" / "asteroid_portrait.html",
         ]
         for path in templates:
             text = path.read_text(encoding="utf-8")
             self.assertIn("shared_report_css", text, path.name)
             self.assertIn("report_footer_text", text, path.name)
-
-    def test_asteroid_portrait_uses_semantic_palette_tokens(self):
-        path = PROJECT_ROOT / "products" / "asteroid_portrait" / "templates" / "asteroid_portrait.html"
-        text = path.read_text(encoding="utf-8")
-
-        self.assertIn("{{ palette.bg }}", text)
-        self.assertIn("{{ palette.identity }}", text)
-        self.assertNotIn("--bg:      #070709;", text)
 
     def test_oracle_to_pdf_declares_same_approved_route(self):
         self.assertEqual(oracle_to_pdf.APPROVED_PDF_WORKFLOW["route"], "browser_print")

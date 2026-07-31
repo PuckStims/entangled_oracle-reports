@@ -214,7 +214,7 @@ class OfflineLocationTests(unittest.TestCase):
     def setUpClass(cls):
         ensure_module("geonamescache", install_fake_geonamescache)
         ensure_module("timezonefinder", install_fake_timezonefinder)
-        ensure_module("swisseph", install_fake_swisseph)
+        install_fake_swisseph()
         clear_engine_modules()
 
     def setUp(self):

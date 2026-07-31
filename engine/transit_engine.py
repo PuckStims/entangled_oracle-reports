@@ -190,6 +190,8 @@ ASPECT_ANGLES = [
     ("Square", 90),
     ("Trine", 120),
     ("Sextile", 60),
+    ("Quintile", 72),
+    ("Biquintile", 144),
 ]
 
 ASPECT_CHARACTERS = {
@@ -198,6 +200,8 @@ ASPECT_CHARACTERS = {
     "Sextile": "flowing",
     "Square": "challenging",
     "Opposition": "challenging",
+    "Quintile": "creative",
+    "Biquintile": "creative",
 }
 
 ANGLE_HOUSES = {
@@ -310,11 +314,22 @@ def _detect_aspect(
 
 
 def _planet_state(body_id: int, moment: datetime) -> dict:
-    """Returns longitude and apparent longitudinal speed for a transiting body."""
-    coordinates, _flags = swe.calc_ut(_julian_day(moment), body_id, CALC_FLAGS)
+    """Returns longitude, speed, and cazimi state for a transiting body."""
+    jd = _julian_day(moment)
+    coordinates, _flags = swe.calc_ut(jd, body_id, CALC_FLAGS)
+    lon = float(coordinates[0] % 360)
+    # Cazimi: transiting planet within 1° of transiting Sun
+    cazimi = False
+    if body_id != swe.SUN:
+        sun_lon = float(swe.calc_ut(jd, swe.SUN, CALC_FLAGS)[0][0] % 360)
+        sep = abs(lon - sun_lon)
+        if sep > 180:
+            sep = 360 - sep
+        cazimi = sep <= 1.0
     return {
-        "longitude": float(coordinates[0] % 360),
+        "longitude": lon,
         "speed": float(coordinates[3]),
+        "cazimi": cazimi,
     }
 
 

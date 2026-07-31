@@ -48,7 +48,8 @@ ORB_CONFIG = {
     },
     "aspect_multipliers": {
         "Conjunction": 1.0, "Opposition": 1.0,
-        "Trine": 0.8, "Square": 0.8, "Sextile": 0.5
+        "Trine": 0.8, "Square": 0.8, "Sextile": 0.5,
+        "Quintile": 0.5, "Biquintile": 0.5,
     },
     "max_orb_for_angle":    3.0,
     "max_orb_synastry":     5.0,
@@ -56,6 +57,19 @@ ORB_CONFIG = {
     "activation_wide_orb":  3.0
 }
 
+
+# ── Cazimi Configuration ───────────────────────────────────────
+# A planet within CAZIMI_ORB degrees of the Sun is "cazimi" —
+# supremely empowered. Grammar v0.2: overrides standard transit language.
+CAZIMI_ORB = 1.0  # degrees from Sun center
+CAZIMI_WEIGHT_MULTIPLIER = 2.5  # applied to the planet's aspect weight
+
+# ── Declination Configuration ──────────────────────────────────
+PARALLEL_ORB = 1.0  # degrees — standard for declination aspects
+DECLINATION_ASPECT_CHARACTERS = {
+    "Parallel": "flowing",        # treated as Conjunction
+    "Contraparallel": "challenging",  # treated as Opposition
+}
 # ── Planet Weight Modifiers (dominant aspect selection) ────────
 # These weights shape natal dominant-aspect ranking only.
 # They are intentionally distinct from engine.transit_engine.PLANET_SIGNIFICANCE,
@@ -70,13 +84,15 @@ PLANET_WEIGHTS = {
 # ── Major Aspects ──────────────────────────────────────────────
 MAJOR_ASPECTS = [
     ("Conjunction", 0), ("Opposition", 180),
-    ("Trine", 120), ("Square", 90), ("Sextile", 60)
+    ("Trine", 120), ("Square", 90), ("Sextile", 60),
+    ("Quintile", 72), ("Biquintile", 144),
 ]
 
 # ── Aspect Character ───────────────────────────────────────────
 ASPECT_CHARACTERS = {
     "Conjunction": "flowing", "Trine": "flowing", "Sextile": "flowing",
-    "Square": "challenging", "Opposition": "challenging"
+    "Square": "challenging", "Opposition": "challenging",
+    "Quintile": "creative", "Biquintile": "creative",
 }
 
 # ── Element Mapping ────────────────────────────────────────────

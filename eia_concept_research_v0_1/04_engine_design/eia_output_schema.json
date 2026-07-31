@@ -1,0 +1,86 @@
+{
+  "schema_version": "0.1",
+  "report_type": "internal_architecture",
+  "client": {
+    "name": "string",
+    "birth_datetime": "ISO-8601 string",
+    "birth_location": "string",
+    "birth_time_confidence": "exact|approximate|unknown"
+  },
+  "method": {
+    "house_system": "string",
+    "zodiac": "string",
+    "source_layers": [
+      "natal_astrology",
+      "eas",
+      "polarity_model",
+      "state_overlay_optional"
+    ],
+    "notes": "string"
+  },
+  "architecture_summary": {
+    "dominant_themes": [
+      "string"
+    ],
+    "integration_sentence": "string"
+  },
+  "registers": {
+    "ignition": {
+      "dominant_mode": "string",
+      "secondary_mode": "string|null",
+      "score": "number 0-1",
+      "mechanism": "string",
+      "distortion": "string",
+      "restoration": "string",
+      "experiment": "string",
+      "source_evidence": [
+        "string"
+      ]
+    },
+    "reception": {},
+    "decision": {},
+    "current": {},
+    "boundary": {},
+    "contact": {},
+    "restoration": {}
+  },
+  "pressure_patterns": [
+    {
+      "name": "string",
+      "trigger": "string",
+      "presentation": "string",
+      "correction": "string"
+    }
+  ],
+  "mythic_overlay_optional": {
+    "eas_current": "string",
+    "expression": "string",
+    "activation_state": "string",
+    "integration_note": "string"
+  },
+  "state_snapshot_optional": {
+    "method": "tarot_entropy|rune_entropy|lots_entropy|null",
+    "seed_id": "string",
+    "active_register": "string",
+    "symbol": "string",
+    "state_message": "string",
+    "experiment": "string"
+  },
+  "technical_appendix": {
+    "natal_positions": [
+      {
+        "body": "string",
+        "sign": "string",
+        "degree": "string",
+        "house": "string"
+      }
+    ],
+    "register_scores": [
+      {
+        "register": "string",
+        "mode": "string",
+        "score": "number"
+      }
+    ]
+  }
+}

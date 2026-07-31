@@ -10,6 +10,7 @@ class TestPredictiveMethodRegistry(unittest.TestCase):
     def test_registry_covers_all_tier_2_methods(self):
         expected = {
             "annual_profections",
+            "monthly_profections",
             "progressions",
             "solar_arc",
             "returns",

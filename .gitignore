@@ -17,11 +17,25 @@ env/
 
 # Generated report outputs
 output/
+outputs/
 tmp/
 runtime/
 pdf_debug_pre/
 pdfs/
 audit_output/
+
+# Frontend/mobile generated artifacts
+node_modules/
+dist/
+build/
+.next/
+coverage/
+*.tsbuildinfo
+entangled-dashboard-v0.1/node_modules/
+entangled-dashboard-v0.1/dist/
+entangled-astrology-v0.1/.gradle/
+entangled-astrology-v0.1/build/
+entangled-astrology-v0.1/app/build/
 
 # Logs and temporary files
 *.log

@@ -2,8 +2,8 @@
   "registry_metadata": {
     "policy_version": "phase0.1.2",
     "generated_at": "2026-07-07",
-    "patched_at": "2026-07-08",
-    "patch_note": "phase0.1.1 -> phase0.1.2, Phase 9b report-surface visibility update: asteroid-participating evidence may be consumed by Year Ahead / Personal Forecast predictive modules only through sidecar-derived ChapterState or MicroCandidate objects, framed as predictive/experimental content per agents/REVISIONS.md and EO_UPGRADE_PHASES_1_9_AGENT_PROMPTS.md.",
+    "patched_at": "2026-07-31",
+    "patch_note": "phase0.1.2 -> phase0.1.3, Horizon 2: activate Themis/Hekate/Moirai progression + solar_arc target eligibility.",
     "program_document": "EO_PREDICTIVE_ARCHITECTURE_PROGRAM.md",
     "narrative_companion": "phase0/02_asteroid_predictive_registry.md",
     "governing_rules": [
@@ -46,12 +46,26 @@
         "eclipse": "no"
       },
       "allowed_aspects_by_clock": {
-        "transit": ["Conjunction", "Sextile", "Square", "Trine", "Opposition"],
+        "transit": [
+          "Conjunction",
+          "Sextile",
+          "Square",
+          "Trine",
+          "Opposition"
+        ],
         "return": [],
-        "progression": ["Conjunction"],
-        "solar_arc": ["Conjunction"],
-        "lunation": ["Conjunction"],
-        "eclipse": ["Conjunction"]
+        "progression": [
+          "Conjunction"
+        ],
+        "solar_arc": [
+          "Conjunction"
+        ],
+        "lunation": [
+          "Conjunction"
+        ],
+        "eclipse": [
+          "Conjunction"
+        ]
       },
       "orb_policy_by_clock": {
         "transit": 2.0,
@@ -67,7 +81,14 @@
       "rulership_participation": false,
       "transit_speed_source_constraints": "actual_daily_motion_no_retrograde_orb_widening",
       "confidence_method_maturity_default": 0.75,
-      "report_surface_permissions": ["internal_rd", "predictive_sandbox", "soul_ecosystem", "year_ahead_appendix", "personal_forecast_context", "discrete_candidate_surface"],
+      "report_surface_permissions": [
+        "internal_rd",
+        "predictive_sandbox",
+        "soul_ecosystem",
+        "year_ahead_appendix",
+        "personal_forecast_context",
+        "discrete_candidate_surface"
+      ],
       "validation_category": "primary_asteroid"
     },
     "elevated": {
@@ -90,12 +111,20 @@
         "eclipse": "no"
       },
       "allowed_aspects_by_clock": {
-        "transit": ["Conjunction", "Square", "Opposition"],
+        "transit": [
+          "Conjunction",
+          "Square",
+          "Opposition"
+        ],
         "return": [],
         "progression": [],
         "solar_arc": [],
-        "lunation": ["Conjunction"],
-        "eclipse": ["Conjunction"]
+        "lunation": [
+          "Conjunction"
+        ],
+        "eclipse": [
+          "Conjunction"
+        ]
       },
       "orb_policy_by_clock": {
         "transit": 1.5,
@@ -111,7 +140,14 @@
       "rulership_participation": false,
       "transit_speed_source_constraints": "actual_daily_motion_no_retrograde_orb_widening",
       "confidence_method_maturity_default": 0.75,
-      "report_surface_permissions": ["internal_rd", "predictive_sandbox", "soul_ecosystem", "year_ahead_appendix", "personal_forecast_context", "discrete_candidate_surface"],
+      "report_surface_permissions": [
+        "internal_rd",
+        "predictive_sandbox",
+        "soul_ecosystem",
+        "year_ahead_appendix",
+        "personal_forecast_context",
+        "discrete_candidate_surface"
+      ],
       "validation_category": "elevated_asteroid"
     },
     "contextual": {
@@ -134,12 +170,18 @@
         "eclipse": "no"
       },
       "allowed_aspects_by_clock": {
-        "transit": ["Conjunction"],
+        "transit": [
+          "Conjunction"
+        ],
         "return": [],
         "progression": [],
         "solar_arc": [],
-        "lunation": ["Conjunction"],
-        "eclipse": ["Conjunction"]
+        "lunation": [
+          "Conjunction"
+        ],
+        "eclipse": [
+          "Conjunction"
+        ]
       },
       "orb_policy_by_clock": {
         "transit": 1.0,
@@ -155,7 +197,14 @@
       "rulership_participation": false,
       "transit_speed_source_constraints": "actual_daily_motion_no_retrograde_orb_widening",
       "confidence_method_maturity_default": 0.75,
-      "report_surface_permissions": ["internal_rd", "predictive_sandbox", "soul_ecosystem", "year_ahead_appendix", "personal_forecast_context", "discrete_candidate_surface"],
+      "report_surface_permissions": [
+        "internal_rd",
+        "predictive_sandbox",
+        "soul_ecosystem",
+        "year_ahead_appendix",
+        "personal_forecast_context",
+        "discrete_candidate_surface"
+      ],
       "validation_category": "contextual_asteroid"
     }
   },
@@ -164,15 +213,31 @@
       "asteroid_name": "Kassandra",
       "ephemeris_id": 10114,
       "tier": "anchor",
-      "natal_roles": ["kvq_primary_driver", "anchor_target"],
-      "topic_keys": ["truth_under_doubt", "warning", "insight_validation", "disclosure"],
-      "domain_keys": ["communication", "meaning"],
-      "proprietary_index_links": ["KVQ"],
+      "natal_roles": [
+        "kvq_primary_driver",
+        "anchor_target"
+      ],
+      "topic_keys": [
+        "truth_under_doubt",
+        "warning",
+        "insight_validation",
+        "disclosure"
+      ],
+      "domain_keys": [
+        "communication",
+        "meaning"
+      ],
+      "proprietary_index_links": [
+        "KVQ"
+      ],
       "weight_policy_override": 0.85,
       "existing_scaffolding": {
         "predictive_target_relevance": 0.85,
         "proprietary_transit_target": true,
-        "existing_triggers_pointing_to_this_asteroid": ["Chaos_conj_Kassandra", "Hermes_conj_Kassandra"]
+        "existing_triggers_pointing_to_this_asteroid": [
+          "Chaos_conj_Kassandra",
+          "Hermes_conj_Kassandra"
+        ]
       },
       "notes": "Existing scan_proprietary_forecast_windows treats Kassandra as a natal target hit by Chaos and Hermes; policy preserved."
     },
@@ -180,15 +245,27 @@
       "asteroid_name": "Aletheia",
       "ephemeris_id": 10259,
       "tier": "anchor",
-      "natal_roles": ["anchor_source", "anchor_target"],
-      "topic_keys": ["truth", "unconcealment", "disclosure"],
-      "domain_keys": ["meaning", "identity"],
+      "natal_roles": [
+        "anchor_source",
+        "anchor_target"
+      ],
+      "topic_keys": [
+        "truth",
+        "unconcealment",
+        "disclosure"
+      ],
+      "domain_keys": [
+        "meaning",
+        "identity"
+      ],
       "proprietary_index_links": [],
-      "weight_policy_override": 0.80,
+      "weight_policy_override": 0.8,
       "existing_scaffolding": {
-        "predictive_target_relevance": 0.80,
+        "predictive_target_relevance": 0.8,
         "proprietary_transit_source": true,
-        "existing_source_triggers": ["Aletheia_to_Sun"]
+        "existing_source_triggers": [
+          "Aletheia_to_Sun"
+        ]
       },
       "notes": "Source in DISRUPTION formula group; extending to solar_arc source use."
     },
@@ -196,16 +273,34 @@
       "asteroid_name": "Destinn",
       "ephemeris_id": 16583,
       "tier": "anchor",
-      "natal_roles": ["catalyst_primary_driver", "anchor_source", "anchor_target"],
-      "topic_keys": ["destined_encounter", "catalyst", "threshold_person"],
-      "domain_keys": ["partnership", "transformation", "vocation"],
-      "proprietary_index_links": ["CATALYST", "NGE"],
-      "weight_policy_override": 0.80,
+      "natal_roles": [
+        "catalyst_primary_driver",
+        "anchor_source",
+        "anchor_target"
+      ],
+      "topic_keys": [
+        "destined_encounter",
+        "catalyst",
+        "threshold_person"
+      ],
+      "domain_keys": [
+        "partnership",
+        "transformation",
+        "vocation"
+      ],
+      "proprietary_index_links": [
+        "CATALYST",
+        "NGE"
+      ],
+      "weight_policy_override": 0.8,
       "existing_scaffolding": {
-        "predictive_target_relevance": 0.80,
+        "predictive_target_relevance": 0.8,
         "proprietary_transit_source": true,
         "proprietary_transit_target": true,
-        "existing_triggers": ["Destinn_conj_DSC", "TrueNode_conj_Destinn"]
+        "existing_triggers": [
+          "Destinn_conj_DSC",
+          "TrueNode_conj_Destinn"
+        ]
       },
       "notes": "Both source and target eligible per existing scaffolding."
     },
@@ -213,15 +308,29 @@
       "asteroid_name": "Karma",
       "ephemeris_id": 13811,
       "tier": "anchor",
-      "natal_roles": ["catalyst_driver", "anchor_source"],
-      "topic_keys": ["karmic_thread", "cause_effect", "obligation"],
-      "domain_keys": ["partnership", "transformation"],
-      "proprietary_index_links": ["CATALYST"],
-      "weight_policy_override": 0.80,
+      "natal_roles": [
+        "catalyst_driver",
+        "anchor_source"
+      ],
+      "topic_keys": [
+        "karmic_thread",
+        "cause_effect",
+        "obligation"
+      ],
+      "domain_keys": [
+        "partnership",
+        "transformation"
+      ],
+      "proprietary_index_links": [
+        "CATALYST"
+      ],
+      "weight_policy_override": 0.8,
       "existing_scaffolding": {
-        "predictive_target_relevance": 0.80,
+        "predictive_target_relevance": 0.8,
         "proprietary_transit_source": true,
-        "existing_source_triggers": ["Karma_conj_DSC"]
+        "existing_source_triggers": [
+          "Karma_conj_DSC"
+        ]
       },
       "notes": "Source in CATALYST formula group."
     },
@@ -229,15 +338,30 @@
       "asteroid_name": "Kaali",
       "ephemeris_id": 14227,
       "tier": "anchor",
-      "natal_roles": ["dfis_driver", "anchor_source"],
-      "topic_keys": ["fierce_protection", "destruction_of_illusion", "war_against_falsehood"],
-      "domain_keys": ["identity", "transformation", "work"],
-      "proprietary_index_links": ["DFIS"],
+      "natal_roles": [
+        "dfis_driver",
+        "anchor_source"
+      ],
+      "topic_keys": [
+        "fierce_protection",
+        "destruction_of_illusion",
+        "war_against_falsehood"
+      ],
+      "domain_keys": [
+        "identity",
+        "transformation",
+        "work"
+      ],
+      "proprietary_index_links": [
+        "DFIS"
+      ],
       "weight_policy_override": 0.75,
       "existing_scaffolding": {
         "predictive_target_relevance": 0.75,
         "proprietary_transit_source": true,
-        "existing_source_triggers": ["Kaali_to_Mars"]
+        "existing_source_triggers": [
+          "Kaali_to_Mars"
+        ]
       },
       "notes": "Source in SOVEREIGNTY formula group; extending to solar_arc source."
     },
@@ -245,15 +369,29 @@
       "asteroid_name": "Medea",
       "ephemeris_id": 10212,
       "tier": "anchor",
-      "natal_roles": ["dfis_driver", "anchor_source"],
-      "topic_keys": ["sacrifice", "ruthless_devotion", "cost_of_love"],
-      "domain_keys": ["transformation", "partnership"],
-      "proprietary_index_links": ["DFIS"],
+      "natal_roles": [
+        "dfis_driver",
+        "anchor_source"
+      ],
+      "topic_keys": [
+        "sacrifice",
+        "ruthless_devotion",
+        "cost_of_love"
+      ],
+      "domain_keys": [
+        "transformation",
+        "partnership"
+      ],
+      "proprietary_index_links": [
+        "DFIS"
+      ],
       "weight_policy_override": 0.75,
       "existing_scaffolding": {
         "predictive_target_relevance": 0.75,
         "proprietary_transit_source": true,
-        "existing_source_triggers": ["Medea_to_Mars"]
+        "existing_source_triggers": [
+          "Medea_to_Mars"
+        ]
       },
       "notes": "Source in SOVEREIGNTY formula group."
     },
@@ -261,15 +399,33 @@
       "asteroid_name": "Hermes",
       "ephemeris_id": 79230,
       "tier": "anchor",
-      "natal_roles": ["mki_driver", "rwi_driver", "catalyst_driver", "anchor_source"],
-      "topic_keys": ["message", "translation", "boundary_crossing"],
-      "domain_keys": ["communication", "transformation"],
-      "proprietary_index_links": ["MKI", "RWI", "CATALYST"],
-      "weight_policy_override": 0.70,
+      "natal_roles": [
+        "mki_driver",
+        "rwi_driver",
+        "catalyst_driver",
+        "anchor_source"
+      ],
+      "topic_keys": [
+        "message",
+        "translation",
+        "boundary_crossing"
+      ],
+      "domain_keys": [
+        "communication",
+        "transformation"
+      ],
+      "proprietary_index_links": [
+        "MKI",
+        "RWI",
+        "CATALYST"
+      ],
+      "weight_policy_override": 0.7,
       "existing_scaffolding": {
-        "predictive_target_relevance": 0.70,
+        "predictive_target_relevance": 0.7,
         "proprietary_transit_source": true,
-        "existing_source_triggers": ["Hermes_conj_Kassandra"]
+        "existing_source_triggers": [
+          "Hermes_conj_Kassandra"
+        ]
       },
       "notes": "Highest cross-index participation of any asteroid."
     },
@@ -277,31 +433,67 @@
       "asteroid_name": "Chaos",
       "ephemeris_id": 29521,
       "tier": "anchor",
-      "natal_roles": ["rwi_driver", "anchor_source"],
-      "topic_keys": ["rupture", "generative_void", "primal_reorganization"],
-      "domain_keys": ["transformation", "identity"],
-      "proprietary_index_links": ["RWI"],
-      "weight_policy_override": 0.70,
+      "natal_roles": [
+        "rwi_driver",
+        "anchor_source"
+      ],
+      "topic_keys": [
+        "rupture",
+        "generative_void",
+        "primal_reorganization"
+      ],
+      "domain_keys": [
+        "transformation",
+        "identity"
+      ],
+      "proprietary_index_links": [
+        "RWI"
+      ],
+      "weight_policy_override": 0.7,
       "existing_scaffolding": {
-        "predictive_target_relevance": 0.70,
+        "predictive_target_relevance": 0.7,
         "proprietary_transit_source": true,
-        "existing_source_triggers": ["Chaos_conj_Kassandra"]
+        "existing_source_triggers": [
+          "Chaos_conj_Kassandra"
+        ]
       },
       "notes": "Source in DISRUPTION formula group."
     },
-
     {
       "asteroid_name": "Sirene",
       "ephemeris_id": 11009,
       "tier": "elevated",
-      "natal_roles": ["nge_participant"],
-      "topic_keys": ["voice", "attraction", "allure"],
-      "domain_keys": ["creativity", "partnership"],
-      "proprietary_index_links": ["NGE"],
+      "natal_roles": [
+        "nge_participant"
+      ],
+      "topic_keys": [
+        "voice",
+        "attraction",
+        "allure"
+      ],
+      "domain_keys": [
+        "creativity",
+        "partnership"
+      ],
+      "proprietary_index_links": [
+        "NGE"
+      ],
       "source_eligibility_override": {
         "transit": {
-          "allowed_aspects": ["Conjunction"],
-          "restricted_targets": ["ASC", "Ascendant", "MC", "Midheaven", "DSC", "Descendant", "IC", "Imum_Coeli", "Venus"]
+          "allowed_aspects": [
+            "Conjunction"
+          ],
+          "restricted_targets": [
+            "ASC",
+            "Ascendant",
+            "MC",
+            "Midheaven",
+            "DSC",
+            "Descendant",
+            "IC",
+            "Imum_Coeli",
+            "Venus"
+          ]
         }
       },
       "notes": "Elevated for topic distinctness; light source use for angle/Venus contacts. restricted_targets is the authoritative eligibility list for the policy API -- a Sirene transit to any target outside this list is not source-eligible regardless of aspect or orb."
@@ -310,97 +502,229 @@
       "asteroid_name": "Aphrodite",
       "ephemeris_id": 11388,
       "tier": "elevated",
-      "natal_roles": ["nge_participant"],
-      "topic_keys": ["desire", "aesthetic", "harmony"],
-      "domain_keys": ["partnership", "creativity"],
-      "proprietary_index_links": ["NGE"]
+      "natal_roles": [
+        "nge_participant"
+      ],
+      "topic_keys": [
+        "desire",
+        "aesthetic",
+        "harmony"
+      ],
+      "domain_keys": [
+        "partnership",
+        "creativity"
+      ],
+      "proprietary_index_links": [
+        "NGE"
+      ]
     },
     {
       "asteroid_name": "Apollo",
       "ephemeris_id": 11862,
       "tier": "elevated",
-      "natal_roles": ["rwi_participant", "nge_participant"],
-      "topic_keys": ["clarity", "oracle", "radiance", "prophecy"],
-      "domain_keys": ["meaning", "creativity", "vocation"],
-      "proprietary_index_links": ["RWI", "NGE"]
+      "natal_roles": [
+        "rwi_participant",
+        "nge_participant"
+      ],
+      "topic_keys": [
+        "clarity",
+        "oracle",
+        "radiance",
+        "prophecy"
+      ],
+      "domain_keys": [
+        "meaning",
+        "creativity",
+        "vocation"
+      ],
+      "proprietary_index_links": [
+        "RWI",
+        "NGE"
+      ]
     },
     {
       "asteroid_name": "Themis",
       "ephemeris_id": 10024,
       "tier": "elevated",
-      "natal_roles": ["rwi_participant", "nge_participant", "catalyst_indirect_source"],
-      "topic_keys": ["natural_law", "right_order", "oath"],
-      "domain_keys": ["partnership", "work", "meaning"],
-      "proprietary_index_links": ["RWI", "NGE"],
+      "natal_roles": [
+        "rwi_participant",
+        "nge_participant",
+        "catalyst_indirect_source"
+      ],
+      "topic_keys": [
+        "natural_law",
+        "right_order",
+        "oath"
+      ],
+      "domain_keys": [
+        "partnership",
+        "work",
+        "meaning"
+      ],
+      "proprietary_index_links": [
+        "RWI",
+        "NGE"
+      ],
       "source_eligibility_override": {
         "transit": {
-          "allowed_aspects": ["Conjunction"],
-          "restricted_targets": ["Destinn"]
+          "allowed_aspects": [
+            "Conjunction"
+          ],
+          "restricted_targets": [
+            "Destinn"
+          ]
         }
       },
-      "notes": "Already source-active via proprietary_indexes.py:919 Themis-to-Destinn CATALYST pathway; preserved. restricted_targets is the authoritative eligibility list for the policy API -- a Themis transit to any target other than Destinn is not source-eligible regardless of aspect or orb."
+      "notes": "Already source-active via proprietary_indexes.py:919 Themis-to-Destinn CATALYST pathway; preserved. restricted_targets is the authoritative eligibility list for the policy API -- a Themis transit to any target other than Destinn is not source-eligible regardless of aspect or orb. | Horizon 2: Grammar v0.3 Module A Truth-Teller activation. Progression and solar_arc now eligible as transit targets.",
+      "target_eligibility_override": {
+        "progression": "yes",
+        "solar_arc": "yes"
+      }
     },
     {
       "asteroid_name": "Mnemosyne",
       "ephemeris_id": 10057,
       "tier": "elevated",
-      "natal_roles": ["mki_driver"],
-      "topic_keys": ["memory", "remembrance", "ancestral_thread"],
-      "domain_keys": ["home", "meaning", "spirit"],
-      "proprietary_index_links": ["MKI"]
+      "natal_roles": [
+        "mki_driver"
+      ],
+      "topic_keys": [
+        "memory",
+        "remembrance",
+        "ancestral_thread"
+      ],
+      "domain_keys": [
+        "home",
+        "meaning",
+        "spirit"
+      ],
+      "proprietary_index_links": [
+        "MKI"
+      ]
     },
     {
       "asteroid_name": "Sophia",
       "ephemeris_id": 10251,
       "tier": "elevated",
-      "natal_roles": ["mki_participant"],
-      "topic_keys": ["wisdom", "gnosis", "deep_knowing"],
-      "domain_keys": ["meaning", "spirit"],
-      "proprietary_index_links": ["MKI"]
+      "natal_roles": [
+        "mki_participant"
+      ],
+      "topic_keys": [
+        "wisdom",
+        "gnosis",
+        "deep_knowing"
+      ],
+      "domain_keys": [
+        "meaning",
+        "spirit"
+      ],
+      "proprietary_index_links": [
+        "MKI"
+      ]
     },
     {
       "asteroid_name": "Hekate",
       "ephemeris_id": 10100,
       "tier": "elevated",
-      "natal_roles": ["dfis_participant"],
-      "topic_keys": ["crossroads", "threshold", "keys", "night_wisdom"],
-      "domain_keys": ["transformation", "spirit"],
-      "proprietary_index_links": ["DFIS"]
+      "natal_roles": [
+        "dfis_participant"
+      ],
+      "topic_keys": [
+        "crossroads",
+        "threshold",
+        "keys",
+        "night_wisdom"
+      ],
+      "domain_keys": [
+        "transformation",
+        "spirit"
+      ],
+      "proprietary_index_links": [
+        "DFIS"
+      ],
+      "target_eligibility_override": {
+        "progression": "yes",
+        "solar_arc": "yes"
+      },
+      "notes": "Horizon 2: Grammar v0.3 Module B Catalyst activation. Progression and solar_arc now eligible as transit targets."
     },
     {
       "asteroid_name": "Circe",
       "ephemeris_id": 10034,
       "tier": "elevated",
-      "natal_roles": ["dfis_participant"],
-      "topic_keys": ["transformation", "enchantment", "potion"],
-      "domain_keys": ["transformation", "creativity"],
-      "proprietary_index_links": ["DFIS"]
+      "natal_roles": [
+        "dfis_participant"
+      ],
+      "topic_keys": [
+        "transformation",
+        "enchantment",
+        "potion"
+      ],
+      "domain_keys": [
+        "transformation",
+        "creativity"
+      ],
+      "proprietary_index_links": [
+        "DFIS"
+      ]
     },
     {
       "asteroid_name": "Arachne",
       "ephemeris_id": 10407,
       "tier": "elevated",
-      "natal_roles": ["rwi_participant"],
-      "topic_keys": ["pattern_weaving", "hubris", "structural_construction"],
-      "domain_keys": ["work", "creativity"],
-      "proprietary_index_links": ["RWI"]
+      "natal_roles": [
+        "rwi_participant"
+      ],
+      "topic_keys": [
+        "pattern_weaving",
+        "hubris",
+        "structural_construction"
+      ],
+      "domain_keys": [
+        "work",
+        "creativity"
+      ],
+      "proprietary_index_links": [
+        "RWI"
+      ]
     },
     {
       "asteroid_name": "Anubis",
       "ephemeris_id": 11912,
       "tier": "elevated",
-      "natal_roles": ["ahl_participant"],
-      "topic_keys": ["psychopomp", "weighing", "transition"],
-      "domain_keys": ["transformation", "spirit"],
-      "proprietary_index_links": ["AHL"]
+      "natal_roles": [
+        "ahl_participant"
+      ],
+      "topic_keys": [
+        "psychopomp",
+        "weighing",
+        "transition"
+      ],
+      "domain_keys": [
+        "transformation",
+        "spirit"
+      ],
+      "proprietary_index_links": [
+        "AHL"
+      ]
     },
     {
       "asteroid_name": "Lilith_Asteroid",
       "ephemeris_id": 11181,
       "tier": "elevated",
-      "natal_roles": ["independent_topic_anchor"],
-      "topic_keys": ["refusal", "exile_return", "unbound_self"],
-      "domain_keys": ["identity", "transformation", "partnership"],
+      "natal_roles": [
+        "independent_topic_anchor"
+      ],
+      "topic_keys": [
+        "refusal",
+        "exile_return",
+        "unbound_self"
+      ],
+      "domain_keys": [
+        "identity",
+        "transformation",
+        "partnership"
+      ],
       "proprietary_index_links": [],
       "explicit_distinctness": "Never conflate with Lilith_BML (Black Moon Lilith mean lunar apogee). BML lives in standard_planets; this asteroid is 11181, a physical body."
     },
@@ -408,109 +732,227 @@
       "asteroid_name": "Moirai",
       "ephemeris_id": 10638,
       "tier": "elevated",
-      "natal_roles": ["nge_participant", "legacy_mcq_dead"],
-      "topic_keys": ["fate", "thread", "allotment"],
-      "domain_keys": ["transformation", "meaning"],
-      "proprietary_index_links": ["NGE"]
+      "natal_roles": [
+        "nge_participant",
+        "legacy_mcq_dead"
+      ],
+      "topic_keys": [
+        "fate",
+        "thread",
+        "allotment"
+      ],
+      "domain_keys": [
+        "transformation",
+        "meaning"
+      ],
+      "proprietary_index_links": [
+        "NGE"
+      ],
+      "target_eligibility_override": {
+        "progression": "yes",
+        "solar_arc": "yes"
+      },
+      "notes": "Horizon 2: Grammar v0.3 Module A Fate-Thread activation. Progression and solar_arc now eligible as transit targets."
     },
     {
       "asteroid_name": "Terpsichore",
       "ephemeris_id": 10081,
       "tier": "elevated",
-      "natal_roles": ["nge_participant"],
-      "topic_keys": ["dance", "rhythm", "movement"],
-      "domain_keys": ["creativity", "community"],
-      "proprietary_index_links": ["NGE"]
+      "natal_roles": [
+        "nge_participant"
+      ],
+      "topic_keys": [
+        "dance",
+        "rhythm",
+        "movement"
+      ],
+      "domain_keys": [
+        "creativity",
+        "community"
+      ],
+      "proprietary_index_links": [
+        "NGE"
+      ]
     },
-
     {
       "asteroid_name": "Atlantis",
       "ephemeris_id": 11198,
       "tier": "contextual",
-      "natal_roles": ["mki_participant"],
-      "topic_keys": ["submerged_knowledge", "lost_pattern", "hidden_lineage"],
-      "domain_keys": ["meaning", "spirit", "transformation"],
-      "proprietary_index_links": ["MKI"]
+      "natal_roles": [
+        "mki_participant"
+      ],
+      "topic_keys": [
+        "submerged_knowledge",
+        "lost_pattern",
+        "hidden_lineage"
+      ],
+      "domain_keys": [
+        "meaning",
+        "spirit",
+        "transformation"
+      ],
+      "proprietary_index_links": [
+        "MKI"
+      ]
     },
     {
       "asteroid_name": "Minerva",
       "ephemeris_id": 10093,
       "tier": "contextual",
-      "natal_roles": ["contextual_nuance"],
-      "topic_keys": ["strategy", "craft", "tactical_wisdom"],
-      "domain_keys": ["vocation", "work"],
+      "natal_roles": [
+        "contextual_nuance"
+      ],
+      "topic_keys": [
+        "strategy",
+        "craft",
+        "tactical_wisdom"
+      ],
+      "domain_keys": [
+        "vocation",
+        "work"
+      ],
       "proprietary_index_links": []
     },
     {
       "asteroid_name": "Sappho",
       "ephemeris_id": 10080,
       "tier": "contextual",
-      "natal_roles": ["contextual_nuance"],
-      "topic_keys": ["intimate_lyric", "eros", "tender_expression"],
-      "domain_keys": ["partnership", "creativity"],
+      "natal_roles": [
+        "contextual_nuance"
+      ],
+      "topic_keys": [
+        "intimate_lyric",
+        "eros",
+        "tender_expression"
+      ],
+      "domain_keys": [
+        "partnership",
+        "creativity"
+      ],
       "proprietary_index_links": []
     },
     {
       "asteroid_name": "Isis",
       "ephemeris_id": 10042,
       "tier": "contextual",
-      "natal_roles": ["contextual_nuance"],
-      "topic_keys": ["restoration", "magical_sovereignty", "gathering"],
-      "domain_keys": ["home", "transformation", "spirit"],
+      "natal_roles": [
+        "contextual_nuance"
+      ],
+      "topic_keys": [
+        "restoration",
+        "magical_sovereignty",
+        "gathering"
+      ],
+      "domain_keys": [
+        "home",
+        "transformation",
+        "spirit"
+      ],
       "proprietary_index_links": []
     },
     {
       "asteroid_name": "Melete",
       "ephemeris_id": 10056,
       "tier": "contextual",
-      "natal_roles": ["contextual_nuance"],
-      "topic_keys": ["practice", "rehearsal", "meditation"],
-      "domain_keys": ["work"],
+      "natal_roles": [
+        "contextual_nuance"
+      ],
+      "topic_keys": [
+        "practice",
+        "rehearsal",
+        "meditation"
+      ],
+      "domain_keys": [
+        "work"
+      ],
       "proprietary_index_links": []
     },
     {
       "asteroid_name": "Euterpe",
       "ephemeris_id": 10027,
       "tier": "contextual",
-      "natal_roles": ["contextual_nuance"],
-      "topic_keys": ["lyric", "melody", "delight"],
-      "domain_keys": ["creativity"],
+      "natal_roles": [
+        "contextual_nuance"
+      ],
+      "topic_keys": [
+        "lyric",
+        "melody",
+        "delight"
+      ],
+      "domain_keys": [
+        "creativity"
+      ],
       "proprietary_index_links": []
     },
     {
       "asteroid_name": "Urania",
       "ephemeris_id": 10030,
       "tier": "contextual",
-      "natal_roles": ["contextual_nuance"],
-      "topic_keys": ["celestial_mapping", "cosmology", "big_picture"],
-      "domain_keys": ["meaning", "spirit"],
+      "natal_roles": [
+        "contextual_nuance"
+      ],
+      "topic_keys": [
+        "celestial_mapping",
+        "cosmology",
+        "big_picture"
+      ],
+      "domain_keys": [
+        "meaning",
+        "spirit"
+      ],
       "proprietary_index_links": []
     },
     {
       "asteroid_name": "Polyhymnia",
       "ephemeris_id": 10033,
       "tier": "contextual",
-      "natal_roles": ["contextual_nuance"],
-      "topic_keys": ["sacred_song", "silent_prayer"],
-      "domain_keys": ["spirit", "creativity"],
+      "natal_roles": [
+        "contextual_nuance"
+      ],
+      "topic_keys": [
+        "sacred_song",
+        "silent_prayer"
+      ],
+      "domain_keys": [
+        "spirit",
+        "creativity"
+      ],
       "proprietary_index_links": []
     },
     {
       "asteroid_name": "Industria",
       "ephemeris_id": 10389,
       "tier": "contextual",
-      "natal_roles": ["contextual_nuance"],
-      "topic_keys": ["labor", "sustained_effort", "industry"],
-      "domain_keys": ["work", "resources"],
+      "natal_roles": [
+        "contextual_nuance"
+      ],
+      "topic_keys": [
+        "labor",
+        "sustained_effort",
+        "industry"
+      ],
+      "domain_keys": [
+        "work",
+        "resources"
+      ],
       "proprietary_index_links": []
     },
     {
       "asteroid_name": "Alma",
       "ephemeris_id": 10390,
       "tier": "contextual",
-      "natal_roles": ["contextual_nuance"],
-      "topic_keys": ["soul", "essence", "animating_spark"],
-      "domain_keys": ["identity", "spirit"],
+      "natal_roles": [
+        "contextual_nuance"
+      ],
+      "topic_keys": [
+        "soul",
+        "essence",
+        "animating_spark"
+      ],
+      "domain_keys": [
+        "identity",
+        "spirit"
+      ],
       "proprietary_index_links": [],
       "notes": "Contextual despite evocative name; soul-as-topic is too broad to drive standalone predictive claims."
     },
@@ -518,44 +960,135 @@
       "asteroid_name": "Child",
       "ephemeris_id": 14580,
       "tier": "contextual",
-      "natal_roles": ["ahl_participant"],
-      "topic_keys": ["innocence", "inner_child", "becoming"],
-      "domain_keys": ["home", "creativity"],
-      "proprietary_index_links": ["AHL"]
+      "natal_roles": [
+        "ahl_participant"
+      ],
+      "topic_keys": [
+        "innocence",
+        "inner_child",
+        "becoming"
+      ],
+      "domain_keys": [
+        "home",
+        "creativity"
+      ],
+      "proprietary_index_links": [
+        "AHL"
+      ]
     },
     {
       "asteroid_name": "Angel",
       "ephemeris_id": 21911,
       "tier": "contextual",
-      "natal_roles": ["contextual_nuance"],
-      "topic_keys": ["grace", "luminous_aid", "guardianship"],
-      "domain_keys": ["spirit", "home"],
+      "natal_roles": [
+        "contextual_nuance"
+      ],
+      "topic_keys": [
+        "grace",
+        "luminous_aid",
+        "guardianship"
+      ],
+      "domain_keys": [
+        "spirit",
+        "home"
+      ],
       "proprietary_index_links": []
     },
     {
       "asteroid_name": "DNA",
       "ephemeris_id": 65555,
       "tier": "contextual",
-      "natal_roles": ["ahl_participant"],
-      "topic_keys": ["inheritance", "essential_code", "lineage"],
-      "domain_keys": ["home", "identity"],
-      "proprietary_index_links": ["AHL"]
+      "natal_roles": [
+        "ahl_participant"
+      ],
+      "topic_keys": [
+        "inheritance",
+        "essential_code",
+        "lineage"
+      ],
+      "domain_keys": [
+        "home",
+        "identity"
+      ],
+      "proprietary_index_links": [
+        "AHL"
+      ]
     }
   ],
   "migration_map": {
     "existing_scan_proprietary_forecast_windows_triggers": [
-      {"formula_group": "DISRUPTION", "trigger": "Uranus_conj_ASC", "preserved": true, "note": "Not asteroid; unaffected."},
-      {"formula_group": "DISRUPTION", "trigger": "Uranus_conj_MC", "preserved": true, "note": "Not asteroid; unaffected."},
-      {"formula_group": "DISRUPTION", "trigger": "Chaos_conj_Kassandra", "preserved": true, "registry_reference": "Chaos as anchor source + Kassandra as anchor target"},
-      {"formula_group": "DISRUPTION", "trigger": "Hermes_conj_Kassandra", "preserved": true, "registry_reference": "Hermes as anchor source + Kassandra as anchor target"},
-      {"formula_group": "DISRUPTION", "trigger": "Aletheia_to_Sun", "preserved": true, "registry_reference": "Aletheia as anchor source"},
-      {"formula_group": "SOVEREIGNTY", "trigger": "Lilith_BML_conj_angles", "preserved": true, "note": "BML is in standard_planets, not custom_asteroids; policy unchanged."},
-      {"formula_group": "SOVEREIGNTY", "trigger": "Medea_to_Mars", "preserved": true, "registry_reference": "Medea as anchor source"},
-      {"formula_group": "SOVEREIGNTY", "trigger": "Kaali_to_Mars", "preserved": true, "registry_reference": "Kaali as anchor source"},
-      {"formula_group": "CATALYST", "trigger": "Destinn_conj_DSC", "preserved": true, "registry_reference": "Destinn as anchor source"},
-      {"formula_group": "CATALYST", "trigger": "Karma_conj_DSC", "preserved": true, "registry_reference": "Karma as anchor source"},
-      {"formula_group": "CATALYST", "trigger": "Chiron_conj_DSC", "preserved": true, "note": "Chiron is in standard_planets; unaffected by asteroid registry."},
-      {"formula_group": "CATALYST", "trigger": "TrueNode_conj_Destinn", "preserved": true, "registry_reference": "Destinn as anchor target"}
+      {
+        "formula_group": "DISRUPTION",
+        "trigger": "Uranus_conj_ASC",
+        "preserved": true,
+        "note": "Not asteroid; unaffected."
+      },
+      {
+        "formula_group": "DISRUPTION",
+        "trigger": "Uranus_conj_MC",
+        "preserved": true,
+        "note": "Not asteroid; unaffected."
+      },
+      {
+        "formula_group": "DISRUPTION",
+        "trigger": "Chaos_conj_Kassandra",
+        "preserved": true,
+        "registry_reference": "Chaos as anchor source + Kassandra as anchor target"
+      },
+      {
+        "formula_group": "DISRUPTION",
+        "trigger": "Hermes_conj_Kassandra",
+        "preserved": true,
+        "registry_reference": "Hermes as anchor source + Kassandra as anchor target"
+      },
+      {
+        "formula_group": "DISRUPTION",
+        "trigger": "Aletheia_to_Sun",
+        "preserved": true,
+        "registry_reference": "Aletheia as anchor source"
+      },
+      {
+        "formula_group": "SOVEREIGNTY",
+        "trigger": "Lilith_BML_conj_angles",
+        "preserved": true,
+        "note": "BML is in standard_planets, not custom_asteroids; policy unchanged."
+      },
+      {
+        "formula_group": "SOVEREIGNTY",
+        "trigger": "Medea_to_Mars",
+        "preserved": true,
+        "registry_reference": "Medea as anchor source"
+      },
+      {
+        "formula_group": "SOVEREIGNTY",
+        "trigger": "Kaali_to_Mars",
+        "preserved": true,
+        "registry_reference": "Kaali as anchor source"
+      },
+      {
+        "formula_group": "CATALYST",
+        "trigger": "Destinn_conj_DSC",
+        "preserved": true,
+        "registry_reference": "Destinn as anchor source"
+      },
+      {
+        "formula_group": "CATALYST",
+        "trigger": "Karma_conj_DSC",
+        "preserved": true,
+        "registry_reference": "Karma as anchor source"
+      },
+      {
+        "formula_group": "CATALYST",
+        "trigger": "Chiron_conj_DSC",
+        "preserved": true,
+        "note": "Chiron is in standard_planets; unaffected by asteroid registry."
+      },
+      {
+        "formula_group": "CATALYST",
+        "trigger": "TrueNode_conj_Destinn",
+        "preserved": true,
+        "registry_reference": "Destinn as anchor target"
+      }
     ],
     "predictive_engine_target_relevance_migration": {
       "current_location": "engine/predictive_engine.py:75-106 _TARGET_RELEVANCE",

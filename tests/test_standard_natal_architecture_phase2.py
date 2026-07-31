@@ -87,7 +87,7 @@ class StandardNatalArchitecturePhase2Tests(unittest.TestCase):
                 "Jupiter": 97.0,
                 "Saturn": 92.0,
                 "Uranus": 211.0,
-                "Neptune": 17.0,
+                "Neptune": 14.0,
                 "Pluto": 300.0,
                 "Chiron": 330.0,
             }
