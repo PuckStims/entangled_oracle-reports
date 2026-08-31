@@ -178,7 +178,7 @@ natal-retrograde label.
 ## Connecting Your Engine
 
 Open `generate.py` and find the `get_payload()` function.
-Replace the stub with your engine call:
+It already calls the live natal engine:
 
 ```python
 def get_payload(birth_data: dict) -> dict:
@@ -198,19 +198,19 @@ Your engine must return a v2 payload dict with these keys:
 
 ## Writing Paragraph Blocks
 
-The block library is fully written — there are no outstanding `[TODO: ...]`
-placeholders as of this writing. If you add a new report type, placement,
+The production block libraries should stay authored, but visible
+`[TODO: ...]`, `[BLOCK NOT FOUND: ...]`, and `[MISSING BLOCK FILE: ...]`
+markers are intentionally allowed in generated output during operator
+review. They make authoring gaps and routing mistakes obvious instead of
+hiding the need to update content. If you add a new report type, placement,
 or key path, drop the new paragraph(s) into the relevant
 `products/<report>/blocks/**/*.json` file using the existing key
 structure in that file as a model.
 
 The block selector falls back gracefully through the key hierarchy (see
-`selectors/block_selector.py`), and `_usable_block()` in `generate.py`
-scrubs any `[TODO]`, `[BLOCK NOT FOUND: ...]`, or `[MISSING BLOCK FILE: ...]`
-marker before it reaches a template — a missing or misspelled key path
-degrades to blank prose instead of visible debug text. That filter
-currently runs for Year Ahead, Personal Forecast, and Soul Ecosystem; it
-has not yet been extended to Daily Horoscope.
+`selectors/block_selector.py`). `_usable_block()` in `generate.py` preserves
+visible review markers while still removing accidental source headings and
+outer prose wrappers.
 
 ---
 

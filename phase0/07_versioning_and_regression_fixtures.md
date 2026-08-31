@@ -1,6 +1,6 @@
 # Phase 0 — Versioning Strategy and Regression Fixtures
 
-Program: [EO_PREDICTIVE_ARCHITECTURE_PROGRAM.md](../EO_PREDICTIVE_ARCHITECTURE_PROGRAM.md)
+Program: [EO_PREDICTIVE_ARCHITECTURE_PROGRAM.md](../docs/misc/historical-audits/EO_PREDICTIVE_ARCHITECTURE_PROGRAM.md)
 Status: charter (Phase 0). Policy. No implementation.
 Version: `phase0.1.0`
 Date: 2026-07-07

@@ -100,6 +100,43 @@ def _result(
 
 class TestVariableResolverExtensions(unittest.TestCase):
 
+    def test_simple_mode_does_not_surface_noon_placeholder_houses_or_angles(self):
+        variables = resolve_all(_payload_stub(), {}, querent_name="Simple Mode")
+
+        self.assertTrue(variables["simple_mode"])
+        self.assertEqual(variables["sun_sign"], "Aries")
+        self.assertEqual(variables["sun_house"], 0)
+        self.assertEqual(variables["moon_house"], 0)
+        self.assertEqual(variables["north_node_house"], 0)
+        self.assertEqual(variables["south_node_house"], 0)
+        self.assertEqual(variables["ascendant_sign"], "")
+        self.assertEqual(variables["ascendant_longitude"], 0.0)
+        self.assertEqual(variables["mc_sign"], "")
+        self.assertEqual(variables["jupiter_house_theme"], "")
+
+    def test_exact_birth_time_still_surfaces_real_houses_and_angles(self):
+        payload = _payload_stub()
+        payload["simple_mode"] = False
+        payload["user_profile"]["simple_mode"] = False
+        payload["user_profile"]["birth_time_state"] = "exact_birth_time"
+
+        variables = resolve_all(payload, {}, querent_name="Exact Time")
+
+        self.assertFalse(variables["simple_mode"])
+        self.assertEqual(variables["sun_house"], 1)
+        self.assertEqual(variables["moon_house"], 5)
+        self.assertEqual(variables["ascendant_sign"], "Aries")
+        self.assertEqual(variables["ascendant_longitude"], 0.0)
+        self.assertEqual(variables["mc_sign"], "Capricorn")
+        self.assertNotEqual(variables["jupiter_house_theme"], "")
+
+    def test_simple_mode_daily_activation_withholds_house_localization(self):
+        variables = resolve_all(_payload_stub(), {}, querent_name="Simple Mode")
+
+        self.assertEqual(variables["activation_house_number"], 0)
+        self.assertEqual(variables["natal_house_name"], "")
+        self.assertIn("house and angle localization are withheld", variables["activation_basis_line"])
+
     def test_resolve_all_exposes_component_flats_weights_and_ranked_eas_fields(self):
         index_results = {
             "NGE": _result(

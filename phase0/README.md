@@ -1,7 +1,7 @@
 # Entangled Oracle — Phase 0: Charter and Freeze
 
-Companion to [EO_PREDICTIVE_ARCHITECTURE_PROGRAM.md](../EO_PREDICTIVE_ARCHITECTURE_PROGRAM.md).
-Baseline evidence in [EO_MULTICLOCK_ASTEROID_PREDICTIVE_READINESS_AUDIT.md](../EO_MULTICLOCK_ASTEROID_PREDICTIVE_READINESS_AUDIT.md).
+Companion to [EO_PREDICTIVE_ARCHITECTURE_PROGRAM.md](../docs/misc/historical-audits/EO_PREDICTIVE_ARCHITECTURE_PROGRAM.md).
+Baseline evidence in [EO_MULTICLOCK_ASTEROID_PREDICTIVE_READINESS_AUDIT.md](../docs/misc/historical-audits/EO_MULTICLOCK_ASTEROID_PREDICTIVE_READINESS_AUDIT.md).
 
 **Status: charter. No production code (engines, formulas, templates, JSON block libraries, configs) is modified in Phase 0. All artifacts here are contracts, policies, and specifications — inputs to Phase 1+ implementation.**
 

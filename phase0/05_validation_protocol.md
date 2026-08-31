@@ -1,6 +1,6 @@
 # Phase 0 — Validation Protocol
 
-Program: [EO_PREDICTIVE_ARCHITECTURE_PROGRAM.md](../EO_PREDICTIVE_ARCHITECTURE_PROGRAM.md)
+Program: [EO_PREDICTIVE_ARCHITECTURE_PROGRAM.md](../docs/misc/historical-audits/EO_PREDICTIVE_ARCHITECTURE_PROGRAM.md)
 Depends on: [04_convergence_and_candidate_protocol.md](./04_convergence_and_candidate_protocol.md), [06_sidecar_and_export_contract.md](./06_sidecar_and_export_contract.md).
 Status: charter (Phase 0). Policy. No implementation.
 Version: `phase0.1.2`

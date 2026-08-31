@@ -10,7 +10,9 @@ Covers:
 import sys, os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from planetary_angularity_algorithm import evaluate_angularity, CANONICAL_ANGLES, ANGLE_ALIASES
+from formulas.standard.angularity import evaluate_angularity
+from formulas.standard.normalization import ANGLE_ALIAS_MAP as ANGLE_ALIASES
+from formulas.standard.normalization import CANONICAL_ANGLE_NAMES as CANONICAL_ANGLES
 
 
 def _make_payload(body_lon, house=1, angles=None):

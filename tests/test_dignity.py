@@ -12,7 +12,7 @@ Covers:
 import sys, os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from expanded_dignity_matrix import evaluate_dignity
+from formulas.standard.dignity import evaluate_dignity
 
 
 def _make_payload(body_name, sign, degree_decimal, sun_lon=90.0, asc_lon=0.0):

@@ -12,6 +12,144 @@ needed correction in `agents/PLANNED_UPDATES.md` before moving on.
 
 ---
 
+## 2026-08-01 - Phase 2 CLI input parsing extraction
+
+**Context:** continuing the safe `generate.py` refactor, the next low-risk
+utility slice was CLI argument validation and birth-data shaping.
+
+**What changed:**
+
+- Added `engine/report_inputs.py` for `InputValidationError`, optional text
+  normalization, ISO date validation, route waypoint parsing, ordinary
+  birth-data parsing, and synastry party birth-data parsing.
+- Updated `generate.py` to import those helpers while preserving the old
+  facade names (`parse_birth_data`, `_parse_synastry_party_data`,
+  `_validate_iso_date`, `_parse_route_waypoints`, etc.) for existing tests and
+  scripts.
+- Added direct coverage in `tests/test_report_inputs.py` for exact-time input,
+  DOB-only/simple-mode input, invalid time, invalid report date windows, route
+  waypoint parsing, and invalid ISO dates.
+- Marked the input parsing extraction complete in
+  `docs/SAFE_REFACTOR_AUDIT_PLAN.md`.
+
+**Verification:**
+
+- `python -m py_compile generate.py engine/report_inputs.py` passed.
+- `pytest tests/test_report_inputs.py tests/test_generate_synastry_cli.py tests/test_report_io.py -q`
+  passed.
+
+---
+
+## 2026-07-31 - Truthfulness gate for DOB-only/simple-mode output
+
+**Context:** the operator asked for an audit/fix ensuring that missing real
+data cannot become fake confidence in client-facing output.
+
+**What changed:**
+
+- Updated `selectors.variable_resolver.resolve_all()` so simple-mode /
+  unknown-birth-time payloads no longer surface noon-placeholder houses,
+  angles, house themes, twelfth-house lists, or daily activation house
+  localization.
+- Kept real planet/sign and activation-planet computation available where it
+  does not depend on exact birth time.
+- Added resolver tests proving both sides of the gate: DOB-only data withholds
+  house/angle claims, while exact-birth-time data still surfaces real houses
+  and angles.
+- Updated the daily activation priority test so a real station can win without
+  fabricating house localization in simple mode.
+- Corrected shared QC/generation docs to preserve visible TODO / missing-block
+  markers during review while forbidding computed-looking house or angle claims
+  without exact birth time.
+
+**Verification:**
+
+- `pytest tests/test_variable_resolver_extensions.py tests/test_daily_horoscope_activation.py tests/test_year_ahead_chart_characteristics.py tests/test_year_ahead_forecast_climate.py -q`
+  passed.
+- `pytest tests/test_review_marker_visibility.py tests/test_renderer_autoescape.py::RendererAutoescapeTests::test_normal_report_generation_still_succeeds -q`
+  passed.
+
+---
+
+## 2026-07-31 - Phase 2 report I/O helper extraction
+
+**Context:** after Phase 0/1 established clean active test collection and
+visible review-marker policy, the next safe `generate.py` refactor slice was
+to extract low-risk helper code without changing public behavior or private
+test import names.
+
+**What changed:**
+
+- Added `engine/report_io.py` for environment flags, ephemeris-path reset,
+  report-window math, atomic text writes, verbose logging, and default output
+  filename generation.
+- Updated `generate.py` to import those helpers under the existing private
+  names (`_report_window`, `_atomic_write_text`, `_default_output_filename`,
+  etc.) so current call sites and tests remain compatible.
+- Added direct coverage in `tests/test_report_io.py`.
+- Tightened `test_offline_location.py` so its fake `swisseph` module is
+  restored after the offline-location suite and cannot contaminate later
+  tests.
+- Updated weekly placeholder assertions to match the operator's current
+  visible-marker policy: unauthored weekly contact meaning can render `TODO`,
+  while authored guidance still renders real prose.
+- Updated the Year Ahead forecast-climate render assertion to the current
+  birth-time-withheld copy.
+
+**Verification:**
+
+- `pytest tests/test_report_io.py tests/test_review_marker_visibility.py tests/test_renderer_autoescape.py::RendererAutoescapeTests::test_default_output_filenames_are_unique_and_manifests_match tests/test_generate_synastry_cli.py::test_generate_synastry_report_writes_html -q`
+  passed.
+- `pytest test_offline_location.py tests/test_daily_horoscope_activation.py::TestActivationPriorityChain tests/test_location_services_evidence_record.py::test_no_house_changes_when_destination_matches_birth_coordinates -q`
+  passed.
+- Full active suite: `pytest -q` passed with 726 tests and 36 subtests in
+  about 2:58.
+
+---
+
+## 2026-07-31 - Phase 0/1 safe-refactor floor and doc hygiene
+
+**Context:** the operator asked for a digital-wellness-minded audit and
+safe refactor runway, then clarified that visible `[TODO]`,
+`[BLOCK NOT FOUND]`, and `[MISSING BLOCK FILE]` markers should remain
+client-facing during review because they expose content and routing gaps.
+
+**What changed:**
+
+- Added `docs/SAFE_REFACTOR_AUDIT_PLAN.md` with a preservation-first
+  `generate.py` refactor plan, explicit safety gates, and doc cleanup
+  buckets.
+- Added pytest collection boundaries in `pyproject.toml` so active tests
+  exclude quarantine, scratch workspaces, build outputs, generated output,
+  and dependency trees.
+- Added root `conftest.py` to pin the repo-local `selectors` package during
+  pytest collection, avoiding collision with Python's stdlib `selectors`
+  module.
+- Updated stale tests that imported retired top-level module names so they
+  point at current `formulas.standard.*` modules and active rendering
+  contracts.
+- Updated `README.md`, `ARCHITECTURE.md`, and `generate.py` comments/docs to
+  reflect current location requirements, live payload generation, quarantined
+  predictive-sandbox status, and visible review markers.
+- Changed `_usable_block()` and weekly placeholder resolution so TODO/missing
+  block markers stay visible in generated review output.
+- Moved root-level historical audit/prompt artifacts into
+  `docs/misc/historical-audits/` and updated `phase0/` links to those moved
+  documents.
+
+**Verification:**
+
+- `pytest --collect-only -q` now collects 721 active tests with no collection
+  errors.
+- `pytest tests/test_block_selector.py tests/test_phase7_rendering_system.py -q`
+  passes.
+- Direct `_usable_block()` check confirms `[TODO: ...]`,
+  `[BLOCK NOT FOUND: ...]`, and `[MISSING BLOCK FILE: ...]` are preserved.
+- Reference scan found no remaining old relative `phase0` links to the moved
+  root audit docs.
+
+---
+
 ## 2026-07-14 - Blanket stale-reference update rule added to agent docs
 
 **Context:** the operator clarified that agents should not merely notice

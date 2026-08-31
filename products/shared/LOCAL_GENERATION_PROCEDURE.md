@@ -120,7 +120,7 @@ Before delivery:
 
 1. Open the HTML file.
 2. Confirm client name, birth data, report type, date range, and methodology labels.
-3. Confirm no placeholder text, missing block markers, debug traces, or broken layout sections are visible.
+3. Confirm TODO / missing block markers are visible in review builds, debug traces are absent unless explicitly requested, and no broken layout sections are visible.
 4. Confirm the adjacent manifest exists and references Tropical zodiac + Whole Sign houses.
 
 ## PDF Generation

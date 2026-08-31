@@ -1,6 +1,6 @@
 # Phase 0 — Asteroid Predictive Registry (Narrative)
 
-Program: [EO_PREDICTIVE_ARCHITECTURE_PROGRAM.md](../EO_PREDICTIVE_ARCHITECTURE_PROGRAM.md)
+Program: [EO_PREDICTIVE_ARCHITECTURE_PROGRAM.md](../docs/misc/historical-audits/EO_PREDICTIVE_ARCHITECTURE_PROGRAM.md)
 Machine-readable companion: [02_asteroid_predictive_registry.json](./02_asteroid_predictive_registry.json)
 Status: charter (Phase 0, operator-approved). Policy. No implementation.
 Version: `phase0.1.2`

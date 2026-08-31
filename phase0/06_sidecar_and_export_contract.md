@@ -1,6 +1,6 @@
 # Phase 0 — Sidecar and Export Contract
 
-Program: [EO_PREDICTIVE_ARCHITECTURE_PROGRAM.md](../EO_PREDICTIVE_ARCHITECTURE_PROGRAM.md)
+Program: [EO_PREDICTIVE_ARCHITECTURE_PROGRAM.md](../docs/misc/historical-audits/EO_PREDICTIVE_ARCHITECTURE_PROGRAM.md)
 Depends on: [01_predictive_object_schemas.md](./01_predictive_object_schemas.md) (now `phase0.1.1`), [04_convergence_and_candidate_protocol.md](./04_convergence_and_candidate_protocol.md), [05_validation_protocol.md](./05_validation_protocol.md).
 Status: charter (Phase 0, operator-approved). Contract. No implementation.
 Version: `phase0.1.1`

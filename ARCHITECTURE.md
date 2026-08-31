@@ -56,17 +56,23 @@ This stage turns chart data into report-ready fields and selects authored prose 
 Active report types:
 
 - `horoscope`
-- `personal_forecast`
-- `predictive_sandbox`
-- `soul_ecosystem`
 - `weekly_horoscope`
+- `personal_forecast`
+- `soul_ecosystem`
+- `identity_profile`
+- `internal_architecture`
 - `year_ahead`
+- location services reports routed through `products.location_services`
+- `synastry`
 
-Each report type has:
+Most standard report types have:
 
 - a context builder in `generate.py`
 - a template under `products/<report>/templates/`
 - one or more authored block libraries under `products/<report>/blocks/`
+
+Location services reports use the product registry and rendering facade under
+`products.location_services`. Synastry has a dedicated generation path.
 
 ### 5. Output and traceability
 
@@ -84,11 +90,12 @@ The manifest records:
 - template and formula fingerprints
 - trace summaries where available
 
-## Predictive Sandbox: current state and next direction
+## Predictive Sandbox: quarantined history
 
-`predictive_sandbox` is not a consumer report path. It is an
-engineering-first diagnostics surface for predictive work. The current
-runtime shape is:
+`predictive_sandbox` is not an active CLI or consumer report path. The former
+engineering diagnostics surface and its tests were moved under
+`quarantine/predictive_testable_v0_1/` and should be treated as historical R&D
+unless explicitly revived. The historical runtime shape was:
 
 1. natal payload generation
 2. standard + proprietary index computation
@@ -98,7 +105,7 @@ runtime shape is:
 5. localized window detection
 6. dev-facing render of those windows in the dedicated sandbox template
 
-The active formula version in code is `predictive_v0.3.1`. Its real
+The quarantined formula version was `predictive_v0.3.1`. Its real
 implemented strengths are:
 
 - transit-derived signal scoring
@@ -176,3 +183,58 @@ The runtime separation between engine, formulas, selectors, products, and render
 The main architectural debt is that report orchestration and report-specific helpers still live in a large shared [generate.py](C:/entangled_oracle/generate.py) module rather than product-local context modules.
 
 That is a refactor target, not a statement that the active runtime path is broken.
+
+## Shared document-output architecture
+
+HTML remains the production source for the existing browser-to-PDF workflow.
+DOCX is an additional output path; it does not replace or alter the Jinja
+templates.
+
+```text
+domain/runtime computation -> completed report context
+                                  |             |
+                                  |             +-> report composer -> ReportDocument -> output renderer
+                                  +-> existing Jinja HTML renderer
+```
+
+The context is not a document model. It is a broad template-facing collection
+of computation results and selected prose. A composer adapts that completed
+context into ordered, reusable semantic nodes such as `Section`, `Paragraph`,
+`EventCard`, `DataTable`, and `Figure`. It must not recompute astrology or
+select alternative prose.
+
+`products.shared.document_model` is format-neutral and contains no
+`python-docx` types. `products.shared.composers` is an explicit registry of
+context-to-document adapters. The renderer receives only the shared document
+model: renderers must never branch on report/product type. Conversely,
+composers never branch on output format or specify fonts, Word borders,
+colours, page margins, or table widths.
+
+Output configuration is represented by `OutputOptions` and supplied separately
+from birth data. `generate_report(..., formats=("html", "docx"))` retains HTML
+as the default and can create a matched DOCX for a report with a registered
+composer. The CLI mirrors this with repeatable `--format html` / `--format
+docx` flags.
+
+Semantic tones (for example `flowing`, `pressure`, `threshold`, and
+`structure`) are retained on nodes. Renderer-level themes map them to actual
+formatting. Figures preserve media type, source, alternative text, caption, and
+fallback text; the current DOCX renderer uses the fallback for SVG while a
+future renderer can add native SVG or raster support without composer changes.
+
+Parity is explicit rather than inferred from a shared context. Composers attach
+a small manifest of context paths and semantic section markers. The parity
+validator flags any marker omitted while its context source is present. New
+report types should add a composer, parity manifest, and composer test; new
+formats should add a renderer for existing document nodes rather than per-report
+renderers. Synastry and location-service runtimes remain independent until their
+already-assembled contexts are ready to join this registry.
+
+### Current composer coverage
+
+The shared registry currently composes `year_ahead`, `personal_forecast`,
+`soul_ecosystem`, `horoscope`, `weekly_horoscope`, `identity_profile`, and
+`internal_architecture`. They retain their existing context builders and HTML
+templates. `synastry` and location-service reports are intentionally deferred:
+they have independent assemblers and must contribute a context-specific
+composer rather than being forced through `generate_report`.

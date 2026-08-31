@@ -1,6 +1,6 @@
 # Phase 0 — Convergence and Candidate Protocol
 
-Program: [EO_PREDICTIVE_ARCHITECTURE_PROGRAM.md](../EO_PREDICTIVE_ARCHITECTURE_PROGRAM.md)
+Program: [EO_PREDICTIVE_ARCHITECTURE_PROGRAM.md](../docs/misc/historical-audits/EO_PREDICTIVE_ARCHITECTURE_PROGRAM.md)
 Depends on: [01_predictive_object_schemas.md](./01_predictive_object_schemas.md), [02_asteroid_predictive_registry.json](./02_asteroid_predictive_registry.json), [03_method_charters.md](./03_method_charters.md).
 Status: charter (Phase 0, operator-approved). Policy. No implementation.
 Version: `phase0.1.3`

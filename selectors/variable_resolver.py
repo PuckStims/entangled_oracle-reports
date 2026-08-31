@@ -188,6 +188,13 @@ def resolve_all(
         or user_profile.get("methodology_label", "")
     )
     variables["birth_time_state"] = user_profile.get("birth_time_state", "")
+    variables["simple_mode"] = bool(
+        user_profile.get("simple_mode", payload.get("simple_mode", False))
+    )
+    exact_birth_time_available = (
+        not variables["simple_mode"]
+        and variables["birth_time_state"] == "exact_birth_time"
+    )
 
     # ── Standard Bodies ────────────────────────────────────────
     #
@@ -218,7 +225,7 @@ def resolve_all(
         key = body_name.lower()
 
         variables[f"{key}_sign"] = data.get("sign", "")
-        variables[f"{key}_house"] = data.get("house", 0)
+        variables[f"{key}_house"] = data.get("house", 0) if exact_birth_time_available else 0
         variables[f"{key}_degree"] = data.get("degree_decimal", 0.0)
         variables[f"{key}_retrograde"] = bool(data.get("retrograde", False))
         variables[f"{key}_sign_element"] = get_sign_element(
@@ -242,17 +249,17 @@ def resolve_all(
 
     for angle_name, variable_prefix in angle_key_map.items():
         angle = _record(angles.get(angle_name))
-        sign = angle.get("sign", "")
+        sign = angle.get("sign", "") if exact_birth_time_available else ""
 
         variables[f"{variable_prefix}_sign"] = sign
         variables[f"{variable_prefix}_degree"] = angle.get(
             "degree_decimal",
             0.0,
-        )
+        ) if exact_birth_time_available else 0.0
         variables[f"{variable_prefix}_longitude"] = angle.get(
             "longitude",
             0.0,
-        )
+        ) if exact_birth_time_available else 0.0
         variables[f"{variable_prefix}_element"] = get_sign_element(sign)
         variables[f"{variable_prefix}_modality"] = get_sign_modality(sign)
 
@@ -290,11 +297,15 @@ def resolve_all(
             house_number
         )
 
-    variables["saturn_house_theme"] = get_house_theme(
-        variables.get("saturn_house", 0)
+    variables["saturn_house_theme"] = (
+        get_house_theme(variables.get("saturn_house", 0))
+        if exact_birth_time_available
+        else ""
     )
-    variables["jupiter_house_theme"] = get_house_theme(
-        variables.get("jupiter_house", 0)
+    variables["jupiter_house_theme"] = (
+        get_house_theme(variables.get("jupiter_house", 0))
+        if exact_birth_time_available
+        else ""
     )
 
     # ── Day Ruler ──────────────────────────────────────────────
@@ -519,11 +530,6 @@ def resolve_all(
 
     # ── Horoscope Sky Variables ────────────────────────────────────
     #
-    # simple_mode is stored at the top level of the natal payload.
-    variables["simple_mode"] = bool(
-        user_profile.get("simple_mode", payload.get("simple_mode", False))
-    )
-
     # moon_phase_descriptor, activation_planet, activation_house_number, and
     # natal_house_name all require today's live planetary positions via Swiss
     # Ephemeris. swisseph is an optional dependency — fall back to empty values
@@ -649,13 +655,25 @@ def resolve_all(
                     "using tight daily orbs rather than broad year-ahead windows."
                 )
 
-        _activation_house = _whole_sign_house(_winner_longitude, _asc_lon)
+        _activation_house = (
+            _whole_sign_house(_winner_longitude, _asc_lon)
+            if exact_birth_time_available
+            else 0
+        )
 
         variables["activation_planet"]       = _winner_planet
         variables["activation_house_number"] = _activation_house
-        variables["natal_house_name"]        = get_house_domain(_activation_house)
+        variables["natal_house_name"]        = (
+            get_house_domain(_activation_house)
+            if exact_birth_time_available
+            else ""
+        )
         variables["activation_source"]       = _activation_source
-        variables["activation_basis_line"]   = _activation_basis_line
+        variables["activation_basis_line"]   = (
+            _activation_basis_line
+            if exact_birth_time_available
+            else "Birth time is unavailable, so the activation planet may be shown but house and angle localization are withheld."
+        )
 
     except Exception:
         variables["moon_phase_descriptor"]   = ""
@@ -674,11 +692,12 @@ def resolve_all(
 
     planets_in_12th = []
 
-    for planet_name, planet_data in standard_planets.items():
-        data = _record(planet_data)
+    if exact_birth_time_available:
+        for planet_name, planet_data in standard_planets.items():
+            data = _record(planet_data)
 
-        if data.get("house") == 12:
-            planets_in_12th.append(planet_name)
+            if data.get("house") == 12:
+                planets_in_12th.append(planet_name)
 
     variables["planets_in_12th"] = planets_in_12th
     variables["has_12th_house_planets"] = bool(planets_in_12th)

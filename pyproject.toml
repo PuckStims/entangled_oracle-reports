@@ -14,6 +14,7 @@ dependencies = [
     "geopy",
     "jinja2",
     "numpy>=2,<2.5",
+    "python-docx",
     "pyswisseph",
     "timezonefinder",
 ]
@@ -21,6 +22,26 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "pytest",
+]
+
+[tool.pytest.ini_options]
+norecursedirs = [
+    ".git",
+    ".venv",
+    "archive",
+    "audit_output",
+    "entangled-astrology-v0.1",
+    "entangled-dashboard-v0.1",
+    "output",
+    "outputs",
+    "quarantine",
+    "runtime",
+    "tmp",
+    "__pycache__",
+]
+testpaths = [
+    "test_offline_location.py",
+    "tests",
 ]
 
 [tool.setuptools]

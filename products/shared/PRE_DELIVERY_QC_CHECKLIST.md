@@ -7,9 +7,10 @@
 - [ ] Tropical + Whole Sign metadata shown correctly
 - [ ] Birth-time confidence handled correctly
 - [ ] Required sections present
-- [ ] No visible placeholder text
-- [ ] No missing block markers
-- [ ] No visible fallback/debug text
+- [ ] Review build surfaces any TODO / missing block markers visibly for operator inspection
+- [ ] Final-delivery marker policy explicitly approved for this package
+- [ ] No computed-looking house or angle claims when exact birth time is unavailable
+- [ ] No visible debug text unless explicitly requested
 - [ ] No accidental standard / niche / EO blend
 - [ ] No unwanted Landmark graph/tags
 - [ ] HTML reviewed

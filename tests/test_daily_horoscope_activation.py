@@ -179,8 +179,9 @@ class TestActivationPriorityChain(unittest.TestCase):
                 variables = resolve_all(_payload_stub(), {}, querent_name="Priority Test")
 
         self.assertEqual(variables["activation_planet"], "Mercury")
-        self.assertIsInstance(variables["activation_house_number"], int)
-        self.assertNotEqual(variables["activation_house_number"], 0)
+        self.assertEqual(variables["activation_house_number"], 0)
+        self.assertEqual(variables["natal_house_name"], "")
+        self.assertIn("house and angle localization are withheld", variables["activation_basis_line"])
 
     def test_transit_wins_when_no_station_fires(self):
         with patch("engine.transit_engine.scan_stations", return_value=[]):

@@ -47,7 +47,7 @@ def test_client_report_omits_forecast_climate_section_in_three_report_outputs():
                 "--report-date", "2026-06-28",
                 "--output-filename", "test_visitor_forecast_climate.html",
             ],
-            "must_include": ["House- and angle-based routing is withheld without exact birth time."],
+            "must_include": ["Planetary sign positions remain usable; angle and house features are withheld without exact birth time."],
         },
         {
             "args": [

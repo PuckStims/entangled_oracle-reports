@@ -278,8 +278,10 @@ class TestWeeklyHoroscopeChronology(unittest.TestCase):
                 self.assertEqual(trace["contact_meanings"]["requested_key_path"][1], aspect)
                 self.assertNotEqual(trace["contact_meanings"]["requested_key_path"][1], character)
                 self.assertEqual(trace["contact_guidance"]["requested_key_path"][0], aspect)
-                self.assertNotEqual(fields["meaning_primary"], "TODO")
+                self.assertEqual(fields["meaning_primary"], "TODO")
                 self.assertNotEqual(fields["guidance_line"], "TODO")
+                self.assertTrue(trace["contact_meanings"]["placeholder_fallback_used"])
+                self.assertFalse(trace["contact_guidance"]["placeholder_fallback_used"])
 
     def test_weekly_prediction_subject_phrases_stay_tightly_targeted(self):
         import json

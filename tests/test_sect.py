@@ -10,7 +10,7 @@ Covers:
 import sys, os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from sect_calculation_algorithm import (
+from formulas.standard.sect import (
     evaluate_chart_sect,
     evaluate_chart_sect_detailed,
     evaluate_planetary_sect,

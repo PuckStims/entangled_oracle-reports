@@ -13,7 +13,7 @@ Usage:
     python generate.py synastry --name1 "Puck" --date1 1992-03-21 --time1 08:11 --location1 "Peoria, IL" --name2 "Cher" --date2 1995-02-15 --time2 18:42 --location2 "Seattle, WA"
 
 DOB-only mode (simple horoscope, no birth time needed):
-    python generate.py horoscope --name "Visitor" --date 1990-06-15 --simple
+    python generate.py horoscope --name "Visitor" --date 1990-06-15 --location "Peoria, IL" --simple
 """
 import argparse
 import hashlib
@@ -22,14 +22,33 @@ import os
 import sys
 import json
 import re
-import uuid
 import webbrowser
 from functools import lru_cache
 from datetime import datetime, timedelta, timezone
-from pathlib import Path
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from config import OUTPUT_DIR, TEMPLATES_DIR, PRODUCTS_DIR
+from engine.report_io import (
+    add_one_year as _add_one_year,
+    align_to_day_start as _align_to_day_start,
+    align_to_week_start as _align_to_week_start,
+    atomic_write_text as _atomic_write_text,
+    default_output_filename as _default_output_filename,
+    default_synastry_output_filename as _default_synastry_output_filename,
+    env_flag as _env_flag,
+    log_verbose as _log_verbose,
+    report_window as _report_window,
+    reset_swiss_ephemeris_path,
+    stdout_report_paths_enabled as _stdout_report_paths_enabled,
+)
+from engine.report_inputs import (
+    InputValidationError,
+    normalize_optional_text as _normalize_optional_text,
+    parse_birth_data,
+    parse_route_waypoints as _parse_route_waypoints,
+    parse_synastry_party_data as _parse_synastry_party_data,
+    validate_iso_date as _validate_iso_date,
+)
 from formulas.standard.forecast_activation import build_ranking_diagnostics
 from formulas.standard.forecast_synthesis import build_forecast_synthesis
 from formulas.standard.methodology_profiles import get_active_methodology_metadata
@@ -43,10 +62,6 @@ from product_versions import (
 
 # Dev-only content trace. Set EO_CONTENT_TRACE=1 to print station source/subtitle
 # resolution to the terminal. Never written to HTML or PDF output.
-def _env_flag(name: str) -> bool:
-    return os.environ.get(name, "").strip().lower() in {"1", "true", "yes", "on"}
-
-
 _EO_CONTENT_TRACE = _env_flag("EO_CONTENT_TRACE")
 
 
@@ -66,12 +81,7 @@ def _location_services_routing():
 
 
 def _reset_swiss_ephemeris_path() -> None:
-    """Keep long-lived web sessions pinned to the repo ephemeris directory."""
-    try:
-        import swisseph as swe
-    except ImportError:
-        return
-    swe.set_ephe_path(os.path.join(os.path.dirname(os.path.abspath(__file__)), "ephemeris"))
+    reset_swiss_ephemeris_path(os.path.dirname(os.path.abspath(__file__)))
 
 
 YEAR_TEXTURE_CLIENT_TARGETS = {
@@ -102,172 +112,6 @@ except ImportError:
 
 # ── Input Parsing ──────────────────────────────────────────────
 
-class InputValidationError(ValueError):
-    """Raised when CLI-supplied birth data is malformed. Caught in main()
-    for a clean one-line error instead of a raw Python traceback."""
-
-
-def _normalize_optional_text(value: str | None) -> str | None:
-    cleaned = str(value or "").strip()
-    return cleaned or None
-
-
-def _validate_iso_date(value: str | None, flag_name: str) -> str | None:
-    cleaned = _normalize_optional_text(value)
-    if cleaned is None:
-        return None
-    try:
-        datetime.strptime(cleaned, "%Y-%m-%d")
-    except ValueError:
-        raise InputValidationError(
-            f"{flag_name} '{cleaned}' is not a valid date in YYYY-MM-DD format."
-        ) from None
-    return cleaned
-
-
-def _parse_route_waypoints(value: str | None) -> list[dict] | None:
-    if not value:
-        return None
-    waypoints: list[dict] = []
-    for chunk in value.split(";"):
-        text = chunk.strip()
-        if not text:
-            continue
-        parts = [part.strip() for part in text.split(",")]
-        if len(parts) != 2:
-            raise InputValidationError(
-                "--route-waypoints must use 'lat,lon;lat,lon;...' format."
-            )
-        try:
-            latitude = float(parts[0])
-            longitude = float(parts[1])
-        except ValueError:
-            raise InputValidationError(
-                "--route-waypoints must contain numeric latitude/longitude pairs."
-            ) from None
-        waypoints.append({"latitude": latitude, "longitude": longitude})
-    if len(waypoints) < 2:
-        raise InputValidationError(
-            "--route-waypoints requires at least two waypoint pairs."
-        )
-    return waypoints
-
-
-def parse_birth_data(args) -> dict:
-    """Parses CLI arguments into a birth data dict."""
-    name = args.name
-    if not name or not name.strip():
-        raise InputValidationError("--name cannot be empty or whitespace-only.")
-    name = name.strip()
-
-    sample_identity_mode = getattr(args, "sample_identity_mode", None)
-    sample_display_name = (getattr(args, "sample_display_name", None) or "Sample Client").strip() or "Sample Client"
-    report_display_name = sample_display_name if sample_identity_mode == "anonymized" else name
-
-    date_string = args.date
-    try:
-        datetime.strptime(date_string, "%Y-%m-%d")
-    except ValueError:
-        raise InputValidationError(
-            f"--date '{date_string}' is not a valid date in YYYY-MM-DD format."
-        ) from None
-
-    birth_data = {
-        "name": report_display_name,
-        "date": date_string,
-        "location": args.location or "",
-        "simple_mode": getattr(args, "simple", False),
-        "sample_identity_mode": sample_identity_mode,
-        "sample_display_name": sample_display_name,
-    }
-    if not birth_data["location"].strip():
-        raise InputValidationError("--location is required and cannot be empty.")
-    if hasattr(args, "time") and args.time and not birth_data["simple_mode"]:
-        time_string = args.time
-        time_format = "%H:%M:%S" if time_string.count(":") == 2 else "%H:%M"
-        try:
-            datetime.strptime(time_string, time_format)
-        except ValueError:
-            raise InputValidationError(
-                f"--time '{time_string}' is not a valid 24-hour time in HH:MM or HH:MM:SS format."
-            ) from None
-        birth_data["time"] = time_string
-    else:
-        birth_data["time"] = None
-        birth_data["simple_mode"] = True
-    birth_data["palette"] = getattr(args, "palette", "vibrant")
-    birth_data["include_debug_json"] = bool(getattr(args, "include_debug_json", False))
-    birth_data["include_practitioner_appendix"] = bool(getattr(args, "include_practitioner_appendix", False))
-    birth_data["report_date"] = _validate_iso_date(getattr(args, "report_date", None), "--report-date")
-    birth_data["report_end_date"] = _validate_iso_date(getattr(args, "report_end_date", None), "--report-end-date")
-    report_start = datetime.strptime(
-        birth_data["report_date"] or datetime.now(timezone.utc).strftime("%Y-%m-%d"),
-        "%Y-%m-%d",
-    )
-    if birth_data["report_end_date"]:
-        report_end = datetime.strptime(birth_data["report_end_date"], "%Y-%m-%d")
-        if report_end < report_start:
-            raise InputValidationError("--report-end-date must be the same day or later than --report-date.")
-    birth_data["destination"] = _normalize_optional_text(getattr(args, "destination", None))
-    birth_data["anchor_location"] = _normalize_optional_text(getattr(args, "anchor_location", None))
-    birth_data["purpose_lens"] = _normalize_optional_text(getattr(args, "purpose_lens", None))
-    birth_data["relationship_to_place"] = _normalize_optional_text(getattr(args, "relationship_to_place", None))
-    route_waypoints = _parse_route_waypoints(getattr(args, "route_waypoints", None))
-    if route_waypoints:
-        birth_data["route"] = {
-            "route_id": getattr(args, "route_id", None) or "cli-route",
-            "corridor_width_km": float(getattr(args, "route_corridor_km", 150.0) or 150.0),
-            "waypoints": route_waypoints,
-        }
-    return birth_data
-
-
-def _parse_synastry_party_data(args, suffix: str) -> dict:
-    name = getattr(args, f"name{suffix}", None)
-    if not name or not str(name).strip():
-        raise InputValidationError(f"--name{suffix} cannot be empty or whitespace-only.")
-
-    date_string = getattr(args, f"date{suffix}", None)
-    if not date_string:
-        raise InputValidationError(f"--date{suffix} is required for synastry.")
-    try:
-        datetime.strptime(date_string, "%Y-%m-%d")
-    except ValueError:
-        raise InputValidationError(
-            f"--date{suffix} '{date_string}' is not a valid date in YYYY-MM-DD format."
-        ) from None
-
-    location = getattr(args, f"location{suffix}", None)
-    if not location or not str(location).strip():
-        raise InputValidationError(f"--location{suffix} is required for synastry.")
-
-    simple_mode = bool(getattr(args, f"simple{suffix}", False))
-    birth_data = {
-        "name": name,
-        "date": date_string,
-        "location": location,
-        "simple_mode": simple_mode,
-        "palette": getattr(args, "palette", "vibrant"),
-    }
-
-    time_string = getattr(args, f"time{suffix}", None)
-    if time_string:
-        time_format = "%H:%M:%S" if str(time_string).count(":") == 2 else "%H:%M"
-        try:
-            datetime.strptime(time_string, time_format)
-        except ValueError:
-            raise InputValidationError(
-                f"--time{suffix} '{time_string}' is not a valid 24-hour time in HH:MM or HH:MM:SS format."
-            ) from None
-        birth_data["time"] = time_string
-        birth_data["simple_mode"] = False
-    else:
-        birth_data["time"] = None
-        birth_data["simple_mode"] = True
-
-    return birth_data
-
-
 # ── Engine Integration ─────────────────────────────────────────
 
 def get_payload(birth_data: dict) -> dict:
@@ -278,74 +122,8 @@ def get_payload(birth_data: dict) -> dict:
 
 # ── Report Generators ──────────────────────────────────────────
 
-def _add_one_year(start: datetime) -> datetime:
-    """Returns the same calendar date one year later, with leap-day safety."""
-    try:
-        return start.replace(year=start.year + 1)
-    except ValueError:
-        return start.replace(year=start.year + 1, month=2, day=28)
-
-
-def _align_to_week_start(moment: datetime) -> datetime:
-    """Returns UTC midnight of the Monday in the same calendar week as moment."""
-    day_start = moment.replace(hour=0, minute=0, second=0, microsecond=0)
-    return day_start - timedelta(days=day_start.weekday())
-
-
-def _align_to_day_start(moment: datetime) -> datetime:
-    """Returns UTC midnight for the calendar day containing moment."""
-    return moment.replace(hour=0, minute=0, second=0, microsecond=0)
-
-
-def _report_window(report_type: str, report_start: datetime) -> tuple[datetime, datetime]:
-    """
-    Returns (report_start, report_end) for a report type's forecast window.
-
-    weekly_horoscope starts on the report/generation date and covers seven
-    full calendar days. That keeps the product from forcing a Monday-Friday
-    work-week layout when it is created on a different day.
-    """
-    if report_type == "weekly_horoscope":
-        day_start = _align_to_day_start(report_start)
-        return day_start, day_start + timedelta(days=7)
-    return report_start, _add_one_year(report_start)
-
-
-def _stdout_report_paths_enabled() -> bool:
-    return _env_flag("EO_STDOUT_REPORT_PATHS")
-
-
 def _stdout_verbose_enabled() -> bool:
     return _env_flag("EO_VERBOSE_STDOUT")
-
-
-def _log_verbose(message: str) -> None:
-    if _stdout_verbose_enabled():
-        print(message)
-
-
-def _atomic_write_text(path: str, content: str) -> None:
-    directory = os.path.dirname(path) or "."
-    Path(directory).mkdir(parents=True, exist_ok=True)
-    temp_name = f".{os.path.basename(path)}.{uuid.uuid4().hex}.tmp"
-    temp_path = os.path.join(directory, temp_name)
-    try:
-        with open(temp_path, "w", encoding="utf-8") as handle:
-            handle.write(content)
-        os.replace(temp_path, path)
-    finally:
-        if os.path.exists(temp_path):
-            try:
-                os.remove(temp_path)
-            except OSError:
-                pass
-
-
-def _default_output_filename(report_type: str, birth_data: dict, report_start: datetime) -> str:
-    safe_name = birth_data["name"].replace(" ", "_").lower()
-    timestamp = report_start.strftime("%Y%m%d_%H%M%S")
-    request_id = uuid.uuid4().hex[:8]
-    return f"{safe_name}_{report_type}_{timestamp}_{request_id}.html"
 
 
 def generate_report(
@@ -354,17 +132,29 @@ def generate_report(
     output_filename: str | None = None,
     content_pack: str = "plainspeak",
     output_dir: str | None = None,
+    formats: tuple[str, ...] | None = None,
 ) -> str:
     """
     Master report generator.
-    Returns the path to the generated HTML file.
+    Returns the primary generated artifact path (HTML when requested).
+
+    ``formats`` is generation configuration, deliberately separate from the
+    natal/birth payload.  HTML remains the backwards-compatible default.
     """
+    from products.shared.document_output import OutputOptions, docx_output_path, render_docx_report
+
+    output_options = OutputOptions.from_formats(formats)
     _reset_swiss_ephemeris_path()
 
     payload = get_payload(birth_data)
     location_routing = _location_services_routing()
 
     if location_routing["is_location_report_type"](report_type):
+        if "docx" in output_options.formats:
+            raise ValueError(
+                f"DOCX is not yet available for location report '{report_type}'. "
+                "Location report contexts will join the shared composer registry in Phase 4."
+            )
         artifacts = location_routing["build_location_report_artifacts"](report_type, payload, birth_data)
         html = artifacts["html"]
         manifest_report_type = artifacts["public_report_type"]
@@ -447,17 +237,28 @@ def generate_report(
         standard_report_bundle=standard_report_bundle,
     )
 
-    _log_verbose("[Render] Building HTML...")
-    html = render_template(report_type, context)
-
     if output_filename is None:
         output_filename = _default_output_filename(report_type, birth_data, report_start)
 
     effective_dir = output_dir if output_dir else OUTPUT_DIR
-    output_path = os.path.join(effective_dir, output_filename)
     os.makedirs(effective_dir, exist_ok=True)
+    requested_path = os.path.join(effective_dir, output_filename)
+    html_output_path = (
+        os.path.splitext(requested_path)[0] + ".html"
+        if requested_path.lower().endswith(".docx")
+        else requested_path
+    )
+    docx_path = docx_output_path(requested_path)
 
-    _atomic_write_text(output_path, html)
+    if "html" in output_options.formats:
+        _log_verbose("[Render] Building HTML...")
+        html = render_template(report_type, context)
+        _atomic_write_text(html_output_path, html)
+    if "docx" in output_options.formats:
+        _log_verbose("[Render] Building DOCX...")
+        render_docx_report(report_type, context, docx_path)
+
+    output_path = html_output_path if "html" in output_options.formats else str(docx_path)
 
     manifest_path = _write_report_manifest(
         report_type=report_type,
@@ -468,6 +269,10 @@ def generate_report(
         context=context,
         content_pack=content_pack,
         output_path=output_path,
+        output_artifacts={
+            "html": html_output_path if "html" in output_options.formats else None,
+            "docx": str(docx_path) if "docx" in output_options.formats else None,
+        },
         report_start=report_start,
         report_end=report_end,
     )
@@ -482,14 +287,6 @@ def generate_report(
         print(f"[Done] Report path: {output_path}")
         print(f"[Done] Manifest path: {manifest_path}")
     return output_path
-
-
-def _default_synastry_output_filename(person_a: dict, person_b: dict) -> str:
-    safe_a = str(person_a.get("name", "person_a")).replace(" ", "_").lower()
-    safe_b = str(person_b.get("name", "person_b")).replace(" ", "_").lower()
-    timestamp = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
-    request_id = uuid.uuid4().hex[:8]
-    return f"{safe_a}_{safe_b}_synastry_{timestamp}_{request_id}.html"
 
 
 def generate_synastry_report(
@@ -2159,14 +1956,18 @@ def _weekly_aspect_prompt_exact(exact_aspect: str) -> str:
 
 def _weekly_resolve_or_placeholder(text: str, legacy_text: str) -> tuple[str, bool]:
     """
-    Treats a literal "TODO" leaf (unauthored block content) as not-yet-ready and
-    falls back to already-proven legacy prose, so production output never shows
-    a raw "TODO" to a reader while the new contact-level blocks are unauthored.
+    Preserves literal "TODO" leaves for the operator review loop.
+
+    The second return value still marks placeholder status for selector traces,
+    but output keeps the visible authoring marker instead of silently falling
+    back to legacy prose.
 
     Returns (resolved_text, used_placeholder_fallback).
     """
     cleaned = (text or "").strip()
-    if not cleaned or cleaned == _WEEKLY_TODO_SENTINEL:
+    if cleaned == _WEEKLY_TODO_SENTINEL:
+        return cleaned, True
+    if not cleaned:
         return legacy_text, True
     return text, False
 
@@ -2200,10 +2001,8 @@ def _weekly_contact_level_fields(moment: dict, ledger: dict | None = None) -> di
 
     Exposes the separated rendered fields the template needs for the
     primary/secondary/tertiary card hierarchy: meaning_primary, technical_label,
-    technical_meta, guidance_line, selector_trace. Until contact_meanings.json and
-    contact_guidance.json are authored (currently "TODO" skeletons), meaning_primary
-    and guidance_line transparently fall back to the existing moment_focus /
-    moment_guidance blocks so current output is unaffected.
+    technical_meta, guidance_line, selector_trace. Literal TODO leaves remain
+    visible so the operator can identify authoring gaps in generated output.
     """
     from selectors.block_selector import select_block_traced
 
@@ -3470,8 +3269,8 @@ def _build_soul_ecosystem_context(variables, index_results, payload) -> dict:
                 "selector_inputs": inputs or {},
             })
         # select_block_traced can return literal "[BLOCK NOT FOUND: ...]" /
-        # "[MISSING BLOCK FILE: ...]" markers with no filtering of its own —
-        # scrub those (and any stray [TODO] markers) before they reach the template.
+        # "[MISSING BLOCK FILE: ...]" markers. Preserve them so operator
+        # review output exposes authoring and routing gaps.
         return _usable_block(text)
 
     chart_wheel_data = None
@@ -3830,21 +3629,25 @@ def _usable_block(value: str) -> str:
 
     The content library was authored partly from Markdown source material.
     This removes internal source headers and wrapper brackets while preserving
-    actual report copy. TODO or unresolved block markers are suppressed.
+    actual report copy. TODO and unresolved block markers are intentionally
+    preserved because visible gaps are part of the operator review workflow.
     """
     if not isinstance(value, str):
         return ""
 
     cleaned = value.replace("\r\n", "\n").replace("\r", "\n").strip()
 
-    if not cleaned or re.match(
-        r"^\[\s*(TODO|BLOCK NOT FOUND|MISSING BLOCK FILE)\b", cleaned, flags=re.IGNORECASE
-    ):
+    if not cleaned:
         return ""
 
     # Some finished overview blocks were stored as [full paragraph].
-    # Remove only a single outer wrapper pair after TODO handling.
-    if cleaned.startswith("[") and cleaned.endswith("]"):
+    is_review_marker = bool(
+        re.match(r"^\[\s*(TODO|BLOCK NOT FOUND|MISSING BLOCK FILE)\b", cleaned, flags=re.IGNORECASE)
+    )
+
+    # Some finished overview blocks were stored as [full paragraph].
+    # Remove only a single outer wrapper pair for prose, not review markers.
+    if cleaned.startswith("[") and cleaned.endswith("]") and not is_review_marker:
         cleaned = cleaned[1:-1].strip()
 
     # Source headings such as "### JUPITER TRANSITS: PLUTO" accidentally
@@ -3856,10 +3659,6 @@ def _usable_block(value: str) -> str:
         "",
         cleaned,
     )
-
-    # Do not surface unresolved TODO blocks anywhere in a report.
-    if re.search(r"\[\s*TODO\b", cleaned, flags=re.IGNORECASE):
-        return ""
 
     cleaned = re.sub(r"\n{3,}", "\n\n", cleaned).strip()
     return cleaned
@@ -5734,6 +5533,7 @@ def _write_report_manifest(
     context: dict,
     content_pack: str,
     output_path: str,
+    output_artifacts: dict[str, str | None] | None = None,
     report_start: datetime,
     report_end: datetime,
 ) -> str:
@@ -5751,6 +5551,7 @@ def _write_report_manifest(
         "report_version": report_version(report_type),
         "report_path": output_path,
         "report_output_basename": os.path.basename(output_path),
+        "output_artifacts": {key: value for key, value in (output_artifacts or {}).items() if value},
         "report_date_range": {
             "start": report_start.strftime("%Y-%m-%d"),
             "end": report_end.strftime("%Y-%m-%d"),
@@ -10526,6 +10327,14 @@ def main():
     parser.add_argument("--output-dir",      required=False, dest="output_dir",      help="Output directory (overrides default)")
     parser.add_argument("--output-filename", required=False, dest="output_filename", help="Exact output filename (overrides auto-generated name)")
     parser.add_argument(
+        "--format",
+        dest="formats",
+        choices=["html", "docx"],
+        action="append",
+        default=None,
+        help="Output format. Repeat to generate both; defaults to HTML.",
+    )
+    parser.add_argument(
         "--content-pack",
         dest="content_pack",
         choices=["plainspeak", "entangled_oracle"],
@@ -10579,6 +10388,8 @@ def main():
     output_filename = args.output_filename or args.output
     try:
         if args.report_type == "synastry":
+            if args.formats and "docx" in args.formats:
+                raise ValueError("DOCX is not yet available for synastry; its dedicated assembler will join the shared composer registry in Phase 4.")
             person_a_birth_data = _parse_synastry_party_data(args, "1")
             person_b_birth_data = _parse_synastry_party_data(args, "2")
             output_path = generate_synastry_report(
@@ -10590,7 +10401,14 @@ def main():
         else:
             birth_data = parse_birth_data(args)
             birth_data["current_location"] = args.current_location or args.location or ""
-            output_path = generate_report(args.report_type, birth_data, output_filename, args.content_pack, args.output_dir)
+            output_path = generate_report(
+                args.report_type,
+                birth_data,
+                output_filename,
+                args.content_pack,
+                args.output_dir,
+                tuple(args.formats) if args.formats else None,
+            )
     except InputValidationError as exc:
         raise SystemExit(str(exc))
     except Exception as exc:
@@ -10609,7 +10427,7 @@ def main():
             raise SystemExit(str(exc))
         raise
 
-    if not args.no_browser:
+    if not args.no_browser and (not args.formats or "html" in args.formats):
         webbrowser.open(f"file://{os.path.abspath(output_path)}")
     else:
         print(f"Output: {os.path.basename(output_path)}")

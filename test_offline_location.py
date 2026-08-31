@@ -210,11 +210,24 @@ def clear_engine_modules() -> None:
 
 
 class OfflineLocationTests(unittest.TestCase):
+    _original_swisseph = None
+    _had_original_swisseph = False
+
     @classmethod
     def setUpClass(cls):
         ensure_module("geonamescache", install_fake_geonamescache)
         ensure_module("timezonefinder", install_fake_timezonefinder)
-        ensure_module("swisseph", install_fake_swisseph)
+        cls._had_original_swisseph = "swisseph" in sys.modules
+        cls._original_swisseph = sys.modules.get("swisseph")
+        install_fake_swisseph()
+        clear_engine_modules()
+
+    @classmethod
+    def tearDownClass(cls):
+        if cls._had_original_swisseph:
+            sys.modules["swisseph"] = cls._original_swisseph
+        else:
+            sys.modules.pop("swisseph", None)
         clear_engine_modules()
 
     def setUp(self):

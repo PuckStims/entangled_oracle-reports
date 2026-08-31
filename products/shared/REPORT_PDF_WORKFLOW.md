@@ -5,6 +5,8 @@ Approved local production route: `browser_print`
 Source of truth:
 - Generated report HTML is the production source of truth.
 - PDF output is produced from that HTML through one local browser-print workflow.
+- DOCX is a parallel generated artifact from the shared document model; it does
+  not change the approved HTML-to-PDF route.
 
 Approved steps:
 1. Generate the report HTML locally.
