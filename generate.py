@@ -150,20 +150,24 @@ def generate_report(
     location_routing = _location_services_routing()
 
     if location_routing["is_location_report_type"](report_type):
-        if "docx" in output_options.formats:
-            raise ValueError(
-                f"DOCX is not yet available for location report '{report_type}'. "
-                "Location report contexts will join the shared composer registry in Phase 4."
-            )
         artifacts = location_routing["build_location_report_artifacts"](report_type, payload, birth_data)
-        html = artifacts["html"]
         manifest_report_type = artifacts["public_report_type"]
         if output_filename is None:
             output_filename = _default_output_filename(report_type, birth_data, datetime.now(timezone.utc))
         effective_dir = output_dir if output_dir else OUTPUT_DIR
-        output_path = os.path.join(effective_dir, output_filename)
+        requested_path = os.path.join(effective_dir, output_filename)
+        html_output_path = (
+            os.path.splitext(requested_path)[0] + ".html"
+            if requested_path.lower().endswith(".docx")
+            else requested_path
+        )
+        docx_path = docx_output_path(requested_path)
         os.makedirs(effective_dir, exist_ok=True)
-        _atomic_write_text(output_path, html)
+        if "html" in output_options.formats:
+            _atomic_write_text(html_output_path, artifacts["html"])
+        if "docx" in output_options.formats:
+            render_docx_report(report_type, artifacts["context"], docx_path)
+        output_path = html_output_path if "html" in output_options.formats else str(docx_path)
         report_start, report_end = location_routing["location_report_window"](manifest_report_type, birth_data)
         manifest_path = _write_report_manifest(
             report_type=manifest_report_type,
@@ -174,6 +178,10 @@ def generate_report(
             context=artifacts["context"],
             content_pack=content_pack,
             output_path=output_path,
+            output_artifacts={
+                "html": html_output_path if "html" in output_options.formats else None,
+                "docx": str(docx_path) if "docx" in output_options.formats else None,
+            },
             report_start=report_start,
             report_end=report_end,
         )
@@ -294,7 +302,11 @@ def generate_synastry_report(
     person_b_birth_data: dict,
     output_filename: str | None = None,
     output_dir: str | None = None,
+    formats: tuple[str, ...] | None = None,
 ) -> str:
+    from products.shared.document_output import OutputOptions, docx_output_path, render_docx_report
+
+    output_options = OutputOptions.from_formats(formats)
     _reset_swiss_ephemeris_path()
 
     from engine.natal_engine import generate_payload
@@ -314,15 +326,23 @@ def generate_synastry_report(
             "palette": person_a_birth_data.get("palette", person_b_birth_data.get("palette", "vibrant")),
         },
     )
-    html = render_synastry_html(context)
-
     if output_filename is None:
         output_filename = _default_synastry_output_filename(person_a_birth_data, person_b_birth_data)
 
     effective_dir = output_dir if output_dir else os.path.join(OUTPUT_DIR, "synastry")
-    output_path = os.path.join(effective_dir, output_filename)
+    requested_path = os.path.join(effective_dir, output_filename)
+    html_output_path = (
+        os.path.splitext(requested_path)[0] + ".html"
+        if requested_path.lower().endswith(".docx")
+        else requested_path
+    )
+    docx_path = docx_output_path(requested_path)
     os.makedirs(effective_dir, exist_ok=True)
-    _atomic_write_text(output_path, html)
+    if "html" in output_options.formats:
+        _atomic_write_text(html_output_path, render_synastry_html(context))
+    if "docx" in output_options.formats:
+        render_docx_report("synastry", context, docx_path)
+    output_path = html_output_path if "html" in output_options.formats else str(docx_path)
     print(f"[Done] Synastry preview saved: {os.path.basename(output_path)}")
     if _stdout_report_paths_enabled():
         print(f"[Done] Synastry preview path: {output_path}")
@@ -10388,8 +10408,6 @@ def main():
     output_filename = args.output_filename or args.output
     try:
         if args.report_type == "synastry":
-            if args.formats and "docx" in args.formats:
-                raise ValueError("DOCX is not yet available for synastry; its dedicated assembler will join the shared composer registry in Phase 4.")
             person_a_birth_data = _parse_synastry_party_data(args, "1")
             person_b_birth_data = _parse_synastry_party_data(args, "2")
             output_path = generate_synastry_report(
@@ -10397,6 +10415,7 @@ def main():
                 person_b_birth_data,
                 output_filename=output_filename,
                 output_dir=args.output_dir,
+                formats=tuple(args.formats) if args.formats else None,
             )
         else:
             birth_data = parse_birth_data(args)

@@ -4,6 +4,8 @@ This module intentionally has no imports of report composers or report types.
 """
 from __future__ import annotations
 
+import base64
+from io import BytesIO
 from pathlib import Path
 from typing import Any
 
@@ -13,6 +15,11 @@ from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 from docx.shared import Inches, Pt, RGBColor
+
+try:
+    import cairosvg
+except ImportError:  # pragma: no cover - dependency is declared for normal installs.
+    cairosvg = None
 
 from .document_model import (
     CalloutBlock,
@@ -206,12 +213,56 @@ class DocxRenderer:
                 self._set_cell_width(cells[index], widths[index])
 
     def _render_figure(self, node: Figure, document: Document) -> None:
-        # python-docx cannot reliably add SVG in all Word versions.  Keep the
-        # model source intact and provide an accessible, deterministic fallback.
+        image_stream = self._figure_image_stream(node)
+        if image_stream is not None:
+            picture = document.add_picture(
+                image_stream,
+                width=Inches(node.width_inches) if node.width_inches else None,
+                height=Inches(node.height_inches) if node.height_inches else None,
+            )
+            picture._inline.docPr.set("descr", node.alt_text)
+            if node.caption:
+                document.add_paragraph(node.caption, style="EO Caption")
+            return
+
+        # Keep unsupported sources accessible even when a renderer cannot use them.
         fallback = node.fallback_text or f"Figure unavailable in DOCX: {node.alt_text}"
         self._render_calloutblock(CalloutBlock(node.caption or "Figure", fallback, "structure"), document)
         if node.caption:
             document.add_paragraph(node.caption, style="EO Caption")
+
+    @staticmethod
+    def _figure_image_stream(node: Figure) -> BytesIO | str | None:
+        """Return a DOCX-compatible raster stream without changing the model."""
+        if node.media_type == "image/svg+xml":
+            if cairosvg is None or not isinstance(node.source, (str, bytes)):
+                return None
+            try:
+                output_width = int(node.width_inches * 144) if node.width_inches else None
+                output_height = int(node.height_inches * 144) if node.height_inches else None
+                return BytesIO(
+                    cairosvg.svg2png(
+                        bytestring=node.source.encode("utf-8") if isinstance(node.source, str) else node.source,
+                        output_width=output_width,
+                        output_height=output_height,
+                    )
+                )
+            except Exception:  # Invalid SVG must retain the model's textual fallback.
+                return None
+        if node.media_type not in {"image/png", "image/jpeg", "image/jpg", "image/gif", "image/bmp"}:
+            return None
+        if isinstance(node.source, bytes):
+            return BytesIO(node.source)
+        if not isinstance(node.source, str):
+            return None
+        if node.source.startswith("data:"):
+            try:
+                _header, encoded = node.source.split(",", 1)
+                return BytesIO(base64.b64decode(encoded))
+            except (ValueError, TypeError):
+                return None
+        source_path = Path(node.source)
+        return str(source_path) if source_path.is_file() else None
 
     def _render_pillrow(self, node: PillRow, document: Document) -> None:
         if node.items:

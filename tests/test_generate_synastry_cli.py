@@ -97,3 +97,25 @@ def test_generate_synastry_report_writes_html(tmp_path):
 
     assert output_path == str(tmp_path / "synastry_test.html")
     assert (tmp_path / "synastry_test.html").read_text(encoding="utf-8") == "<html>synastry</html>"
+
+
+def test_generate_synastry_report_supports_docx_without_rendering_html(tmp_path):
+    person_a = {"name": "Rowan", "date": "1992-03-21", "time": "08:11", "location": "Peoria, IL", "simple_mode": False}
+    person_b = {"name": "Mira", "date": "1995-02-15", "time": "18:42", "location": "Seattle, WA", "simple_mode": False}
+
+    with patch("engine.natal_engine.generate_payload", side_effect=[{"payload": "A"}, {"payload": "B"}]), \
+         patch("products.synastry.assembler.build_synastry_context", return_value={"context": True}) as build_context, \
+         patch("products.synastry.renderer.render_synastry_html") as render_html, \
+         patch("products.shared.document_output.render_docx_report") as render_docx:
+        output_path = generate_synastry_report(
+            person_a,
+            person_b,
+            output_filename="synastry_test.docx",
+            output_dir=str(tmp_path),
+            formats=("docx",),
+        )
+
+    assert output_path == str(tmp_path / "synastry_test.docx")
+    assert build_context.called
+    render_html.assert_not_called()
+    render_docx.assert_called_once_with("synastry", {"context": True}, tmp_path / "synastry_test.docx")

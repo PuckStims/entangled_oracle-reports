@@ -29,6 +29,8 @@ def _register_core_composers() -> None:
     from .personal_forecast import compose_personal_forecast
     from .soul_ecosystem import compose_soul_ecosystem
     from .weekly_horoscope import compose_weekly_horoscope
+    from .location import compose_location_report
+    from .synastry import compose_synastry
 
     COMPOSERS.update(
         {
@@ -38,6 +40,13 @@ def _register_core_composers() -> None:
             "soul_ecosystem": compose_soul_ecosystem,
             "identity_profile": compose_identity_profile,
             "internal_architecture": compose_internal_architecture,
+            "synastry": compose_synastry,
+            "location_services.place_resonance": compose_location_report,
+            "location_services.place_resonance_search": compose_location_report,
+            "location_services.between_places": compose_location_report,
+            "location_services.world_lines": compose_location_report,
+            "location_services.local_compass": compose_location_report,
+            "location_services.living_map": compose_location_report,
         }
     )
 

@@ -1,3 +1,5 @@
+import base64
+
 from docx import Document
 
 from products.shared.docx_renderer import DocxRenderer
@@ -65,3 +67,28 @@ def test_renderer_source_does_not_know_report_types():
 
     for report_type in ("year_ahead", "synastry", "horoscope", "personal_forecast"):
         assert report_type not in contents
+
+
+def test_renderer_embeds_raster_figure_with_accessible_description(tmp_path):
+    # Valid one-pixel PNG; keeping it inline avoids a graphics test dependency.
+    png = base64.b64decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScL0NwAAAABJRU5ErkJggg==")
+    report = ReportDocument("Raster figure", (Figure("image/png", png, "One-pixel test image", caption="Raster caption"),))
+    output = tmp_path / "raster.docx"
+
+    DocxRenderer().render_to_path(report, output)
+    reopened = Document(output)
+
+    assert len(reopened.inline_shapes) == 1
+    assert "Raster caption" in "\n".join(paragraph.text for paragraph in reopened.paragraphs)
+
+
+def test_renderer_converts_svg_figure_to_embedded_docx_image(tmp_path):
+    svg = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"><circle cx="12" cy="12" r="10" fill="#6c4a8a"/></svg>'
+    report = ReportDocument("SVG figure", (Figure("image/svg+xml", svg, "Purple circle", caption="SVG caption", width_inches=1.0),))
+    output = tmp_path / "svg.docx"
+
+    DocxRenderer().render_to_path(report, output)
+    reopened = Document(output)
+
+    assert len(reopened.inline_shapes) == 1
+    assert "SVG caption" in "\n".join(paragraph.text for paragraph in reopened.paragraphs)

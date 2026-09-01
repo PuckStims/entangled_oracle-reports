@@ -219,22 +219,26 @@ docx` flags.
 Semantic tones (for example `flowing`, `pressure`, `threshold`, and
 `structure`) are retained on nodes. Renderer-level themes map them to actual
 formatting. Figures preserve media type, source, alternative text, caption, and
-fallback text; the current DOCX renderer uses the fallback for SVG while a
-future renderer can add native SVG or raster support without composer changes.
+fallback text. The DOCX renderer converts SVG figures to embedded PNGs with
+CairoSVG, while retaining fallback text if a source cannot be converted. It
+also embeds PNG, JPEG, GIF, and BMP figures from the same neutral `Figure`
+node. A future native-SVG OOXML renderer can replace that conversion without
+composer changes.
 
 Parity is explicit rather than inferred from a shared context. Composers attach
 a small manifest of context paths and semantic section markers. The parity
 validator flags any marker omitted while its context source is present. New
 report types should add a composer, parity manifest, and composer test; new
 formats should add a renderer for existing document nodes rather than per-report
-renderers. Synastry and location-service runtimes remain independent until their
-already-assembled contexts are ready to join this registry.
+renderers. Synastry and location-service runtimes retain their own context
+builders and join this registry only after their contexts are assembled.
 
 ### Current composer coverage
 
 The shared registry currently composes `year_ahead`, `personal_forecast`,
 `soul_ecosystem`, `horoscope`, `weekly_horoscope`, `identity_profile`, and
-`internal_architecture`. They retain their existing context builders and HTML
-templates. `synastry` and location-service reports are intentionally deferred:
-they have independent assemblers and must contribute a context-specific
-composer rather than being forced through `generate_report`.
+`internal_architecture`, plus `synastry` and all registered Location Services
+products. Synastry continues to use its dedicated pair-payload runtime and
+Location Services continues to use its product registry; both converge only at
+the completed context -> composer boundary. Their HTML renderers remain
+unchanged.
